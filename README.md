@@ -69,4 +69,4 @@ Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ___
 
-&copy; Copyright 2023. Dartstream.
+Copyright 2023. Dartstream.
