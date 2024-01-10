@@ -2,8 +2,13 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/packages/data_streaming/websocket/build" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/data_streaming/websocket/.pub" />
+      <excludeFolder url="file://$MODULE_DIR$/packages/data_streaming/websocket/.dart_tool" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Dart SDK" level="project" />
   </component>
 </module>
