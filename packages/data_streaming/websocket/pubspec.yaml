@@ -1,0 +1,12 @@
+name:
+description:
+version:
+repository:
+
+environment:
+  sdk:
+
+dependencies:
+
+dev_dependencies:
+
