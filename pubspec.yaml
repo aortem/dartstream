@@ -9,10 +9,8 @@ environment:
 # Add regular dependencies here.
 dependencies:
   postgres: ^3.0.0 # For PostgreSQL
-  sqflite: ^2.0.0 # For SQLite
-  googleapis_firestore: ^3.0.1 # For GCP Firestore
-  aws_signature_v4: ^3.0.0 # For AWS DynamoDB
-  http: ^0.14.0
+  aws_signature_v4: ^0.5.0 # For AWS DynamoDB
+  http: ^1.1.2
 
   # path: ^1.8.0
 
