@@ -1,0 +1,21 @@
+name: ds_dartstream
+description: A starting point for Dart libraries or applications.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.2.4
+
+# Add regular dependencies here.
+dependencies:
+  postgres: ^3.0.0 # For PostgreSQL
+  sqflite: ^2.0.0 # For SQLite
+  googleapis_firestore: ^3.0.1 # For GCP Firestore
+  aws_signature_v4: ^3.0.0 # For AWS DynamoDB
+  http: ^0.14.0
+
+  # path: ^1.8.0
+
+dev_dependencies:
+  lints: ^2.1.0
+  test: ^1.24.0
