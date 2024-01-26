@@ -1,0 +1,17 @@
+stages:
+  - triggers
+
+
+conditional_development:
+  stage: triggers
+  trigger:
+    include: tools/pipelines/child-ci-development.yml
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+
+conditional_production:
+  stage: triggers
+  trigger:
+    include: tools/pipelines/child-ci-production.yml
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"
