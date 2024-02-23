@@ -1,72 +1,81 @@
-## Our team is creating brilliant and engaging products. Come Join The Journey.
+# DartStream
 
-<div class="text-center" align="center">
+DartStream is a minimal, efficient, and scalable server-side framework designed for the Dart programming language. Inspired by the simplicity and flexibility of other frameworks like Dartfrog and Alfred, DartStream offers a streamlined approach to building server-side applications, making it an ideal choice for developers looking to leverage Dart's capabilities.
 
-![dartstream_docs_logo](docs/images/docs_logo.png)
+## Features
 
-_dartstream is a MBAAS platform for building cross-platform applications<br> using Flutter/Dart and other languages._
+- **Minimalistic Design**: Focus on what's necessary, making it perfect for both beginners and experienced developers.
+- **Scalability**: Designed to support applications as they grow in complexity and user base.
+- **Flexibility**: Easy to extend and customize to fit your specific needs.
+- **Performance**: Optimized for speed and efficiency, enabling high-performance applications.
 
-**[dartstream.dev](https://dartstream.dev)**
+## Available Versions
 
-[Contributing Guidelines](CONTRIBUTING.md) . [Submit an Issue](https://github.com/dartapps/apps/dartstream-web-app/issues) . [Architecture](docs/ARCHITECTURE.md)
+DartStream is available in three versions to cater to different needs and scales:
 
-</div>
-
----
+1. **Free - Open Source Version**: Fully functional and open for modification, perfect for individual developers and small projects.
+2. **Hosted Framework**: Similar to Laravel Vapor, this provides a managed, hosted environment, removing the need for server management.
+3. **Aortem - SAAS Version**: Offers additional features and dedicated support, ideal for enterprise-level applications.
 
 ## Documentation
 
-Get started with dartstream fundamentals and explore architecture on our documentation.
+For detailed guides, API references, and example projects, visit our [DartStream Documentation](#). Start building with DartStream today and take advantage of its robust features and elegant syntax.
 
-- [Onboarding Started](docs/ONBOARDING.md) - Tutorial
-- [Contributing Guidelines](CONTRIBUTING.md)
-- [Fixup Commits](docs/FIXUP_COMMITS.md)
+## Examples
 
-### Apps
+Explore the `/examples` directory in this repository to find sample applications demonstrating DartStream's capabilities in real-world scenarios.
 
-- [dartstream API](apps/dartstream_api/README.md) - Internal API's tp power the platform governed by Google's API gateway https://cloud.google.com/api-gateway
-- [dartstream Web App](apps/dartstream_app/README.md) - The dartstream Multi-Tenant Application Interface
-- [Assembly Line](apps/assembly_line/README.md) - Dart Framework As Service Components which combines Core, Core Plus, Auth Spoke, Database Spoke, Packages and other libraries
+## Contributing
 
-### Core Packages
+We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
-List of public packages.  Mainly Google packages (Flutter or Dart) or pre-vetted/trusted packages (ie. Provider/Navigator 2.0).  Available to all users. Keeps it close to core.      
+## Support Tiers
 
-- [Google Dev](packages/google-dev/README.md)
-- [Flutter Dev](packages/flutter-dev/README.md)
-- [Dart_dev](packages/dart-dev/README.md)
-- [Tools_Dart_dev](packages/tools-dart_dev/README.md)
-- [State Management](packages/state-management/README.md)
-- [Route Navigation](packages/light-engine/README.md)
-- [Payments](packages/payments/README.md)
+Choose the support tier that best suits your project's needs:
 
-### Plus Packages
+- **Community Support**: Free support provided by the DartStream community.
+- **Standard Support**: $15/month for a one-week Initial Response Service Level Agreement (IRSLA).
+- **Premium Support**: $100/month for a 72-hour IRSLA.
+- **Enterprise/Partner Support**: $999/month for a 24-hour IRSLA, with annual billing.
 
-List of custom packages. All packages here are hosted in a private repo and served via a roating time base checked "Dart Pub Token" that can only be accessed via kub's secrets/yaml.  All Packages here are either custom built or cloned from an existing package and refactored.  Packages here are an essential part of dartstream.
+For more information on each support tier, please refer to our support section in the documentation.
 
-- [TBD](TBD)
+## Licensing
 
-### Modules
+DartStream is licensed under the BSD License. See the [LICENSE](LICENSE.md) file for more details.
 
-List of Dart Server Framework modules and Interface modules built for the platform.  Accessibility to these modules and the features within the modules for each user type is controlled by RBAC.   
+## Acknowledgments
 
-- [Authentication Spoke](TBD)
-- [Database Spoke](TBD)
-- [Drag and Drop Builder](TBD)
-- [DartPad Editor](packages/dartpad-editor/README.md)
-- [DartPad Server](packages/dartpad-server/README.md)
-- [IDE](packages/ide/README.md)
+A special thank you to the Dart community and the creators of Dartfrog and Alfred for their inspiration and support in the development of DartStream.
 
+---
 
+We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
 
-### Contributing Guidelines
+## https://github.com/VeryGoodOpenSource/dart_frog
 
-Read through [contributing guidelines](CONTRIBUTING.md) to learn about submission process, coding rules and more.
-
-### Code of Conduct
-
-Please read and follow our [Code of Conduct](CODE_OF_CONDUCT.md).
-
-___
-
-Copyright 2023. Dartstream.
+## From Alfred 
+Core principles
+Usage overview
+Quick start guide
+Routing & incoming requests
+Route params
+Query string variables
+Body parsing
+File uploads
+Middleware
+No 'next'?
+CORS
+Responses
+Custom type handlers
+Static Files
+File downloads
+Error handling
+404 Handling
+Databases
+What I want to do isn't listed
+Websockets
+Logging
+Print routes
+Multi threading & isolates
+Contributions

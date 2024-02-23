@@ -1,0 +1,72 @@
+# STAGES OF OUR BUILD
+stages:
+  - build
+  - test
+  - deploy
+
+vcf-prod:pre_prod_deploy:
+  image: google/cloud-sdk:alpine
+  stage: deploy
+  environment: vcf-prod
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_REF_NAME == "main"
+  before_script:
+    - bash tools/gcloud_prod_acc.sh
+  when: manual
+  script:
+    - bash tools/pre_prod_deploy.sh
+
+# Build docker image using Cloud Build
+vcf-prod:build:
+  image: google/cloud-sdk:alpine
+  stage: build
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives" 
+    - if: $CI_COMMIT_REF_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_MERGE_REQUEST_APPROVED == "true" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+      changes:
+        - dartstream/*
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives" 
+    - if: $CI_COMMIT_REF_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_MERGE_REQUEST_APPROVED == "true" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+      changes:
+        - docs/dartstream-app/*
+  before_script:
+    - bash tools/gcloud_prod_acc.sh
+  #when: manual
+  script:
+    - cd dartstream
+    - tar -czf dartstream-prod.tgz *
+    - gcloud builds submit dartstream-prod.tgz
+      --tag us-central1-docker.pkg.dev/dartstream-prod/dartstream-prod/dartstream-prod:$CI_COMMIT_REF_SLUG
+  retry: 2
+
+# Deploy the container image to Cloud Run
+vcf:prod_deploy:
+  environment: vcf-prod
+  image: google/cloud-sdk:alpine
+  stage: deploy
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives" 
+    - if: $CI_COMMIT_REF_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_MERGE_REQUEST_APPROVED == "true" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+      changes:
+        - dartstream/*
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_REF_NAME == "main"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives" 
+    - if: $CI_COMMIT_REF_NAME == "main" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_MERGE_REQUEST_APPROVED == "true" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+      changes:
+        - docs/dartstream-app/*
+  needs: ["vcf-prod:build"]
+  before_script:
+    - bash tools/gcloud_prod_acc.sh
+  script:
+    - gcloud run deploy dartstream-prod
+      --image us-central1-docker.pkg.dev/dartstream-prod/dartstream-prod/dartstream-prod:$CI_COMMIT_REF_SLUG
+      --region us-central1
+      --service-account vcf-prod-cloud-cd@dartstream-prod.iam.gserviceaccount.com
+  retry: 2
