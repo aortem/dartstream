@@ -103,3 +103,14 @@ DartStream is available to the Dart community in three versions:
 
 Join the discussion on issues, contribute to pull requests, or reach out through [specified communication channels] for more informal discussions. Your input is crucial to the project's success.
 
+
+## Licensing
+
+The code in this project is licensed under the BSD license. This license allows you to use, modify, and distribute the code freely as long as you include the original license and copyright notice in your version.
+
+## Acknowledgments
+
+- Inspired by the simplicity and flexibility of [Dartfrog](#) and [Alfred](#) and [Shelf](#).
+- Thanks to the Dart community for continuous support and inspiration.
+
+We would like to extend our gratitude to all the developers and contributors who have made DartStream possible and continue to support its growth.
