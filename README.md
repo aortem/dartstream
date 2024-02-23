@@ -42,7 +42,7 @@ For more information on each support tier, please refer to our support section i
 
 ## Licensing
 
-DartStream is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for more details.
+DartStream is licensed under the BSD License. See the [LICENSE](LICENSE.md) file for more details.
 
 ## Acknowledgments
 
