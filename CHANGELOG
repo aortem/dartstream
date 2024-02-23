@@ -1,0 +1,68 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+### Added
+- New features that have been added.
+
+### Changed
+- Changes in existing functionality.
+
+### Deprecated
+- Features that will be removed in upcoming releases.
+
+### Removed
+- Features and functionality that have been removed.
+
+### Fixed
+- Any bugs or errors that have been fixed.
+
+### Security
+- Any security updates.
+
+## [1.0.0] - 2024-01-01
+
+### Added
+- Launch of the first stable version.
+- New login feature with multi-factor authentication.
+
+### Changed
+- Updated documentation to reflect new features.
+
+### Fixed
+- Resolved issue where user session would not persist.
+
+## [0.3.0] - 2023-12-15
+
+### Added
+- Beta feature for data export.
+
+### Changed
+- Improved performance of the database queries.
+
+### Fixed
+- Minor bug fixes and performance improvements.
+
+## [0.2.0] - 2023-11-30
+
+### Added
+- Added user profile customization options.
+
+### Changed
+- Modified navigation for improved user experience.
+
+### Fixed
+- Fixed a typo in the installation guide.
+
+## [0.1.0] - 2023-11-15
+
+### Added
+- Initial release with basic functionality.
+- Support for user registration and authentication.
+
+
