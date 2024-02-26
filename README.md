@@ -52,8 +52,6 @@ A special thank you to the Dart community and the creators of Dartfrog and Alfre
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
 
-## https://github.com/VeryGoodOpenSource/dart_frog
-
 ## From Alfred 
 Core principles
 Usage overview
