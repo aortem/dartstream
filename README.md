@@ -44,7 +44,6 @@ For more information on each support tier, please refer to our support section i
 
 DartStream is licensed under the BSD License. See the [LICENSE](LICENSE.md) file for more details.
 
----
+## Enhance with DartStream"
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
-
