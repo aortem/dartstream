@@ -89,7 +89,7 @@ DartStream offers various support tiers for our open-source products:
 - **Premium Support**: $100/month with a 72-hour IRSLA.
 - **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
 
-Each tier offers escalating levels of support, from community forums to direct access to the development team.
+Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
 ## Available Versions
 
