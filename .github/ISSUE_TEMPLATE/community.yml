@@ -1,11 +1,3 @@
-blank_issues_enabled: false
-contact_links:
-  - name: GitHub Community Support
-    url: https://github.com/orgs/community/discussions
-    about: Please ask and answer questions here.
-  - name: GitHub Security Bug Bounty
-    url: https://bounty.github.com/
-    about: Please report security vulnerabilities here.
 name: Bug Report
 description: File a bug report
 title: "[Bug]: "
@@ -41,8 +33,8 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.0.2 (Default)
-        - 1.0.3 (Edge)
+        - "1.0.2 (Default)"
+        - "1.0.3 (Edge)"
       default: 0
     validations:
       required: true
