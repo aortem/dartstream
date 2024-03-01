@@ -63,8 +63,7 @@ Choose the support tier that best suits your project's needs:
   - Access to Partner/Reseller/Channel Program.
   - Option to include Logo on the Open Source website.
 
-For more information on each support tier, please refer to our support section in the documentation.
-
+To Signup For Support Click Here, or see our support section in the documentation.
 
 ## Licensing
 
