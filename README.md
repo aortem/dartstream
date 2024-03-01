@@ -29,16 +29,42 @@ Explore the `/examples` directory in this repository to find sample applications
 
 We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
-## Support Tiers
+### Support Tiers
 
 Choose the support tier that best suits your project's needs:
 
-- **Community Support**: Free support provided by the DartStream community.
-- **Standard Support**: $15/month for a one-week Initial Response Service Level Agreement (IRSLA).
-- **Premium Support**: $100/month for a 72-hour IRSLA.
-- **Enterprise/Partner Support**: $999/month for a 24-hour IRSLA, with annual billing.
+### Community Support
+- Free support provided by the DartStream community.
+
+### Standard Support
+- $15/month.
+- One-week Initial Response Service Level Agreement (IRSLA).
+- **Features**:
+  - Unlimited Support Tickets with Guaranteed RSLA.
+  - One Open/Active Ticket at a time. 
+
+### Enhanced Support
+- $100/month.
+- 72-hour IRSLA.
+- **Features**:
+  - Everything in Standard Support.
+  - Access to Roadmap.
+  - Feature Request Upvoting (Priority feature request).
+  - One Open/Active Ticket at a time.
+
+### Enterprise Support
+- $999/month.
+- 24-hour IRSLA, with annual billing.
+- **Features**:
+  - Everything in Enhanced Support.
+  - Early Access to new features.
+  - Team Access to our network channels.
+  - Monthly access to Partner Calls.
+  - Access to Partner/Reseller/Channel Program.
+  - Option to include Logo on the Open Source website.
 
 For more information on each support tier, please refer to our support section in the documentation.
+
 
 ## Licensing
 
