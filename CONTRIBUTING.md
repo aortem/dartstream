@@ -80,17 +80,6 @@ We encourage feature requests that enhance the framework. Please:
 
 Your contributions to improve or clarify documentation are always welcome. Whether it's typo corrections, additional examples, or clearer explanations, your help is invaluable.
 
-## Support Tiers
-
-DartStream offers various support tiers for our open-source products:
-
-- **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $15/month with a one-week Initial Response Service Level Agreement (IRSLA).
-- **Premium Support**: $100/month with a 72-hour IRSLA.
-- **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
-
-Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
-
 ## Available Versions
 
 DartStream is available to the Dart community in three versions:
@@ -106,7 +95,7 @@ Join the discussion on issues, contribute to pull requests, or reach out through
 
 ## Licensing
 
-The code in this project is licensed under the BSD license. This license allows you to use, modify, and distribute the code freely as long as you include the original license and copyright notice in your version.
+All Dartstream packages are licensed under BSD-3, except for the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 ## Acknowledgments
 
