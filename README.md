@@ -29,23 +29,32 @@ Explore the `/examples` directory in this repository to find sample applications
 
 We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
-### Support Tiers
+## Support Tiers
 
-Choose the support tier that best suits your project's needs:
+DartStream offers various support tiers for our open-source products:
+
+- **Community Support**: Free, community-driven support with no guaranteed response time.
+- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+- **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
+- **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
+
+Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
 ### Community Support
 - Free support provided by the DartStream community.
 
 ### Standard Support
 - $15/month.
-- One-week Initial Response Service Level Agreement (IRSLA).
+- 10 business days (Monday - Friday) Initial Response Service Level Agreement (IRSLA).
+- [Subscribe](https://buy.stripe.com/bIYcPL615erv3y8001)
 - **Features**:
   - Unlimited Support Tickets with Guaranteed RSLA.
   - One Open/Active Ticket at a time. 
 
 ### Enhanced Support
-- $100/month.
+- $100/month - Billed Annually.
 - 72-hour IRSLA.
+- [Subscribe](https://buy.stripe.com/bIY9Dz759abf5Gg4gi)
 - **Features**:
   - Everything in Standard Support.
   - Access to Roadmap.
@@ -53,21 +62,23 @@ Choose the support tier that best suits your project's needs:
   - One Open/Active Ticket at a time.
 
 ### Enterprise Support
-- $999/month.
-- 24-hour IRSLA, with annual billing.
+- $999/month - Billed Annually
+- 24-hour IRSLA.
+- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
 - **Features**:
   - Everything in Enhanced Support.
   - Early Access to new features.
-  - Team Access to our network channels.
-  - Monthly access to Partner Calls.
+  - Access to our network channels.
+  - Monthly access to Development/Partner Calls.
   - Access to Partner/Reseller/Channel Program.
   - Option to include Logo on the Open Source website.
 
-To Signup For Support Click Here, or see our support section in the documentation.
+To choose a support tier, click on one of the options above.
 
 ## Licensing
 
-DartStream is licensed under the BSD License. See the [LICENSE](LICENSE.md) file for more details.
+All Dartstream packages are licensed under BSD-3, except for the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+
 
 ## Enhance with DartStream"
 
