@@ -5,8 +5,6 @@ library;
 
 export 'src/ds_dartstream_base.dart';
 
-// TODO: Export any libraries intended for clients of this package.
-
 // lib/db_connector.dart
 
 // lib/ds_dartstream.dart
