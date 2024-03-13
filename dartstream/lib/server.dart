@@ -15,9 +15,9 @@ Future<HttpServer> run(Handler handler, InternetAddress ip, int port) async {
 
   server.listen((HttpRequest request) {
     final uri = request.uri;
-    if (uri.path.startsWith('/static')) {
-      final filePath = uri.path.replaceFirst('/static', '');
-      final file = File('${Directory.current.path}/api/static$filePath');
+    if (uri.path.startsWith('/images')) {
+      final filePath = uri.path.replaceFirst('/images', '');
+      final file = File('${Directory.current.path}/api/images$filePath');
       file.exists().then((exists) {
         if (exists) {
           // Serve the file directly
