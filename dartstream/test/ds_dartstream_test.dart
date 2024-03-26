@@ -1,4 +1,4 @@
-import 'package:ds_dartstream/ds_dartstream.dart';
+import 'package:ds_dartstream/backend/ds_dartstream.dart';
 import 'package:test/test.dart';
 
 void main() {
