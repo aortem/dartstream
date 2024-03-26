@@ -14,7 +14,7 @@ dependencies:
   shelf: ^1.4.1
   shelf_router: ^1.1.4
   path: ^1.9.0
-  mime: 1.0.5
+  mime: ^1.0.5
 
   # path: ^1.8.0
 
