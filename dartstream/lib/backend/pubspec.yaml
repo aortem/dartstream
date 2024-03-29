@@ -32,7 +32,7 @@ dependencies:
 dev_dependencies:
 
 #CLI
-  dcli: ^3.4.0
+  cli_util: ^0.4.1
 
 #TBD
   lints: ^2.1.0
