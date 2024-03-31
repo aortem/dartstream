@@ -7,7 +7,9 @@ class DSUtilities {
     print("Running extended functionality...");
   }
 
-  static void printMessage(String s) {}
+  String performAction() {
+    return "Expected Result"; //For testing Only
+  }
 }
 
 class DSUtilitiesCommand extends Command {
