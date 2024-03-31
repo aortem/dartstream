@@ -1,4 +1,4 @@
-import '../api/ds_cli_util.dart';
+import 'package:ds_cli/api/ds_cli_util.dart';
 
 void main() {
   // Example using utilities
