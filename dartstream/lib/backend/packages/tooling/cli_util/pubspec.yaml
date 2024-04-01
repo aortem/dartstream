@@ -45,5 +45,4 @@ dev_dependencies:
 
 #Globally Activated Package
   executables:
-    ds: ds
-
+    ds: ds_cli
