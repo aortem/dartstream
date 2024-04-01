@@ -14,9 +14,9 @@ class DSDoctor {
 
 class DSDoctorCommand extends Command {
   @override
-  final name = "core";
+  final name = "doctor";
   @override
-  final description = "Runs core functionality.";
+  final description = "Runs doctor/health check functionality.";
 
   DSDoctorCommand() {
     // Command specific arguments

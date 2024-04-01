@@ -10,9 +10,9 @@ class DSOverrides {
 
 class DSOverridesCommand extends Command {
   @override
-  final name = "extend";
+  final name = "override";
   @override
-  final description = "Runs extended functionality.";
+  final description = "Runs overrides functionality.";
 
   DSOverridesCommand() {
     // Command specific arguments

@@ -2,6 +2,9 @@
 
 import 'package:args/command_runner.dart';
 import 'package:ds_cli/api/ds_cli_util.dart';
+//import 'create_project_command.dart';
+
+// Import DSInitCommand
 
 void main(List<String> arguments) {
   var runner = CommandRunner("ds", "DartStream CLI Tools")
@@ -9,6 +12,7 @@ void main(List<String> arguments) {
     ..addCommand(DSCoreCommand())
     ..addCommand(DSDeployCommand())
     ..addCommand(DSDoctorCommand())
+    ..addCommand(DSInitCommand())
     ..addCommand(DSMakeCommand())
     ..addCommand(DSRenameCommand())
 

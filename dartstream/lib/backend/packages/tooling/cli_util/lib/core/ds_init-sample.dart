@@ -2,7 +2,7 @@
 
 import 'package:args/command_runner.dart';
 
-class DSRename {
+class DSInit {
   void run() {
     print("Running core functionality...");
   }
@@ -12,16 +12,16 @@ class DSRename {
   }
 }
 
-class DSRenameCommand extends Command {
+class DSInitCommand extends Command {
   @override
-  final name = "rename";
+  final name = "sample";
   @override
-  final description = "Runs rename/refactor functionality.";
+  final description = "Runs core functionality.";
 
-  DSRenameCommand() {
+  DSInitCommand() {
     // Command specific arguments
   }
 
   @override
-  void run() => DSRename().run();
+  void run() => DSInit().run();
 }

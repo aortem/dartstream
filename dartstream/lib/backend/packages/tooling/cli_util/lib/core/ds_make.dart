@@ -14,9 +14,9 @@ class DSMake {
 
 class DSMakeCommand extends Command {
   @override
-  final name = "core";
+  final name = "make";
   @override
-  final description = "Runs core functionality.";
+  final description = "Runs make functionality.";
 
   DSMakeCommand() {
     // Command specific arguments

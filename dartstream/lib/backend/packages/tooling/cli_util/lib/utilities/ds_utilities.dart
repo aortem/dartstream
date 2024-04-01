@@ -14,9 +14,9 @@ class DSUtilities {
 
 class DSUtilitiesCommand extends Command {
   @override
-  final name = "extend";
+  final name = "utilities";
   @override
-  final description = "Runs extended functionality.";
+  final description = "Runs utility functionality.";
 
   DSUtilitiesCommand() {
     // Command specific arguments

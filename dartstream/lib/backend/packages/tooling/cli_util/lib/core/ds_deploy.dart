@@ -14,9 +14,9 @@ class DSDeploy {
 
 class DSDeployCommand extends Command {
   @override
-  final name = "core";
+  final name = "deploy";
   @override
-  final description = "Runs core functionality.";
+  final description = "Runs deployment functionality.";
 
   DSDeployCommand() {
     // Command specific arguments
