@@ -9,9 +9,14 @@ environment:
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-   args: ^2.4.2
 
-# Shelf Middleware - User Selected
+# Command Line Arguments
+  args: ^2.4.2
+
+# Shelf Middleware - For Development Only
+dependency_overrides:
+  ds_shelf:
+    path: ../shelf
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
@@ -26,6 +31,8 @@ dev_dependencies:
   test: ^1.24.0
   mockito: ^5.0.0
   mocktail: ^1.0.3
+
+
 
 #Globally Activated Package
 executables:
