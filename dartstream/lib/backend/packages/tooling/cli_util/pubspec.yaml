@@ -9,6 +9,7 @@ environment:
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
+   args: ^2.4.2
 
 # Shelf Middleware - User Selected
 
