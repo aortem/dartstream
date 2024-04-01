@@ -44,5 +44,5 @@ dev_dependencies:
   mocktail: ^1.0.3
 
 #Globally Activated Package
-  executables:
-    ds: ds_cli
+executables:
+   ds: ds_cli
