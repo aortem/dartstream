@@ -23,7 +23,10 @@ void main(List<String> arguments) {
     ..addCommand(DSOverridesCommand())
 
     //Utilities Commands
-    ..addCommand(DSUtilitiesCommand());
+    ..addCommand(DSUtilitiesCommand())
+
+    //Middleware Options
+    ..addCommand(DSCreateShelfCommand());
 
   runner.run(arguments).catchError((error) {
     print('Error: $error');

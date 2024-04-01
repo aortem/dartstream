@@ -18,3 +18,6 @@ export '/utilities/ds_utilities.dart';
 
 //Any Overrides for the cli
 export '/overrides/ds_overrides.dart';
+
+//Middleware Shelf Option
+export '/core/ds_create_shelf.dart';

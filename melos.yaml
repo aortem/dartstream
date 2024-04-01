@@ -1,0 +1,7 @@
+name: ds_melos
+packages:
+  - lib/backend/packages/tooling/**  # Glob pattern to include all packages under tooling
+ignore:
+  - "**/node_modules/**"
+  - "**/.dart_tool/**"
+  - "**/build/**"
