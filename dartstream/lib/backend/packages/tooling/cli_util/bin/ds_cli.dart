@@ -1,7 +1,7 @@
 // Uses 'package:args/command_runner.dart' for parsing and executing commands.
 
 import 'package:args/command_runner.dart';
-import 'package:ds_cli/api/ds_cli_util.dart';
+import 'package:ds_cli/ds_cli_util.dart';
 //import 'create_project_command.dart';
 
 // Import DSInitCommand
