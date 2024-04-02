@@ -4,7 +4,7 @@ import 'package:ds_shelf/ds_shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
 void main(List<String> args) {
-  var handler = DSCore().handler;
+  var handler = DSServerSetup().handler;
 
   // Configure and start the server
   io.serve(handler, 'localhost', 8080).then((server) {

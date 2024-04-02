@@ -1,2 +1,9 @@
-// Example utility function
-String formatResponseMessage(String message) => 'Response: $message';
+// lib/utilities/ds_utilities.dart
+part of 'ds_shelf.dart';
+
+class DSUtilities {
+  static String someUtilityFunction() {
+    // Implementation
+    return "Utility Result";
+  }
+}

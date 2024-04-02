@@ -1,20 +1,16 @@
-// File: dartstream/lib/backend/packages/tooling/shelf/lib/src/ds_internal_middleware.dart
+// lib/src/ds_internal_middleware.dart
+part of '../ds_shelf.dart';
 
-import 'package:shelf/shelf.dart';
+shelf.Middleware myCustomMiddleware() {
+  return (shelf.Handler handler) {
+    return (shelf.Request request) {
+      // Middleware logic before calling the handler
+      final modifiedRequest = request.change(context: {'foo': 'bar'});
 
-// Internal implementation details, not exposed publicly
-class DSInternalMiddleware {
-  // A static method to log incoming requests
-  static void logRequest(Request req) {
-    print("Received request for ${req.url}");
-  }
-
-  // Example of a middleware function that logs requests
-  static Middleware get logRequestsMiddleware => (Handler innerHandler) {
-        return (Request request) async {
-          logRequest(request); // Log the request
-          return innerHandler(
-              request); // Proceed to the next handler/middleware
-        };
-      };
+      return handler(modifiedRequest).then((response) {
+        // Modify the response or perform actions after the handler call
+        return response;
+      });
+    };
+  };
 }

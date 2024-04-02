@@ -5,7 +5,7 @@ version: 0.0.1
 # repository: https://github.com/my_org/my_repo
 
 environment:
- sdk: "^3.3.0"
+ sdk: ">=3.3.0 <4.0.0"
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -17,13 +17,15 @@ dependencies:
   http: ^1.1.2
   dio: ^5.4.2
 
-# Middleware
+# Middleware - Packages Built By The Dart Team
   shelf: ^1.4.1
   shelf_router: ^1.0.0
   shelf_proxy: ^1.0.0
   shelf_static: ^1.0.0
   shelf_web_socket: ^1.0.0
-  http_multi_server: ^3.0.0
+  shelf_packages_handler: ^3.0.2
+  shelf_test_handler: ^2.0.2
+  http_multi_server: ^3.2.1
   web_socket_channel: ^2.1.0
   # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
   # They might be part of your dev_dependencies for code generation or testing.
