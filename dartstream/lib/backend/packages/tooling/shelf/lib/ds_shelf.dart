@@ -17,12 +17,4 @@ part 'api/ds_shelf_api.dart';
 part 'core/ds_shelf_core.dart';
 part 'extensions/ds_shelf_extension.dart';
 part 'overrides/ds_overrides.dart';
-
-// Initialize a basic Shelf server with default middleware
-shelf.Handler initializeServer() {
-  var router = Router();
-
-  // Configure router and middleware here
-
-  return router;
-}
+//part 'utilities/ds_utilities_base.dart';

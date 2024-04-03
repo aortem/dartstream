@@ -12,3 +12,5 @@ Future<File> saveUploadedFile(shelf.Request request, String targetPath) async {
   await file.writeAsString(content);
   return file;
 }
+
+abstract class DS extends DSUtilitiesBase {}

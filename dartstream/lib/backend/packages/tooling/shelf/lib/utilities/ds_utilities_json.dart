@@ -1,9 +1,12 @@
 // Always Import the Utillities Base Class
-import 'ds_utilities_base.dart';
+//import 'ds_utilities_base.dart';
 
 //Import Other Packages
-
 import 'dart:convert';
+
+import 'ds_utilities_base.dart';
+
+abstract class DL extends DSUtilitiesBase {}
 
 Map<String, dynamic> parseJson(String jsonStr) {
   return json.decode(jsonStr) as Map<String, dynamic>;
