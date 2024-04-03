@@ -1,7 +1,7 @@
 // lib/ds_shelf.dart
 library ds_shelf;
 
-//The Shelf Core Libraries
+//The Shelf Core Libraries - Built by hte dart team
 
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_router/shelf_router.dart';
