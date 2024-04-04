@@ -1,9 +1,8 @@
-// Always Import the Utilities Base Class
+// Import Top Level Package
+import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
+import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
-import 'ds_utilities_base.dart';
-
-//Import Other Packages
-
+//Import other core packages
 import 'dart:io';
 
 Future<File> saveUploadedFile(shelf.Request request, String targetPath) async {

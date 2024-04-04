@@ -1,7 +1,7 @@
 import 'package:ds_shelf/ds_shelf.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf_router/shelf_router.dart';
-import 'package:ds_shelf/utilities/ds_utilities.dart'; // Assuming utilities are needed
+import 'package:ds_shelf/utilities/ds_shelf_utilities_export.dart'; // Assuming utilities are needed
 
 // Import other necessary utilities or configurations
 

@@ -1,7 +1,8 @@
-// Always Import the Utillities Base Class
-import 'ds_utilities_base.dart';
+// Import Top Level Package
+import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
+import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
-//Import Other Packages
+//Import other core packages
 
 class StringUtilities extends DSUtilitiesBase {
   String capitalizeFirstLetter(String input) {

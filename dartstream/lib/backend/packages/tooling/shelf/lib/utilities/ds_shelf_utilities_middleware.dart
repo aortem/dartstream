@@ -1,9 +1,8 @@
-// Always Import the Utillities Base Class
-import 'ds_utilities_base.dart';
+// Import Top Level Package
+import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
+import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
-//Import Other Packages
-
-import 'package:shelf/shelf.dart' as shelf;
+//Import other core packages
 
 shelf.Middleware corsHeaders({Map<String, String>? headers}) {
   return (shelf.Handler innerHandler) {
