@@ -1,7 +1,7 @@
 // lib/ds_shelf.dart
 library ds_shelf;
 
-//The Shelf Core Libraries - Built by hte dart team
+//The Shelf Core Libraries - Built by the dart team
 
 import 'package:http_multi_server/http_multi_server.dart';
 import 'package:shelf/shelf.dart' as shelf;
