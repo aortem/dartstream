@@ -4,8 +4,6 @@ import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
 //Import other core packages
 
-extension StaticFileHandler on Router {
-  void serveStaticFiles(String path) {
-    // Implementation for serving static files
-  }
+String joinPaths(String base, String path) {
+  return base.endsWith('/') ? '$base$path' : '$base/$path';
 }
