@@ -1,0 +1,39 @@
+#This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+name: ds_cli
+description: Main Dartstream CLI.
+version: 0.0.1
+# repository: https://github.com/my_org/my_repo
+
+environment:
+ sdk: ">=3.3.0 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+# Command Line Arguments
+  args: ^2.4.2
+
+# Shelf Middleware - For Development Only
+dependency_overrides:
+  ds_shelf:
+    path: ../shelf
+
+# Dev dependencies are added in sections alphabetically and according to features.
+dev_dependencies:
+
+#CLI
+  cli_util: ^0.4.1
+
+#Cosmetic
+  lints: ^2.1.0
+
+#Testing Packages
+  test: ^1.24.0
+  mockito: ^5.0.0
+  mocktail: ^1.0.3
+
+
+
+#Globally Activated Package
+executables:
+   ds: ds_cli
