@@ -3,15 +3,6 @@ library ds_shelf;
 
 //The Shelf Core Libraries - Built by the dart team
 
-import 'package:http_multi_server/http_multi_server.dart';
-import 'package:shelf/shelf.dart' as shelf;
-import 'package:shelf_packages_handler/shelf_packages_handler.dart';
-import 'package:shelf_proxy/shelf_proxy.dart';
-import 'package:shelf_router/shelf_router.dart';
-import 'package:shelf_static/shelf_static.dart';
-import 'package:shelf_test_handler/shelf_test_handler.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 // Export Base Shelf Component so users don't have to import them separately
 export 'package:http_multi_server/http_multi_server.dart';
 export 'package:shelf/shelf.dart';

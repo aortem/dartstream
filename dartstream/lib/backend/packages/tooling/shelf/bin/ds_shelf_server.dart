@@ -1,6 +1,6 @@
 // Import Top Level Package
-import '../ds_shelf.dart' as shelf; //Coverage for shelf
-import '../ds_shelf.dart'; //Coverage for other packages
+import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
+import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
 // Import other necessary utilities or configurations
 
@@ -9,7 +9,7 @@ class DSShelfServer extends DSShelfCore {
   final List<shelf.Middleware> _middlewares = [];
 
   // Initial setup for router or any server-level configurations
-  Router _router = Router();
+  final Router _router = Router();
 
   // Method to add middleware
   void addMiddleware(shelf.Middleware middleware) {

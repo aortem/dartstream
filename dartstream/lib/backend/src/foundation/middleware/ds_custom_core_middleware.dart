@@ -45,10 +45,10 @@ Future<void> main(List<String> args) async {
   });
 
   // Create middleware chain
-  final handler = (Request request) async {
+  handler(Request request) async {
     // Your request handling logic
     return myRequestHandler(request);
-  };
+  }
 
   final middlewareChain = <Middleware>[
     (Request request, Handler handler) async {

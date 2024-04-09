@@ -9,9 +9,10 @@ class DSShelfServer extends DSShelfCore {
   final List<shelf.Middleware> _middlewares = [];
 
   // Initial setup for router or any server-level configurations
-  Router _router = Router();
+  final Router _router = Router();
 
   // Method to add middleware
+  @override
   void addMiddleware(shelf.Middleware middleware) {
     _middlewares.add(middleware);
   }

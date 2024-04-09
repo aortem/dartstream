@@ -37,10 +37,10 @@ class Dartstream {
 }
 
 void main() async {
-  final handler = (Request request) async {
+  handler(Request request) async {
     // Application logic
     return Response('Hello, Dartstream!');
-  };
+  }
 
   final loggingMiddleware = LoggingMiddleware();
   final dartstream = Dartstream(handler, [loggingMiddleware]);

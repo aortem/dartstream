@@ -1,6 +1,6 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_shelf
-description: A starting point for Dart libraries or applications.
+description: Core Shelf Components.
 version: 0.0.1
 # repository: https://github.com/my_org/my_repo
 
