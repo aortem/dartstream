@@ -5,7 +5,11 @@ library ds_enhanced_authentication_features;
 
 //IMPORTS
 
-//DS MIDDLEWARE
+//BASE MIDDLEWARE LIBRIARIES - USE ONLY ONE
+
+//The Base DS and Custom Shelf Library.
+import 'package:ds_shelf/ds_shelf.dart';
+//import 'package:ds_custom/ds_custom.dart';
 
 //---AUTHENTICATION---
 
@@ -16,12 +20,6 @@ import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 //Firebase Admin SDK
 
 //Azure Identity SDK
-
-//---DATABASE---
-
-//---FILE STORAGE---
-
-//---PAYMENTS---
 
 //------------------------
 
@@ -46,4 +44,3 @@ export 'package:ds_azure_identity_dart'; // Azure SDK Package
 export 'package:ds_azure_identity_dart'; // Firebase Admin SDK Package 
 
 */
-

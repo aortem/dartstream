@@ -7,7 +7,8 @@ import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 
 //Begin Class Code Structure
 
-class DSAuthAmazonCore {
+/*
+class DSAuthFirebaseAdminCore {
   final List<Middleware> _middlewares = [];
   final Router _router = Router();
   final CognitoUserPool _userPool;
@@ -67,3 +68,4 @@ class DSAuthAmazonCore {
     _router.add(method, path, handler);
   }
 }
+*/

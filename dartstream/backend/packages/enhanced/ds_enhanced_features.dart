@@ -1,57 +1,20 @@
 // lib/ds_enchanced_features.dart
 library ds_enhanced_features;
 
-//The Base Enhanced library.
-
 //IMPORTS
 
-import 'package:ds_enhanced_features/';
-//---AUTHENTICATION---
+//BASE MIDDLEWARE LIBRIARIES - USE ONLY ONE
 
-//Amazon Cognito
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
+//The Base DS and Custom Shelf Library.
 
-//Firebase Admin SDK
-
-//Azure Identity SDK
-
-//---DATABASE---
-
-//---FILE STORAGE---
-
-//---PAYMENTS---
-
-//------------------------
+import 'package:ds_shelf/ds_shelf.dart';
+//import 'package:ds_custom/ds_custom.dart';
 
 //EXPORTS
 
-//---AUTHENTICATION---
+export 'package:ds_shelf/ds_shelf.dart';
+//export 'package:ds_custom/ds_custom.dart';
 
-//Amazon Cognito
-export 'package:amazon_cognito_identity_dart_2/cognito.dart'; // Amazon SDK Package
-export 'package:amazon_cognito_identity_dart_2/sig_v4.dart'; // Amazon SDK Package
+//Export our Core Libraries
 
-//Firebase Admin SDK
-
-export 'package:ds_firebase_admin_SDK'; // Azure SDK Package
-export 'package:ds_firebase_admin_SDK'; // Firebase Admin SDK Package
-
-//Azure Identity SDK
-
-export 'package:ds_azure_identity_dart'; // Azure SDK Package
-export 'package:ds_azure_identity_dart'; // Firebase Admin SDK Package
-
-// DATABASE
-
-//FILESTORE PACKAGES
-
-//PAYMENTS PACKAGES
-
-//Test part - to be removed
-
-//part 'api/ds_shelf_api.dart';
-//part 'core/ds_shelf_core.dart';
-//part 'extensions/ds_shelf_extension.dart';
-//part 'overrides/ds_overrides.dart';
-//part 'utilities/ds_utilities_base.dart'; */
+export 'core/authentication/amazon_cognito_sdk/ds_amazon_cognito_export.dart';

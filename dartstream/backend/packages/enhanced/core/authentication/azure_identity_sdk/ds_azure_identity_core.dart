@@ -3,11 +3,11 @@ import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
 import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
 
 //Import other core packages
-import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+//import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 
 //Begin Class Code Structure
 
-class DSAuthAmazonCore {
+/*class DSAuthAzureCore {
   final List<Middleware> _middlewares = [];
   final Router _router = Router();
   final CognitoUserPool _userPool;
@@ -66,4 +66,4 @@ class DSAuthAmazonCore {
   void addRoute(String method, String path, Handler handler) {
     _router.add(method, path, handler);
   }
-}
+}*/

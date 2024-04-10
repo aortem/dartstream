@@ -1,7 +1,7 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_enhanced_authentication_features
 description: Packages for our enhanced authentication features
-version: 0.0.1
+version: 0.0.1-pre
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -13,7 +13,7 @@ dependencies:
 # MIDDLEWARE - USE ONLY ONE
 
 # Shelf Middleware Import  // On By Default
-#  ds_shelf: ^0.0.1
+  ds_shelf: ^0.0.1-pre
 
 # Custom Middleware Import // Off By Default
 
@@ -21,8 +21,6 @@ dependencies:
 
 # Amazon Cognito SDK
   amazon_cognito_identity_dart_2: ^3.6.2
-
-# Core Custom Import
 
 # Core Custom Import
 
