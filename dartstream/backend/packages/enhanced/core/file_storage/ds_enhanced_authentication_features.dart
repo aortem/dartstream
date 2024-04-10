@@ -1,11 +1,10 @@
-// lib/ds_enchanced_features.dart
-library ds_enhanced_features;
+// lib/ds_shelf.dart
+library ds_enhanced_authentication_features;
 
-//The Base Enhanced library.
+//The Enhanced library features include SDKs, trusted third party integrations.
 
 //IMPORTS
 
-import 'package:ds_enhanced_features/';
 //---AUTHENTICATION---
 
 //Amazon Cognito
