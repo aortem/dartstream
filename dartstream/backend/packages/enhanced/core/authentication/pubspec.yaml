@@ -13,7 +13,7 @@ dependencies:
 # MIDDLEWARE - USE ONLY ONE
 
 # Shelf Middleware Import  // On By Default
-  ds_shelf: ^0.0.1
+#  ds_shelf: ^0.0.1
 
 # Custom Middleware Import // Off By Default
 
