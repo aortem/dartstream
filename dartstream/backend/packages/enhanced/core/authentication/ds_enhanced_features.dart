@@ -6,6 +6,7 @@ library ds_enhanced_features;
 //AUTHENTICATION
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
 import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
+import 'package:amazon_co'
 
 // From anywhere in the lib directory
 
@@ -19,9 +20,9 @@ import 'package:amazon_cognito_identity_dart_2/sig_v4.dart';
 
 // AUTHENTICATION PACKAGES
 
-export 'lib/core/authentication/amazon_cognito_sdk.dart'; // Amazon SDK Package
-export 'lib/core/authentication/azure_identity_sdk.dart'; // Azure SDK Package
-export 'lib/core/authentication/azure_identity_sdk.dart'; // Firebase Admin SDK Package
+export '/amazon_cognito_sdk.dart'; // Amazon SDK Package
+export 'core/authentication/azure_identity_sdk.dart'; // Azure SDK Package
+export 'core/authentication/azure_identity_sdk.dart'; // Firebase Admin SDK Package
 
 // DATABASE PACKAGES
 export '../core/ds_shelf_core_export.dart'; // Exporting your core classes
