@@ -10,13 +10,6 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-#Database Drivers
-  postgres: ^3.0.0 # For PostgreSQL
-
-# HTTP Client
-  http: ^1.1.2
-  dio: ^5.4.2
-
 # Middleware - Packages Built By The Dart Team
   shelf: ^1.4.1
   shelf_router: ^1.0.0
@@ -25,9 +18,7 @@ dependencies:
   shelf_web_socket: ^1.0.0
   shelf_packages_handler: ^3.0.2
   shelf_test_handler: ^2.0.2
-  # http_multi_server: ^3.2.1  Move to standard
-  # web_socket_channel: ^2.1.0 Move to standard
-  # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
+   # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
   # They might be part of your dev_dependencies for code generation or testing.
 
   # path: ^1.8.0
