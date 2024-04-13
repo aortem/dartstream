@@ -5,3 +5,5 @@ extension ExtendedFeature on SomeClassFromPackage {
     // Your custom logic
   }
 } */
+
+abstract class DSAuthExtensionAmazonCore extends DSAuthAmazonCore {}
