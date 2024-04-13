@@ -17,6 +17,8 @@ dependencies:
 dependency_overrides:
   ds_shelf:
     path: ../shelf
+  standard:
+    path: ../../standard
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:

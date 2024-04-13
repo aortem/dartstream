@@ -1,0 +1,13 @@
+server:
+  host: localhost
+  port: 9090
+database:
+  url: "postgresql://localhost"
+  name: "devdb"
+  user: "devuser"
+  password: "devpassword"
+logging:
+  level: info
+  output: "logs/custom_dev.log"
+authentication:
+  jwt_secret: "your_jwt_secret_here"

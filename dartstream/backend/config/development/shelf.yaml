@@ -1,0 +1,11 @@
+server:
+  host: localhost
+  port: 8080
+database:
+  url: "mongodb://localhost:27017"
+  name: "devdb"
+logging:
+  level: debug
+  output: "logs/dev.log"
+external_services:
+  stripe_api_key: "sk_test_YourTestApiKeyHere"

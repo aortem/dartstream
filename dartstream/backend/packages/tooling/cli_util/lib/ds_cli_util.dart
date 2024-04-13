@@ -1,6 +1,14 @@
 // Exporting the public API for the CLI utility
 library ds_cli_util;
 
+// Core Dart Libraies for Command Line Interfaces
+import 'dart:io';
+import 'package:path/path.dart' as path;
+
+// Core Dart Libraies for Command Line Interfaces
+export 'dart:io';
+export 'package:path/path.dart';
+
 //Core Commands For the CLI
 export 'core/ds_core.dart';
 export 'core/ds_deploy.dart';
