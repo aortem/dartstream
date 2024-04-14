@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.0.1-pre+2] - 2024-04-14
+
+### Added
+- Adding main package to lib folder.
+
 ## [0.0.1-pre+1] - 2024-04-14
 
 ### Added
