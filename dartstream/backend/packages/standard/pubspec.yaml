@@ -1,4 +1,4 @@
-#This pubspec file imports is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+#This pubspec file imports is used for any dependencies for standard Dartstream features
 name: ds_standard_features
 description: Packages for our standard features - maintained by the Dart team.
 version: 0.0.1-pre
@@ -10,16 +10,7 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-# MIDDLEWARE - USE ONLY ONE
-
-# Shelf Middleware Import  // On By Default
-#  ds_shelf: ^0.0.1-pre
-
-# Custom Middleware Import // Off By Default
-
-
 # STANDARD PACKAGES - Built By The Dart Team
-
   args: ^2.5.0
   async: ^2.11.0
   build: ^2.4.1
@@ -44,14 +35,6 @@ dependencies:
   typed_data: ^1.3.2
   web: ^0.5.1
  
-
-## PACKAGES BELOW ARE STANDARDIZED ACROSS ALL YAML FILES
-
-#Cosmetic
-  lints: ^3.0.0 #Included In ds_standard_features
-
-#Testing Packages - use ds_tools_testing
-
 #Globally Activated Package
 #executables:
 #   ds: ds_cli
