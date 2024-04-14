@@ -5,10 +5,14 @@ library ds_enhanced_features;
 
 //BASE MIDDLEWARE LIBRIARIES - USE ONLY ONE
 
-//The Base DS and Custom Shelf Library.
+//The Base Dartstream and Custom Shelf Library.
 
 import 'package:ds_shelf/ds_shelf.dart';
 //import 'package:ds_custom/ds_custom.dart';
+
+//Import Standard Libraries.
+
+import 'package:ds_standard_features';
 
 //EXPORTS
 

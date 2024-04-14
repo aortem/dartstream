@@ -17,6 +17,9 @@ dependencies:
 
 # Custom Middleware Import // Off By Default
 
+# STANDARD FEATURES
+  ds_standard_features: ^0.0.1-pre
+
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features
 
