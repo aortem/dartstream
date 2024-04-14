@@ -1,1 +1,0 @@
-//This is the frontend framework that competes with Jaspr but is entirely separeted out from the backend
