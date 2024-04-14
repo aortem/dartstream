@@ -1,7 +1,7 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_tools_linting
 description: Core Linting Components Within Larger DartStream Ecosystem.
-version: 0.0.1-pre
+version: 0.0.1-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -11,11 +11,9 @@ environment:
 dependencies:
 
 #Testing Packages
-  flutter_lints: ^2.4.9
-  lints:
-  effective_dart:
-  very_good_analysis:
-  dart_code_metrics: 
+  flutter_lints: ^3.0.2
+  lints: ^3.0.0
+  very_good_analysis: ^5.1.0
 
 
 #Globally Activated Package

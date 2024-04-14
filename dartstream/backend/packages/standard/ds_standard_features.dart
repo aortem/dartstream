@@ -65,9 +65,9 @@ export 'package:intl_translation/visitors/message_finding_visitor.dart';
 export 'package:intl_translation/visitors/plural_gender_visitor.dart';
 
 //Export our Standard Libraries
-export 'core/ds_standard_core_export.dart'; // Exporting your core classes
-export 'api/ds_standard_api_export.dart'; // Exporting your api classes
-export 'extensions/ds_standard_extensions_export.dart'; // Exporting your extensions classes
-export 'utilities/ds_standard_utilities_export.dart'; // Exporting your utility classes
-export 'overrides/ds_standard_overrides_export.dart'; // Exporting your overrides classes
+export 'lib/core/ds_standard_core_export.dart'; // Exporting your core classes
+export 'lib/api/ds_standard_api_export.dart'; // Exporting your api classes
+export 'lib/extensions/ds_standard_extensions_export.dart'; // Exporting your extensions classes
+export 'lib/utilities/ds_standard_utilities_export.dart'; // Exporting your utility classes
+export 'lib/overrides/ds_standard_overrides_export.dart'; // Exporting your overrides classes
 
