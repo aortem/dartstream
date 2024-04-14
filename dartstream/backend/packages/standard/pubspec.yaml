@@ -50,10 +50,7 @@ dependencies:
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features
 
-#Testing Packages
-  test: ^1.24.0
-  mockito: ^5.4.4
-  mocktail: ^1.0.3
+#Testing Packages - use ds_tools_testing
 
 #Globally Activated Package
 #executables:
