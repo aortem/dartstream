@@ -3,10 +3,12 @@ Managing Configuration
 Global Configuration Directory:
 
 Consider creating a global /config directory at a higher level (possibly at the root of the backend directory or even higher depending on your project's scope). This directory would contain configuration files that are applicable regardless of which middleware is used.
+
 This /config directory can contain environment-specific settings, middleware-specific settings, and other global settings that need to be easily accessible and modifiable.
 Middleware-Specific Configuration:
 
 Each middleware directory (shelf and custom_middleware) can also include its own local configuration files that override or extend the global settings when necessary. This allows for flexibility and customization for each middleware type.
+
 Example: tooling/shelf/config.yaml and tooling/custom_middleware/config.yaml for middleware-specific settings.
 CLI Tool for Configuration Management:
 
