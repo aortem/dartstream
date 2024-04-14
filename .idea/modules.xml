@@ -2,8 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/dartstream/lib/backend/packages/tooling/cli_util/melos_ds_cli.iml" filepath="$PROJECT_DIR$/dartstream/lib/backend/packages/tooling/cli_util/melos_ds_cli.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dartstream/lib/backend/packages/tooling/shelf/melos_ds_shelf.iml" filepath="$PROJECT_DIR$/dartstream/lib/backend/packages/tooling/shelf/melos_ds_shelf.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_ds_melos.iml" filepath="$PROJECT_DIR$/melos_ds_melos.iml" />
     </modules>
   </component>
