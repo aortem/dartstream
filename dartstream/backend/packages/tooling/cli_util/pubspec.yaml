@@ -13,12 +13,11 @@ dependencies:
 # Command Line Arguments
   args: ^2.4.2
 
-# Shelf Middleware - For Development Only
-dependency_overrides:
-  ds_shelf:
-    path: ../shelf
-  standard:
-    path: ../../standard
+# Shelf Middleware
+  ds_shelf: ^0.0.1
+
+# Custom Middleware
+#  TBD: ^0.0.1
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
