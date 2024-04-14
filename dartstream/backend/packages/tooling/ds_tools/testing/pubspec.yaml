@@ -1,0 +1,24 @@
+#This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+name: ds_tools_testing
+description: Core Testing Components Within Larger DartStream Ecosystem.
+version: 0.0.1-pre
+# repository: https://github.com/my_org/my_repo
+
+environment:
+ sdk: ">=3.3.0 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+#Testing Packages
+  test: ^1.24.0
+  mocktail: ^1.0.3
+  build_runner: ^2.4.9
+  build_test: ^2.2.2
+  coverage: ^1.7.2
+
+
+
+#Globally Activated Package
+#executables:
+#   ds: ds_cli
