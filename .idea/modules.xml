@@ -8,7 +8,8 @@
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/enhanced/melos_ds_enhanced_features.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/enhanced/melos_ds_enhanced_features.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/shelf/melos_ds_shelf.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/shelf/melos_ds_shelf.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/standard/melos_ds_standard_features.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/standard/melos_ds_standard_features.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/tools/melos_ds_tools.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/tools/melos_ds_tools.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/linting/melos_ds_tools_linting.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/linting/melos_ds_tools_linting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/testing/melos_ds_tools_testing.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/testing/melos_ds_tools_testing.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_ds_melos.iml" filepath="$PROJECT_DIR$/melos_ds_melos.iml" />
     </modules>
   </component>
