@@ -10,9 +10,10 @@ import 'package:ds_standard_features/ds_standard_features.dart';
 
 export 'package:ds_standard_features/ds_standard_features.dart';
 
-//Export our Core Libraries
+//Export Custom Middleware Libraries
 
-export 'core/authentication/amazon_cognito_sdk/ds_amazon_cognito_export.dart';
+export 'authentication/sdks/amazon_cognito_sdk/ds_amazon_cognito_export.dart';
+
 //export 'api/file.dart';
 //export 'extensions/file.dart';
 //export 'overrides/file.dart';
