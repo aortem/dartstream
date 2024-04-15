@@ -1,7 +1,16 @@
 import 'dart:async'; /* We do not need this async library 
 because it is already available in the below package.
 */
-import 'package:ds_standard_features/ds_standard_features.dart';
+
+// Import Top Level Package
+import 'package:ds_standard_features/ds_standard_features.dart'; //Standard Feature Set
+
+//Import other core packages
+
+class DSShelfCore {
+  final List<shelf.Middleware> _middlewares = [];
+  final Router _router = Router();
+}
 
 // Define your Request and Response classes here
 class Request {}
