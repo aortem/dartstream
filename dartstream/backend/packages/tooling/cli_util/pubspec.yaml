@@ -1,4 +1,6 @@
-#This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+#This pubspec file is used for the Main Dartstream CLI
+#It pulls in both DS Shelf and DS Custom Middlewrae packages for the user to scaffold with.
+
 name: ds_cli
 description: Main Dartstream CLI.
 version: 0.0.1-pre
@@ -10,16 +12,16 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-# Shelf Middleware
+# DS Shelf Middleware
   ds_shelf: ^0.0.1-pre
 
-# Custom Middleware
+# DS Custom Middleware
 #  TBD: ^0.0.1
 
-# Standard DartStream Features
+# DS Standard Features
   ds_standard_features: ^0.0.1-pre
 
-# Standard DartStream Tools
+# DS Standard Tools
   ds_tools_testing: ^0.0.1-pre
 
 # Dev dependencies are added in sections alphabetically and according to features.

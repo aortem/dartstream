@@ -21,6 +21,6 @@ export 'package:test/test.dart';
 //export 'package:mockito/mockito.dart';
 
 //Export our Core Libraries
-export 'extensions/ds_tools_testing_extensions_export.dart'; // Exporting your extensions classes
+export 'extensions/ds_tools_testing_extension_export.dart'; // Exporting your extensions classes
 
 
