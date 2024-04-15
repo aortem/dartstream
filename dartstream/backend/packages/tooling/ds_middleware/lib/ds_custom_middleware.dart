@@ -12,6 +12,8 @@ export 'package:ds_standard_features/ds_standard_features.dart';
 
 //Export Custom Middleware Libraries
 
+export 'routing/ds_routing_export.dart';
+export 'authentication/sdks/amazon_cognito_sdk/ds_amazon_cognito_export.dart';
 export 'authentication/sdks/amazon_cognito_sdk/ds_amazon_cognito_export.dart';
 
 //export 'api/file.dart';

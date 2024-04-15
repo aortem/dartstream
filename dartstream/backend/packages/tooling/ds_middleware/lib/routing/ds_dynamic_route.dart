@@ -41,8 +41,14 @@ void handleRequest(HttpRequest request) {
 }
 
 // Main function
-void main() async {
+/*void main() async {
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
   server.listen(handleRequest);
   print('Server listening on port 8080');
-}
+} */
+
+void usman() async (
+final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8080);
+  server.listen(handleRequest);
+  print('Server listening on port 8080');
+);

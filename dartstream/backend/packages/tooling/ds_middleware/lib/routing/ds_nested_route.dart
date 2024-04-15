@@ -1,6 +1,6 @@
 import 'dart:io'; //Part Of The Dart SDK Core
 
-void main() async {
+void dsMainDynamic() async {
   final server = await HttpServer.bind('localhost', 8080);
   print('Server running on localhost:${server.port}');
 
