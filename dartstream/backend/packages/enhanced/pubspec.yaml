@@ -18,15 +18,11 @@ dependencies:
 # Custom Middleware Import // Off By Default
 
 # STANDARD FEATURES
-  ds_standard_features: ^0.0.1-pre
+  ds_standard_features: ^0.0.1-pre+2
 
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features
 
-#Testing Packages
-  test: ^1.24.0
-  mockito: ^5.0.0
-  mocktail: ^1.0.3
 
 #Globally Activated Package
 executables:
