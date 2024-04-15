@@ -1,7 +1,7 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_cli
 description: Main Dartstream CLI.
-version: 0.0.1
+version: 0.0.1-pre
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -19,6 +19,9 @@ dependencies:
 # Standard DartStream Features
   ds_standard_features: ^0.0.1-pre
 
+# Standard DartStream Tools
+  ds_tools_testing: ^0.0.1-pre
+
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
 
@@ -27,13 +30,6 @@ dev_dependencies:
 
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features
-
-#Testing Packages
-  test: ^1.24.0
-  mockito: ^5.0.0
-  mocktail: ^1.0.3
-
-
 
 #Globally Activated Package
 executables:

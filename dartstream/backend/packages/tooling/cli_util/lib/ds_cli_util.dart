@@ -3,11 +3,13 @@ library ds_cli_util;
 
 // Core Dart Libraies for Command Line Interfaces
 import 'dart:io';
-import 'package:path/path.dart' as path;
+import 'package:ds_standard_features/ds_standard_features.dart'
+    as path; //Standard Features
+import 'package:ds_tools_testing/ds_tools_testing.dart'; //Standard Testing Libraries
 
 // Core Dart Libraies for Command Line Interfaces
 export 'dart:io';
-export 'package:path/path.dart';
+export 'package:ds_standard_features/ds_standard_features.dart';
 
 //Core Commands For the CLI
 export 'core/ds_core.dart';
@@ -27,5 +29,8 @@ export 'utilities/ds_utilities.dart';
 //Any Overrides for the cli
 export 'overrides/ds_overrides.dart';
 
-//Middleware Shelf Option
+//DS Middleware Shelf Option
 export 'core/ds_create_shelf.dart';
+
+//DS Middleware Custom Option
+export 'core/ds_custom_middleware.dart';
