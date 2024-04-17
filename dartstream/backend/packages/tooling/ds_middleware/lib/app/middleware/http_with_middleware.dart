@@ -1,132 +1,109 @@
-import 'dart:async';
-import 'dart:convert';
-import 'dart:typed_data';
-import 'package:http/http.dart';
-
-import 'middleware_contract.dart';
-
+import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_custom_middleware/ds_custom_middleware.dart' as ds;
+import 'package:ds_standard_features/ds_standard_features.dart';
 
 class HttpWithMiddleware {
-  List<DsCustomMiddlewareContract> middlewares;
-  Duration requestTimeout;
+  final List<ds.DsCustomMiddlewareContract?> middlewares;
+  final Duration? requestTimeout;
 
+  HttpWithMiddleware._internal({
+    required this.middlewares,
+    this.requestTimeout,
+  });
 
-  HttpClientWithMiddleware._internal({required this.middlewares, required this.requestTimeout});
-
-  factory HttpClientWithMiddleware.build({
-    required List<DsCustomMiddlewareContract> middlewares,
-    required Duration requestTimeout,
+  factory HttpWithMiddleware.build({
+    required List<ds.DsCustomMiddlewareContract?> middlewares,
+    Duration? requestTimeout,
   }) {
-    //Remove any value that is null.
+    // Remove any null values.
     middlewares.removeWhere((middleware) => middleware == null);
-    return HttpClientWithMiddleware._internal(
+    return HttpWithMiddleware._internal(
       middlewares: middlewares,
       requestTimeout: requestTimeout,
     );
   }
-  Future<Response> head(url, {Map<String, String> headers}) {
-    _sendInterception(method: Method.HEAD, headers: headers, url: url);
+
+  Future<Response> head(Uri url, {Map<String, String>? headers}) {
+    _sendInterception(
+        method: Method.HEAD, headers: headers, url: url.toString());
     return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Response> get(url, {Map<String, String> headers}) {
-    RequestData data =
-        _sendInterception(method: Method.GET, headers: headers, url: url);
-    return _withClient((client) => client.get(data.url, headers: data.headers));
+  Future<Response> get(Uri url, {Map<String, String>? headers}) {
+    _sendInterception(
+        method: Method.GET, headers: headers, url: url.toString());
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Response> post(url,
-      {Map<String, String> headers, body, Encoding encoding}) {
+  Future<Response> post(Uri url,
+      {Map<String, String>? headers, body, required Encoding encoding}) {
     RequestData data = _sendInterception(
         method: Method.POST,
         headers: headers,
-        url: url,
+        url: url.toString(),
         body: body,
         encoding: encoding);
-    return _withClient((client) => client.post(data.url,
-        headers: data.headers, body: data.body, encoding: data.encoding));
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Response> put(url,
-      {Map<String, String> headers, body, Encoding encoding}) {
+  Future<Response> put(Uri url,
+      {Map<String, String>? headers, body, required Encoding encoding}) {
     RequestData data = _sendInterception(
         method: Method.PUT,
         headers: headers,
-        url: url,
+        url: url.toString(),
         body: body,
         encoding: encoding);
-    return _withClient((client) => client.put(data.url,
-        headers: data.headers, body: data.body, encoding: data.encoding));
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Response> patch(url,
-      {Map<String, String> headers, body, Encoding encoding}) {
+  Future<Response> patch(Uri url,
+      {Map<String, String>? headers, body, required Encoding encoding}) {
     RequestData data = _sendInterception(
         method: Method.PATCH,
         headers: headers,
-        url: url,
+        url: url.toString(),
         body: body,
         encoding: encoding);
-    return _withClient((client) => client.patch(data.url,
-        headers: data.headers, body: data.body, encoding: data.encoding));
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Response> delete(url, {Map<String, String> headers}) {
-    RequestData data =
-        _sendInterception(method: Method.DELETE, headers: headers, url: url);
-    return _withClient(
-        (client) => client.delete(data.url, headers: data.headers));
+  Future<Response> delete(Uri url, {Map<String, String>? headers}) {
+    RequestData data = _sendInterception(
+        method: Method.DELETE, headers: headers, url: url.toString());
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<String> read(url, {Map<String, String> headers}) {
-    return _withClient((client) => client.read(url, headers: headers));
+  Future<Response> read(Uri url, {Map<String, String>? headers}) {
+    return _withClient((client) => client.head(url, headers: headers));
   }
 
-  Future<Uint8List> readBytes(url, {Map<String, String> headers}) =>
-      _withClient((client) => client.readBytes(url, headers: headers));
-  Future<Response> _sendUnstreamed(
-      String method, Uri url, Map<String, String>? headers,
-      [Object? body, convert.Encoding? encoding]) async {
-    var request = Request(method, url);
-
-    if (headers != null) request.headers.addAll(headers);
-    if (encoding != null) request.encoding = encoding;
-    if (body != null) {
-      if (body is String) {
-        request.body = body;
-      } else if (body is List) {
-        request.bodyBytes = body.cast<int>();
-      } else if (body is Map) {
-        request.bodyFields = body.cast<String, String>();
-      } else {
-        throw ArgumentError('Invalid request body "$body".');
-      }
-    }
-
-    return Response.fromStream(await send(request));
+  Future<Response> readBytes(Uri url, {Map<String, String>? headers}) {
+    return _withClient((client) => client.head(url, headers: headers));
   }
-
+  //
 
   Future<T> _withClient<T>(Future<T> fn(Client client)) async {
-    var client = new Client();
+    final client = Client();
     try {
       T response = requestTimeout == null
           ? await fn(client)
-          : await fn(client).timeout(requestTimeout);
+          : await fn(client).timeout(requestTimeout!); // Use non-null assertion
       if (response is Response) {
-        var responseData = ResponseData.fromHttpResponse(response);
-        middlewares?.forEach(
-            (middleware) => middleware.interceptResponse(data: responseData));
+        final responseData = ResponseData.fromHttpResponse(response);
+        middlewares.forEach(
+            (middleware) => middleware?.interceptResponse(data: responseData));
 
-        Response resultResponse = Response(
-          responseData.body,
-          responseData.statusCode,
-          headers: responseData.headers,
-          persistentConnection: responseData.persistentConnection,
-          isRedirect: responseData.isRedirect,
+        final resultResponse = Response(
+          responseData.body ?? "", // Use default empty string for null body
+          responseData.statusCode!,
+          headers: responseData.headers ??
+              const {}, // Use const empty map for default headers
+          persistentConnection: responseData.persistentConnection ?? false,
+          isRedirect: responseData.isRedirect ?? false,
           request: Request(
             responseData.method.toString().substring(7),
-            Uri.parse(responseData.url),
+            Uri.parse(responseData.url!),
           ),
         );
 
@@ -136,5 +113,24 @@ class HttpWithMiddleware {
     } finally {
       client.close();
     }
+  }
+
+  RequestData _sendInterception({
+    required Method method,
+    Encoding? encoding, // Encoding can be null
+    dynamic body,
+    required String url,
+    Map<String, String>? headers,
+  }) {
+    final data = RequestData(
+      method: method,
+      encoding: encoding,
+      body: body,
+      url: url,
+      headers: headers ?? const {}, // Use const empty map for default headers
+    );
+    middlewares
+        .forEach((middleware) => middleware?.interceptRequest(data: data));
+    return data;
   }
 }
