@@ -1,7 +1,7 @@
-library ds_tools_testing_extension;
+library ds_tools_cli_extension;
 
 // Export main core module
-export 'ds_tools_general_cli_extension.dart';
+export 'ds_tools_cli_extension.dart';
 
 
 // You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
