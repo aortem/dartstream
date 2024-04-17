@@ -1,27 +1,41 @@
 # DartStream
 
-## Core Testing Packages
+## Core CLi Package
 
-Enhance your testing workflow with these integrated core testing packages included in DartStream:
+DartStream CLI offers a range of features tailored to support the DartStream framework effectively:
 
-- **test**: Provides a solid foundation for writing and running unit and integration tests in Dart.
-- **mockito and mocktail**: Facilitate the creation of mock objects. While Mockito is used for non-null safe code, Mocktail offers full support for Dart's null safety.
-- **build_runner**: A powerful tool for generating code, running source generation, and more.
-- **build_test**: Assists in testing code that uses build_runner for generation.
-- **coverage**: Measures how much code is covered by tests, helping to ensure thorough testing of your application.
+- **Project Initialization**: Quickly scaffold new DartStream projects with pre-configured settings.
+- **Build Automation**: Utilize powerful tools like build_runner for code generation and automated tasks.
+- **Testing**: Integrated support for unit and integration testing using the test package.
+- **Mocking**: Use mockito for legacy projects or mocktail for projects utilizing Dart's null safety features to create mocks and stubs.
+- **Code Coverage**: Ensure your tests cover a wide range of your codebase with the coverage package.
+- **Streamlined Workflows**: Simplify common tasks with custom scripts and commands tailored for the DartStream environment.
 
-### Using the Testing Packages
+### Installation Of the CLI Package
 
-To effectively use these packages, include them in your `pubspec.yaml` under `dev_dependencies`. Here is a basic guide to get you started:
+To install DartStream CLI, you need to have Dart installed on your machine. If you haven't installed Dart yet, you can download it from the official Dart site.
 
-```yaml
-dev_dependencies:
-  test: ^latest
-  mockito: ^latest
-  mocktail: ^latest
-  build_runner: ^latest
-  build_test: ^latest
-  coverage: ^latest
+Once Dart is installed, you can install DartStream CLI by running the following command:
+
+```bash
+dart pub global activate dartstream_cli
+```
+
+### Usage
+
+After installation, you can access DartStream CLI from your terminal or command prompt. Here are some common commands you might find useful:
+
+```bash
+dartstream create my_project
+```
+```bash
+dartstream test
+```
+```bash
+dartstream generate
+```
+```bash
+dartstream run
 ```
 
 ## Licensing
