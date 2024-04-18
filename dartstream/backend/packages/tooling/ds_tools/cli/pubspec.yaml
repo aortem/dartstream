@@ -13,6 +13,9 @@ dependencies:
 #DS Testing Packages
   ds_tools_testing: ^0.0.1-pre
 
+#DS CLi Packages
+  cli_util: ^0.4.1
+
 #Globally Activated Package
 #executables:
 #   ds: ds_cli
