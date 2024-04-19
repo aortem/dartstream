@@ -21,14 +21,14 @@ dependencies:
 # DS Standard Features
   ds_standard_features: ^0.0.1-pre
 
-# DS Standard Tools
+# DS Tools Testing
   ds_tools_testing: ^0.0.1-pre
+
+#DS Tools CLI
+  ds_tools_cli: ^0.0.1-pre
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-
-#CLI
-  cli_util: ^0.4.1
 
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features

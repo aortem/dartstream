@@ -33,4 +33,4 @@ export 'overrides/ds_overrides.dart';
 export 'core/ds_create_shelf.dart';
 
 //DS Middleware Custom Option
-export 'core/ds_custom_middleware.dart';
+export 'core/ds_create_custom_middleware.dart';
