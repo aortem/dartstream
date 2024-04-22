@@ -17,7 +17,4 @@ dev_dependencies:
 #Cosmetic
   lints: ^3.0.0 #Included In ds_standard_features
 
-#Testing Packages
-  test: ^1.24.0
-  mockito: ^5.0.0
-  mocktail: ^1.0.3
+  ds_tools_testing: ^0.0.1-pre
