@@ -1,6 +1,6 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_custom_middleware
-description: The root Yaml file.  Placeholder for fiture expansion.
+description: The root Yaml file.  Placeholder for future expansion.
 version: 0.0.1-pre
 # repository: https://github.com/my_org/my_repo
 
@@ -10,6 +10,7 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
   ds_standard_features: ^0.0.1-pre+2
+  http: ^1.2.1
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
