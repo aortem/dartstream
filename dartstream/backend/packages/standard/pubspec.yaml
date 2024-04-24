@@ -1,8 +1,8 @@
 #This pubspec file imports is used for any dependencies for standard Dartstream features
 name: ds_standard_features
 description: Packages for our standard features - maintained by the Dart team.
-version: 0.0.1-pre+4
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1-pre+5
+repository: https://github.com/dartstream
 
 environment:
  sdk: ">=3.3.0 <4.0.0"
@@ -33,7 +33,7 @@ dependencies:
   os_detect: ^2.0.1
   path: ^1.9.0
   typed_data: ^1.3.2
-  web: ^0.5.1
+#  web: ^0.5.1
  
 #Globally Activated Package
 #executables:
