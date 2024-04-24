@@ -9,7 +9,7 @@ environment:
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-  ds_standard_features: ^0.0.1-pre+4
+  ds_standard_features: ^0.0.1-pre+5
   web: ^0.5.1
   http: ^1.2.1
 
