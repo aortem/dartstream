@@ -7,9 +7,6 @@ import 'package:ds_tools_testing/ds_tools_testing.dart' as ds_match;
 
 import 'app/middleware/ds_custom_core_middleware.dart'; //as dsmahca;
 
-//import 'package:http/http.dart' as http;
-// import 'package:ds_tools_testing/ds_tools_testing.dart';
-
 void main() {
   ds_match.test('Middleware chain runs correctly', () async {
     final middlewareChain = <Middleware>[

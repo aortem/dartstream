@@ -34,7 +34,7 @@ We welcome contributions of all forms from the community! If you're interested i
 DartStream offers various support tiers for our open-source products:
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+- **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
 - **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
 - **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
 
