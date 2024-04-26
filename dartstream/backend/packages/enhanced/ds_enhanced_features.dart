@@ -20,7 +20,9 @@ import 'package:sqlite3/sqlite3.dart'; // Local development only
 export 'package:ds_shelf/ds_shelf.dart';
 //export 'package:ds_custom/ds_custom.dart';
 
-//Export our Core Libraries
+//Export our Enchanced Libraries
+
+export 'package:sqlite3/sqlite3.dart'; // Local development only
 
 export 'core/authentication/amazon_cognito_sdk/ds_amazon_cognito_export.dart';
 //export 'api/file.dart';

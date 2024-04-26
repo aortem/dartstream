@@ -1,14 +1,23 @@
 # DartStream
 
-## DS Standard Packages
+## DS Enhanced Packages
 
-DS Standard packages allow you to utilize core dart features maintained by the Dart team.  The depdendencies remain largely unmodified.  Dartstream extends the built-in classes and methods, therefore allowing developers the greatest composition flexibility when building their applications.
+DS Enhanced Packages are any packages that are not built by the core dart team.  Many of these packages greatly enhance functionality to the Dart core.
+
+Third party packages are actually broken up into several different categories depending on the use case:
+
+- authentication
+- database
+- file-storage
+- google_dev
+- payments
+- general_third_party
 
 ## Package Conflicts and Aliases
 
-In some cases, core dart package have naming conflicts (ie. same method, classname).  For some packages, we build wrappers and use the DS prefix to avoid those conflicts.  
+As expected, package conflicts and naming conventions may exist.  Dartstream attempts to build a consist base class across all third party packages with proper DS prefix in order to ensure smooth interoperability with the core dart packages and dartstream custom packages.
 
-In other cases, where may avoid using a package altogether.  We will keep the documentation up to date as often as possible.
+We carefully curate packages that we believe may be of significant value to our users and provide a smooth experience.  
 
 ## Licensing
 
