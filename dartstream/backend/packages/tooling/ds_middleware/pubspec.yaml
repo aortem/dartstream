@@ -2,7 +2,7 @@
 name: ds_custom_middleware
 description: The root Yaml file.  Placeholder for future expansion.
 version: 0.0.1-pre
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/dartstream
 
 environment:
  sdk: '>=3.0.0 <4.0.0'
@@ -13,8 +13,5 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-
-#Cosmetic
-  lints: ^3.0.0 #Included In ds_standard_features
 
   ds_tools_testing: ^0.0.1-pre
