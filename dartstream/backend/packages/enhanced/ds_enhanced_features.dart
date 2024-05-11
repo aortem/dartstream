@@ -54,7 +54,7 @@ Welcome to use any of the packages here https://pub.dev/publishers/google.dev/pa
 export 'package:ds_standard_features/ds_standard_features.dart';
 
 //DS Shelf and Custom Middleware - Use Only One
-export 'package:ds_shelf/ds_shelf.dart';
+export 'package:ds_shelf/ds_shelf.dart' hide Request, Server, Response;
 
 //export 'package:ds_custom/ds_custom.dart';
 
