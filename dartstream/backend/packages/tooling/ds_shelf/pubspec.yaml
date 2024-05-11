@@ -15,7 +15,7 @@ dependencies:
   shelf_router: ^1.0.0
   shelf_proxy: ^1.0.0
   shelf_static: ^1.0.0
-  shelf_web_socket: ^1.0.0
+  shelf_web_socket: ^1.0.4
   shelf_packages_handler: ^3.0.2
   shelf_test_handler: ^2.0.2
    # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
@@ -25,7 +25,7 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-  build_runner: ^2.0.0
+  build_runner: ^2.4.9
   shelf_router_generator: ^1.0.0
 
 #CLI
