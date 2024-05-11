@@ -6,4 +6,4 @@ extension ExtendedFeature on SomeClassFromPackage {
   }
 } */
 
-abstract class DSAuthExtensionAmazonCore extends DSAuthAmazonCore {}
+//abstract class DSAuthExtensionAmazonCore extends DSAuthAmazonCore {}
