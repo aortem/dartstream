@@ -13,4 +13,4 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-  ds_tools_testing: ^0.0.1-pre
+  ds_tools_testing: ^0.0.1-pre+1
