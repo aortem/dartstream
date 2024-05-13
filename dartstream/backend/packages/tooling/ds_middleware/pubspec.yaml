@@ -1,6 +1,6 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_custom_middleware
-description: The root Yaml file.  Placeholder for future expansion.
+description: DartStream Custom Middleware.  Use as the seoncdary option to Shelf Middleware.
 version: 0.0.1-pre
 repository: https://github.com/dartstream
 
@@ -13,5 +13,4 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-
   ds_tools_testing: ^0.0.1-pre
