@@ -1,7 +1,7 @@
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
-import 'package:test/test.dart';
+//import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 
-import '../examples/ds_example_authentication.dart';
+import '../example/ds_example_authentication.dart';
 
 void main() {
   group('Authentication Middleware Test', () {

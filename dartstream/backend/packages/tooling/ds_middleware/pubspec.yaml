@@ -10,7 +10,8 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
   ds_standard_features: ^0.0.1-pre+5
+  ds_tools_testing: ^0.0.1-pre+1
+  ds_tools_general: ^0.0.1-pre
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-  ds_tools_testing: ^0.0.1-pre+1
