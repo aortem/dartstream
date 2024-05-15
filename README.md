@@ -23,7 +23,7 @@ For detailed guides, API references, and example projects, visit our [DartStream
 
 ## Examples
 
-Explore the `/examples` directory in this repository to find sample applications demonstrating DartStream's capabilities in real-world scenarios.
+Explore the `/example` directory in this repository to find sample applications demonstrating DartStream's capabilities in real-world scenarios.
 
 ## Contributing
 
