@@ -10,6 +10,9 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
+#Arg Packages
+  args: ^2.5.0
+
 #DS Testing Packages
   ds_tools_testing: ^0.0.1-pre
 
