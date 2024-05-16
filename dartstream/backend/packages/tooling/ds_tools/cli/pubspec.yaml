@@ -1,8 +1,8 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_tools_cli
 description: Cli Components Within Larger DartStream Ecosystem.
-version: 0.0.1-pre
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1-pre+1
+repository: https://github.com/dartstream
 
 environment:
  sdk: ">=3.3.0 <4.0.0"
@@ -12,9 +12,6 @@ dependencies:
 
 #DS Testing Packages
   ds_tools_testing: ^0.0.1-pre
-
-#DS CLi Packages
-  cli_util: ^0.4.1
 
 #Globally Activated Package
 executables:
