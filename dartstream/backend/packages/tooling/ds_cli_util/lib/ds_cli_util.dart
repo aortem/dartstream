@@ -3,6 +3,9 @@ library ds_cli_util;
 
 // Core Dart Libraies for Command Line Interfaces
 import 'dart:io';
+
+import 'package:ds_tools_cli/ds_tools_cli.dart'; // CLI Library
+
 import 'package:ds_standard_features/ds_standard_features.dart'
     as path; //Standard Features
 import 'package:ds_tools_testing/ds_tools_testing.dart'; //Standard Testing Libraries
