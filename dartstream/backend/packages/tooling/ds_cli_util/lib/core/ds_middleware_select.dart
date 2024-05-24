@@ -1,8 +1,6 @@
-
-import 'package:args/args.dart';
 import 'package:args/command_runner.dart';
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
-import 'package:ds_shelf/ds_shelf.dart';
+
+import '../../../ds_shelf/lib/ds_shelf.dart';
 
 class DSSelectMiddleWareCommand extends Command {
   @override
@@ -45,26 +43,20 @@ class DSSelectMiddleWareCommand extends Command {
         'Project "$projectName" created successfully with $middleware middleware.');
   }
 
-  
   void createProject(String projectName, String chosenMiddleware) async {
-  switch (chosenMiddleware) {
-    case 'dsCustom':
+    switch (chosenMiddleware) {
+      case 'dsCustom':
+        break;
+      case 'dsShelf':
+        final shelfMiddleware = DSShelfCore();
 
-   
-     
-      break;
-    case 'dsShelf':
-      final shelfMiddleware = DSShelfCore();
-   
-      break;
-    default:
-      throw ArgumentError('Unexpected middleware option: $chosenMiddleware');
+        break;
+      default:
+        throw ArgumentError('Unexpected middleware option: $chosenMiddleware');
+    }
+
+    print('Middleware used: $chosenMiddleware');
   }
-
-
-  print('Middleware used: $chosenMiddleware');
-}
-
 }
 
 // Main function to run the CLI

@@ -14,6 +14,7 @@ dependencies:
 
 # DS Shelf Middleware
   ds_shelf: ^0.0.1-pre
+  ds_custom_middleware: ^0.0.1-pre
 
 # DS Custom Middleware
 #  TBD: ^0.0.1
@@ -31,7 +32,7 @@ dependencies:
 dev_dependencies:
 
 #Cosmetic
-  lints: ^3.0.0 #Included In ds_standard_features
+  lints:  #Included In ds_standard_features
 
 #Globally Activated Package
 executables:
