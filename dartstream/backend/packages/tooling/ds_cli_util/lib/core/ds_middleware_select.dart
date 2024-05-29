@@ -1,70 +1,106 @@
 import 'package:args/command_runner.dart';
+import 'dart:io';
 
-import '../../../ds_shelf/lib/ds_shelf.dart';
-
-class DSSelectMiddleWareCommand extends Command {
+class DSAddMiddlewareCommand extends Command {
   @override
-  final name = 'create-project';
+  final name = 'add_middleware';
   @override
-  final description = 'Creates a new project with selected middleware.';
+  final description = 'Add middleware to the Flutter project';
 
-  DSSelectMiddleWareCommand() {
-    argParser
-      ..addOption(
-        'name',
-        abbr: 'n',
-        help: 'The name of the project.',
-      )
-      ..addOption(
-        'middleware',
-        abbr: 'm',
-        allowed: ['dsCustom', 'dsShelf'],
-        help: 'The middleware to use (dsCustom, dsShelf)',
-      );
+  DSAddMiddlewareCommand() {
+    argParser.addOption('type', abbr: 't', allowed: ['ds_shelf', 'ds_custom'], help: 'Type of middleware to add');
+    argParser.addOption('iotio', abbr: 'i', help: 'Select IOTIO');
   }
 
   @override
   void run() {
-    final projectName = argResults?['name'] as String?;
-    if (projectName == null || projectName.isEmpty) {
-      print('A project name is required.');
+    final type = argResults?['type'];
+    final iotio = argResults?['iotio'];
+
+    if (type == null || !(type == 'ds_shelf' || type == 'ds_custom')) {
+      print('Invalid middleware type. Use --type=ds_shelf or --type=ds_custom');
       return;
     }
 
-    final middleware = argResults?['middleware'] as String?;
-    if (middleware == null || !['dsCustom', 'dsShelf'].contains(middleware)) {
-      print('Invalid middleware option. Choose from dsCustom or dsShelf.');
+    if (iotio != null) {
+      print('IOTIO selected: $iotio');
+    }
+
+    addMiddleware(type);
+  }
+
+  void addMiddleware(String type) {
+
+ final flutterProjectDir = Directory.current.path;
+
+  // Check if the 'lib' directory exists
+  final libDir = Directory('$flutterProjectDir/lib');
+  if (!libDir.existsSync()) {
+    print('Error: lib directory not found in $flutterProjectDir/');
+    return;
+  }
+
+  // Path to the main.dart file
+  final mainDartFile = File('$flutterProjectDir/lib/main.dart');
+
+  if (!mainDartFile.existsSync()) {
+    print('Error: main.dart not found in $flutterProjectDir/lib/');
+    return;
+  }
+
+
+
+
+    // // Locate the Flutter project directory
+    // final flutterProjectDir = Directory.current.path;
+
+    // // Path to the main.dart file
+    // final mainDartFile = File('$flutterProjectDir/lib/main.dart');
+
+    if (!mainDartFile.existsSync()) {
+      print('Error: main.dart not found in $flutterProjectDir/lib/');
       return;
     }
 
-    print('Creating project: $projectName with $middleware middleware...');
-    createProject(projectName, middleware);
-    print(
-        'Project "$projectName" created successfully with $middleware middleware.');
-  }
+    // Read the contents of main.dart
+    final mainDartContent = mainDartFile.readAsStringSync();
 
-  void createProject(String projectName, String chosenMiddleware) async {
-    switch (chosenMiddleware) {
-      case 'dsCustom':
-        break;
-      case 'dsShelf':
-        final shelfMiddleware = DSShelfCore();
+    // Depending on the middleware type, add the necessary import and code
+    String updatedContent="";
+    if (type == 'ds_shelf') {
+      updatedContent = mainDartContent.replaceFirst(
+        'void main() {',
+        '''
+import 'package:ds_shelf/ds_shelf.dart';
 
-        break;
-      default:
-        throw ArgumentError('Unexpected middleware option: $chosenMiddleware');
-    }
+void main() {
+  final handler = const shelf.Pipeline()
+      .addMiddleware(shelf.logRequests())
+      .addHandler(_echoRequest);
 
-    print('Middleware used: $chosenMiddleware');
-  }
+  shelf.serve(handler, 'localhost', 8080);
 }
 
-// Main function to run the CLI
-void main(List<String> arguments) {
-  final runner = CommandRunner('cli', 'A CLI tool for creating projects')
-    ..addCommand(DSSelectMiddleWareCommand());
+Response _echoRequest(Request request) =>
+    Response.ok('Request for "\${request.url}"');
+''');
+    } else if (type == 'ds_custom') {
+      updatedContent = mainDartContent.replaceFirst(
+        'void main() {',
+        '''
+import 'package:ds_custom_middleware/ds_custom_middleware.dart';
 
-  runner.run(arguments).catchError((error) {
-    print(error);
-  });
+void main() {
+  final customMiddleware = CustomMiddleware();
+  customMiddleware.initialize();
+
+  runApp(MyApp());
+}
+''');
+    }
+
+    // Write the updated content back to main.dart
+    mainDartFile.writeAsStringSync(updatedContent);
+    print('Middleware $type has been added to main.dart');
+  }
 }
