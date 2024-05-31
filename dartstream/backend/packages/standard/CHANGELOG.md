@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.1-pre+7] - 2024-05-31
+
+### Downgrade Meta Package
+- Because every version of flutter from sdk depends on meta 1.11. We have downgraded the version of the meta package to maintain compatibility.
+
+## [0.0.1-pre+6] - 2024-05-30
+
+### Downgrade Meta Package
+- Because every version of flutter from sdk depends on meta 1.12. We have downgraded the version of the meta package to maintain compatibility.
+
 ## [0.0.1-pre+5] - 2024-04-24
 
 ### Remove
