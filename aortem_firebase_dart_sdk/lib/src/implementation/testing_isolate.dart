@@ -3,8 +3,6 @@ import 'package:aortem_firebase_dart_sdk/src/auth/backend/memory_backend.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/store.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/util.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/testing.dart';
-import 'package:aortem_firebase_dart_sdk/src/storage/backend/backend.dart' as storage;
-import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart';
 import 'package:http/http.dart' as http;
 import 'package:jose/jose.dart';
 
@@ -20,9 +18,9 @@ http.Client createHttpClient() {
       );
     })
     ..registerFunction(#getStorageBackend, (bucket) {
-      var storage = BackendImpl.getStorageBackend(bucket);
+      // var storage = BackendImpl.getStorageBackend(bucket);
 
-      return MemoryStorageBackend(items: IsolateStore.forStore(storage.items));
+      // return MemoryStorageBackend(items: IsolateStore.forStore(storage.items));
     })
     ..registerFunction(#getTokenSigningKey, () => BackendImpl.tokenSigningKey);
 
@@ -39,11 +37,11 @@ class IsolateBackendRef implements BackendRef {
     return commander.execute(RegisteredFunctionCall(#getAuthBackend, [apiKey]));
   }
 
-  @override
-  Future<storage.StorageBackend> getStorageBackend(String bucket) {
-    return commander
-        .execute(RegisteredFunctionCall(#getStorageBackend, [bucket]));
-  }
+  // @override
+  // Future<storage.StorageBackend> getStorageBackend(String bucket) {
+  //   return commander
+  //       .execute(RegisteredFunctionCall(#getStorageBackend, [bucket]));
+  // }
 
   @override
   Future<JsonWebKey> getTokenSigningKey() {

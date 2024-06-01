@@ -7,10 +7,10 @@ import 'package:aortem_firebase_dart_sdk/src/auth/backend/backend.dart' as auth;
 import 'package:aortem_firebase_dart_sdk/src/auth/backend/memory_backend.dart' as auth;
 import 'package:aortem_firebase_dart_sdk/src/auth/backend/memory_backend.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/store.dart';
-import 'package:aortem_firebase_dart_sdk/src/storage/backend/backend.dart' as storage;
-import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart'
-    as storage;
-import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart';
+// import 'package:aortem_firebase_dart_sdk/src/storage/backend/backend.dart' as storage;
+// import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart'
+//     as storage;
+// import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart';
 import 'package:aortem_firebase_dart_sdk/src/util/proxy.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart' as http;
@@ -32,7 +32,7 @@ class BackendImpl extends Backend {
 
   static final Map<String, auth.StoreBackend> _authBackends = {};
 
-  static final Map<String, storage.MemoryStorageBackend> _storageBackends = {};
+  // static final Map<String, storage.MemoryStorageBackend> _storageBackends = {};
 
   static auth.AuthBackend getAuthBackendByApiKey(String apiKey) {
     var projectId = _apiKeys[apiKey];
@@ -47,16 +47,16 @@ class BackendImpl extends Backend {
                 tokenSigningKey: tokenSigningKey,
                 tokenExpiresIn: Duration(hours: 1)));
 
-  static storage.MemoryStorageBackend getStorageBackend(String bucket) =>
-      _storageBackends.putIfAbsent(
-          bucket, () => storage.MemoryStorageBackend());
+  // static storage.MemoryStorageBackend getStorageBackend(String bucket) =>
+  //     _storageBackends.putIfAbsent(
+  //         bucket, () => storage.MemoryStorageBackend());
 
   @override
   auth.AuthBackend get authBackend => getAuthBackend(options.projectId);
 
-  @override
-  storage.MemoryStorageBackend get storageBackend =>
-      getStorageBackend(options.storageBucket!);
+  // @override
+  // storage.MemoryStorageBackend get storageBackend =>
+  //     getStorageBackend(options.storageBucket!);
 }
 
 class BackendRef {
@@ -70,11 +70,11 @@ class BackendRef {
     );
   }
 
-  Future<storage.StorageBackend> getStorageBackend(String bucket) async {
-    var storage = BackendImpl.getStorageBackend(bucket);
+  // Future<storage.StorageBackend> getStorageBackend(String bucket) async {
+  //   var storage = BackendImpl.getStorageBackend(bucket);
 
-    return MemoryStorageBackend(items: IsolateStore.forStore(storage.items));
-  }
+    // return MemoryStorageBackend(items: IsolateStore.forStore(storage.items));
+  // }
 
   Future<JsonWebKey> getTokenSigningKey() async {
     return BackendImpl.tokenSigningKey;
@@ -177,14 +177,14 @@ class TestClient extends http.BaseClient {
         var connection = auth.BackendConnection(authBackend);
         return connection.handleRequest(r);
       }),
-      RegExp('https://firebasestorage.googleapis.com/v0/b/.*'):
-          http.MockClient((r) async {
-        var bucket = r.url.pathSegments[2];
-        var storageBackend = await backend.getStorageBackend(bucket);
+    //   RegExp('https://firebasestorage.googleapis.com/v0/b/.*'):
+    //       http.MockClient((r) async {
+    //     var bucket = r.url.pathSegments[2];
+    //     var storageBackend = await backend.getStorageBackend(bucket);
 
-        var connection = storage.BackendConnection(storageBackend);
-        return connection.handleRequest(r);
-      }),
+    //     var connection = storage.BackendConnection(storageBackend);
+    //     return connection.handleRequest(r);
+    //   }),
     });
 
     return httpClient;
