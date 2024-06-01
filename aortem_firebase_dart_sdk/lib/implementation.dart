@@ -2,7 +2,6 @@ import 'package:aortem_firebase_dart_sdk/auth.dart';
 import 'package:aortem_firebase_dart_sdk/database.dart';
 import 'package:aortem_firebase_dart_sdk/src/core.dart';
 import 'package:aortem_firebase_dart_sdk/storage.dart';
-
 import 'core/core_exception.dart';
 import 'src/auth/auth.dart';
 

@@ -1,4 +1,4 @@
-import 'package:firebase_dart/src/auth/utils.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/utils.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:intl/locale.dart';

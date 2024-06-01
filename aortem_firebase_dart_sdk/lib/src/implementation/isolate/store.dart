@@ -1,5 +1,5 @@
-import 'package:firebase_dart/src/implementation/isolate/util.dart';
-import 'package:firebase_dart/src/util/store.dart';
+import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/util.dart';
+import 'package:aortem_firebase_dart_sdk/src/util/store.dart';
 
 class IsolateStore<K, V> extends Store<K, V> {
   final IsolateCommander commander;

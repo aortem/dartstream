@@ -8,6 +8,7 @@ import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/auth.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../implementation/pure_dart.dart';
 import '../implementation.dart';
 import 'auth.dart';
 import 'impl/auth.dart';
