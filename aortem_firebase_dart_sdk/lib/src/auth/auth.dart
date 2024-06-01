@@ -3,7 +3,7 @@ library firebase_auth;
 import 'package:meta/meta.dart';
 
 import '../../core.dart';
-import '../../implementation.dart';
+import '../implementation.dart';
 import 'action_code.dart';
 import 'auth_credential.dart';
 import 'auth_provider.dart';
