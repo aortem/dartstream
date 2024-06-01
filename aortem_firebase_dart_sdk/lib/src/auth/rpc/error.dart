@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:firebase_dart/src/auth/error.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/error.dart';
 
 final _serverErrors = {
   // Custom token errors.

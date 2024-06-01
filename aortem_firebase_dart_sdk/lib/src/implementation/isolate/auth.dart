@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:firebase_dart/auth.dart';
-import 'package:firebase_dart/core.dart';
-import 'package:firebase_dart/src/auth/impl/auth.dart';
-import 'package:firebase_dart/src/auth/impl/user.dart';
+import 'package:aortem_firebase_dart_sdk/auth.dart';
+import 'package:aortem_firebase_dart_sdk/core.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/impl/auth.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/impl/user.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
 
+import '../../auth/auth.dart';
 import '../../auth/auth_mixin.dart';
 import '../isolate.dart';
 import 'util.dart';

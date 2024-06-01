@@ -1,10 +1,10 @@
-import 'package:firebase_dart/src/auth/backend/backend.dart' as auth;
-import 'package:firebase_dart/src/auth/backend/memory_backend.dart';
-import 'package:firebase_dart/src/implementation/isolate/store.dart';
-import 'package:firebase_dart/src/implementation/isolate/util.dart';
-import 'package:firebase_dart/src/implementation/testing.dart';
-import 'package:firebase_dart/src/storage/backend/backend.dart' as storage;
-import 'package:firebase_dart/src/storage/backend/memory_backend.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/backend/backend.dart' as auth;
+import 'package:aortem_firebase_dart_sdk/src/auth/backend/memory_backend.dart';
+import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/store.dart';
+import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/util.dart';
+import 'package:aortem_firebase_dart_sdk/src/implementation/testing.dart';
+import 'package:aortem_firebase_dart_sdk/src/storage/backend/backend.dart' as storage;
+import 'package:aortem_firebase_dart_sdk/src/storage/backend/memory_backend.dart';
 import 'package:http/http.dart' as http;
 import 'package:jose/jose.dart';
 

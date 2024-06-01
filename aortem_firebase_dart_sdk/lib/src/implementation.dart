@@ -1,4 +1,3 @@
-import 'auth.dart';
 import 'auth/auth.dart';
 import 'core.dart';
 
