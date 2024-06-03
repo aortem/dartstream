@@ -1,9 +1,6 @@
 import 'package:aortem_firebase_dart_sdk/src/core/exception.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/auth_credential.dart';
 
-import '../../core.dart';
-import 'auth.dart';
-
 /// Generic exception related to Firebase Authentication.
 ///
 /// Check the error code and message for more details.

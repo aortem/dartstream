@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:collection';
+
 import 'package:aortem_firebase_dart_sdk/core.dart';
+import 'package:aortem_firebase_dart_sdk/implementation/pure_dart.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/auth_mixin.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/authhandlers.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/rpc/http_util.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/utils.dart';
 import 'package:aortem_firebase_dart_sdk/src/core/impl/app.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/dart.dart';
@@ -11,7 +15,7 @@ import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 import 'package:openid_client/openid_client.dart' as openid;
 import 'package:rxdart/rxdart.dart';
-import '../../../implementation/pure_dart.dart';
+
 import '../auth.dart';
 import '../multi_factor.dart';
 import '../rpc/rpc_handler.dart';

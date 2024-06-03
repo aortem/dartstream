@@ -5,4 +5,4 @@ in `lib/`, and example unit test in `test/`.
 
 
 ## Will be using
-https://github.com/appsup-dart/firebase_dart/tree/develop/packages/firebase_dart/lib
+https://github.com/appsup-dart/aortem_firebase_dart_sdk/tree/develop/packages/aortem_firebase_dart_sdk/lib

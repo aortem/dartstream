@@ -1,24 +1,24 @@
 library firebase_auth;
 
+import 'package:aortem_firebase_dart_sdk/core.dart';
 import 'package:meta/meta.dart';
 
-import '../../core.dart';
 import '../implementation.dart';
-import 'action_code.dart';
 import 'auth_credential.dart';
 import 'auth_provider.dart';
 import 'error.dart';
 import 'multi_factor.dart';
-import 'recaptcha_verifier.dart';
 import 'user.dart';
+import 'action_code.dart';
+import 'recaptcha_verifier.dart';
 
-export 'action_code.dart';
 export 'auth_credential.dart';
 export 'auth_provider.dart';
 export 'error.dart';
+export 'user.dart';
+export 'action_code.dart';
 export 'multi_factor.dart' hide PhoneMultiFactorAssertion;
 export 'recaptcha_verifier.dart';
-export 'user.dart';
 
 /// The entry point of the Firebase Authentication SDK.
 abstract class FirebaseAuth {

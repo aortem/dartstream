@@ -1,5 +1,4 @@
-
-import 'auth.dart';
+import '../../auth.dart';
 
 /// Defines multi-factor related properties and operations pertaining to a [User].
 /// This class acts as the main entry point for enrolling or un-enrolling

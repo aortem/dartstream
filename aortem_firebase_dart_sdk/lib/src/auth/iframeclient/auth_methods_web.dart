@@ -3,10 +3,10 @@ import 'dart:html';
 
 import 'package:aortem_firebase_dart_sdk/auth.dart';
 import 'package:aortem_firebase_dart_sdk/core.dart';
+import 'package:aortem_firebase_dart_sdk/implementation/pure_dart.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/authhandlers.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/iframeclient/gapi_iframes.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/iframeclient/url_builder.dart';
-import '../auth.dart';
-import '../authhandlers.dart';
 import 'iframewrapper.dart';
 
 final IfcHandler ifc = _createIfc(Firebase.apps.first);

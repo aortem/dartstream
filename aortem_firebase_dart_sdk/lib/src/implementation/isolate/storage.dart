@@ -1,310 +1,314 @@
-// import 'dart:async';
-// import 'dart:isolate';
-// import 'dart:typed_data';
-// import 'package:async/async.dart';
-// import 'package:aortem_firebase_dart_sdk/core.dart';
-// import 'package:rxdart/rxdart.dart';
+import 'dart:async';
+import 'dart:isolate';
+import 'dart:typed_data';
 
-// import '../isolate.dart';
-// import 'util.dart';
+import 'package:async/async.dart';
+import 'package:aortem_firebase_dart_sdk/core.dart';
+import 'package:aortem_firebase_dart_sdk/src/storage/impl/location.dart';
+import 'package:aortem_firebase_dart_sdk/src/storage/impl/resource_client.dart';
+import 'package:aortem_firebase_dart_sdk/storage.dart';
+import 'package:rxdart/rxdart.dart';
 
-// class StorageReferenceFunctionCall<T> extends BaseFunctionCall<T> {
-//   final String appName;
-//   final String bucket;
-//   final String path;
-//   final Symbol functionName;
+import '../isolate.dart';
+import 'util.dart';
 
-//   StorageReferenceFunctionCall(
-//       this.functionName, this.appName, this.bucket, this.path,
-//       [List<dynamic>? positionalArguments,
-//       Map<Symbol, dynamic>? namedArguments])
-//       : super(positionalArguments, namedArguments);
+class StorageReferenceFunctionCall<T> extends BaseFunctionCall<T> {
+  final String appName;
+  final String bucket;
+  final String path;
+  final Symbol functionName;
 
-//   FirebaseStorage get storage =>
-//       FirebaseStorage.instanceFor(app: Firebase.app(appName), bucket: bucket);
+  StorageReferenceFunctionCall(
+      this.functionName, this.appName, this.bucket, this.path,
+      [List<dynamic>? positionalArguments,
+      Map<Symbol, dynamic>? namedArguments])
+      : super(positionalArguments, namedArguments);
 
-//   Reference getRef() => storage.ref().child(path);
+  FirebaseStorage get storage =>
+      FirebaseStorage.instanceFor(app: Firebase.app(appName), bucket: bucket);
 
-//   static final Map<int, Task> _tasks = {};
+  Reference getRef() => storage.ref().child(path);
 
-//   @override
-//   Function? get function {
-//     switch (functionName) {
-//       case #delete:
-//         return getRef().delete;
-//       case #getData:
-//         return getRef().getData;
-//       case #getDownloadURL:
-//         return getRef().getDownloadURL;
-//       case #getMetadata:
-//         return getRef().getMetadata;
-//       case #putData:
-//         return (SendPort sendPort, int id, Uint8List data,
-//             SettableMetadata? metadata) async {
-//           var task = _tasks[id] = getRef().putData(data, metadata);
-//           task.snapshotEvents.map(encodeTaskSnapshot).listen(sendPort.send);
-//           return encodeTaskSnapshot(await task.whenComplete(() {
-//             _tasks.remove(id);
-//           }));
-//         };
-//       case #putString:
-//         return (SendPort sendPort, int id, String data,
-//             {PutStringFormat format = PutStringFormat.raw,
-//             SettableMetadata? metadata}) async {
-//           var task = _tasks[id] =
-//               getRef().putString(data, format: format, metadata: metadata);
+  static final Map<int, Task> _tasks = {};
 
-//           task.snapshotEvents.map(encodeTaskSnapshot).listen(sendPort.send);
-//           return encodeTaskSnapshot(await task.whenComplete(() {
-//             _tasks.remove(id);
-//           }));
-//         };
-//       case #list:
-//         return (ListOptions? options) =>
-//             getRef().list(options).then(encodeListResult);
-//       case #listAll:
-//         return () => getRef().listAll().then(encodeListResult);
-//       case #updateMetadata:
-//         return getRef().updateMetadata;
-//       case #UploadTask.pause:
-//         return (int id) async => await _tasks[id]?.pause() ?? false;
-//       case #UploadTask.resume:
-//         return (int id) async => await _tasks[id]?.resume() ?? false;
-//       case #UploadTask.cancel:
-//         return (int id) async => await _tasks[id]?.cancel() ?? false;
-//     }
-//     return null;
-//   }
+  @override
+  Function? get function {
+    switch (functionName) {
+      case #delete:
+        return getRef().delete;
+      case #getData:
+        return getRef().getData;
+      case #getDownloadURL:
+        return getRef().getDownloadURL;
+      case #getMetadata:
+        return getRef().getMetadata;
+      case #putData:
+        return (SendPort sendPort, int id, Uint8List data,
+            SettableMetadata? metadata) async {
+          var task = _tasks[id] = getRef().putData(data, metadata);
+          task.snapshotEvents.map(encodeTaskSnapshot).listen(sendPort.send);
+          return encodeTaskSnapshot(await task.whenComplete(() {
+            _tasks.remove(id);
+          }));
+        };
+      case #putString:
+        return (SendPort sendPort, int id, String data,
+            {PutStringFormat format = PutStringFormat.raw,
+            SettableMetadata? metadata}) async {
+          var task = _tasks[id] =
+              getRef().putString(data, format: format, metadata: metadata);
 
-//   static Map<Symbol, dynamic> encodeTaskSnapshot(TaskSnapshot v) => {
-//         #bytesTransferred: v.bytesTransferred,
-//         #metadata: v.metadata,
-//         #state: v.state,
-//         #totalBytes: v.totalBytes
-//       };
+          task.snapshotEvents.map(encodeTaskSnapshot).listen(sendPort.send);
+          return encodeTaskSnapshot(await task.whenComplete(() {
+            _tasks.remove(id);
+          }));
+        };
+      case #list:
+        return (ListOptions? options) =>
+            getRef().list(options).then(encodeListResult);
+      case #listAll:
+        return () => getRef().listAll().then(encodeListResult);
+      case #updateMetadata:
+        return getRef().updateMetadata;
+      case #UploadTask.pause:
+        return (int id) async => await _tasks[id]?.pause() ?? false;
+      case #UploadTask.resume:
+        return (int id) async => await _tasks[id]?.resume() ?? false;
+      case #UploadTask.cancel:
+        return (int id) async => await _tasks[id]?.cancel() ?? false;
+    }
+    return null;
+  }
 
-//   static Map<String, dynamic> encodeListResult(ListResult v) =>
-//       (v as ListResultImpl).toJson();
-// }
+  static Map<Symbol, dynamic> encodeTaskSnapshot(TaskSnapshot v) => {
+        #bytesTransferred: v.bytesTransferred,
+        #metadata: v.metadata,
+        #state: v.state,
+        #totalBytes: v.totalBytes
+      };
 
-// class IsolateFirebaseStorage extends IsolateFirebaseService
-//     implements FirebaseStorage {
-//   final Location _bucket;
+  static Map<String, dynamic> encodeListResult(ListResult v) =>
+      (v as ListResultImpl).toJson();
+}
 
-//   IsolateFirebaseStorage(
-//       {required IsolateFirebaseApp app, String? storageBucket})
-//       : _bucket =
-//             Location.fromBucketSpec(storageBucket ?? app.options.storageBucket),
-//         super(app);
+class IsolateFirebaseStorage extends IsolateFirebaseService
+    implements FirebaseStorage {
+  final Location _bucket;
 
-//   @override
-//   Reference refFromURL(String fullUrl) {
-//     var location = Location.fromUrl(fullUrl);
-//     return IsolateStorageReference(this, location);
-//   }
+  IsolateFirebaseStorage(
+      {required IsolateFirebaseApp app, String? storageBucket})
+      : _bucket =
+            Location.fromBucketSpec(storageBucket ?? app.options.storageBucket),
+        super(app);
 
-//   @override
-//   Reference ref([String? path]) {
-//     var ref = IsolateStorageReference(this, _bucket);
-//     if (path != null) {
-//       return ref.child(path);
-//     } else {
-//       return ref;
-//     }
-//   }
+  @override
+  Reference refFromURL(String fullUrl) {
+    var location = Location.fromUrl(fullUrl);
+    return IsolateStorageReference(this, location);
+  }
 
-//   @override
-//   String get bucket => _bucket.bucket;
+  @override
+  Reference ref([String? path]) {
+    var ref = IsolateStorageReference(this, _bucket);
+    if (path != null) {
+      return ref.child(path);
+    } else {
+      return ref;
+    }
+  }
 
-//   @override
-//   // TODO: implement maxDownloadRetryTime
-//   Duration get maxDownloadRetryTime => throw UnimplementedError();
+  @override
+  String get bucket => _bucket.bucket;
 
-//   @override
-//   // TODO: implement maxOperationRetryTime
-//   Duration get maxOperationRetryTime => throw UnimplementedError();
+  @override
+  // TODO: implement maxDownloadRetryTime
+  Duration get maxDownloadRetryTime => throw UnimplementedError();
 
-//   @override
-//   // TODO: implement maxUploadRetryTime
-//   Duration get maxUploadRetryTime => throw UnimplementedError();
+  @override
+  // TODO: implement maxOperationRetryTime
+  Duration get maxOperationRetryTime => throw UnimplementedError();
 
-//   @override
-//   void setMaxDownloadRetryTime(Duration time) {
-//     // TODO: implement setMaxDownloadRetryTime
-//   }
+  @override
+  // TODO: implement maxUploadRetryTime
+  Duration get maxUploadRetryTime => throw UnimplementedError();
 
-//   @override
-//   void setMaxOperationRetryTime(Duration time) {
-//     // TODO: implement setMaxOperationRetryTime
-//   }
+  @override
+  void setMaxDownloadRetryTime(Duration time) {
+    // TODO: implement setMaxDownloadRetryTime
+  }
 
-//   @override
-//   void setMaxUploadRetryTime(Duration time) {
-//     // TODO: implement setMaxUploadRetryTime
-//   }
-// }
+  @override
+  void setMaxOperationRetryTime(Duration time) {
+    // TODO: implement setMaxOperationRetryTime
+  }
 
-// class IsolateStorageReference extends Reference {
-//   @override
-//   final IsolateFirebaseStorage storage;
+  @override
+  void setMaxUploadRetryTime(Duration time) {
+    // TODO: implement setMaxUploadRetryTime
+  }
+}
 
-//   final Location location;
+class IsolateStorageReference extends Reference {
+  @override
+  final IsolateFirebaseStorage storage;
 
-//   IsolateStorageReference(this.storage, this.location);
+  final Location location;
 
-//   Future<T> invoke<T>(Symbol method,
-//       [List<dynamic>? positionalArguments,
-//       Map<Symbol, dynamic>? namedArguments]) {
-//     return storage.app.commander.execute(
-//         StorageReferenceFunctionCall<FutureOr<T>>(
-//             method,
-//             storage.app.name,
-//             storage.bucket,
-//             location.path,
-//             positionalArguments,
-//             namedArguments));
-//   }
+  IsolateStorageReference(this.storage, this.location);
 
-//   @override
-//   IsolateStorageReference child(String path) =>
-//       IsolateStorageReference(storage, location.child(path));
+  Future<T> invoke<T>(Symbol method,
+      [List<dynamic>? positionalArguments,
+      Map<Symbol, dynamic>? namedArguments]) {
+    return storage.app.commander.execute(
+        StorageReferenceFunctionCall<FutureOr<T>>(
+            method,
+            storage.app.name,
+            storage.bucket,
+            location.path,
+            positionalArguments,
+            namedArguments));
+  }
 
-//   @override
-//   Future<void> delete() async {
-//     await invoke(#delete, []);
-//   }
+  @override
+  IsolateStorageReference child(String path) =>
+      IsolateStorageReference(storage, location.child(path));
 
-//   @override
-//   String get bucket => location.bucket;
+  @override
+  Future<void> delete() async {
+    await invoke(#delete, []);
+  }
 
-//   @override
-//   Future<Uint8List> getData([int? maxSize = 10485760]) async {
-//     return await invoke(#getData, [maxSize]);
-//   }
+  @override
+  String get bucket => location.bucket;
 
-//   @override
-//   Future<String> getDownloadURL() async {
-//     return await invoke(#getDownloadURL, []);
-//   }
+  @override
+  Future<Uint8List> getData([int? maxSize = 10485760]) async {
+    return await invoke(#getData, [maxSize]);
+  }
 
-//   @override
-//   Future<FullMetadata> getMetadata() async {
-//     return await invoke(#getMetadata, []);
-//   }
+  @override
+  Future<String> getDownloadURL() async {
+    return await invoke(#getDownloadURL, []);
+  }
 
-//   @override
-//   String get name => location.name;
+  @override
+  Future<FullMetadata> getMetadata() async {
+    return await invoke(#getMetadata, []);
+  }
 
-//   @override
-//   IsolateStorageReference? get parent {
-//     var parentLocation = location.getParent();
-//     if (parentLocation == null) return null;
-//     return IsolateStorageReference(storage, parentLocation);
-//   }
+  @override
+  String get name => location.name;
 
-//   @override
-//   String get fullPath => location.path;
+  @override
+  IsolateStorageReference? get parent {
+    var parentLocation = location.getParent();
+    if (parentLocation == null) return null;
+    return IsolateStorageReference(storage, parentLocation);
+  }
 
-//   @override
-//   Reference get root {
-//     return IsolateStorageReference(storage, location.getRoot());
-//   }
+  @override
+  String get fullPath => location.path;
 
-//   @override
-//   UploadTask putData(Uint8List data, [SettableMetadata? metadata]) {
-//     var receivePort = ReceivePort();
-//     var id = DateTime.now().microsecondsSinceEpoch;
-//     var future = invoke<Map<Symbol, dynamic>>(
-//         #putData, [receivePort.sendPort, id, data, metadata]);
-//     return IsolateUploadTask(this, id, future.then(_decodeTaskSnapshot),
-//         receivePort.cast<Map<Symbol, dynamic>>().map(_decodeTaskSnapshot));
-//   }
+  @override
+  Reference get root {
+    return IsolateStorageReference(storage, location.getRoot());
+  }
 
-//   TaskSnapshot _decodeTaskSnapshot(Map<Symbol, dynamic> v) => TaskSnapshot(
-//       ref: this,
-//       bytesTransferred: v[#bytesTransferred],
-//       state: v[#state],
-//       totalBytes: v[#totalBytes],
-//       metadata: v[#metadata]);
+  @override
+  UploadTask putData(Uint8List data, [SettableMetadata? metadata]) {
+    var receivePort = ReceivePort();
+    var id = DateTime.now().microsecondsSinceEpoch;
+    var future = invoke<Map<Symbol, dynamic>>(
+        #putData, [receivePort.sendPort, id, data, metadata]);
+    return IsolateUploadTask(this, id, future.then(_decodeTaskSnapshot),
+        receivePort.cast<Map<Symbol, dynamic>>().map(_decodeTaskSnapshot));
+  }
 
-//   ListResult _decodeListResult(Map<String, dynamic> json) =>
-//       ListResultImpl.fromJson(this, json);
+  TaskSnapshot _decodeTaskSnapshot(Map<Symbol, dynamic> v) => TaskSnapshot(
+      ref: this,
+      bytesTransferred: v[#bytesTransferred],
+      state: v[#state],
+      totalBytes: v[#totalBytes],
+      metadata: v[#metadata]);
 
-//   @override
-//   Future<FullMetadata> updateMetadata(SettableMetadata metadata) async {
-//     return await invoke(#updateMetadata, [metadata]);
-//   }
+  ListResult _decodeListResult(Map<String, dynamic> json) =>
+      ListResultImpl.fromJson(this, json);
 
-//   @override
-//   Future<ListResult> list([ListOptions? options]) async {
-//     return _decodeListResult(await invoke(#list, [options]));
-//   }
+  @override
+  Future<FullMetadata> updateMetadata(SettableMetadata metadata) async {
+    return await invoke(#updateMetadata, [metadata]);
+  }
 
-//   @override
-//   Future<ListResult> listAll() async {
-//     return _decodeListResult(await invoke(#listAll));
-//   }
+  @override
+  Future<ListResult> list([ListOptions? options]) async {
+    return _decodeListResult(await invoke(#list, [options]));
+  }
 
-//   @override
-//   UploadTask putString(String data,
-//       {PutStringFormat format = PutStringFormat.raw,
-//       SettableMetadata? metadata}) {
-//     var receivePort = ReceivePort();
-//     var id = DateTime.now().microsecondsSinceEpoch;
-//     var future = invoke<Map<Symbol, dynamic>>(
-//         #putString,
-//         [receivePort.sendPort, id, data],
-//         {#format: format, #metadata: metadata});
-//     return IsolateUploadTask(this, id, future.then(_decodeTaskSnapshot),
-//         receivePort.cast<Map<Symbol, dynamic>>().map(_decodeTaskSnapshot));
-//   }
+  @override
+  Future<ListResult> listAll() async {
+    return _decodeListResult(await invoke(#listAll));
+  }
 
-//   @override
-//   String toString() => location.toString();
+  @override
+  UploadTask putString(String data,
+      {PutStringFormat format = PutStringFormat.raw,
+      SettableMetadata? metadata}) {
+    var receivePort = ReceivePort();
+    var id = DateTime.now().microsecondsSinceEpoch;
+    var future = invoke<Map<Symbol, dynamic>>(
+        #putString,
+        [receivePort.sendPort, id, data],
+        {#format: format, #metadata: metadata});
+    return IsolateUploadTask(this, id, future.then(_decodeTaskSnapshot),
+        receivePort.cast<Map<Symbol, dynamic>>().map(_decodeTaskSnapshot));
+  }
 
-//   @override
-//   bool operator ==(other) =>
-//       other is IsolateStorageReference && other.location == location;
+  @override
+  String toString() => location.toString();
 
-//   @override
-//   int get hashCode => location.hashCode;
-// }
+  @override
+  bool operator ==(other) =>
+      other is IsolateStorageReference && other.location == location;
 
-// class IsolateUploadTask extends DelegatingFuture<TaskSnapshot>
-//     implements UploadTask {
-//   final int id;
+  @override
+  int get hashCode => location.hashCode;
+}
 
-//   final IsolateStorageReference _ref;
+class IsolateUploadTask extends DelegatingFuture<TaskSnapshot>
+    implements UploadTask {
+  final int id;
 
-//   final BehaviorSubject<TaskSnapshot> _subject = BehaviorSubject();
+  final IsolateStorageReference _ref;
 
-//   IsolateUploadTask(this._ref, this.id, Future<TaskSnapshot> future,
-//       Stream<TaskSnapshot> events)
-//       : super(future) {
-//     events.pipe(_subject);
-//   }
+  final BehaviorSubject<TaskSnapshot> _subject = BehaviorSubject();
 
-//   @override
-//   Future<bool> cancel() {
-//     return _ref.invoke(#UploadTask.cancel, [id]);
-//   }
+  IsolateUploadTask(this._ref, this.id, Future<TaskSnapshot> future,
+      Stream<TaskSnapshot> events)
+      : super(future) {
+    events.pipe(_subject);
+  }
 
-//   @override
-//   Future<bool> pause() {
-//     return _ref.invoke(#UploadTask.pause, [id]);
-//   }
+  @override
+  Future<bool> cancel() {
+    return _ref.invoke(#UploadTask.cancel, [id]);
+  }
 
-//   @override
-//   Future<bool> resume() {
-//     return _ref.invoke(#UploadTask.resume, [id]);
-//   }
+  @override
+  Future<bool> pause() {
+    return _ref.invoke(#UploadTask.pause, [id]);
+  }
 
-//   @override
-//   TaskSnapshot get snapshot => _subject.value;
+  @override
+  Future<bool> resume() {
+    return _ref.invoke(#UploadTask.resume, [id]);
+  }
 
-//   @override
-//   Stream<TaskSnapshot> get snapshotEvents => _subject.stream;
+  @override
+  TaskSnapshot get snapshot => _subject.value;
 
-//   @override
-//   IsolateFirebaseStorage get storage => _ref.storage;
-// }
+  @override
+  Stream<TaskSnapshot> get snapshotEvents => _subject.stream;
+
+  @override
+  IsolateFirebaseStorage get storage => _ref.storage;
+}
