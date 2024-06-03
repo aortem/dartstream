@@ -1,18 +1,18 @@
-import 'package:firebase_dart/auth.dart';
-import 'package:firebase_dart/src/auth/app_verifier.dart';
-import 'package:firebase_dart/src/auth/iframeclient/auth_methods.dart';
-import 'package:firebase_dart/src/auth/sms_retriever.dart';
-import 'package:firebase_dart/src/auth/utils.dart';
-import 'package:firebase_dart/src/implementation/pure_dart_setup_web.dart'
-    if (dart.library.io) 'package:firebase_dart/src/implementation/pure_dart_setup_io.dart'
-    if (dart.library.html) 'package:firebase_dart/src/implementation/pure_dart_setup_web.dart';
+import 'package:aortem_firebase_dart_sdk/auth.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/iframeclient/auth_methods.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/sms_retriever.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/utils.dart';
+import 'package:aortem_firebase_dart_sdk/src/implementation/pure_dart_setup_web.dart'
+    if (dart.library.io) 'package:aortem_firebase_dart_sdk/src/implementation/pure_dart_setup_io.dart'
+    if (dart.library.html) 'package:aortem_firebase_dart_sdk/src/implementation/pure_dart_setup_web.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:meta/meta.dart';
 
 import '../core.dart';
 
-export 'package:firebase_dart/src/auth/utils.dart'
+export 'package:aortem_firebase_dart_sdk/src/auth/utils.dart'
     show
         Platform,
         AndroidPlatform,
@@ -21,11 +21,11 @@ export 'package:firebase_dart/src/auth/utils.dart'
         MacOsPlatform,
         WindowsPlatform,
         WebPlatform;
-export 'package:firebase_dart/src/auth/authhandlers.dart'
+export 'package:aortem_firebase_dart_sdk/src/auth/authhandlers.dart'
     show FirebaseAppAuthHandler, BaseApplicationVerifier;
-export 'package:firebase_dart/src/auth/app_verifier.dart'
+export 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart'
     show ApplicationVerificationResult;
-export 'package:firebase_dart/src/auth/sms_retriever.dart' show SmsRetriever;
+export 'package:aortem_firebase_dart_sdk/src/auth/sms_retriever.dart' show SmsRetriever;
 
 const bool _kIsWeb = identical(0, 0.0);
 
@@ -48,12 +48,12 @@ class FirebaseDart {
   /// [FirebaseAuth.signInWithRedirect] and [FirebaseAuth.signInWithPopup]. When
   /// omitted, a default implementation will be used in a web context. On other
   /// platforms no default implementation is provided. On flutter, use the
-  /// `firebase_dart_flutter` package with `FirebaseDartFlutter.setup` instead.
+  /// `aortem_firebase_dart_sdk_flutter` package with `FirebaseDartFlutter.setup` instead.
   ///
   /// Several firebase methods might need to launch an external url. Set the
   /// [launchUrl] parameter to handle these. When omitted, a default
   /// implementation will be used in a web context. On flutter, use the
-  /// `firebase_dart_flutter` package with `FirebaseDartFlutter.setup` instead.
+  /// `aortem_firebase_dart_sdk_flutter` package with `FirebaseDartFlutter.setup` instead.
   ///
   /// When [isolated] is true, all operations will run in a separate isolate.
   /// Isolates are not supported on web.

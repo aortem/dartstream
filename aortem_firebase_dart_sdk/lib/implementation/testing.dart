@@ -1,13 +1,13 @@
-import 'package:firebase_dart/core.dart';
-import 'package:firebase_dart/implementation/pure_dart.dart';
-import 'package:firebase_dart/src/auth/app_verifier.dart';
-import 'package:firebase_dart/src/auth/backend/backend.dart' as auth;
-import 'package:firebase_dart/src/implementation/testing.dart';
-import 'package:firebase_dart/src/storage/backend/backend.dart' as storage;
-import 'package:firebase_dart/src/implementation/testing_no_isolate.dart'
-    if (dart.library.isolate) 'package:firebase_dart/src/implementation/testing_isolate.dart';
+import 'package:aortem_firebase_dart_sdk/core.dart';
+import 'package:aortem_firebase_dart_sdk/implementation/pure_dart.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/backend/backend.dart' as auth;
+import 'package:aortem_firebase_dart_sdk/src/implementation/testing.dart';
+import 'package:aortem_firebase_dart_sdk/src/storage/backend/backend.dart' as storage;
+import 'package:aortem_firebase_dart_sdk/src/implementation/testing_no_isolate.dart'
+    if (dart.library.isolate) 'package:aortem_firebase_dart_sdk/src/implementation/testing_isolate.dart';
 
-export 'package:firebase_dart/src/auth/backend/backend.dart' show BackendUser;
+export 'package:aortem_firebase_dart_sdk/src/auth/backend/backend.dart' show BackendUser;
 
 class FirebaseTesting {
   /// Initializes the pure dart firebase implementation for testing purposes.
