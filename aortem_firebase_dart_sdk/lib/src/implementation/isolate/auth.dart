@@ -8,7 +8,6 @@ import 'package:aortem_firebase_dart_sdk/src/auth/impl/user.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/subjects.dart';
 
-import '../../auth/auth.dart';
 import '../../auth/auth_mixin.dart';
 import '../isolate.dart';
 import 'util.dart';

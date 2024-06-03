@@ -1,5 +1,7 @@
-import 'auth/auth.dart';
-import 'core.dart';
+import 'package:aortem_firebase_dart_sdk/auth.dart';
+import 'package:aortem_firebase_dart_sdk/database.dart';
+import 'package:aortem_firebase_dart_sdk/src/core.dart';
+import 'package:aortem_firebase_dart_sdk/storage.dart';
 
 abstract class FirebaseImplementation {
   static FirebaseImplementation? _installation;
@@ -20,13 +22,13 @@ abstract class FirebaseImplementation {
 
   Future<FirebaseApp> createApp(String name, FirebaseOptions options);
 
-  // FirebaseDatabase createDatabase(covariant FirebaseApp app,
-  //     {String? databaseURL});
+  FirebaseDatabase createDatabase(covariant FirebaseApp app,
+      {String? databaseURL});
 
   FirebaseAuth createAuth(covariant FirebaseApp app);
 
-  // FirebaseStorage createStorage(covariant FirebaseApp app,
-  //     {String? storageBucket});
+  FirebaseStorage createStorage(covariant FirebaseApp app,
+      {String? storageBucket});
 }
 
 abstract class BaseFirebaseImplementation extends FirebaseImplementation {

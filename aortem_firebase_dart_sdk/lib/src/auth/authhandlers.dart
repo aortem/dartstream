@@ -1,18 +1,18 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:aortem_firebase_dart_sdk/implementation/pure_dart.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart';
+import 'package:aortem_firebase_dart_sdk/src/auth/utils.dart';
 import 'package:aortem_firebase_dart_sdk/src/core.dart';
 import 'package:aortem_firebase_dart_sdk/src/core/impl/persistence.dart';
 import 'package:aortem_firebase_dart_sdk/src/implementation/isolate/auth.dart';
 import 'package:meta/meta.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../implementation/pure_dart.dart';
+import '../../auth.dart';
 import '../implementation.dart';
-import 'auth.dart';
 import 'impl/auth.dart';
-import 'utils.dart';
 
 class FirebaseAppAuthCredential extends AuthCredential {
   final String sessionId;

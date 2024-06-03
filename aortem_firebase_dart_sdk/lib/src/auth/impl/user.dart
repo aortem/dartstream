@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:clock/clock.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/impl/auth.dart';
+import 'package:clock/clock.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/rpc/error.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/rpc/rpc_handler.dart';
 import 'package:firebaseapis/identitytoolkit/v1.dart';
