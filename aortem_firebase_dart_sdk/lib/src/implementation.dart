@@ -22,13 +22,13 @@ abstract class FirebaseImplementation {
 
   Future<FirebaseApp> createApp(String name, FirebaseOptions options);
 
-  FirebaseDatabase createDatabase(covariant FirebaseApp app,
-      {String? databaseURL});
+  // FirebaseDatabase createDatabase(covariant FirebaseApp app,
+  //     {String? databaseURL});
 
   FirebaseAuth createAuth(covariant FirebaseApp app);
 
-  FirebaseStorage createStorage(covariant FirebaseApp app,
-      {String? storageBucket});
+  // FirebaseStorage createStorage(covariant FirebaseApp app,
+  //     {String? storageBucket});
 }
 
 abstract class BaseFirebaseImplementation extends FirebaseImplementation {
