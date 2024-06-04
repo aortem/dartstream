@@ -29,7 +29,7 @@ dependencies:
 
 #Testing Packages
   test: ^1.25.5
-  mockito: ^5.0.0
+  mockito: ^5.4.4
   mocktail: ^1.0.3
 
 #Globally Activated Package
