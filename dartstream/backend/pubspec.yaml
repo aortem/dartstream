@@ -1,7 +1,7 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_dartstream
 description: The root Yaml file.  Placeholder for fiture expansion.
-version: 0.0.1-pre
+version: 0.0.1-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
