@@ -19,5 +19,5 @@ dev_dependencies:
 # CLI
   cli_util: ^0.4.1
 #TBD
-  lints: ^3.0.0 #Included In ds_standard_features
+  lints: ^4.0.0 #Included In ds_standard_features
   test: ^1.24.0

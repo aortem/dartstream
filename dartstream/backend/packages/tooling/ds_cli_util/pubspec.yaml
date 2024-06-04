@@ -31,7 +31,7 @@ dependencies:
 dev_dependencies:
 
 #Cosmetic
-  lints: ^3.0.0 #Included In ds_standard_features
+  lints: ^4.0.0 #Included In ds_standard_features
 
 #Globally Activated Package
 executables:
