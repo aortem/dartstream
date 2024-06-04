@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:collection';
-
 import 'package:aortem_firebase_dart_sdk/core.dart';
 import 'package:aortem_firebase_dart_sdk/implementation/pure_dart.dart';
 import 'package:aortem_firebase_dart_sdk/src/auth/app_verifier.dart';

@@ -44,7 +44,7 @@ class FramesToMessagesTransformer
   }
 }
 
-class _FramesToMessagesEventSink extends EventSink<String> {
+class _FramesToMessagesEventSink implements EventSink<String> {
   final EventSink<String> _outputSink;
 
   int? _totalFrames;
@@ -84,3 +84,25 @@ class _FramesToMessagesEventSink extends EventSink<String> {
     _outputSink.close();
   }
 }
+
+
+
+
+/*
+
+The class 'EventSink' can't be extended outside of its library because it's an interface class.
+
+I am developing a package in dart and getting this error in a class
+environment:
+  sdk: ^3.2.6 is mine
+
+and ones i am porting have :
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+and the class is:
+ class _FramesToMessagesEventSink extends EventSink<String> {
+
+EventSink class is codedart sdk class 
+
+*/
