@@ -1,7 +1,7 @@
 # This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_dartstream
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
+version: 1.0.0-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
@@ -19,5 +19,5 @@ dev_dependencies:
 # CLI
   cli_util: ^0.4.1
 #TBD
-  lints: ^3.0.0 #Included In ds_standard_features
-  test: ^1.24.0
+  lints: ^4.0.0 #Included In ds_standard_features
+  test: ^1.25.5

@@ -63,7 +63,7 @@ dependencies:
   http: ^0.13.3
 
 dev_dependencies:
-  test: ^1.16.8
+  test: ^1.25.5
 ''');
 
     print('Project $projectName has been successfully created!');

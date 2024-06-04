@@ -1,11 +1,11 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_shelf
 description: A starting point for Dart libraries or applications.
-version: 0.0.1
+version: 0.0.1-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
- sdk: ">=3.3.0 <4.0.0"
+ sdk: ">=3.4.0 <4.0.0"
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -34,19 +34,15 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-  build_runner: ^2.0.0
+
+#Shelf generator  
   shelf_router_generator: ^1.0.0
 
 #CLI
   cli_util: ^0.4.1
 
-#Cosmetic
-  lints: ^3.0.0 #Included In ds_standard_features
-
 #Testing Packages
-  test: ^1.24.0
-  mockito: ^5.0.0
-  mocktail: ^1.0.3
+ds_tools_testing: ^0.0.1-pre+3
 
 #Globally Activated Package
 executables:
