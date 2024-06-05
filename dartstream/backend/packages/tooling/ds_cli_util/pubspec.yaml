@@ -14,6 +14,7 @@ dependencies:
 
 # DS Shelf Middleware
   ds_shelf: ^0.0.1-pre
+  ds_custom_middleware: ^0.0.1-pre
 
 # DS Custom Middleware
 #  TBD: ^0.0.1
