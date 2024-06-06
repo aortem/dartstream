@@ -1,6 +1,6 @@
-# Contributing to DartStream
+# Contributing to Firebase Dart Authentication SDK
 
-Thank you for considering contributing to DartStream, a Dart language backend framework designed for building efficient and scalable server-side applications. Your contributions make this project better and are greatly appreciated.
+Thank you for considering contributing to teh FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
 
 ## Quicklinks
 
@@ -19,7 +19,7 @@ Thank you for considering contributing to DartStream, a Dart language backend fr
 
 ## Code of Conduct
 
-By participating and contributing to DartStream, you are expected to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
+By participating and contributing to Firebase Dart Authentication SDK, you are expected to uphold our [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## What We Are Looking For
 
@@ -72,7 +72,7 @@ When reporting bugs, include:
 
 We encourage feature requests that enhance the framework. Please:
 
-- Provide a clear and detailed explanation of the feature.
+- Feature Request and enhcancements can be submitted through the Freshdesk subscription console.
 - Explain how it aligns with the framework's goals.
 - Discuss potential implementation and impact.
 
@@ -82,10 +82,10 @@ Your contributions to improve or clarify documentation are always welcome. Wheth
 
 ## Available Versions
 
-DartStream is available to the Dart community in three versions:
+Firebase Dart Authentication SDK is available to the Dart community in three versions:
 
 1. **Free - Open Source Version**: Available for anyone to use, modify, and distribute according to the needs of their project.
-2. **Hosted Framework**: Similar to Laravel Vapor, this version provides a managed, hosted solution for those looking to deploy DartStream applications with ease.
+2. **Hosted Framework**: Similar to Laravel Vapor, this version provides a managed, hosted solution for those looking to deploy Firebase Dart Authentication SDK applications with ease.
 3. **Aortem - SAAS Version**: The most comprehensive version, offering full SaaS capabilities for enterprise needs, including additional features and support and a full host of Native Dart SDK's for your most popular integrations.
 
 ## Community
@@ -95,7 +95,7 @@ Join the discussion on issues, contribute to pull requests, or reach out through
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All Firebase Dart Authentication SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 ## Acknowledgments
 
