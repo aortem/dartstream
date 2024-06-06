@@ -4,49 +4,65 @@ Aortem Firebase Dart SDK is an SDK designed to provide select out of the box fea
 
 ## Features
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
-| Method                                   | Supported |
-|------------------------------------------|-----------|
-| FirebaseAuth.applyActionCode             | ✅         |
-| FirebaseAuth.authStateChanges            | ✅         |
-| FirebaseAuth.checkActionCode             | ✅         |
-| FirebaseAuth.confirmPasswordReset        | ✅         |
-| FirebaseAuth.createUserWithEmailAndPassword | ✅       |
-| FirebaseAuth.fetchSignInMethodsForEmail  | ✅         |
-| FirebaseAuth.getRedirectResult           | ❌         |
-| FirebaseAuth.idTokenChanges              | ✅         |
-| FirebaseAuth.isSignInWithEmailLink       | ✅         |
-| FirebaseAuth.sendPasswordResetEmail      | ✅         |
-| FirebaseAuth.sendSignInLinkToEmail       | ✅         |
-| FirebaseAuth.setLanguageCode             | ✅         |
-| FirebaseAuth.setPersistence              | ❌         |
-| FirebaseAuth.signInAnonymously           | ✅         |
-| FirebaseAuth.signInWithCredential        | ✅         |
-| FirebaseAuth.signInWithCustomToken       | ✅         |
-| FirebaseAuth.signInWithEmailAndPassword  | ✅         |
-| FirebaseAuth.signInWithEmailLink         | ✅         |
-| FirebaseAuth.signInWithPhoneNumber       | ✅         |
-| FirebaseAuth.signInWithPopup             | ❌         |
-| FirebaseAuth.signInWithRedirect          | ❌         |
-| FirebaseAuth.signInWithAuthProvider      | ❌         |
-| FirebaseAuth.signOut                     | ✅         |
-| FirebaseAuth.userChanges                 | ✅         |
-| FirebaseAuth.verifyPasswordResetCode     | ✅         |
-| FirebaseAuth.verifyPhoneNumber           | ✅         |
-| User.delete                              | ✅         |
-| User.getIdToken                          | ✅         |
-| User.getIdTokenResult                    | ✅         |
-| User.linkWithCredential                  | ❌         |
-| User.linkWithPhoneNumber                 | ❌         |
-| User.reauthenticateWithCredential        | ✅         |
-| User.reload                              | ✅         |
-| User.sendEmailVerification               | ✅         |
-| User.unlink                              | ✅         |
-| User.updateEmail                         | ✅         |
-| User.updatePassword                      | ✅         |
-| User.updatePhoneNumber                   | ❌         |
-| User.updateProfile                       | ✅         |
-| User.verifyBeforeUpdateEmail             | ❌         |
-| User.multiFactor                         | ✅         |
+
+| Method                                      | Supported |
+|---------------------------------------------|-----------|
+| FirebaseApp.getAuth                          | ❌        |
+| FirebaseApp.initializeAuth                   | ❌        |
+| FirebaseStorage.getStorage                   | ❌        |
+| FirebaseAuth.applyActionCode                 | ✅        |
+| FirebaseAuth.beforeAuthStateChanged          | ❌        |
+| FirebaseAuth.checkActionCode                 | ❌        |
+| FirebaseAuth.confirmPasswordReset            | ❌        |
+| FirebaseAuth.connectAuthEmulator             | ❌        |
+| FirebaseAuth.createUserWithEmailAndPassword  | ❌        |
+| FirebaseAuth.fetchSignInMethodsForEmail      | ❌        |
+| FirebaseAuth.getMultiFactorResolver          | ❌        |
+| FirebaseAuth.getRedirectResult               | ❌        |
+| FirebaseAuth.initializeRecaptchaConfig       | ❌        |
+| FirebaseAuth.isSignInWithEmailLink           | ❌        |
+| FirebaseAuth.onAuthStateChanged              | ❌        |
+| FirebaseAuth.onIdTokenChanged                | ❌        |
+| FirebaseAuth.revokeAccessToken               | ❌        |
+| FirebaseAuth.sendPasswordResetEmail          | ❌        |
+| FirebaseAuth.sendSignInLinkToEmail           | ❌        |
+| FirebaseAuth.setLanguageCode                 | ❌        |
+| FirebaseAuth.setPersistence                  | ❌        |
+| FirebaseAuth.signInAnonymously               | ❌        |
+| FirebaseAuth.signInWithCredential            | ❌        |
+| FirebaseAuth.signInWithCustomToken           | ❌        |
+| FirebaseAuth.signInWithEmailAndPassword      | ❌        |
+| FirebaseAuth.signInWithEmailLink             | ❌        |
+| FirebaseAuth.signInWithPhoneNumber           | ❌        |
+| FirebaseAuth.signInWithPopup                 | ❌        |
+| FirebaseAuth.signInWithRedirect              | ❌        |
+| FirebaseAuth.signOut                         | ❌        |
+| FirebaseAuth.updateCurrentUser               | ❌        |
+| FirebaseAuth.useDeviceLanguage               | ❌        |
+| FirebaseAuth.verifyPasswordResetCode         | ❌        |
+| FirebaseLink.parseActionCodeURL              | ❌        |
+| FirebaseUser.deleteUser                      | ❌        |
+| FirebaseUser.getIdToken                      | ❌        |
+| FirebaseUser.getIdTokenResult                | ❌        |
+| FirebaseUser.linkWithCredential              | ❌        |
+| FirebaseUser.linkWithPhoneNumber             | ❌        |
+| FirebaseUser.linkWithPopup                   | ❌        |
+| FirebaseUser.linkWithRedirect                | ❌        |
+| FirebaseUser.multiFactor                     | ❌        |
+| FirebaseUser.reauthenticateWithCredential    | ❌        |
+| FirebaseUser.reauthenticateWithPhoneNumber   | ❌        |
+| FirebaseUser.reauthenticateWithPopUp         | ❌        |
+| FirebaseUser.reauthenticateWithRedirect      | ❌        |
+| FirebaseUser.reload                          | ❌        |
+| FirebaseUser.sendEmailVerification           | ❌        |
+| FirebaseUser.unlink                          | ❌        |
+| FirebaseUser.updateEmail                     | ❌        |
+| FirebaseUser.updatePassword                  | ❌        |
+| FirebaseUser.updatePhoneNumber               | ❌        |
+| FirebaseUser.updateProfile                   | ❌        |
+| FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
+| FirebaseUserCredential.getAdditionalUserInfo | ❌        |
+
 
 ## Available Versions
 
