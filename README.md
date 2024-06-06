@@ -3,19 +3,57 @@
 Aortem Firebase Dart SDK is an SDK designed to provide select out of the box features of Firebase in Dart.  Both loww level and high leve abstractions are provided.
 
 ## Features
-
-- **Minimalistic Design**: Focus on what's necessary, making it perfect for both beginners and experienced developers.
-- **Scalability**: Designed to support applications as they grow in complexity and user base.
-- **Flexibility**: Easy to extend and customize to fit your specific needs.
-- **Performance**: Optimized for speed and efficiency, enabling high-performance applications.
+This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
+| Method                                   | Supported |
+|------------------------------------------|-----------|
+| FirebaseAuth.applyActionCode             | ✅         |
+| FirebaseAuth.authStateChanges            | ✅         |
+| FirebaseAuth.checkActionCode             | ✅         |
+| FirebaseAuth.confirmPasswordReset        | ✅         |
+| FirebaseAuth.createUserWithEmailAndPassword | ✅       |
+| FirebaseAuth.fetchSignInMethodsForEmail  | ✅         |
+| FirebaseAuth.getRedirectResult           | ❌         |
+| FirebaseAuth.idTokenChanges              | ✅         |
+| FirebaseAuth.isSignInWithEmailLink       | ✅         |
+| FirebaseAuth.sendPasswordResetEmail      | ✅         |
+| FirebaseAuth.sendSignInLinkToEmail       | ✅         |
+| FirebaseAuth.setLanguageCode             | ✅         |
+| FirebaseAuth.setPersistence              | ❌         |
+| FirebaseAuth.signInAnonymously           | ✅         |
+| FirebaseAuth.signInWithCredential        | ✅         |
+| FirebaseAuth.signInWithCustomToken       | ✅         |
+| FirebaseAuth.signInWithEmailAndPassword  | ✅         |
+| FirebaseAuth.signInWithEmailLink         | ✅         |
+| FirebaseAuth.signInWithPhoneNumber       | ✅         |
+| FirebaseAuth.signInWithPopup             | ❌         |
+| FirebaseAuth.signInWithRedirect          | ❌         |
+| FirebaseAuth.signInWithAuthProvider      | ❌         |
+| FirebaseAuth.signOut                     | ✅         |
+| FirebaseAuth.userChanges                 | ✅         |
+| FirebaseAuth.verifyPasswordResetCode     | ✅         |
+| FirebaseAuth.verifyPhoneNumber           | ✅         |
+| User.delete                              | ✅         |
+| User.getIdToken                          | ✅         |
+| User.getIdTokenResult                    | ✅         |
+| User.linkWithCredential                  | ❌         |
+| User.linkWithPhoneNumber                 | ❌         |
+| User.reauthenticateWithCredential        | ✅         |
+| User.reload                              | ✅         |
+| User.sendEmailVerification               | ✅         |
+| User.unlink                              | ✅         |
+| User.updateEmail                         | ✅         |
+| User.updatePassword                      | ✅         |
+| User.updatePhoneNumber                   | ❌         |
+| User.updateProfile                       | ✅         |
+| User.verifyBeforeUpdateEmail             | ❌         |
+| User.multiFactor                         | ✅         |
 
 ## Available Versions
 
-Aortem Firebase Dart SDK is available in three versions to cater to different needs and scales:
+Aortem Firebase Dart SDK is available in two versions to cater to different needs and scales:
 
-1. **Stable Version**: This version attempts to keep stability with other SDK packages and the Authentication protocols overall.
-2. **Edge Version**: Expect breaking changes when the SDK gets updated.  Use only if you are looking for new features.
-
+1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
+2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
 
 ## Documentation
 
@@ -31,7 +69,7 @@ We welcome contributions of all forms from the community! If you're interested i
 
 ## Support Tiers
 
-Aortem Firebase Dart SDK offers various support tiers for our open-source products:
+Aortem Firebase Dart Authentication SDK offers various support tiers for our open-source products:
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
 - **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
@@ -77,7 +115,7 @@ To choose a support tier, click on one of the options above.
 
 ## Licensing
 
-All Aortem Firebase Dart SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Aortem Firebase Dart SDK SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All Aortem Firebase Dart SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 
 ## Enhance with Aortem Firebase Dart SDK"

@@ -95,11 +95,11 @@ Join the discussion on issues, contribute to pull requests, or reach out through
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 ## Acknowledgments
 
-- Inspired by the simplicity and flexibility of [Dartfrog](#) and [Alfred](#) and [Shelf](#).
+- Inspired by the simplicity of [Firebase_Dart](#).
 - Thanks to the Dart community for continuous support and inspiration.
 
-We would like to extend our gratitude to all the developers and contributors who have made DartStream possible and continue to support its growth.
+We would like to extend our gratitude to all the developers and contributors who have made this Firebase Dart SDK possible and continue to support its growth.
