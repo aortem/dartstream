@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:args/command_runner.dart';
+import 'package:ds_tools_cli/ds_tools_cli.dart';
 
 class DSInit {
   void run() {
