@@ -1,3 +1,3 @@
 library firebase_auth;
 
-export 'src/auth/auth.dart';
+// export 'src/auth/auth.dart';
