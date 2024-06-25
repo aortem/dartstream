@@ -34,6 +34,70 @@ void main() {
   });
 
   group('FirebaseAuthService', () {
+    test('signInWithPopup throws exception if FirebaseApp is not initialized',
+        () async {
+      // Delete initialized app to test uninitialized state
+      await Firebase.apps.first.delete();
+
+      // Initialize FirebaseAuth separately if not already done
+      firebaseAuth ??= FirebaseAuth.instance;
+
+      // Use GoogleAuthProvider to get auth provider
+      final googleProvider = GoogleAuthProvider();
+
+      // Perform the test with signInWithPopup
+      expect(
+        () async => await authService!.signInWithPopup(googleProvider),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test(
+        'startSignInWithPhoneNumber throws exception if FirebaseApp is not initialized',
+        () async {
+      await Firebase.apps.first
+          .delete(); // Delete initialized app to test uninitialized state
+
+      expect(
+        () async => await authService!.startSignInWithPhoneNumber(
+          '1234567890',
+          RecaptchaVerifier(
+            container: 'recaptcha-container',
+            auth: FirebaseAuth.instance,
+          ),
+        ),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test(
+        'confirmSignInWithPhoneNumber throws exception if FirebaseApp is not initialized',
+        () async {
+      await Firebase.apps.first
+          .delete(); // Delete initialized app to test uninitialized state
+
+      ConfirmationResult fakeResult = FakeConfirmationResult();
+
+      expect(
+        () async => await authService!
+            .confirmSignInWithPhoneNumber(fakeResult, '123456'),
+        throwsA(isA<Exception>()),
+      );
+    });
+
+    test(
+        'signInWithEmailLink throws exception if FirebaseApp is not initialized',
+        () async {
+      await Firebase.apps.first
+          .delete(); // Delete initialized app to test uninitialized state
+
+      expect(
+        () async => await authService!.signInWithEmailLink(
+            email: 'test@example.com', emailLink: 'fake_link'),
+        throwsA(isA<Exception>()),
+      );
+    });
+
     test(
         'signInWithCustomToken throws exception if FirebaseApp is not initialized',
         () async {
