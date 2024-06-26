@@ -10,7 +10,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseApp.getAuth                          | ❌        |
 | FirebaseApp.initializeAuth                   | ❌        |
 | FirebaseStorage.getStorage                   | ❌        |
-| FirebaseAuth.applyActionCode                 | ✅        |
+| FirebaseAuth.applyActionCode                 | ❌       |
 | FirebaseAuth.beforeAuthStateChanged          | ❌        |
 | FirebaseAuth.checkActionCode                 | ❌        |
 | FirebaseAuth.confirmPasswordReset            | ❌        |
