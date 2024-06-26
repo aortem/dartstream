@@ -1,12 +1,3 @@
-A sample command-line application with an entrypoint in `bin/`, library code
-in `lib/`, and example unit test in `test/`.
-
-
-
-
-## Will be using
-https://github.com/appsup-dart/aortem_firebase_dart_sdk/tree/develop/packages/aortem_firebase_dart_sdk/lib
-
 
 # Aortem Firebase Dart SDK
 
@@ -18,6 +9,9 @@ Aortem Firebase Dart SDK provides easy-to-use methods for integrating Firebase A
 - Sign in with custom token
 - Sign in with credential
 - Sign in with email and password
+- Sign in with popup for OAuth providers
+- Sign in with phone number
+- Sign in with email link
 
 ## Installation
 
@@ -39,7 +33,7 @@ yaml
 dependencies:
   flutter:
     sdk: flutter
-  aortem_firebase_dart_sdk: ^1.0.0  # Replace with the latest version
+  aortem_firebase_dart_sdk: ^0.0.1-pre+1  # Replace with the latest version
 Then, run flutter pub get to install the package:
 
 bash
@@ -77,6 +71,65 @@ void main() async {
     print('Sign-in error: $e');
   }
 }
+
+Sign In with Popup
+
+import 'package:firebase_dart/firebase_dart.dart';
+
+void signInWithPopupExample() async {
+  FirebaseAuthService authService = FirebaseAuthService();
+
+  try {
+    UserCredential userCredential = await authService.signInWithPopup(GoogleAuthProvider());
+    print('Signed in with popup: ${userCredential.user!.email}');
+  } catch (e) {
+    print('Sign-in error: $e');
+  }
+}
+Sign In with Phone Number
+
+import 'package:firebase_dart/firebase_dart.dart';
+
+void signInWithPhoneNumberExample() async {
+  FirebaseAuthService authService = FirebaseAuthService();
+
+  try {
+    String phoneNumber = '1234567890';
+    RecaptchaVerifier recaptchaVerifier = RecaptchaVerifier(
+      container: 'recaptcha-container',
+      auth: FirebaseAuth.instance,
+    );
+
+    ConfirmationResult confirmationResult = await authService.startSignInWithPhoneNumber(phoneNumber, recaptchaVerifier);
+    print('Verification ID: ${confirmationResult.verificationId}');
+
+    // After receiving the verification code from the user
+    String verificationCode = '123456';
+    UserCredential userCredential = await authService.confirmSignInWithPhoneNumber(confirmationResult, verificationCode);
+    print('Signed in with phone number: ${userCredential.user!.phoneNumber}');
+  } catch (e) {
+    print('Sign-in error: $e');
+  }
+}
+Sign In with Email Link
+
+import 'package:firebase_dart/firebase_dart.dart';
+
+void signInWithEmailLinkExample() async {
+  FirebaseAuthService authService = FirebaseAuthService();
+
+  try {
+    UserCredential userCredential = await authService.signInWithEmailLink(
+      email: 'test@example.com',
+      emailLink: 'your_email_link',
+    );
+    print('Signed in with email link: ${userCredential.user!.email}');
+  } catch (e) {
+    print('Sign-in error: $e');
+  }
+}
+
+
 Sign In with Custom Token
 
 import 'package:firebase_dart/firebase_dart.dart';
