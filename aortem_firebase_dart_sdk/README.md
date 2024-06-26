@@ -39,7 +39,7 @@ yaml
 dependencies:
   flutter:
     sdk: flutter
-  aortem_firebase_dart_sdk: ^1.0.0  # Replace with the latest version
+  aortem_firebase_dart_sdk: ^0.0.1-pre+1  # Replace with the latest version
 Then, run flutter pub get to install the package:
 
 bash
