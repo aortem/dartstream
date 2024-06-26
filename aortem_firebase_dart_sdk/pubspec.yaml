@@ -1,7 +1,7 @@
 name: aortem_firebase_dart_sdk
 description: A sample command-line application.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1-pre
+repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
   sdk: ^3.2.6
@@ -30,7 +30,7 @@ dependencies:
   # js: ^0.6.3
   # synchronized: ^3.0.0
   intl: ">=0.17.0 <0.19.0"
-  firebase_dart: ^1.1.4
+  firebase_dart: ^1.1.4 # This belongs to rik as copyrighted.  We need our own.
 
 
 dev_dependencies:
