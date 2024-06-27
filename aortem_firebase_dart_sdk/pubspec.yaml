@@ -1,7 +1,7 @@
-name: firebase_dart_auth
+name: aortem_firebase_dart_sdk
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+version: 0.0.1-pre
+repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
   sdk: ^3.4.4
@@ -9,6 +9,7 @@ environment:
 # Add regular dependencies here.
 dependencies:
   # path: ^1.8.0
+  http: ^0.13.5
 
 dev_dependencies:
   lints: ^3.0.0
