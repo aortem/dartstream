@@ -1,5 +1,5 @@
-import 'user_credential.dart';
 import 'firebase_auth.dart';
+import 'user_credential.dart';
 import 'auth_credential.dart';
 
 class ConfirmationResult {
@@ -9,11 +9,8 @@ class ConfirmationResult {
   ConfirmationResult({required this.verificationId, required FirebaseAuth auth})
       : _auth = auth;
 
-  Future<UserCredential> confirm(String verificationCode) async {
-    final credential = PhoneAuthCredential(
-      verificationId: verificationId,
-      smsCode: verificationCode,
-    );
-    return _auth.signInWithCredential(credential);
+  Future<UserCredential> confirm(String smsCode) {
+    return _auth.phone.signInWithCredential(
+        PhoneAuthCredential(verificationId: verificationId, smsCode: smsCode));
   }
 }

@@ -1,17 +1,19 @@
-import 'auth_base.dart';
+import '../firebase_auth.dart';
 import '../user_credential.dart';
 
-class CustomTokenAuth extends AuthBase {
-  CustomTokenAuth(super.auth);
+class CustomTokenAuth {
+  final FirebaseAuth auth;
 
-  Future<UserCredential> signIn(String token) async {
-    final response = await _performRequest('signInWithCustomToken', {
+  CustomTokenAuth(this.auth);
+
+  Future<UserCredential> signInWithCustomToken(String token) async {
+    final response = await auth.performRequest('signInWithCustomToken', {
       'token': token,
       'returnSecureToken': true,
     });
 
     final userCredential = UserCredential.fromJson(response);
-    _auth._updateCurrentUser(userCredential.user);
+    auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
 }

@@ -1,15 +1,13 @@
-abstract class AuthCredential {}
+abstract class AuthCredential {
+  final String providerId;
 
-class EmailAuthCredential extends AuthCredential {
-  final String email;
-  final String password;
-
-  EmailAuthCredential({required this.email, required this.password});
+  AuthCredential(this.providerId);
 }
 
 class PhoneAuthCredential extends AuthCredential {
   final String verificationId;
   final String smsCode;
 
-  PhoneAuthCredential({required this.verificationId, required this.smsCode});
+  PhoneAuthCredential({required this.verificationId, required this.smsCode})
+      : super('phone');
 }

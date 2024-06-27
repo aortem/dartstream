@@ -1,4 +1,4 @@
-import 'package:firebase_dart_auth/firebase_dart_auth.dart';
+import 'package:aortem_firebase_dart_sdk/firebase_dart_auth.dart';
 import 'package:test/test.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/testing.dart';

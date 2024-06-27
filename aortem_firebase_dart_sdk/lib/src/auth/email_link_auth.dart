@@ -1,28 +1,30 @@
-import 'auth_base.dart';
+import '../firebase_auth.dart';
 import '../user_credential.dart';
 import '../utils.dart';
 
-class EmailLinkAuth extends AuthBase {
-  EmailLinkAuth(super.auth);
+class EmailLinkAuth {
+  final FirebaseAuth auth;
+
+  EmailLinkAuth(this.auth);
 
   Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings actionCodeSettings) async {
-    await _performRequest('sendOobCode', {
+      String email, ActionCodeSettings settings) async {
+    await auth.performRequest('sendOobCode', {
       'requestType': 'EMAIL_SIGNIN',
       'email': email,
-      ...actionCodeSettings.toMap(),
+      ...settings.toMap(),
     });
   }
 
   Future<UserCredential> signInWithEmailLink(
       String email, String emailLink) async {
-    final response = await _performRequest('signInWithEmailLink', {
+    final response = await auth.performRequest('signInWithEmailLink', {
       'email': email,
-      'oobCode': Uri.parse(emailLink).queryParameters['oobCode'],
+      'oobCode': emailLink,
     });
 
     final userCredential = UserCredential.fromJson(response);
-    _auth._updateCurrentUser(userCredential.user);
+    auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
 }

@@ -1,13 +1,12 @@
 import '../firebase_auth.dart';
-import '../user_credential.dart';
 
 abstract class AuthBase {
-  final FirebaseAuth _auth;
+  final FirebaseAuth auth;
 
-  AuthBase(this._auth);
+  AuthBase(this.auth);
 
-  Future<Map<String, dynamic>> _performRequest(
+  Future<Map<String, dynamic>> performRequest(
       String endpoint, Map<String, dynamic> body) {
-    return _auth._performRequest(endpoint, body);
+    return auth.performRequest(endpoint, body);
   }
 }

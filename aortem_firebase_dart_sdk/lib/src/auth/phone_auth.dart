@@ -1,30 +1,35 @@
-import 'auth_base.dart';
+import '../firebase_auth.dart';
 import '../user_credential.dart';
 import '../confirmation_result.dart';
 import '../auth_credential.dart';
 
-class PhoneAuth extends AuthBase {
-  PhoneAuth(super.auth);
+class PhoneAuth {
+  final FirebaseAuth auth;
+
+  PhoneAuth(this.auth);
 
   Future<ConfirmationResult> verifyPhoneNumber(String phoneNumber) async {
-    final response = await _performRequest('sendVerificationCode', {
+    final response = await auth.performRequest('sendVerificationCode', {
       'phoneNumber': phoneNumber,
-      'recaptchaToken': 'RECAPTCHA_TOKEN', // You'd need to implement reCAPTCHA
+      'recaptchaToken':
+          'RECAPTCHA_TOKEN', // You might need to implement reCAPTCHA
     });
 
     return ConfirmationResult(
-        verificationId: response['sessionInfo'], auth: _auth);
+      verificationId: response['verificationId'],
+      auth: auth,
+    );
   }
 
   Future<UserCredential> signInWithCredential(
       PhoneAuthCredential credential) async {
-    final response = await _performRequest('signInWithPhoneNumber', {
-      'sessionInfo': credential.verificationId,
+    final response = await auth.performRequest('signInWithPhoneNumber', {
+      'verificationId': credential.verificationId,
       'code': credential.smsCode,
     });
 
     final userCredential = UserCredential.fromJson(response);
-    _auth._updateCurrentUser(userCredential.user);
+    auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
 }
