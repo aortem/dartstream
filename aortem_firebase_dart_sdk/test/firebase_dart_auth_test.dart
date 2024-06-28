@@ -1,7 +1,8 @@
-import 'package:aortem_firebase_dart_sdk/firebase_dart_auth.dart';
-import 'package:aortem_firebase_dart_sdk/src/action_code_settings.dart' as acs;
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
+    as acs;
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 
 void main() {
   group('FirebaseAuth', () {
