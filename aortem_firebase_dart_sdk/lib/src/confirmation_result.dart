@@ -9,8 +9,8 @@ class ConfirmationResult {
   ConfirmationResult({required this.verificationId, required FirebaseAuth auth})
       : _auth = auth;
 
-  Future<UserCredential> confirm(String smsCode) {
-    return _auth.phone.signInWithCredential(
-        PhoneAuthCredential(verificationId: verificationId, smsCode: smsCode));
+  Future<UserCredential> confirm(String verificationCode) async {
+    return await _auth.phone
+        .verifyPhoneNumber(verificationId, verificationCode);
   }
 }

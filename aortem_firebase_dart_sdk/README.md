@@ -22,8 +22,8 @@ To use this package, add `aortem_firebase_dart_sdk` as a dependency in your `pub
 Open your terminal and run:
 
 ```bash
-flutter pub add aortem_firebase_dart_sdk
-This command adds the package to your Flutter project and installs the latest version.
+dart pub add aortem_firebase_dart_sdk
+This command adds the package to your dart project and installs the latest version.
 
 Manually Adding
 Alternatively, you can manually add the package to your pubspec.yaml file:
@@ -31,39 +31,38 @@ Alternatively, you can manually add the package to your pubspec.yaml file:
 yaml
 
 dependencies:
-    sdk: dart
-  aortem_firebase_dart_sdk: ^0.0.1-pre+1  # Replace with the latest version
+  http: ^1.2.1
+  aortem_firebase_dart_sdk: ^0.0.1-pre  # Replace with the latest version
+
 Then, run dart pub get to install the package:
 
-bash
-
 dart pub get
+
 Initialize Firebase
 First, initialize Firebase in your Dart application:
 
-dart
 
 import 'package:aortem_firebase_dart_sdk/aortem_firebase_dart_sdk.dart';
 
 void main() async {
   // Initialize Firebase app
   FirebaseAuth auth = FirebaseAuth(
-    options: FirebaseOptions(
-      apiKey: 'your_api_key',
-      authDomain: 'your_auth_domain',
-      projectId: 'your_project_id',
-      storageBucket: 'your_storage_bucket',
-      messagingSenderId: 'your_messaging_sender_id',
-      appId: 'your_app_id',
-    ),
+    apiKey: 'your_api_key',
+    projectId: 'your_project_id',
   );
 
-  // Initialize FirebaseAuthService instance
-  FirebaseAuthService authService = FirebaseAuthService();
+  // Example usage
+  try {
+    UserCredential userCredential = await auth.signInWithEmailAndPassword('user@example.com', 'password123');
+    print('Signed in: ${userCredential.user.email}');
+  } catch (e) {
+    print('Sign-in error: $e');
+  }
+}
 
-  ## Authentication Methods
+  Authentication Methods
 
-  ### Sign in with Email and Password
+  Sign in with Email and Password
 
   // Example: Sign in with email and password
   try {
@@ -76,7 +75,7 @@ void main() async {
   print('Sign-in error: $e');
 }
 
-### Sign in with Custom Token
+Sign in with Custom Token
 
 try {
   UserCredential userCredential = await auth.signInWithCustomToken('your-custom-token');
@@ -86,7 +85,7 @@ try {
 }
 
 
-### Sign in with Email Link
+Sign in with Email Link
 
 try {
   await auth.sendSignInLinkToEmail(
@@ -114,7 +113,7 @@ try {
 }
 
 
-### Sign in with Phone Number
+Sign in with Phone Number
 
 try {
   ConfirmationResult confirmationResult = await auth.signInWithPhoneNumber('+1234567890');
@@ -126,7 +125,7 @@ try {
 }
 
 
-### Sign in with Credential
+Sign in with Credential
 
 try {
   AuthCredential credential = EmailAuthProvider.credential(
@@ -140,7 +139,7 @@ try {
 }
 
 
-### Sign in with Popup (OAuth)
+Sign in with Popup (OAuth)
 
 try {
   UserCredential userCredential = await auth.signInWithPopup(GoogleAuthProvider());
@@ -149,9 +148,9 @@ try {
   print('Sign-in error: $e');
 }
 
-## User Management
+User Management
 
-### Create User
+Create User
 
 try {
   UserCredential userCredential = await auth.createUserWithEmailAndPassword(
@@ -164,7 +163,7 @@ try {
 }
 
 
-### Update User Profile
+Update User Profile
 
 try {
   await auth.currentUser?.updateProfile(displayName: 'John Doe', photoURL: 'https://example.com/photo.jpg');
@@ -174,7 +173,7 @@ try {
 }
 
 
-### Delete User
+Delete User
 
 try {
   await auth.currentUser?.delete();
@@ -183,11 +182,11 @@ try {
   print('User deletion error: $e');
 }
 
-## Error Handling
+Error Handling
 
 The SDK uses FirebaseAuthException for error handling. Always wrap your authentication calls in try-catch blocks to handle potential errors gracefully.
 
-### Testing
+Testing
 
 To run the tests for this package, add the following dev dependency to your pubspec.yaml:
 
