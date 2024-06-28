@@ -1,6 +1,5 @@
-import 'auth_base.dart';
-import '../user_credential.dart';
-import '../firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_base.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 
 class OAuthAuth extends AuthBase {
   OAuthAuth(super.auth);

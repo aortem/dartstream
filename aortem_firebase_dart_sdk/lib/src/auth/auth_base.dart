@@ -1,4 +1,4 @@
-import '../firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 
 abstract class AuthBase {
   final FirebaseAuth auth;

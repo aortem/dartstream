@@ -1,16 +1,16 @@
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 //import 'package:http/http.dart' as http;
-import 'auth/email_password_auth.dart';
-import 'auth/custom_token_auth.dart';
-import 'auth/email_link_auth.dart';
-import 'auth/phone_auth.dart';
-import 'auth/oauth_auth.dart';
-import 'user.dart';
-import 'user_credential.dart';
-import 'exceptions.dart';
-import 'auth_credential.dart';
-import 'action_code_settings.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
 class FirebaseAuth {
   final String apiKey;

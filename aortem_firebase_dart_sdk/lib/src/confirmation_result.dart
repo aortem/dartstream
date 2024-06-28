@@ -1,6 +1,5 @@
-import 'firebase_auth.dart';
-import 'user_credential.dart';
-import 'auth_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 
 class ConfirmationResult {
   final String verificationId;
