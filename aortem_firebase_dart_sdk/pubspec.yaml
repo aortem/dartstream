@@ -9,7 +9,7 @@ environment:
 # Add regular dependencies here.
 
 dependencies:
-  http: ^1.2.1 # Manages our API Request
+  ds_standard_features: ^0.0.1-pre+7 #Standard Dart Team Utilities 
 
 dev_dependencies:
   ds_tools_testing: ^0.0.1-pre+2

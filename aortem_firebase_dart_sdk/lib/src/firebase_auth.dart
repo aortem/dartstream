@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
+//import 'package:http/http.dart' as http;
 import 'auth/email_password_auth.dart';
 import 'auth/custom_token_auth.dart';
 import 'auth/email_link_auth.dart';
