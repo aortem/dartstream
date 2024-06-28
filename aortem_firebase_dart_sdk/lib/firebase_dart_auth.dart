@@ -1,4 +1,4 @@
-library firebase_dart_auth;
+library firebase_dart_auth; //firebase-dart-admin-auth-sdk Should be updated for naming conventions
 
 export 'src/firebase_auth.dart';
 export 'src/user.dart';
