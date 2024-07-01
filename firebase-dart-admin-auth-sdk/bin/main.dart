@@ -1,4 +1,4 @@
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 void main() async {
   final auth =
