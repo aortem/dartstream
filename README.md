@@ -1,6 +1,6 @@
-# Firebase Dart Authentication SDK
+# Firebase Dart Admin Auth SDK
 
-Firebase Dart Authentication SDK is designed to provide select out of the box features of Firebase in Dart.  Both low level and high level abstractions are provided.
+Firebase Dart Admin Auth SDK is designed to provide select out of the box features of Firebase in Dart.  Both low level and high level abstractions are provided.
 
 ## Features
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
@@ -85,7 +85,7 @@ We welcome contributions of all forms from the community! If you're interested i
 
 ## Support Tiers
 
- Firebase Dart Authentication SDK offers various support tiers for our open-source products:
+ Firebase Dart Admin Auth SDK offers various support tiers for our open-source products:
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
 - **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
