@@ -73,7 +73,7 @@ This implementation does not yet support all functionalities of the firebase aut
 
 ## Documentation
 
-For detailed guides, API references, and example projects, visit our [Firebase Dart SDK Documentation](#). Start building with  Firebase Dart SDK today and take advantage of its robust features and elegant syntax.
+For detailed guides, API references, and example projects, visit our [Firebase Dart Auth Admin SDK Documentation](https://aortem.gitbook.io/firebase-dart-auth-admin-sdk). Start building with  Firebase Dart SDK today and take advantage of its robust features and elegant syntax.
 
 ## Examples
 
