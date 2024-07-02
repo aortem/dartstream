@@ -1,6 +1,6 @@
 # Firebase Dart Authentication SDK
 
-Firebase Dart Authentication SDK is designed to provide select out of the box features of Firebase in Dart.  Both loww level and high leve abstractions are provided.
+Firebase Dart Authentication SDK is designed to provide select out of the box features of Firebase in Dart.  Both low level and high level abstractions are provided.
 
 ## Features
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
