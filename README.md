@@ -100,7 +100,7 @@ Each tier offers escalating levels of support, from community forums to direct a
 ### Standard Support
 - $15/month.
 - 10 business days (Monday - Friday) Initial Response Service Level Agreement (IRSLA).
-- [Subscribe](https://buy.stripe.com/bIYcPL615erv3y8001)
+- [Subscribe](https://buy.stripe.com/fZe9Bwe9Ha3V3gkaEH)
 - **Features**:
   - Unlimited Support Tickets with Guaranteed RSLA.
   - One Open/Active Ticket at a time. 
@@ -108,24 +108,12 @@ Each tier offers escalating levels of support, from community forums to direct a
 ### Enhanced Support
 - $100/month - Billed Annually.
 - 72-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/bIY9Dz759abf5Gg4gi)
+- [Subscribe](https://buy.stripe.com/6oE6pkd5D2Bt2cg8wA)
 - **Features**:
   - Everything in Standard Support.
   - Access to Roadmap.
   - Feature Request Upvoting (Priority feature request).
   - One Open/Active Ticket at a time.
-
-### Enterprise Support
-- $999/month - Billed Annually
-- 24-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
-- **Features**:
-  - Everything in Enhanced Support.
-  - Early Access to new features.
-  - Access to our network channels.
-  - Monthly access to Development/Partner Calls.
-  - Access to Partner/Reseller/Channel Program.
-  - Option to include Logo on the Open Source website.
 
 To choose a support tier, click on one of the options above.
 
