@@ -28,7 +28,7 @@ We welcome contributions in various forms, such as:
 - Bug reports and fixes
 - Feature requests and implementations
 - Documentation improvements
-- Feedback on the framework's performance and design
+- Feedback on the SDK's performance and design
 
 ## How to Contribute
 
@@ -70,10 +70,10 @@ When reporting bugs, include:
 
 ## Feature Requests
 
-We encourage feature requests that enhance the framework. Please:
+We encourage feature requests that enhance the SDK. Please:
 
 - Feature Request and enhcancements can be submitted through the Freshdesk subscription console.
-- Explain how it aligns with the framework's goals.
+- Explain how it aligns with the SDK's goals.
 - Discuss potential implementation and impact.
 
 ## Improving Documentation
@@ -82,11 +82,10 @@ Your contributions to improve or clarify documentation are always welcome. Wheth
 
 ## Available Versions
 
-Firebase Dart Admin Auth SDK is available to the Dart community in three versions:
+Firebase Dart Admin Auth SDK is available in two versions to cater to different needs and scales:
 
-1. **Free - Open Source Version**: Available for anyone to use, modify, and distribute according to the needs of their project.
-2. **Hosted Framework**: Similar to Laravel Vapor, this version provides a managed, hosted solution for those looking to deploy Firebase Dart Admin Auth SDK applications with ease.
-3. **Aortem - SAAS Version**: The most comprehensive version, offering full SaaS capabilities for enterprise needs, including additional features and support and a full host of Native Dart SDK's for your most popular integrations.
+1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
+2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
 
 ## Community
 

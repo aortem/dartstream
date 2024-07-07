@@ -66,26 +66,26 @@ This implementation does not yet support all functionalities of the firebase aut
 
 ## Available Versions
 
- Firebase Dart SDK is available in two versions to cater to different needs and scales:
+Firebase Dart Admin Auth SDK is available in two versions to cater to different needs and scales:
 
 1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
 2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
 
 ## Documentation
 
-For detailed guides, API references, and example projects, visit our [Firebase Dart Auth Admin SDK Documentation](https://aortem.gitbook.io/firebase-dart-auth-admin-sdk). Start building with  Firebase Dart SDK today and take advantage of its robust features and elegant syntax.
+For detailed guides, API references, and example projects, visit our [Firebase Dart Admin Auth SDK Documentation](https://aortem.gitbook.io/firebase-dart-auth-admin-sdk). Start building with  Firebase Dart Admin Auth SDK today and take advantage of its robust features and elegant syntax.
 
 ## Examples
 
-Explore the `/example` directory in this repository to find sample applications demonstrating  Firebase Dart SDK's capabilities in real-world scenarios.
+Explore the `/example` directory in this repository to find sample applications demonstrating  Firebase Dart Admin Auth SDK's capabilities in real-world scenarios.
 
 ## Contributing
 
-We welcome contributions of all forms from the community! If you're interested in helping improve  Firebase Dart SDK, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
+We welcome contributions of all forms from the community! If you're interested in helping improve  Firebase Dart Admin Auth SDK, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.  Our team will review your pull request. Once approved, we will integrate your changes into our primary repository and push the mirrored changes on the main github branch.
 
 ## Support Tiers
 
- Firebase Dart Admin Auth SDK offers various support tiers for our open-source products:
+ Firebase Dart Admin Auth Auth SDK offers various support tiers for our open-source products:
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
 - **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
@@ -94,7 +94,7 @@ We welcome contributions of all forms from the community! If you're interested i
 Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
 ### Community Support
-- Free support provided by the Firebase Dart SDK community.
+- Free support provided by the Firebase Dart Admin Auth SDK community.
 
 ### Standard Support
 - $15/month.
@@ -118,9 +118,9 @@ To choose a support tier, click on one of the options above.
 
 ## Licensing
 
-All  Firebase Dart SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, which are licensed from third party software  Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All  Firebase Dart Admin Auth SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, which are licensed from third party software  Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 
 ## Enhance with  Firebase Dart SDK"
 
-We hope  Firebase Dart SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+We hope the Firebase Dart Admin Auth SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
