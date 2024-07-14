@@ -1,8 +1,14 @@
 blank_issues_enabled: false
 contact_links:
+<<<<<<< HEAD
   - name: Product Support
     url: https://dartstream.freshdesk.com/support/home
     about: For product support you can click here.
   - name: Discord Community
     url: https://discord.gg/tcSdBSzT
     about: For general support inquiries, visit our support page.
+=======
+  - name: Billing Support
+    url: https://dartstream.com
+    about: For issues with billing, you can click here.
+>>>>>>> main

@@ -34,7 +34,11 @@ We welcome contributions of all forms from the community! If you're interested i
 DartStream offers various support tiers for our open-source products:
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
+<<<<<<< HEAD
 - **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+=======
+- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+>>>>>>> main
 - **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
 - **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
 
@@ -77,7 +81,11 @@ To choose a support tier, click on one of the options above.
 
 ## Licensing
 
+<<<<<<< HEAD
 All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+=======
+All Dartstream packages are licensed under BSD-3, except for the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+>>>>>>> main
 
 
 ## Enhance with DartStream"
