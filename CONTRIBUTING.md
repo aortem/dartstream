@@ -41,10 +41,11 @@ If you wish to join our community or officially contribute to the repository, pl
 
 2. Create a New Issue: If the bug is not listed, create a new issue. Provide a detailed description, steps to reproduce, and any relevant screenshots or logs.
 
-### Check Existing Documentation: Ensure the documentation report or suggestion is not already covered.
+### Submitting a Documentation Report
 
-1. Create a New Issue: Open a new issue and select the "Documentation" template. Clearly describe the documentation improvement or error.
+1. Check Existing Documentation: Ensure the documentation report or suggestion is not already covered.
 
+2. Create a New Issue: Open a new issue and select the "Documentation" template. Clearly describe the documentation improvement or error.
 
 ## Getting Started
 
