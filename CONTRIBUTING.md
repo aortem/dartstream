@@ -1,6 +1,6 @@
 # Contributing to Firebase Dart Admin Auth SDK
 
-Thank you for considering contributing to teh FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
+Thank you for considering contributing to the FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
 
 ## Quicklinks
 
@@ -32,15 +32,19 @@ We welcome contributions in various forms, such as:
 
 ## How to Contribute
 
-If you're interested in contributing, please:
+Due to the significant time required to review pull requests, we generally only accept and review pull requests from our internal community and network. However, we welcome bug reports and documentation contributions from everyone.
 
-1. Fork the repository and create your branch from `main`.
-2. Adhere to the coding standards and guidelines for Dart.
-3. Include unit tests for any new or changed functionality.
-4. Update documentation as necessary.
-5. Submit a pull request with detailed information about your changes.
+If you wish to join our community or officially contribute to the repository, please join our Discord community or subscribe to our mailing list.
 
-For more significant changes, please open an issue to discuss your ideas before moving forward.
+### Submitting a Bug Report
+1. Check Existing Issues: Before submitting a new bug report, please check if the issue already exists in our GitHub Issues.
+
+2. Create a New Issue: If the bug is not listed, create a new issue. Provide a detailed description, steps to reproduce, and any relevant screenshots or logs.
+
+### Check Existing Documentation: Ensure the documentation report or suggestion is not already covered.
+
+1. Create a New Issue: Open a new issue and select the "Documentation" template. Clearly describe the documentation improvement or error.
+
 
 ## Getting Started
 
@@ -89,7 +93,7 @@ Firebase Dart Admin Auth SDK is available in two versions to cater to different 
 
 ## Community
 
-Join the discussion on issues, contribute to pull requests, or reach out through [specified communication channels] for more informal discussions. Your input is crucial to the project's success.
+Join the discussion on issues, contribute to pull requests, or reach out through our [Join our Discord channel](https://discord.gg/tcSdBSzT) for more informal discussions. Your input is crucial to the project's success.
 
 
 ## Licensing
