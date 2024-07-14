@@ -1,68 +1,34 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
+## Each Package that contains a changelog with the key naming convention below.
 
 ### Added
-- New features that have been added.
+- For new features that have been added to the project since the last update.
 
 ### Changed
-- Changes in existing functionality.
+- For changes in existing functionality to make it better or different.
 
 ### Deprecated
-- Features that will be removed in upcoming releases.
+- For once-stable features now deprecated in this version.
 
 ### Removed
-- Features and functionality that have been removed.
+- For features removed in this release.
 
 ### Fixed
-- Any bugs or errors that have been fixed.
+- For any bugs that have been resolved.
 
 ### Security
-- Any security updates.
+- To address vulnerabilities that have been resolved.
 
-## [1.0.0] - 2024-01-01
+### Improved
+- Highlights enhancements to existing features that improve performance or user experience but don't necessarily change the feature's functionality.
 
-### Added
-- Launch of the first stable version.
-- New login feature with multi-factor authentication.
+### Known Issues
+- Documents known issues and bugs still present in the release. Helps manage expectations and informs users about potential problems they might encounter.
 
-### Changed
-- Updated documentation to reflect new features.
+### Migration Notes
+- Used when setup changes occur or significant updates are made that may affect backward compatibility. Instructions and recommendations are provided on how to transition from the previous version.
 
-### Fixed
-- Resolved issue where user session would not persist.
-
-## [0.3.0] - 2023-12-15
-
-### Added
-- Beta feature for data export.
-
-### Changed
-- Improved performance of the database queries.
-
-### Fixed
-- Minor bug fixes and performance improvements.
-
-## [0.2.0] - 2023-11-30
-
-### Added
-- Added user profile customization options.
-
-### Changed
-- Modified navigation for improved user experience.
-
-### Fixed
-- Fixed a typo in the installation guide.
-
-## [0.1.0] - 2023-11-15
-
-### Added
-- Initial release with basic functionality.
-- Support for user registration and authentication.
-
+### Contributors
+- Recognizes individuals in the community who have contributed to the release.
 

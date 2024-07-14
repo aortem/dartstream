@@ -1,0 +1,49 @@
+#This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+name: ds_shelf
+description: A starting point for Dart libraries or applications.
+version: 0.0.1-pre+1
+# repository: https://github.com/my_org/my_repo
+
+environment:
+ sdk: ">=3.4.0 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+#Database Drivers
+  postgres: ^3.0.0 # For PostgreSQL
+
+# HTTP Client
+  http: ^1.1.2
+  dio: ^5.4.2
+
+# Middleware - Packages Built By The Dart Team
+  shelf: ^1.4.1
+  shelf_router: ^1.0.0
+  shelf_proxy: ^1.0.0
+  shelf_static: ^1.0.0
+  shelf_web_socket: ^1.0.0
+  shelf_packages_handler: ^3.0.2
+  shelf_test_handler: ^2.0.2
+  http_multi_server: ^3.2.1
+  web_socket_channel: ^2.1.0
+  # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
+  # They might be part of your dev_dependencies for code generation or testing.
+
+  # path: ^1.8.0
+
+# Dev dependencies are added in sections alphabetically and according to features.
+dev_dependencies:
+
+#Shelf generator  
+  shelf_router_generator: ^1.0.0
+
+#CLI
+  cli_util: ^0.4.1
+
+#Testing Packages
+ds_tools_testing: ^0.0.1-pre+3
+
+#Globally Activated Package
+executables:
+   ds: ds_cli

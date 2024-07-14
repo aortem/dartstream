@@ -1,0 +1,44 @@
+#This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
+name: ds_shelf
+description: Core Shelf Components Within Larger DartStream Ecosystem.
+version: 0.0.1-pre+2
+repository: https://github.com/dartstream
+
+environment:
+ sdk: ">=3.4.0 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+# Middleware - Packages Built By The Dart Team
+  shelf: ^1.4.1
+  shelf_router: ^1.0.0
+  shelf_proxy: ^1.0.0
+  shelf_static: ^1.0.0
+  shelf_web_socket: ^1.0.4
+  shelf_packages_handler: ^3.0.2
+  shelf_test_handler: ^2.0.2
+   # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
+  # They might be part of your dev_dependencies for code generation or testing.
+
+  # path: ^1.8.0
+
+# Dev dependencies are added in sections alphabetically and according to features.
+dev_dependencies:
+  build_runner: ^2.4.9
+  shelf_router_generator: ^1.0.0
+
+#CLI
+  cli_util: ^0.4.1
+
+#Cosmetic
+  lints: ^4.0.0 #Included In ds_standard_features
+
+#Testing Packages
+  test: ^1.25.5
+  mockito: ^5.4.4
+  mocktail: ^1.0.3
+
+#Globally Activated Package
+#executables:
+#   ds: ds_cli

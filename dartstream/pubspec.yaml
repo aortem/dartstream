@@ -1,19 +1,23 @@
+# This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 name: ds_dartstream
 description: A starting point for Dart libraries or applications.
-version: 1.0.0
+version: 1.0.0-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.2.4
+ sdk: "^3.3.0"
 
-# Add regular dependencies here.
+# Dependencies are added in sections alphabetically and according to features.
 dependencies:
-  postgres: ^3.0.0 # For PostgreSQL
-  aws_signature_v4: ^0.5.0 # For AWS DynamoDB
-  http: ^1.1.2
 
-  # path: ^1.8.0
+# Multi Repository Dependencies
+  melos: ^5.2.2
 
+# Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-  lints: ^2.1.0
-  test: ^1.24.0
+
+# CLI
+  cli_util: ^0.4.1
+#TBD
+  lints: ^4.0.0 #Included In ds_standard_features
+  test: ^1.25.5
