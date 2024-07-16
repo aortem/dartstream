@@ -109,180 +109,298 @@ For more refer to Gitbook for prelease [documentation here](https://aortem.gitbo
 
 
 
-### Firebase Service Account Initialization
-Sure, here's a detailed documentation on how users can use your package `firebase_dart_admin_auth_sdk` to connect to Firebase in a Flutter project, including steps to create a project in the Firebase Console.
+<!-- usman babar  -->
+# Firebase Dart Admin Auth SDK
 
----
+A Dart package that provides Firebase Authentication features without using Firebase Auth and Firebase Core. This package allows you to perform authentication requests using HTTP directly.
 
-## firebase_dart_admin_auth_sdk Documentation
+## Features
 
-### Overview
+- **Email/Password Authentication**
+  - `signInWithEmailAndPassword`
+  - `createUserWithEmailAndPassword`
+- **Custom Token Authentication**
+  - `signInWithCustomToken`
+- **Email Link Authentication**
+  - `sendSignInLinkToEmail`
+  - `signInWithEmailLink`
+- **Credential Authentication**
+  - `signInWithCredential`
+- **OAuth Authentication**
+  - `signInWithRedirect`
+  - `signInWithPopup`
+- **User Management**
+  - `updateCurrentUser`
+  - `useDeviceLanguage`
+  - `verifyPasswordResetCode`
+  - `signOut`
 
-The `firebase_dart_admin_auth_sdk` package provides a way for Flutter developers to connect to Firebase using three different methods: service account with keys, environment variables, and service account without key impersonation. This package focuses on Firebase authentication, allowing developers to easily integrate Firebase Auth features into their Flutter projects.
+## Installation
 
-### Installation
-
-Add the following dependency to your `pubspec.yaml` file:
+Add the following to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.1-pre
-  ds_standard_features: ^0.0.1-pre+7 
-```
-
-Run `flutter pub get` to install the package.
-
-### Usage
-
-#### Step 1: Create a Firebase Project
-
-1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Click on "Add project" and follow the setup flow.
-3. Once the project is created, click on the project to enter the project overview page.
-
-#### Step 2: Add a Flutter App to the Firebase Project
-
-1. In the Firebase Console, click on the "Settings" icon next to "Project Overview".
-2. Select "Project settings".
-3. Click on the "General" tab.
-4. In the "Your apps" section, click on the Flutter icon to add a new Flutter app.
-5. Follow the instructions to register your app with Firebase.
-
-#### Step 3: Obtain Firebase Configuration
-
-##### Method 1: Service Account with Keys
-
-1. In the Firebase Console, go to "Project settings".
-2. Select the "Service accounts" tab.
-3. Click on "Generate new private key" and download the JSON file.
-4. Place the JSON file in your project's root directory.
-
-##### Method 2: Environment Variables
-
-1. Go to "Project settings".
-2. Copy the `apiKey` and `projectId` from the Firebase configuration.
-3. Set the environment variables in your development environment.
-
-##### Method 3: Service Account Without Key Impersonation
-
-1. In the Firebase Console, go to "IAM & Admin".
-2. Click on "Service accounts".
-3. Create a new service account and configure the necessary roles.
-4. Use the service account email and user email for authentication.
-
-#### Step 4: Initialize FirebaseAuth
-
-```dart
+  firebase_dart_admin_auth_sdk:
+    git:
+      url: https://github.com/yourusername/firebase_dart_admin_auth_sdk.git
+Usage
+Initialization
+First, initialize FirebaseAuth with your Firebase project configuration:
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:http/http.dart' as http;
 
 void main() {
-  // Initialize FirebaseAuth using one of the following methods
-
-  // Method 1: Service Account with Keys
-  final auth1 = FirebaseAuth.fromServiceAccountWithKeys(
-    serviceAccountKeyFilePath: 'path/to/your/serviceAccountKey.json',
+  final auth = FirebaseAuth(
+    apiKey: 'your-api-key',
+    projectId: 'your-project-id',
   );
-
-  // Method 2: Environment Variables
-  final auth2 = FirebaseAuth.fromEnvironmentVariables(
-    apiKeyEnvVar: 'FIREBASE_API_KEY',
-    projectIdEnvVar: 'FIREBASE_PROJECT_ID',
-  );
-
-  // Method 3: Service Account Without Key Impersonation
-  final auth3 = FirebaseAuth.fromServiceAccountWithoutKeyImpersonation(
-    serviceAccountEmail: 'your-service-account-email@your-project-id.iam.gserviceaccount.com',
-    userEmail: 'your-user-email@example.com',
-  );
-
-  // Use the auth instance to perform Firebase operations
 }
-```
-
-#### Step 5: Perform Firebase Auth Operations
-
-```dart
-void performAuthOperations(FirebaseAuth auth) async {
-  // Sign in with email and password
+Sign In with Email and Password
+void signInWithEmail() async {
   try {
-    UserCredential userCredential = await auth.signInWithEmailAndPassword(
-      'email@example.com',
-      'your-password',
-    );
-    print('User signed in: ${userCredential.user}');
+    final result = await auth.signInWithEmailAndPassword('email@example.com', 'password');
+    print('Signed in: ${result.user.uid}');
   } catch (e) {
-    print('Sign-in failed: $e');
+    print('Sign in failed: $e');
   }
+}
+Create User with Email and Password
+void createUser() async {
+  try {
+    final result = await auth.createUserWithEmailAndPassword('email@example.com', 'password');
+    print('User created: ${result.user.uid}');
+  } catch (e) {
+    print('User creation failed: $e');
+  }
+}
+Sign In with Custom Token
+void signInWithCustomToken() async {
+  try {
+    final result = await auth.signInWithCustomToken('your-custom-token');
+    print('Signed in with custom token: ${result.user.uid}');
+  } catch (e) {
+    print('Sign in failed: $e');
+  }
+}
+Send Sign In Link to Email
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart' as acs;
 
-  // Sign out
+void sendSignInLink() async {
+  try {
+    final settings = acs.ActionCodeSettings(
+      url: 'https://example.com/finishSignUp?cartId=1234',
+      handleCodeInApp: true,
+    );
+    await auth.sendSignInLinkToEmail('email@example.com', settings);
+    print('Sign-in link sent');
+  } catch (e) {
+    print('Failed to send sign-in link: $e');
+  }
+}
+Sign In with Email Link
+void signInWithEmailLink() async {
+  try {
+    final result = await auth.signInWithEmailLink('email@example.com', 'https://example.com?oobCode=abc123');
+    print('Signed in with email link: ${result.user.uid}');
+  } catch (e) {
+    print('Sign in failed: $e');
+  }
+}
+Sign Out
+void signOut() async {
   try {
     await auth.signOut();
-    print('User signed out');
+    print('Signed out');
   } catch (e) {
-    print('Sign-out failed: $e');
+    print('Sign out failed: $e');
   }
 }
-```
-
-### Full Example
-
-```dart
-import 'package:flutter/material.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:http/http.dart' as http;
-
-void main() {
-  runApp(MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  // Initialize FirebaseAuth using one of the methods
-  final FirebaseAuth auth = FirebaseAuth.fromServiceAccountWithKeys(
-    serviceAccountKeyFilePath: 'path/to/your/serviceAccountKey.json',
-  );
-
-  // Alternatively, use environment variables
-  // final FirebaseAuth auth = FirebaseAuth.fromEnvironmentVariables(
-  //   apiKeyEnvVar: 'FIREBASE_API_KEY',
-  //   projectIdEnvVar: 'FIREBASE_PROJECT_ID',
-  // );
-
-  // Alternatively, use service account without key impersonation
-  // final FirebaseAuth auth = FirebaseAuth.fromServiceAccountWithoutKeyImpersonation(
-  //   serviceAccountEmail: 'your-service-account-email@your-project-id.iam.gserviceaccount.com',
-  //   userEmail: 'your-user-email@example.com',
-  // );
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Firebase Auth SDK Example'),
-        ),
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              try {
-                UserCredential userCredential = await auth.signInWithEmailAndPassword(
-                  'email@example.com',
-                  'your-password',
-                );
-                print('User signed in: ${userCredential.user}');
-              } catch (e) {
-                print('Sign-in failed: $e');
-              }
-            },
-            child: Text('Sign In'),
-          ),
-        ),
-      ),
-    );
+Update Current User
+void updateCurrentUser() async {
+  try {
+    await auth.updateUserInformation('user-id', {'displayName': 'New Display Name'});
+    print('User updated');
+  } catch (e) {
+    print('Update failed: $e');
   }
 }
-```
+Use Device Language
+void useDeviceLanguage() async {
+  try {
+    await auth.useDeviceLanguage('user-id', 'en');
+    print('Device language set');
+  } catch (e) {
+    print('Failed to set device language: $e');
+  }
+}
+Verify Password Reset Code
+void verifyPasswordResetCode() async {
+  try {
+    final result = await auth.verifyPasswordResetCode('reset-code');
+    print('Password reset code verified: ${result['email']}');
+  } catch (e) {
+    print('Verification failed: $e');
+  }
+}
+Testing
+To run tests, use the following command:
+dart test
+Contributing
+Contributions are welcome! Please open an issue or submit a pull request.
+License
+This project is licensed under the MIT License. See the LICENSE file for details.
+markdown
 
-### Conclusion
+### Notes:
+- Replace `https://github.com/yourusername/firebase_dart_admin_auth_sdk.git` with the actual URL of your repository.
+- Adjust the `LICENSE` file reference if it differs.
 
-The `firebase_dart_admin_auth_sdk` package simplifies connecting to Firebase and performing authentication operations in a Flutter project. By following the steps outlined above, you can easily integrate Firebase authentication into your Flutter applications using service account keys, environment variables, or service account without key impersonation. For more detailed information on Firebase authentication and other Firebase services, please refer to the official Firebase documentation.
+This README provides an overview of the package, installation instructions, usage examples for key features, and testing instructions. Feel free to customize it further based on your specific needs and additional features.
+4o
+
+Certainly! Here are detailed steps for users to initialize Firebase using the `firebase_dart_admin_auth_sdk` package with three different methods: using a service account with keys, environment variables, and service account without key impersonation.
+
+### Step-by-Step Guide to Initialize Firebase with `firebase_dart_admin_auth_sdk`
+
+#### Method 1: Using Service Account with Keys
+
+1. **Download Service Account Key File**
+   - Obtain a service account key file (`json` format) from the Firebase Console:
+     - Go to Firebase Console: [https://console.firebase.google.com/](https://console.firebase.google.com/).
+     - Navigate to your project.
+     - Go to Project Settings > Service accounts.
+     - Click on "Generate new private key" and download the JSON file.
+   
+2. **Include `firebase_dart_admin_auth_sdk` in Your Dart Project**
+   - Ensure you have added `firebase_dart_admin_auth_sdk` as a dependency in your `pubspec.yaml` file:
+     ```yaml
+     dependencies:
+       firebase_dart_admin_auth_sdk: ^0.0.1-pre
+     ```
+   - Run `dart pub get` to install the package.
+
+3. **Set Up Firebase Initialization in Dart**
+
+   Create a Dart script (`bin/main.dart`) to initialize Firebase using the service account key file:
+   ```dart
+   import 'dart:async';
+   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
+   Future<void> main(List<String> arguments) async {
+     // Replace 'path/to/serviceAccountKey.json' with your actual path
+     final serviceAccountKeyFilePath = 'path/to/serviceAccountKey.json';
+
+     // Initialize FirebaseAuth using service account with keys
+     final auth = FirebaseAuth.fromServiceAccountWithKeys(
+       serviceAccountKeyFilePath: serviceAccountKeyFilePath,
+     );
+
+     // Example: Sign in with email and password
+     try {
+       final userCredential = await auth.signInWithEmailAndPassword(
+         'user@example.com',
+         'password',
+       );
+       print('Signed in as ${userCredential.user?.email}');
+     } catch (e) {
+       print('Sign-in error: $e');
+     }
+   }
+   ```
+
+4. **Run the Dart Script**
+   - Open your terminal or command prompt.
+   - Navigate to your Dart project directory (`cd path/to/your/project`).
+   - Execute the Dart script:
+     ```bash
+     dart bin/main.dart
+     ```
+
+#### Method 2: Using Environment Variables
+
+1. **Set Environment Variables**
+   - Before running the Dart script, set environment variables for your Firebase API key and project ID:
+     ```bash
+     set FIREBASE_API_KEY=your_api_key
+     set FIREBASE_PROJECT_ID=your_project_id
+     ```
+   - Replace `"your_api_key"` and `"your_project_id"` with your actual Firebase API key and project ID.
+
+2. **Modify Dart Script**
+
+   Update your Dart script (`bin/main.dart`) to initialize Firebase using environment variables:
+   ```dart
+   import 'dart:async';
+   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
+   Future<void> main(List<String> arguments) async {
+     // Initialize FirebaseAuth using environment variables
+     final auth = FirebaseAuth.fromEnvironmentVariables(
+       apiKeyEnvVar: 'FIREBASE_API_KEY',
+       projectIdEnvVar: 'FIREBASE_PROJECT_ID',
+     );
+
+     // Example: Sign in with email and password
+     try {
+       final userCredential = await auth.signInWithEmailAndPassword(
+         'user@example.com',
+         'password',
+       );
+       print('Signed in as ${userCredential.user?.email}');
+     } catch (e) {
+       print('Sign-in error: $e');
+     }
+   }
+   ```
+
+3. **Run the Dart Script**
+   - Open your terminal or command prompt.
+   - Navigate to your Dart project directory (`cd path/to/your/project`).
+   - Execute the Dart script:
+     ```bash
+     dart bin/main.dart
+     ```
+
+#### Method 3: Using Service Account without Key Impersonation
+
+1. **Modify Dart Script**
+
+   Update your Dart script (`bin/main.dart`) to initialize Firebase without key impersonation:
+   ```dart
+   import 'dart:async';
+   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
+   Future<void> main(List<String> arguments) async {
+     // Initialize FirebaseAuth without key impersonation
+     final auth = FirebaseAuth.fromServiceAccountWithoutKeyImpersonation(
+       serviceAccountEmail: 'service_account_email',
+       userEmail: 'user_email',
+     );
+
+     // Example: Sign in with email and password
+     try {
+       final userCredential = await auth.signInWithEmailAndPassword(
+         'user@example.com',
+         'password',
+       );
+       print('Signed in as ${userCredential.user?.email}');
+     } catch (e) {
+       print('Sign-in error: $e');
+     }
+   }
+   ```
+
+2. **Run the Dart Script**
+   - Open your terminal or command prompt.
+   - Navigate to your Dart project directory (`cd path/to/your/project`).
+   - Execute the Dart script:
+     ```bash
+     dart bin/main.dart
+     ```
+
+### Additional Notes:
+
+- Ensure you replace placeholders (`path/to/serviceAccountKey.json`, `your_api_key`, `your_project_id`, `service_account_email`, `user_email`) with your actual values.
+- The Dart script examples demonstrate signing in with email and password as an example. You can modify these to use other authentication methods provided by the `firebase_dart_admin_auth_sdk` package.
+
+By following these steps, users can effectively initialize Firebase in Dart using the `firebase_dart_admin_auth_sdk` package with their preferred method: service account with keys, environment variables, or service account without key impersonation. Adjustments to the Dart script can accommodate various Firebase authentication scenarios based on project requirements.

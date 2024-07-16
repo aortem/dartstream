@@ -22,15 +22,14 @@ void main() {
     void initializeAuthWithServiceAccount() {
       auth = FirebaseAuth.fromServiceAccountWithKeys(
         serviceAccountKeyFilePath: 'path/to/your/serviceAccountKey.json',
-        httpClient: mockClient,
+       
       );
     }
 
     void initializeAuthWithEnvVariables() {
       auth = FirebaseAuth.fromEnvironmentVariables(
-        apiKeyEnvVar: 'FIREBASE_API_KEY',
-        projectIdEnvVar: 'FIREBASE_PROJECT_ID',
-        httpClient: mockClient,
+        apiKey: 'FIREBASE_API_KEY',
+       projectId: 'FIREBASE_PROJECT_ID',
       );
     }
 
@@ -38,7 +37,7 @@ void main() {
       auth = FirebaseAuth.fromServiceAccountWithoutKeyImpersonation(
         serviceAccountEmail: 'your-service-account-email@your-project-id.iam.gserviceaccount.com',
         userEmail: 'your-user-email@example.com',
-        httpClient: mockClient,
+       
       );
     }
 

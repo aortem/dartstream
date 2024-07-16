@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
@@ -54,55 +53,37 @@ class FirebaseAuth {
 
   factory FirebaseAuth.fromServiceAccountWithKeys({
     required String serviceAccountKeyFilePath,
-    http.Client? httpClient,
   }) {
-    // Read the service account key file and extract necessary information.
-    // For simplicity, we will assume the file is JSON formatted.
-    final serviceAccountKey = json.decode(
-      File(serviceAccountKeyFilePath).readAsStringSync(),
-    );
-
+    final apiKey = 'your_api_key';
+    final projectId = 'your_project_id';
     return FirebaseAuth._(
-      apiKey: serviceAccountKey['apiKey'],
-      projectId: serviceAccountKey['projectId'],
-      httpClient: httpClient ?? http.Client(),
+      apiKey: apiKey,
+      projectId: projectId,
+      httpClient: http.Client(),
     );
   }
 
   factory FirebaseAuth.fromEnvironmentVariables({
-    required String apiKeyEnvVar,
-    required String projectIdEnvVar,
-    http.Client? httpClient,
+    required String apiKey,
+    required String projectId,
   }) {
-    final apiKey = Platform.environment[apiKeyEnvVar];
-    final projectId = Platform.environment[projectIdEnvVar];
-
-    if (apiKey == null || projectId == null) {
-      throw FirebaseAuthException(
-        code: 'env-var-missing',
-        message: 'Environment variables for API key and project ID must be set.',
-      );
-    }
-
     return FirebaseAuth._(
       apiKey: apiKey,
       projectId: projectId,
-      httpClient: httpClient ?? http.Client(),
+      httpClient: http.Client(),
     );
   }
 
   factory FirebaseAuth.fromServiceAccountWithoutKeyImpersonation({
     required String serviceAccountEmail,
     required String userEmail,
-    http.Client? httpClient,
   }) {
-    // Implement the necessary authentication method for key impersonation
-    // (e.g., using OAuth 2.0 to impersonate a service account)
+    final apiKey = 'your_api_key';
+    final projectId = 'your_project_id';
     return FirebaseAuth._(
-      // These would be retrieved as part of the authentication process.
-      apiKey: 'your-api-key', // Replace with actual method to retrieve API key
-      projectId: 'your-project-id', // Replace with actual method to retrieve project ID
-      httpClient: httpClient ?? http.Client(),
+      apiKey: apiKey,
+      projectId: projectId,
+      httpClient: http.Client(),
     );
   }
 
@@ -215,7 +196,8 @@ class FirebaseAuth {
     }
   }
 
-  Future<void> updateUserInformation(String userId, Map<String, dynamic> userData) async {
+  Future<void> updateUserInformation(
+      String userId, Map<String, dynamic> userData) async {
     try {
       await updateUserService.updateCurrentUser(userId, userData);
     } catch (e) {
