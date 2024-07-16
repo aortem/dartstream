@@ -5,9 +5,9 @@ void main(List<String> arguments) async {
   if (arguments.isEmpty) {
     print('Usage: dart bin/main.dart <method> [args...]');
     print('Methods:');
-    print('  serviceAccountWithKeys <path_to_key_file>');
-    print('  environmentVariables <apiKeyEnvVar> <projectIdEnvVar>');
-    print('  serviceAccountWithoutKeyImpersonation <serviceAccountEmail> <userEmail>');
+    print('serviceAccountWithKeys <path_to_key_file>');
+    print('environmentVariables <apiKeyEnvVar> <projectIdEnvVar>');
+    print('serviceAccountWithoutKeyImpersonation <serviceAccountEmail> <userEmail>');
     exit(1);
   }
 
