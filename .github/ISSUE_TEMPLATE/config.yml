@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Product Support
+    url: https://dartsdks.freshdesk.com/support/home
+    about: For product support you can click here.
+  - name: Discord Community
+    url: https://discord.gg/tcSdBSzT
+    about: For general support inquiries, visit our support page.

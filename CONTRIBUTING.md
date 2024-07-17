@@ -1,6 +1,6 @@
 # Contributing to Firebase Dart Admin Auth SDK
 
-Thank you for considering contributing to teh FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
+Thank you for considering contributing to the FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
 
 ## Quicklinks
 
@@ -28,19 +28,24 @@ We welcome contributions in various forms, such as:
 - Bug reports and fixes
 - Feature requests and implementations
 - Documentation improvements
-- Feedback on the framework's performance and design
+- Feedback on the SDK's performance and design
 
 ## How to Contribute
 
-If you're interested in contributing, please:
+Due to the significant time required to review pull requests, we generally only accept and review pull requests from our internal community and network. However, we welcome bug reports and documentation contributions from everyone.
 
-1. Fork the repository and create your branch from `main`.
-2. Adhere to the coding standards and guidelines for Dart.
-3. Include unit tests for any new or changed functionality.
-4. Update documentation as necessary.
-5. Submit a pull request with detailed information about your changes.
+If you wish to join our community or officially contribute to the repository, please join our Discord community or subscribe to our mailing list.
 
-For more significant changes, please open an issue to discuss your ideas before moving forward.
+### Submitting a Bug Report
+1. Check Existing Issues: Before submitting a new bug report, please check if the issue already exists in our GitHub Issues.
+
+2. Create a New Issue: If the bug is not listed, create a new issue. Provide a detailed description, steps to reproduce, and any relevant screenshots or logs.
+
+### Submitting a Documentation Report
+
+1. Check Existing Documentation: Ensure the documentation report or suggestion is not already covered.
+
+2. Create a New Issue: Open a new issue and select the "Documentation" template. Clearly describe the documentation improvement or error.
 
 ## Getting Started
 
@@ -70,10 +75,10 @@ When reporting bugs, include:
 
 ## Feature Requests
 
-We encourage feature requests that enhance the framework. Please:
+We encourage feature requests that enhance the SDK. Please:
 
 - Feature Request and enhcancements can be submitted through the Freshdesk subscription console.
-- Explain how it aligns with the framework's goals.
+- Explain how it aligns with the SDK's goals.
 - Discuss potential implementation and impact.
 
 ## Improving Documentation
@@ -82,15 +87,14 @@ Your contributions to improve or clarify documentation are always welcome. Wheth
 
 ## Available Versions
 
-Firebase Dart Admin Auth SDK is available to the Dart community in three versions:
+Firebase Dart Admin Auth SDK is available in two versions to cater to different needs and scales:
 
-1. **Free - Open Source Version**: Available for anyone to use, modify, and distribute according to the needs of their project.
-2. **Hosted Framework**: Similar to Laravel Vapor, this version provides a managed, hosted solution for those looking to deploy Firebase Dart Admin Auth SDK applications with ease.
-3. **Aortem - SAAS Version**: The most comprehensive version, offering full SaaS capabilities for enterprise needs, including additional features and support and a full host of Native Dart SDK's for your most popular integrations.
+1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
+2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
 
 ## Community
 
-Join the discussion on issues, contribute to pull requests, or reach out through [specified communication channels] for more informal discussions. Your input is crucial to the project's success.
+Join the discussion on issues, contribute to pull requests, or reach out through our [Join our Discord channel](https://discord.gg/tcSdBSzT) for more informal discussions. Your input is crucial to the project's success.
 
 
 ## Licensing
