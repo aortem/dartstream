@@ -6,19 +6,19 @@ The Firebase Dart Admin Auth SDK offers a robust and flexible set of tools to pe
 
 ## Features:
 
-* **User Management:** Manage user accounts seamlessly with a suite of comprehensive user management functionalities.
-* **Custom Token Minting:** Integrate Firebase authentication with your backend services by generating custom tokens.
-* **Generating Email Action Links:** Perform authentication by creating and sending email action links to users emails for email verification, password reset, etc.
-* **ID Token verification:** Verify ID tokens securely to ensure that application users are authenticated and authorised to use app.
-* **Managing SAML/OIDC Provider Configuration**: Manage and configure SAML and ODIC providers to support authentication and simple sign-on solutions.
+- **User Management:** Manage user accounts seamlessly with a suite of comprehensive user management functionalities.
+- **Custom Token Minting:** Integrate Firebase authentication with your backend services by generating custom tokens.
+- **Generating Email Action Links:** Perform authentication by creating and sending email action links to users emails for email verification, password reset, etc.
+- **ID Token verification:** Verify ID tokens securely to ensure that application users are authenticated and authorised to use app.
+- **Managing SAML/OIDC Provider Configuration**: Manage and configure SAML and ODIC providers to support authentication and simple sign-on solutions.
 
 ## Getting Started
 
 If you want to use the Firebase Dart Admin Auth SDK for implementing a Firebase authentication in your Dart or Flutter projects follow the instructions on how to set up the auth SDK.
 
-* Ensure you have a Flutter or Dart (3.4.x) SDK installed in your system.
-* Set up a Firebase project and service account.
-* Set up a Dart or Flutter project.
+- Ensure you have a Flutter or Dart (3.4.x) SDK installed in your system.
+- Set up a Firebase project and service account.
+- Set up a Dart or Flutter project.
 
 ## Installation
 
@@ -28,13 +28,11 @@ For Dart use:
 dart pub add firebase_dart_admin_auth_sdk
 ```
 
-
 For Flutter use:
 
 ```javascript
 flutter pub add firebase_dart_admin_auth_sdk
 ```
-
 
 You can manually edit your `pubspec.yaml `file this:
 
@@ -72,22 +70,23 @@ void main() async {
 }
 ```
 
-
-* Import the package into your Dart or Flutter project:
+- Import the package into your Dart or Flutter project:
 
   ```
   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
   ```
 
   \
-* Initialize the package with your Firebase API key and project ID:
+
+- Initialize the package with your Firebase API key and project ID:
 
   ```
   final auth = FirebaseAuth(apiKey: 'YOUR_API_KEY', projectId: 'YOUR_PROJECT_ID');
   ```
 
   \
-* Ensure you have a user email and password or create new user with email and password.
+
+- Ensure you have a user email and password or create new user with email and password.
 
   ```
   final newUser = await auth.createUserWithEmailAndPassword('newuser@example.com', 'password123');
@@ -96,20 +95,19 @@ void main() async {
   A new user `newUser` is created in the above code snippet. Use the new user’s email address and password to sign them in.
 
   \
-* Use the `auth.signInWithEmailAndPassword()` to sign in an existing user or new user.
+
+- Use the `auth.signInWithEmailAndPassword()` to sign in an existing user or new user.
 
   ```
   final userCredential = await auth.signInWithEmailAndPassword('newuser@example.com', 'password123');
   ```
 
-
 ## Documentation
 
 For more refer to Gitbook for prelease [documentation here](https://aortem.gitbook.io/firebase-dart-auth-admin-sdk/).
 
-
-
 <!-- usman babar  -->
+
 # Firebase Dart Admin Auth SDK
 
 A Dart package that provides Firebase Authentication features without using Firebase Auth and Firebase Core. This package allows you to perform authentication requests using HTTP directly.
@@ -139,7 +137,7 @@ A Dart package that provides Firebase Authentication features without using Fire
 
 Add the following to your `pubspec.yaml`:
 
-```yaml
+````yaml
 dependencies:
   firebase_dart_admin_auth_sdk:
     git:
@@ -270,7 +268,7 @@ Certainly! Here are detailed steps for users to initialize Firebase using the `f
      - Navigate to your project.
      - Go to Project Settings > Service accounts.
      - Click on "Generate new private key" and download the JSON file.
-   
+
 2. **Include `firebase_dart_admin_auth_sdk` in Your Dart Project**
    - Ensure you have added `firebase_dart_admin_auth_sdk` as a dependency in your `pubspec.yaml` file:
      ```yaml
@@ -306,7 +304,7 @@ Certainly! Here are detailed steps for users to initialize Firebase using the `f
        print('Sign-in error: $e');
      }
    }
-   ```
+````
 
 4. **Run the Dart Script**
    - Open your terminal or command prompt.
@@ -319,6 +317,7 @@ Certainly! Here are detailed steps for users to initialize Firebase using the `f
 #### Method 2: Using Environment Variables
 
 1. **Set Environment Variables**
+
    - Before running the Dart script, set environment variables for your Firebase API key and project ID:
      ```bash
      set FIREBASE_API_KEY=your_api_key
@@ -329,6 +328,7 @@ Certainly! Here are detailed steps for users to initialize Firebase using the `f
 2. **Modify Dart Script**
 
    Update your Dart script (`bin/main.dart`) to initialize Firebase using environment variables:
+
    ```dart
    import 'dart:async';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -366,6 +366,7 @@ Certainly! Here are detailed steps for users to initialize Firebase using the `f
 1. **Modify Dart Script**
 
    Update your Dart script (`bin/main.dart`) to initialize Firebase without key impersonation:
+
    ```dart
    import 'dart:async';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
