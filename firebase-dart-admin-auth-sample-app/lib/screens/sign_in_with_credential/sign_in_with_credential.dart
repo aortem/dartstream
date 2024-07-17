@@ -11,33 +11,21 @@ class SignInWithCredential extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => SignInWithCredentialViewModel(),
-      child: Consumer<SignInWithCredentialViewModel>(
-        builder: (context, value, child) => Scaffold(
-          body: Center(
-            child: Builder(
-              builder: (context) {
-                if (Platform.isIOS) {
-                  return Button(
-                    onTap: () {},
-                    title: 'Sign In With Apple',
-                  );
-                }
-                return Button(
-                  onTap: () => value.signInWithCredential(
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    ),
-                  ),
-                  title: 'Sign In With Google',
-                );
-              },
-            ),
-          ),
+    return Scaffold(
+      body: Center(
+        child: Builder(
+          builder: (context) {
+            if (Platform.isIOS) {
+              return Button(
+                onTap: () {},
+                title: 'Sign In With Apple',
+              );
+            }
+            return Button(
+              onTap: () {},
+              title: 'Sign In With Google',
+            );
+          },
         ),
       ),
     );

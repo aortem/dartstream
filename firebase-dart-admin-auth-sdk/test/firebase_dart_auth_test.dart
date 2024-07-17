@@ -280,64 +280,71 @@ void main() {
 
       // Running common tests for each configuration
       runCommonTests();
-      // Test for sendPasswordResetEmail
-      test('sendPasswordResetEmail succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response('{}', 200));
 
-        await expectLater(
-          auth.sendPasswordResetEmail('test@example.com'),
-          completes,
-        );
-      });
+      // New tests added below for #16 to #21
+      group('New tests', () {
+        setUp(initializeAppWithServiceAccount);
 
-      // Test for revokeAccessToken
-      test('revokeAccessToken succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response('{}', 200));
+        // Test for sendPasswordResetEmail
+        test('sendPasswordResetEmail succeeds', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response('{}', 200));
 
-        await expectLater(
-          auth.revokeAccessToken,
-          completes,
-        );
-      });
+          await expectLater(
+            auth.sendPasswordResetEmail('test@example.com'),
+            completes,
+          );
+        });
 
-      // Test for onIdTokenChanged
-      test('onIdTokenChanged emits user', () async {
-        final user = User(uid: 'testUid', email: 'test@example.com');
-        auth.updateCurrentUser(user);
+        // Test for revokeAccessToken
+        test('revokeAccessToken succeeds', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response('{}', 200));
 
-        expect(auth.onIdTokenChanged(), emits(user));
-      });
+          await expectLater(
+            auth.revokeAccessToken,
+            completes,
+          );
+        });
 
-      // Test for onAuthStateChanged
-      test('onAuthStateChanged emits user', () async {
-        final user = User(uid: 'testUid', email: 'test@example.com');
-        auth.updateCurrentUser(user);
+        // Test for onIdTokenChanged
+        test('onIdTokenChanged emits user', () async {
+          final user = User(uid: 'testUid', email: 'test@example.com');
+          auth.updateCurrentUser(user);
 
-        expect(auth.onAuthStateChanged(), emits(user));
-      });
+          expect(auth.onIdTokenChanged(), emits(user));
+        });
 
-      // Test for isSignInWithEmailLink
-      test('isSignInWithEmailLink returns true for valid link', () {
-        final validLink =
-            'https://example.com/?mode=signIn&oobCode=abcdefghijklmnop';
-        expect(auth.isSignInWithEmailLink(validLink), isTrue);
-      });
+        // Test for onAuthStateChanged
+        test('onAuthStateChanged emits user', () async {
+          final user = User(uid: 'testUid', email: 'test@example.com');
+          auth.updateCurrentUser(user);
 
-      test('isSignInWithEmailLink returns false for invalid link', () {
-        final invalidLink = 'https://example.com/';
-        expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
-      });
+          expect(auth.onAuthStateChanged(), emits(user));
+        });
 
-      // Test for dispose
-      test('dispose closes streams', () async {
-        auth.dispose();
-        await expectLater(auth.onIdTokenChanged().isEmpty, completion(isTrue));
-        await expectLater(
-            auth.onAuthStateChanged().isEmpty, completion(isTrue));
+        // Test for isSignInWithEmailLink
+        test('isSignInWithEmailLink returns true for valid link', () {
+          final validLink =
+              'https://example.com/?mode=signIn&oobCode=abcdefghijklmnop';
+          expect(auth.isSignInWithEmailLink(validLink), isTrue);
+        });
+
+        test('isSignInWithEmailLink returns false for invalid link', () {
+          final invalidLink = 'https://example.com/';
+          expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
+        });
+
+        // Test for dispose
+        test('dispose closes streams', () async {
+          auth.dispose();
+          await expectLater(
+              auth.onIdTokenChanged().isEmpty, completion(isTrue));
+          await expectLater(
+              auth.onAuthStateChanged().isEmpty, completion(isTrue));
+        });
       });
     });
   });

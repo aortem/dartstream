@@ -8,25 +8,23 @@ class ApplyActionCode {
   ApplyActionCode(this.auth);
 
   Future<UserCredential> applyActionCode(String actionCode) async {
-
     try {
-          final response = await auth.performRequest(
-      'update',
-      {
-        'oobCode': actionCode,
-      },
-    );
+      final response = await auth.performRequest(
+        'update',
+        {
+          'oobCode': actionCode,
+        },
+      );
 
-    final userCredential = UserCredential.fromJson(response);
-    auth.updateCurrentUser(userCredential.user);
-    return userCredential;
+      final userCredential = UserCredential.fromJson(response);
+      auth.updateCurrentUser(userCredential.user);
+      return userCredential;
     } catch (e) {
-          print('Apply action code failed: $e');
+      print('Apply action code failed: $e');
       throw FirebaseAuthException(
         code: 'apply-action-code-error',
         message: 'Failed to apply action code.',
       );
     }
-
   }
 }

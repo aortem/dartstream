@@ -79,6 +79,7 @@ class FirebaseAuth {
     revokeAccessToken = RevokeAccessTokenService(auth: this);
     idTokenChanged = IdTokenChangedService(auth: this);
     authStateChanged = AuthStateChangedService(auth: this);
+    applyAction = ApplyActionCode(this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -317,5 +318,17 @@ class FirebaseAuth {
     authStateChangedController.close();
     idTokenChangedController.close();
     httpClient.close();
+  }
+
+  Future<UserCredential> applyActionCode(String actionCode) {
+    try {
+      return applyAction.applyActionCode(actionCode);
+    } catch (e) {
+      print('Apply action code failed: $e');
+      throw FirebaseAuthException(
+        code: 'apply-action-code-error',
+        message: 'Failed to apply action code.',
+      );
+    }
   }
 }
