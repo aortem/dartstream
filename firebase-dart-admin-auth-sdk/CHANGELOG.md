@@ -7,6 +7,7 @@
 - Update README with documentation for new authentication methods
 - Improve error handling and response parsing for all auth methods
 - Ensure compatibility with latest Firebase Auth API changes
+- Update Documentation and support subscriptions.
 
 ## 0.0.1-pre
 
