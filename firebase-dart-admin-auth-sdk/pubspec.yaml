@@ -1,6 +1,6 @@
 name: firebase_dart_admin_auth_sdk
 description: Firebase Dart SDK For Authentication.
-version: 0.0.1-pre
+version: 0.0.1-pre+1
 repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
