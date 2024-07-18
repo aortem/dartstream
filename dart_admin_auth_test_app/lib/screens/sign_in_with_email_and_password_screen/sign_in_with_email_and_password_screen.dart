@@ -1,7 +1,9 @@
 import 'package:dart_admin_auth_test_app/screens/home_screen/home_screen.dart';
+import 'package:dart_admin_auth_test_app/screens/sign_in_with_email_and_password_screen/sign_in_with_email_and_password_view_model.dart';
 import 'package:dart_admin_auth_test_app/shared/shared.dart';
 import 'package:dart_admin_auth_test_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SignInWithEmailAndPasswordScreen extends StatefulWidget {
   const SignInWithEmailAndPasswordScreen({super.key});
@@ -25,44 +27,56 @@ class _SignInWithEmailAndPasswordScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: 20.horizontal,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              InputField(
-                controller: _emailController,
-                hint: 'test@gmail.com',
-                label: 'Email',
+    return ChangeNotifierProvider(
+      create: (context) => SignInWithEmailAndPasswordViewModel(),
+      child: Consumer<SignInWithEmailAndPasswordViewModel>(
+        builder: (context, value, child) => Scaffold(
+          body: Center(
+            child: SingleChildScrollView(
+              padding: 20.horizontal,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InputField(
+                    controller: _emailController,
+                    hint: 'test@gmail.com',
+                    label: 'Email',
+                  ),
+                  20.vSpace,
+                  InputField(
+                    controller: _passwordController,
+                    hint: '******',
+                    label: 'Password',
+                    obscure: true,
+                  ),
+                  20.vSpace,
+                  Button(
+                    onTap: () {
+                      value.signIn(
+                        _emailController.text,
+                        _passwordController.text,
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        ),
+                      );
+                    },
+                    title: 'Sign In',
+                  ),
+                  20.vSpace,
+                  GestureDetector(
+                    onTap: () => showSignMethodsBottomSheet(context),
+                    child: const Text(
+                      'Explore more sign in options',
+                      textAlign: TextAlign.end,
+                    ),
+                  ),
+                ],
               ),
-              20.vSpace,
-              InputField(
-                controller: _passwordController,
-                hint: '******',
-                label: 'Password',
-                obscure: true,
-              ),
-              20.vSpace,
-              Button(
-                onTap: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    )),
-                title: 'Sign In',
-              ),
-              20.vSpace,
-              GestureDetector(
-                onTap: () => showSignMethodsBottomSheet(context),
-                child: const Text(
-                  'Explore more sign in options',
-                  textAlign: TextAlign.end,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
