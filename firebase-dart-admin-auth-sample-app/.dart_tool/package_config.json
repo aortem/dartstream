@@ -146,10 +146,52 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "flutter_web_plugins",
+      "rootUri": "file:///Users/user/Development/flutter/packages/flutter_web_plugins",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
       "name": "glob",
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/glob-2.1.2",
       "packageUri": "lib/",
       "languageVersion": "2.19"
+    },
+    {
+      "name": "google_identity_services_web",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_identity_services_web-0.2.2",
+      "packageUri": "lib/",
+      "languageVersion": "2.19"
+    },
+    {
+      "name": "google_sign_in",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_sign_in-6.2.1",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_sign_in_android",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_sign_in_android-6.1.27",
+      "packageUri": "lib/",
+      "languageVersion": "3.4"
+    },
+    {
+      "name": "google_sign_in_ios",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_sign_in_ios-5.7.6",
+      "packageUri": "lib/",
+      "languageVersion": "3.2"
+    },
+    {
+      "name": "google_sign_in_platform_interface",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_sign_in_platform_interface-2.4.5",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
+      "name": "google_sign_in_web",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/google_sign_in_web-0.12.2+1",
+      "packageUri": "lib/",
+      "languageVersion": "3.1"
     },
     {
       "name": "googleapis_auth",
@@ -272,6 +314,12 @@
       "languageVersion": "3.0"
     },
     {
+      "name": "plugin_platform_interface",
+      "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/plugin_platform_interface-2.1.8",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "protobuf",
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/protobuf-3.1.0",
       "packageUri": "lib/",
@@ -374,7 +422,7 @@
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-22T14:58:06.616435Z",
+  "generated": "2024-07-22T15:00:25.139445Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/user/Development/flutter",
