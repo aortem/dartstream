@@ -293,7 +293,7 @@ void main() {
             .thenAnswer((_) async => http.Response('{}', 200));
 
         await expectLater(
-          auth.revokeAccessToken('testIdToken'),
+          auth.revokeAccessToken,
           completes,
         );
       });
@@ -303,7 +303,7 @@ void main() {
         final user = User(uid: 'testUid', email: 'test@example.com');
         auth.updateCurrentUser(user);
 
-        expectLater(auth.onIdTokenChanged(), emits(user));
+        expect(auth.onIdTokenChanged(), emits(user));
       });
 
       // Test for onAuthStateChanged
@@ -311,7 +311,7 @@ void main() {
         final user = User(uid: 'testUid', email: 'test@example.com');
         auth.updateCurrentUser(user);
 
-        expectLater(auth.onAuthStateChanged(), emits(user));
+        expect(auth.onAuthStateChanged(), emits(user));
       });
 
       // Test for isSignInWithEmailLink
@@ -327,10 +327,11 @@ void main() {
       });
 
       // Test for dispose
-      test('dispose closes streams', () {
+      test('dispose closes streams', () async {
         auth.dispose();
-        expect(auth.onIdTokenChanged().isEmpty, isTrue);
-        expect(auth.onAuthStateChanged().isEmpty, isTrue);
+        await expectLater(auth.onIdTokenChanged().isEmpty, completion(isTrue));
+        await expectLater(
+            auth.onAuthStateChanged().isEmpty, completion(isTrue));
       });
     });
   });
