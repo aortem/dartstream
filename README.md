@@ -85,11 +85,11 @@ We welcome contributions of all forms from the community! If you're interested i
 
 ## Support Tiers
 
- Firebase Dart Admin Auth Auth SDK offers various support tiers for our open-source products:
+ Firebase Dart Admin Auth SDK offers various support tiers for our open-source products with an Initial Response Service Level Agreement (IRSLA):
 
 - **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
-- **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
+- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+- **Enhanced Support**: $100/month with a 72-hour IRSLA, billed annually.
 
 Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
@@ -97,15 +97,15 @@ Each tier offers escalating levels of support, from community forums to direct a
 - Free support provided by the Firebase Dart Admin Auth SDK community.
 
 ### Standard Support
-- $15/month - Billed Annually.
-- 10 business days (Monday - Friday) Initial Response Service Level Agreement (IRSLA).
+- $10/month - Billed Annually.
+- 10 business days (Monday-Friday) IRSLA
 - [Subscribe-Coming Soon]()
 - **Features**:
   - Unlimited Support Tickets with Guaranteed RSLA.
   - One Open/Active Ticket at a time. 
 
 ### Enhanced Support
-- $99/month - Billed Annually.
+- $100/month - Billed Annually.
 - 72-hour IRSLA.
 - [Subscribe-Coming Soon]()
 - **Features**:
