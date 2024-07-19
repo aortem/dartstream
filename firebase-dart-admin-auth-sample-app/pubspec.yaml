@@ -1,5 +1,5 @@
-name: dart_admin_auth_test_app
-description: "A new Flutter project."
+name: dart_admin_auth_sample_app
+description: "This sample app highlights the classes, methods,a dn functions used in the Firebase Dart Amin Auth SDK."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   firebase_dart_admin_auth_sdk:
-    path: /Users/user/Documents/GitLab/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk
+    path: C:\Users\preth\dartapps\apps\firebase-dart-admin-auth-sdk\firebase-dart-admin-auth-sdk
   provider: ^6.1.2
   bot_toast: ^4.1.3
   google_sign_in: ^6.2.1
