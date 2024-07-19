@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
@@ -16,6 +17,12 @@ import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
+// New imports for Sprint 2 #16 to #21
+import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
+
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
@@ -32,7 +39,19 @@ class FirebaseAuth {
   late UseDeviceLanguageService useDeviceLanguage;
   late VerifyPasswordResetCodeService verifyPasswordReset;
 
+  // New service declarations for Sprint 2 #16 to #21
+  late PasswordResetEmailService passwordResetEmail;
+  late RevokeAccessTokenService revokeAccessToken;
+  late IdTokenChangedService idTokenChanged;
+  late AuthStateChangedService authStateChanged;
+
   User? currentUser;
+
+  /// StreamControllers for managing auth state and ID token change events
+  final StreamController<User?> authStateChangedController =
+      StreamController<User?>.broadcast();
+  final StreamController<User?> idTokenChangedController =
+      StreamController<User?>.broadcast();
 
   FirebaseAuth._({
     this.apiKey,
@@ -49,6 +68,12 @@ class FirebaseAuth {
     updateUserService = UpdateCurrentUser(auth: this);
     useDeviceLanguage = UseDeviceLanguageService(auth: this);
     verifyPasswordReset = VerifyPasswordResetCodeService(auth: this);
+
+    // New service initializations for Sprint 2 #16 to #21
+    passwordResetEmail = PasswordResetEmailService(auth: this);
+    revokeAccessToken = RevokeAccessTokenService(auth: this);
+    idTokenChanged = IdTokenChangedService(auth: this);
+    authStateChanged = AuthStateChangedService(auth: this);
   }
 
   factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -110,8 +135,11 @@ class FirebaseAuth {
     return json.decode(response.body);
   }
 
+  // updateCurrentUser method to automatically trigger the streams
   void updateCurrentUser(User user) {
     currentUser = user;
+    authStateChangedController.add(user);
+    idTokenChangedController.add(user);
   }
 
   Future<UserCredential> signInWithEmailAndPassword(
@@ -151,11 +179,6 @@ class FirebaseAuth {
   Future<UserCredential> signInWithPhoneNumber(
       String verificationId, String smsCode) {
     return phone.verifyPhoneNumber(verificationId, smsCode);
-  }
-
-  Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) {
-    return emailLink.sendSignInLinkToEmail(email, settings);
   }
 
   Future<UserCredential> signInWithEmailLink(
@@ -231,5 +254,59 @@ class FirebaseAuth {
         message: 'Failed to verify password reset code.',
       );
     }
+  }
+
+  // New methods with complete functionality Sprint 2 #16 to #21
+
+  /// Sends a password reset email to the specified email address.
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await passwordResetEmail.sendPasswordResetEmail(email);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'password-reset-error',
+        message: 'Failed to send password reset email: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Revokes the specified access token.
+  Future<void> revokeToken(String idToken) async {
+    try {
+      await revokeAccessToken.revokeToken(idToken);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'token-revocation-error',
+        message: 'Failed to revoke access token: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Returns a stream of User objects when the ID token changes.
+  Stream<User?> onIdTokenChanged() {
+    return idTokenChangedController.stream;
+  }
+
+  /// Returns a stream of User objects when the auth state changes.
+  Stream<User?> onAuthStateChanged() {
+    return authStateChangedController.stream;
+  }
+
+  /// Checks if the provided URL is a valid sign-in link for email authentication.
+  bool isSignInWithEmailLink(String emailLink) {
+    return this.emailLink.isSignInWithEmailLink(emailLink);
+  }
+
+  /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
+  Future<void> sendSignInLinkToEmail(
+      String email, ActionCodeSettings settings) {
+    return emailLink.sendSignInLinkToEmail(email, settings);
+  }
+
+  /// Disposes of the FirebaseAuth instance and releases resources.
+  void dispose() {
+    authStateChangedController.close();
+    idTokenChangedController.close();
+    httpClient.close();
   }
 }

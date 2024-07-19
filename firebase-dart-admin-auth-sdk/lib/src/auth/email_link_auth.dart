@@ -32,4 +32,14 @@ class EmailLinkAuth {
     final uri = Uri.parse(emailLink);
     return uri.queryParameters['oobCode'] ?? '';
   }
+
+  bool isSignInWithEmailLink(String emailLink) {
+    final Uri? uri = Uri.tryParse(emailLink);
+    if (uri == null) return false;
+
+    final String? mode = uri.queryParameters['mode'];
+    final String? oobCode = uri.queryParameters['oobCode'];
+
+    return mode == 'signIn' && oobCode != null && oobCode.isNotEmpty;
+  }
 }

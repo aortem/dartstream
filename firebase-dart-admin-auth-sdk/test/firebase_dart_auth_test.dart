@@ -1,7 +1,8 @@
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart' as acs;
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
+    as acs;
 
 class MockClient extends Mock implements http.Client {}
 
@@ -22,22 +23,21 @@ void main() {
     void initializeAuthWithServiceAccount() {
       auth = FirebaseAuth.fromServiceAccountWithKeys(
         serviceAccountKeyFilePath: 'path/to/your/serviceAccountKey.json',
-       
       );
     }
 
     void initializeAuthWithEnvVariables() {
       auth = FirebaseAuth.fromEnvironmentVariables(
         apiKey: 'FIREBASE_API_KEY',
-       projectId: 'FIREBASE_PROJECT_ID',
+        projectId: 'FIREBASE_PROJECT_ID',
       );
     }
 
     void initializeAuthWithServiceAccountWithoutKeyImpersonation() {
       auth = FirebaseAuth.fromServiceAccountWithoutKeyImpersonation(
-        serviceAccountEmail: 'your-service-account-email@your-project-id.iam.gserviceaccount.com',
+        serviceAccountEmail:
+            'your-service-account-email@your-project-id.iam.gserviceaccount.com',
         userEmail: 'your-user-email@example.com',
-       
       );
     }
 
@@ -49,14 +49,14 @@ void main() {
       test('signInWithEmailAndPassword succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with email and password.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
-        final result =
-        await auth.signInWithEmailAndPassword('test@example.com', 'password');
+        final result = await auth.signInWithEmailAndPassword(
+            'test@example.com', 'password');
         expect(result.user.uid, equals('testUid'));
         expect(result.user.email, equals('test@example.com'));
       });
@@ -72,14 +72,14 @@ void main() {
       test('signInWithEmailAndPassword succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with email and password.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
-        final result =
-        await auth.signInWithEmailAndPassword('test@example.com', 'password');
+        final result = await auth.signInWithEmailAndPassword(
+            'test@example.com', 'password');
         expect(result.user.uid, equals('testUid'));
         expect(result.user.email, equals('test@example.com'));
       });
@@ -95,14 +95,14 @@ void main() {
       test('signInWithEmailAndPassword succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with email and password.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
-        final result =
-        await auth.signInWithEmailAndPassword('test@example.com', 'password');
+        final result = await auth.signInWithEmailAndPassword(
+            'test@example.com', 'password');
         expect(result.user.uid, equals('testUid'));
         expect(result.user.email, equals('test@example.com'));
       });
@@ -115,14 +115,14 @@ void main() {
       test('signInWithEmailAndPassword fails', () async {
         // Mocking the HTTP response for a failed sign-in with email and password.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"error":{"code":400,"message":"INVALID_PASSWORD","errors":[{"message":"INVALID_PASSWORD","domain":"global","reason":"invalid"}]}}',
-          400,
-        ));
+                  '{"error":{"code":400,"message":"INVALID_PASSWORD","errors":[{"message":"INVALID_PASSWORD","domain":"global","reason":"invalid"}]}}',
+                  400,
+                ));
 
         expect(
-              () => auth.signInWithEmailAndPassword(
+          () => auth.signInWithEmailAndPassword(
               'test@example.com', 'wrongpassword'),
           throwsA(isA<FirebaseAuthException>()),
         );
@@ -131,11 +131,11 @@ void main() {
       test('createUserWithEmailAndPassword succeeds', () async {
         // Mocking the HTTP response for a successful user creation with email and password.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#SignupNewUserResponse","localId":"newTestUid","email":"newuser@example.com","idToken":"newTestIdToken","refreshToken":"newTestRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#SignupNewUserResponse","localId":"newTestUid","email":"newuser@example.com","idToken":"newTestIdToken","refreshToken":"newTestRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
         final result = await auth.createUserWithEmailAndPassword(
             'newuser@example.com', 'password');
@@ -146,11 +146,11 @@ void main() {
       test('signInWithCustomToken succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with custom token.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyCustomTokenResponse","localId":"customTokenUid","idToken":"customTokenIdToken","refreshToken":"customTokenRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyCustomTokenResponse","localId":"customTokenUid","idToken":"customTokenIdToken","refreshToken":"customTokenRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
         final result = await auth.signInWithCustomToken('custom_token');
         expect(result.user.uid, equals('customTokenUid'));
@@ -159,11 +159,11 @@ void main() {
       test('signInWithCredential (email/password) succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with credential (email/password).
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"credentialUid","email":"credential@example.com","displayName":"","idToken":"credentialIdToken","registered":true,"refreshToken":"credentialRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"credentialUid","email":"credential@example.com","displayName":"","idToken":"credentialIdToken","registered":true,"refreshToken":"credentialRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
         final credential = EmailAuthCredential(
             email: 'credential@example.com', password: 'password');
@@ -175,7 +175,7 @@ void main() {
       test('sendSignInLinkToEmail succeeds', () async {
         // Mocking the HTTP response for a successful send sign-in link to email.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response('{}', 200));
 
         final settings = acs.ActionCodeSettings(
@@ -192,11 +192,11 @@ void main() {
       test('signInWithEmailLink succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with email link.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#EmailLinkSigninResponse","localId":"emailLinkUid","email":"emaillink@example.com","idToken":"emailLinkIdToken","refreshToken":"emailLinkRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#EmailLinkSigninResponse","localId":"emailLinkUid","email":"emaillink@example.com","idToken":"emailLinkIdToken","refreshToken":"emailLinkRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
         final result = await auth.signInWithEmailLink(
           'emaillink@example.com',
@@ -209,7 +209,7 @@ void main() {
       test('signOut succeeds', () async {
         // Mocking the HTTP response for a successful sign-out.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response('{}', 200));
 
         auth.updateCurrentUser(User(uid: 'testUid', email: 'test@example.com'));
@@ -221,7 +221,7 @@ void main() {
       test('updateCurrentUser succeeds', () async {
         // Mocking the HTTP response for a successful update of current user.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response('{}', 200));
 
         await expectLater(
@@ -233,7 +233,7 @@ void main() {
       test('useDeviceLanguage succeeds', () async {
         // Mocking the HTTP response for a successful use of device language.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response('{}', 200));
 
         await expectLater(auth.deviceLanguage('testUid', 'en'), completes);
@@ -242,11 +242,11 @@ void main() {
       test('verifyPasswordResetCode succeeds', () async {
         // Mocking the HTTP response for a successful verification of password reset code.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"email": "test@example.com"}',
-          200,
-        ));
+                  '{"email": "test@example.com"}',
+                  200,
+                ));
 
         final result = await auth.verifyPasswordResetCode('test-code');
         expect(result['email'], equals('test@example.com'));
@@ -255,11 +255,11 @@ void main() {
       test('signInWithRedirect succeeds', () async {
         // Mocking the HTTP response for a successful sign-in with redirect.
         when(() => mockClient.post(any(),
-            body: any(named: 'body'), headers: any(named: 'headers')))
+                body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-          '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
-          200,
-        ));
+                  '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
 
         final result = await auth.signInWithRedirect('providerId');
         expect(result.user.uid, equals('redirectUid'));
@@ -269,5 +269,70 @@ void main() {
 
     // Running common tests for each configuration
     runCommonTests();
+
+    // New tests added below for #16 to #21
+    group('New tests', () {
+      setUp(initializeAuthWithServiceAccount);
+
+      // Test for sendPasswordResetEmail
+      test('sendPasswordResetEmail succeeds', () async {
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response('{}', 200));
+
+        await expectLater(
+          auth.sendPasswordResetEmail('test@example.com'),
+          completes,
+        );
+      });
+
+      // Test for revokeAccessToken
+      test('revokeAccessToken succeeds', () async {
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response('{}', 200));
+
+        await expectLater(
+          auth.revokeAccessToken,
+          completes,
+        );
+      });
+
+      // Test for onIdTokenChanged
+      test('onIdTokenChanged emits user', () async {
+        final user = User(uid: 'testUid', email: 'test@example.com');
+        auth.updateCurrentUser(user);
+
+        expect(auth.onIdTokenChanged(), emits(user));
+      });
+
+      // Test for onAuthStateChanged
+      test('onAuthStateChanged emits user', () async {
+        final user = User(uid: 'testUid', email: 'test@example.com');
+        auth.updateCurrentUser(user);
+
+        expect(auth.onAuthStateChanged(), emits(user));
+      });
+
+      // Test for isSignInWithEmailLink
+      test('isSignInWithEmailLink returns true for valid link', () {
+        final validLink =
+            'https://example.com/?mode=signIn&oobCode=abcdefghijklmnop';
+        expect(auth.isSignInWithEmailLink(validLink), isTrue);
+      });
+
+      test('isSignInWithEmailLink returns false for invalid link', () {
+        final invalidLink = 'https://example.com/';
+        expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
+      });
+
+      // Test for dispose
+      test('dispose closes streams', () async {
+        auth.dispose();
+        await expectLater(auth.onIdTokenChanged().isEmpty, completion(isTrue));
+        await expectLater(
+            auth.onAuthStateChanged().isEmpty, completion(isTrue));
+      });
+    });
   });
 }
