@@ -1,4 +1,4 @@
-import 'package:dart_admin_auth_test_app/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:dart_admin_auth_sample_app/screens/sign_up_screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -33,7 +33,7 @@ class _SplashScreenState extends State<SplashScreen> {
         color: Colors.purple,
         child: Center(
           child: Text(
-            'TEST APP',
+            'SAMPLE APP',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: Colors.white,
                   fontWeight: FontWeight.w900,

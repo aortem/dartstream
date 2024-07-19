@@ -1,9 +1,10 @@
 import 'dart:io';
-import 'package:dart_admin_auth_test_app/screens/home_screen/home_screen.dart';
-import 'package:dart_admin_auth_test_app/screens/sign_in_with_credential/sign_in_with_credential_view_model.dart';
-import 'package:dart_admin_auth_test_app/shared/shared.dart';
+import 'package:dart_admin_auth_sample_app/screens/home_screen/home_screen.dart';
+import 'package:dart_admin_auth_sample_app/shared/button.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'sign_in_with_credential_view_model.dart';
 
 class SignInWithCredential extends StatelessWidget {
   const SignInWithCredential({super.key});
