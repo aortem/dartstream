@@ -238,14 +238,6 @@ class FirebaseAuth {
   }
 
   Future<UserCredential> applyActionCode(String actionCode) {
-    try {
-      return applyAction.applyActionCode(actionCode);
-    } catch (e) {
-      print('Apply action code failed: $e');
-      throw FirebaseAuthException(
-        code: 'apply-action-code-error',
-        message: 'Failed to apply action code.',
-      );
-    }
+    return applyAction.applyActionCode(actionCode);
   }
 }
