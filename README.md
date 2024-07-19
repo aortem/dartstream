@@ -109,10 +109,23 @@ Each tier offers escalating levels of support, from community forums to direct a
 - 72-hour IRSLA.
 - [Subscribe-Coming Soon]()
 - **Features**:
-  - Everything in Standard Support.
+  - Everything in Standard Support Plus.
   - Access to Roadmap.
   - Feature Request Upvoting (Priority feature request).
   - One Open/Active Ticket at a time.
+
+  ### Enterprise Support
+- $999/month - Billed Annually
+- 48-hour IRSLA.
+- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
+- **Features**:
+  - Everything in Enhanced Support Plus:
+  - Early Access to new features.
+  - Access to our network channels.
+  - Monthly access to Development/Partner Calls.
+  - Access to Partner/Reseller/Channel Program.
+  - Option to include Logo on the Open Source website.
+
 
 To choose a support tier, click on one of the options above.
 
