@@ -137,4 +137,4 @@ All  Firebase Dart Admin Auth SDK packages are licensed under BSD-3, except for 
 
 ## Enhance with Firebase Dart Admin Auth SDK
 
-We hope the Firebase Dart Admin Auth SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+We hope the Firebase Dart Admin Auth SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!  test
