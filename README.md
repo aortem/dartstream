@@ -114,18 +114,19 @@ Each tier offers escalating levels of support, from community forums to direct a
   - Feature Request Upvoting (Priority feature request).
   - One Open/Active Ticket at a time.
 
-  ### Enterprise Support
-- $999/month - Billed Annually
+  ### Enterprise Support (Beta)
+- $450/month - Billed Annually
 - 48-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
+- [Subscribe](https://buy.stripe.com/cN2fZU5Db3Fx4ko6ot)
 - **Features**:
   - Everything in Enhanced Support Plus:
-  - Early Access to new features.
-  - Access to our network channels.
-  - Monthly access to Development/Partner Calls.
-  - Access to Partner/Reseller/Channel Program.
-  - Option to include Logo on the Open Source website.
+  - Comprehensive support for a broader range of Dart backend development open source projects.
+  - Premium access to our exclusive enterprise customer forum.
+  - Early access to cutting-edge features.
+  - Exclusive access to Partner/Reseller/Channel Program.
 
+
+Enterprise Support is designed for businesses, agencies, and partners seeking top-tier support across a wide range of Dart backend and server-side projects.  All Open Source projects that are part of the Aortem Collective are included in the Enterprise subscription, with more projects being added soon.
 
 To choose a support tier, click on one of the options above.
 
