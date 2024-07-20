@@ -1,3 +1,12 @@
+## 0.0.1-pre+2
+
+- Add sendPasswordResetEmail
+- Add revokeAccessToken
+- Add onIdTokenChanged
+- Add onAuthStateChanged
+- Add isSignInWithEmailLink
+- Add dispose method
+
 ## 0.0.1-pre+1
 
 - Add new authentication methods to FirebaseAuth class
