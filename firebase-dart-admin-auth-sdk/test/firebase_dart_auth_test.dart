@@ -276,6 +276,21 @@ void main() {
           expect(result.user.uid, equals('redirectUid'));
           expect(result.user.email, equals('redirect@example.com'));
         });
+
+        test('should apply action code if FirebaseApp is initialized',
+            () async {
+          when(() => mockClient.post(any(),
+              body: any(named: 'body'),
+              headers: any(named: 'headers'))).thenAnswer(
+            (_) async => http.Response(
+                '{ "email": "user@example.com","requestType": "VERIFY_EMAIL"}',
+                200),
+          );
+
+          final result = await auth.applyActionCode('action_code');
+
+          expect(true, result);
+        });
       }
 
       // Running common tests for each configuration
