@@ -7,15 +7,6 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart';
 
 void main() async {
-  //When working with mobile
-  if (Platform.isAndroid || Platform.isIOS) {
-    //To initialize with service account put the path to the json file in the function below
-    FirebaseApp.initializeAppWithServiceAccount(serviceAccountKeyFilePath: '');
-
-    //To initialize with service account, Uncomment the functionn below then pass the service account email and user email in the function below
-    //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
-  }
-
   //If you are on web, initialize with enviroment variables
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
@@ -23,6 +14,16 @@ void main() async {
       apiKey: '',
       projectId: '',
     );
+  } else {
+    //When working with mobile
+    if (Platform.isAndroid || Platform.isIOS) {
+      //To initialize with service account put the path to the json file in the function below
+      FirebaseApp.initializeAppWithServiceAccount(
+          serviceAccountKeyFilePath: '');
+
+      //To initialize with service account, Uncomment the functionn below then pass the service account email and user email in the function below
+      //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
+    }
   }
 
   FirebaseApp.instance.getAuth();

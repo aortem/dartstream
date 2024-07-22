@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
-//import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:http/http.dart' as http;
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;

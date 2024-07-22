@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-//import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:http/http.dart' as http;
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
-//import 'package:http/http.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
