@@ -49,7 +49,7 @@ export 'package:meta/meta.dart';
 export 'package:characters/characters.dart';
 export 'package:grpc/grpc.dart' hide Client, Response;
 export 'package:args/args.dart';
-export 'package:ffi/ffi.dart';
+//export 'package:ffi/ffi.dart';
 export 'package:http_parser/http_parser.dart';
 export 'package:convert/convert.dart' hide IdentityCodec;
 export 'package:fake_async/fake_async.dart';
