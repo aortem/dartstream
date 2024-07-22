@@ -416,13 +416,13 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "dart_admin_auth_test_app",
+      "name": "dart_admin_auth_sample_app",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-22T15:00:25.139445Z",
+  "generated": "2024-07-22T15:02:55.855548Z",
   "generator": "pub",
   "generatorVersion": "3.4.3",
   "flutterRoot": "file:///Users/user/Development/flutter",
