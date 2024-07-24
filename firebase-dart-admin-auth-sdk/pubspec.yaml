@@ -9,7 +9,8 @@ environment:
 # Add regular dependencies here.
 
 dependencies:
-  ds_standard_features: ^0.0.1-pre+7 #Standard Dart Team Utilities
+  ds_standard_features: ^0.0.1-pre+8 #Standard Dart Team Utilities
+  
 
 dev_dependencies:
   ds_tools_testing: ^0.0.1-pre+2 #Standard Dart Team Testing Tools

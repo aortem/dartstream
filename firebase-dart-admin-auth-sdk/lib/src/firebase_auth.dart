@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
@@ -26,7 +27,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
-  final http.Client httpClient;
+  late final http.Client httpClient;
 
   late EmailPasswordAuth emailPassword;
   late CustomTokenAuth customToken;
@@ -38,6 +39,7 @@ class FirebaseAuth {
   late UpdateCurrentUser updateUserService;
   late UseDeviceLanguageService useDeviceLanguage;
   late VerifyPasswordResetCodeService verifyPasswordReset;
+  late ApplyActionCode applyAction;
 
   // New service declarations for Sprint 2 #16 to #21
   late PasswordResetEmailService passwordResetEmail;
@@ -53,11 +55,11 @@ class FirebaseAuth {
   final StreamController<User?> idTokenChangedController =
       StreamController<User?>.broadcast();
 
-  FirebaseAuth._({
+  FirebaseAuth({
     this.apiKey,
     this.projectId,
-    required this.httpClient,
   }) {
+    httpClient = http.Client();
     emailPassword = EmailPasswordAuth(this);
     customToken = CustomTokenAuth(this);
     emailLink = EmailLinkAuth(this);
@@ -68,49 +70,51 @@ class FirebaseAuth {
     updateUserService = UpdateCurrentUser(auth: this);
     useDeviceLanguage = UseDeviceLanguageService(auth: this);
     verifyPasswordReset = VerifyPasswordResetCodeService(auth: this);
+    applyAction = ApplyActionCode(this);
 
     // New service initializations for Sprint 2 #16 to #21
     passwordResetEmail = PasswordResetEmailService(auth: this);
     revokeAccessToken = RevokeAccessTokenService(auth: this);
     idTokenChanged = IdTokenChangedService(auth: this);
     authStateChanged = AuthStateChangedService(auth: this);
+    applyAction = ApplyActionCode(this);
   }
 
-  factory FirebaseAuth.fromServiceAccountWithKeys({
-    required String serviceAccountKeyFilePath,
-  }) {
-    final apiKey = 'your_api_key';
-    final projectId = 'your_project_id';
-    return FirebaseAuth._(
-      apiKey: apiKey,
-      projectId: projectId,
-      httpClient: http.Client(),
-    );
-  }
+  // factory FirebaseAuth.fromServiceAccountWithKeys({
+  //   required String serviceAccountKeyFilePath,
+  // }) {
+  //   final apiKey = 'your_api_key';
+  //   final projectId = 'your_project_id';
+  //   return FirebaseAuth._(
+  //     apiKey: apiKey,
+  //     projectId: projectId,
+  //     httpClient: http.Client(),
+  //   );
+  // }
 
-  factory FirebaseAuth.fromEnvironmentVariables({
-    required String apiKey,
-    required String projectId,
-  }) {
-    return FirebaseAuth._(
-      apiKey: apiKey,
-      projectId: projectId,
-      httpClient: http.Client(),
-    );
-  }
+  // factory FirebaseAuth.fromEnvironmentVariables({
+  //   required String apiKey,
+  //   required String projectId,
+  // }) {
+  //   return FirebaseAuth._(
+  //     apiKey: apiKey,
+  //     projectId: projectId,
+  //     httpClient: http.Client(),
+  //   );
+  // }
 
-  factory FirebaseAuth.fromServiceAccountWithoutKeyImpersonation({
-    required String serviceAccountEmail,
-    required String userEmail,
-  }) {
-    final apiKey = 'your_api_key';
-    final projectId = 'your_project_id';
-    return FirebaseAuth._(
-      apiKey: apiKey,
-      projectId: projectId,
-      httpClient: http.Client(),
-    );
-  }
+  // factory FirebaseAuth.fromServiceAccountWithoutKeyImpersonation({
+  //   required String serviceAccountEmail,
+  //   required String userEmail,
+  // }) {
+  //   final apiKey = 'your_api_key';
+  //   final projectId = 'your_project_id';
+  //   return FirebaseAuth._(
+  //     apiKey: apiKey,
+  //     projectId: projectId,
+  //     httpClient: http.Client(),
+  //   );
+  // }
 
   Future<Map<String, dynamic>> performRequest(
       String endpoint, Map<String, dynamic> body) async {
@@ -254,6 +258,10 @@ class FirebaseAuth {
         message: 'Failed to verify password reset code.',
       );
     }
+  }
+
+  Future<bool> applyActionCode(String actionCode) {
+    return applyAction.applyActionCode(actionCode);
   }
 
   // New methods with complete functionality Sprint 2 #16 to #21
