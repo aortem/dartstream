@@ -1,3 +1,12 @@
+## 0.0.1-pre+3
+
+* Update sendPasswordResetEmail
+* Update revokeAccessToken
+* Update onIdTokenChanged
+* Update onAuthStateChanged
+* Update isSignInWithEmailLink
+* Update dispose method
+
 ## 0.0.1-pre+2
 
 * Add sendPasswordResetEmail
