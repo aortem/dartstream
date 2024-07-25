@@ -1,4 +1,4 @@
-import 'package:dart_admin_auth_sample_app/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:firebase_dart_admin_auth_sample_app/screens/sign_up_screen/sign_up_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
