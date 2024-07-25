@@ -1,7 +1,6 @@
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
-import 'package:dart_admin_auth_sample_app/screens/splash_screen/splash_screen.dart';
+import 'package:firebase_dart_admin_auth_sample_app/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart';

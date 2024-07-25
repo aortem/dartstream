@@ -410,16 +410,16 @@
       "languageVersion": "2.19"
     },
     {
-      "name": "dart_admin_auth_sample_app",
+      "name": "firebase_dart_admin_auth_sample_app",
       "rootUri": "../",
       "packageUri": "lib/",
       "languageVersion": "3.4"
     }
   ],
-  "generated": "2024-07-22T17:20:46.979692Z",
+  "generated": "2024-07-25T09:06:10.848465Z",
   "generator": "pub",
-  "generatorVersion": "3.4.3",
+  "generatorVersion": "3.4.4",
   "flutterRoot": "file:///Users/user/Development/flutter",
-  "flutterVersion": "3.22.2",
+  "flutterVersion": "3.22.3",
   "pubCache": "file:///Users/user/.pub-cache"
 }

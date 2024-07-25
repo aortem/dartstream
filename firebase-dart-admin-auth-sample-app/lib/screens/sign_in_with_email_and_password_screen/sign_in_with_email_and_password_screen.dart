@@ -1,6 +1,6 @@
-import 'package:dart_admin_auth_sample_app/screens/home_screen/home_screen.dart';
-import 'package:dart_admin_auth_sample_app/shared/shared.dart';
-import 'package:dart_admin_auth_sample_app/utils/extensions.dart';
+import 'package:firebase_dart_admin_auth_sample_app/screens/home_screen/home_screen.dart';
+import 'package:firebase_dart_admin_auth_sample_app/shared/shared.dart';
+import 'package:firebase_dart_admin_auth_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'sign_in_with_email_and_password_view_model.dart';
