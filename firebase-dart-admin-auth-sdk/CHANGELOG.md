@@ -1,3 +1,8 @@
+## 0.0.1-pre+4  - PreRelease July 28th TBD
+
+* Update dart format for static analysis
+
+
 ## 0.0.1-pre+3
 
 * Update sendPasswordResetEmail
