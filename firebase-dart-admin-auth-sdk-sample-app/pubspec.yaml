@@ -1,5 +1,5 @@
 name: firebase_dart_admin_auth_sdk_sample_app
-description: "This sample app highlights the classes, methods,a dn functions used in the Firebase Dart Amin Auth SDK."
+description: "This sample app highlights the classes, methods,and functions used in the Firebase Dart Amin Auth SDK."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
