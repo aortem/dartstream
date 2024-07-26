@@ -1,4 +1,3 @@
-
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class VerifyPasswordResetCodeService {

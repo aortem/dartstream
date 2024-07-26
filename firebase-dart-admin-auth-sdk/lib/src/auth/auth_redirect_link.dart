@@ -1,4 +1,3 @@
-
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class SignInWithRedirectService {
@@ -12,12 +11,12 @@ class SignInWithRedirectService {
       final body = {
         'providerId': providerId,
       };
-      
-   final response=   await auth.performRequest(url, body);
 
-       final userCredential = UserCredential.fromJson(response);
-    auth.updateCurrentUser(userCredential.user);
-    return userCredential;
+      final response = await auth.performRequest(url, body);
+
+      final userCredential = UserCredential.fromJson(response);
+      auth.updateCurrentUser(userCredential.user);
+      return userCredential;
     } catch (e) {
       print('Sign-in with redirect failed: $e');
       throw FirebaseAuthException(
