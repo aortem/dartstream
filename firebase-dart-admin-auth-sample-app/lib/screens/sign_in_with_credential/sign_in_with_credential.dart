@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'package:dart_admin_auth_sample_app/screens/home_screen/home_screen.dart';
-import 'package:dart_admin_auth_sample_app/shared/button.dart';
+import 'package:firebase_dart_admin_auth_sample_app/screens/home_screen/home_screen.dart';
+import 'package:firebase_dart_admin_auth_sample_app/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
