@@ -17,8 +17,12 @@ void main() async {
     //When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
       //To initialize with service account put the path to the json file in the function below
-      FirebaseApp.initializeAppWithServiceAccount(
-          serviceAccountKeyFilePath: '');
+        String serviceAccountContent = await rootBundle.loadString('assets/service_account.json');
+
+    // Initialize Firebase with the service account content
+    await FirebaseApp.initializeAppWithServiceAccount(
+      serviceAccountContent: serviceAccountContent,
+    );
 
       //To initialize with service account, Uncomment the functionn below then pass the service account email and user email in the function below
       //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
