@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'firebase_auth.dart';
 
@@ -37,25 +38,17 @@ class FirebaseApp {
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
+    required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
-    //Asserts that the path being provided is not empty
-    assert(serviceAccountKeyFilePath.isNotEmpty,
-        "Service account key path cannot be empty");
+    // Parse the JSON content
+    final serviceAccount = json.decode(serviceAccountContent);
 
-    //Check if the file path provided exist
-    bool exist = await File(serviceAccountKeyFilePath).exists();
-
-    //If not throws an exception
-    if (!exist) {
-      throw Exception("This file path does not exist");
-    }
-
-    //TODO: Implement API to get access token
+    // TODO: Implement API to get access token
 
     return _instance ??= FirebaseApp._(
-      'your_api_key',
-      'your_project_id',
+      serviceAccount['private_key'], // Update with the actual key field
+      serviceAccount['project_id'], // Update with the actual project ID field
     );
   }
 

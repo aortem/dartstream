@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_dart_admin_auth_sample_app/screens/splash_screen/splash_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
   //If you are on web, initialize with enviroment variables
@@ -17,8 +18,14 @@ void main() async {
     //When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
       //To initialize with service account put the path to the json file in the function below
-      FirebaseApp.initializeAppWithServiceAccount(
-          serviceAccountKeyFilePath: '');
+      String serviceAccountContent =
+          await rootBundle.loadString('assets/service_account.json');
+
+      // Initialize Firebase with the service account content
+      await FirebaseApp.initializeAppWithServiceAccount(
+        serviceAccountContent: serviceAccountContent,
+        serviceAccountKeyFilePath: '',
+      );
 
       //To initialize with service account, Uncomment the functionn below then pass the service account email and user email in the function below
       //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
