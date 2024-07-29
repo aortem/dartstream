@@ -27,6 +27,7 @@ void main() {
       app = await FirebaseApp.initializeAppWithServiceAccount(
         serviceAccountKeyFilePath:
             '/Users/user/Documents/GitLab/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk/test.json',
+        serviceAccountContent: '',
       );
     }
 

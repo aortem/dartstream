@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'firebase_auth.dart';
 
@@ -36,8 +37,9 @@ class FirebaseApp {
     return _instance ??= FirebaseApp._(apiKey, projectId);
   }
 
-static Future<FirebaseApp> initializeAppWithServiceAccount({
+  static Future<FirebaseApp> initializeAppWithServiceAccount({
     required String serviceAccountContent,
+    required String serviceAccountKeyFilePath,
   }) async {
     // Parse the JSON content
     final serviceAccount = json.decode(serviceAccountContent);
