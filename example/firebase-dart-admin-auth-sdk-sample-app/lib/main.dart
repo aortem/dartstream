@@ -5,14 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
   //If you are on web, initialize with enviroment variables
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: '',
-      projectId: '',
+      apiKey: 'AIzaSyBli2c-dmD4w2kLHmZU3UtewETvuruVAN4',
+      projectId: 'fire-base-dart-admin-auth-sdk',
     );
   } else {
     //When working with mobile
@@ -36,21 +39,24 @@ void main() async {
   runApp(const MyApp());
 }
 
+// Updated MyApp to provide FirebaseAuth instance
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Auth Admin Demo',
-      builder: BotToastInit(),
-      navigatorObservers: [BotToastNavigatorObserver()],
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
+    return Provider<FirebaseAuth>(
+      create: (_) => FirebaseApp.instance.getAuth(),
+      child: MaterialApp(
+        title: 'Auth Admin Demo',
+        builder: BotToastInit(),
+        navigatorObservers: [BotToastNavigatorObserver()],
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: const SplashScreen(),
       ),
-      home: const SplashScreen(),
     );
   }
 }

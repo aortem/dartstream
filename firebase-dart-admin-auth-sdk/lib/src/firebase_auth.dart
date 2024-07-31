@@ -24,6 +24,13 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
+import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods_for_email.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
+
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
@@ -46,6 +53,14 @@ class FirebaseAuth {
   late RevokeAccessTokenService revokeAccessToken;
   late IdTokenChangedService idTokenChanged;
   late AuthStateChangedService authStateChanged;
+
+  late InitializeRecaptchaConfigService initializeRecaptchaConfigService;
+  late GetRedirectResultService getRedirectResultService;
+  late GetMultiFactorResolverService getMultiFactorResolverService;
+  late FetchSignInMethodsForEmailService fetchSignInMethodsForEmailService;
+  late CreateUserWithEmailAndPasswordService
+      createUserWithEmailAndPasswordService;
+  late ConnectAuthEmulatorService connectAuthEmulatorService;
 
   User? currentUser;
 
@@ -78,6 +93,14 @@ class FirebaseAuth {
     idTokenChanged = IdTokenChangedService(auth: this);
     authStateChanged = AuthStateChangedService(auth: this);
     applyAction = ApplyActionCode(this);
+
+    initializeRecaptchaConfigService = InitializeRecaptchaConfigService(this);
+    getRedirectResultService = GetRedirectResultService(this);
+    getMultiFactorResolverService = GetMultiFactorResolverService(this);
+    fetchSignInMethodsForEmailService = FetchSignInMethodsForEmailService(this);
+    createUserWithEmailAndPasswordService =
+        CreateUserWithEmailAndPasswordService(this);
+    connectAuthEmulatorService = ConnectAuthEmulatorService(this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -151,10 +174,10 @@ class FirebaseAuth {
     return emailPassword.signIn(email, password);
   }
 
-  Future<UserCredential> createUserWithEmailAndPassword(
-      String email, String password) {
-    return emailPassword.signUp(email, password);
-  }
+  // Future<UserCredential> createUserWithEmailAndPassword(
+  //     String email, String password) {
+  //   return emailPassword.signUp(email, password);
+  // } my assined ticket in issue #11 done down
 
   Future<UserCredential> signInWithCustomToken(String token) {
     return customToken.signInWithCustomToken(token);
@@ -316,5 +339,31 @@ class FirebaseAuth {
     authStateChangedController.close();
     idTokenChangedController.close();
     httpClient.close();
+  }
+
+  Future<void> initializeRecaptchaConfig() {
+    return initializeRecaptchaConfigService.initialize();
+  }
+
+  Future<UserCredential?> getRedirectResult() {
+    return getRedirectResultService.getResult();
+  }
+
+  Future<MultiFactorResolver> getMultiFactorResolver(
+      AuthCredential credential) {
+    return getMultiFactorResolverService.resolve(credential);
+  }
+
+  Future<List<String>> fetchSignInMethodsForEmail(String email) {
+    return fetchSignInMethodsForEmailService.fetch(email);
+  }
+
+  Future<UserCredential> createUserWithEmailAndPassword(
+      String email, String password) {
+    return createUserWithEmailAndPasswordService.create(email, password);
+  }
+
+  void connectAuthEmulator(String host, int port) {
+    connectAuthEmulatorService.connect(host, port);
   }
 }
