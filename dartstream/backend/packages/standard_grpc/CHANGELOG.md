@@ -1,13 +1,5 @@
 # Changelog
 
-## [0.0.1-pre+9] - 2024-08-01
-
-### Remove Dart FFI Package to avoid conflict
-- Removed web, matcha, and grpc into their own separate packages.  
-- Added back packages like FFI.
-- No exported conflicts for the current packages.
-- Updated the latest depedencies
-
 ## [0.0.1-pre+8] - 2024-07-22
 
 ### Remove Dart FFI Package to avoid conflict

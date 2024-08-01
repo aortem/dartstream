@@ -1,0 +1,19 @@
+#This pubspec file imports is used for any dependencies for standard Dartstream features
+name: ds_standard_features_web
+description: Packages for our standard features for web - maintained by the Dart team.
+version: 0.0.1-pre+8
+repository: https://github.com/dartstream
+
+environment:
+ sdk: ">=3.4.0 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+# STANDARD PACKAGES - Built By The Dart Team
+  matcher: ^0.12.16+1
+  web: ^0.5.1
+ 
+#Globally Activated Package
+#executables:
+#   ds: ds_cli
