@@ -2,13 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 
-class FetchSignInMethodsForEmailScreen extends StatelessWidget {
+class FetchSignInMethodsForEmailScreen extends StatefulWidget {
   const FetchSignInMethodsForEmailScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final TextEditingController _emailController = TextEditingController();
+  _FetchSignInMethodsForEmailScreenState createState() =>
+      _FetchSignInMethodsForEmailScreenState();
+}
 
+class _FetchSignInMethodsForEmailScreenState
+    extends State<FetchSignInMethodsForEmailScreen> {
+  final TextEditingController _emailController = TextEditingController();
+  String _result = '';
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fetch Sign-In Methods for Email'),
@@ -30,19 +38,19 @@ class FetchSignInMethodsForEmailScreen extends StatelessWidget {
                   List<String> methods = await FirebaseApp.firebaseAuth
                           ?.fetchSignInMethodsForEmail(_emailController.text) ??
                       [];
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                        content:
-                            Text('Sign-in methods: ${methods.join(", ")}')),
-                  );
+                  setState(() {
+                    _result = 'Sign-in methods: ${methods.join(", ")}';
+                  });
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Error: ${e.toString()}')),
-                  );
+                  setState(() {
+                    _result = 'Error: ${e.toString()}';
+                  });
                 }
               },
               title: 'Fetch Sign-In Methods',
             ),
+            SizedBox(height: 20),
+            Text(_result, style: TextStyle(fontSize: 16)),
           ],
         ),
       ),

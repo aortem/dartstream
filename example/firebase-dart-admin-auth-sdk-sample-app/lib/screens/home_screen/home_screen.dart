@@ -18,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? _currentIdToken;
   User? _currentUser;
+  bool _isConnectedToEmulator = false;
 
   @override
   void initState() {
@@ -59,6 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
         SnackBar(content: Text('Failed to revoke token: $e')),
       );
     }
+  }
+
+  void _connectToEmulator() {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    auth.connectAuthEmulator('localhost', 9099);
+    setState(() {
+      _isConnectedToEmulator = true;
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Connected to Auth Emulator')),
+    );
   }
 
   @override
@@ -123,6 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
               title: "Fetch Sign-In Methods for Email",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: _connectToEmulator,
+              title: _isConnectedToEmulator
+                  ? "Connected to Emulator"
+                  : "Connect to Auth Emulator",
             ),
             10.vSpace,
             ActionTile(

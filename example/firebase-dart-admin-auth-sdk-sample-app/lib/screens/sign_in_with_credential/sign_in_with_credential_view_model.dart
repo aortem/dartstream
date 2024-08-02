@@ -15,7 +15,8 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
 
   late final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: scopes,
-    clientId: 'YOUR_WEB_CLIENT_ID', // Add your web client ID here
+    clientId:
+        '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Add your web client ID here
   );
 
   bool loading = false;

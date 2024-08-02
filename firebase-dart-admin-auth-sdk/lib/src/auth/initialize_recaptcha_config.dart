@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:http/http.dart' as http;
 
 class InitializeRecaptchaConfigService {
   final FirebaseAuth auth;
@@ -13,23 +14,30 @@ class InitializeRecaptchaConfigService {
       {'key': auth.apiKey},
     );
 
-    final response = await auth.httpClient.post(
-      url,
-      body: json.encode({
-        'projectId': auth.projectId,
-      }),
-      headers: {'Content-Type': 'application/json'},
-    );
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'projectId': auth.projectId,
+        }),
+        headers: {'Content-Type': 'application/json'},
+      );
 
-    if (response.statusCode != 200) {
+      if (response.statusCode != 200) {
+        throw FirebaseAuthException(
+          code: 'recaptcha-init-failed',
+          message:
+              'Failed to initialize reCAPTCHA configuration: ${response.body}',
+        );
+      }
+
+      // Process the response if needed
+      // final responseData = json.decode(response.body);
+    } catch (e) {
       throw FirebaseAuthException(
-        code: 'recaptcha-init-failed',
-        message:
-            'Failed to initialize reCAPTCHA configuration: ${response.body}',
+        code: 'recaptcha-init-error',
+        message: 'Error initializing reCAPTCHA configuration: $e',
       );
     }
-
-    // Process the response if needed
-    // final responseData = json.decode(response.body);
   }
 }
