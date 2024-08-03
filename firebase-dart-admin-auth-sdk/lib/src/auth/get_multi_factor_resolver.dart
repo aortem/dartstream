@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/multi_factor_resolver.dart';
 
 class GetMultiFactorResolverService {
   final FirebaseAuth auth;
@@ -43,18 +44,4 @@ class GetMultiFactorResolverService {
           [],
     );
   }
-}
-
-class MultiFactorResolver {
-  final String sessionId;
-  final List<MultiFactorHint> hints;
-
-  MultiFactorResolver({required this.sessionId, required this.hints});
-}
-
-class MultiFactorHint {
-  final String factorId;
-  final String displayName;
-
-  MultiFactorHint({required this.factorId, required this.displayName});
 }

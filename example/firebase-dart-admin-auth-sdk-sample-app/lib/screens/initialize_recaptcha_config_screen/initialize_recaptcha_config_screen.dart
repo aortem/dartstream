@@ -1,3 +1,5 @@
+// initialize_recaptcha_config_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
@@ -27,7 +29,9 @@ class _InitializeRecaptchaConfigScreenState
             Button(
               onTap: () async {
                 try {
-                  await FirebaseApp.firebaseAuth?.initializeRecaptchaConfig();
+                  await FirebaseAuth(
+                          apiKey: 'your_api_key', projectId: 'your_project_id')
+                      .initializeRecaptchaConfig();
                   setState(() {
                     _result = 'reCAPTCHA config initialized successfully';
                   });

@@ -6,6 +6,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
@@ -26,14 +27,16 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
 import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
+// import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods_for_email.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/multi_factor_resolver.dart';
 
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
+
   late final http.Client httpClient;
 
   late EmailPasswordAuth emailPassword;
@@ -365,5 +368,10 @@ class FirebaseAuth {
 
   void connectAuthEmulator(String host, int port) {
     connectAuthEmulatorService.connect(host, port);
+  }
+
+  void setEmulatorUrl(String url) {
+    // Implementation to set the emulator URL
+    print('Emulator URL set to: $url');
   }
 }

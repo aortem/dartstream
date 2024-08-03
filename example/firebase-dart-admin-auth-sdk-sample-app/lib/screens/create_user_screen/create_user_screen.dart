@@ -3,24 +3,21 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:provider/provider.dart';
 
-class FetchSignInMethodsForEmailScreen extends StatefulWidget {
-  const FetchSignInMethodsForEmailScreen({Key? key}) : super(key: key);
-
+class CreateUserScreen extends StatefulWidget {
   @override
-  _FetchSignInMethodsForEmailScreenState createState() =>
-      _FetchSignInMethodsForEmailScreenState();
+  _CreateUserScreenState createState() => _CreateUserScreenState();
 }
 
-class _FetchSignInMethodsForEmailScreenState
-    extends State<FetchSignInMethodsForEmailScreen> {
+class _CreateUserScreenState extends State<CreateUserScreen> {
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   String _result = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Fetch Sign-In Methods for Email'),
+        title: Text('Create User'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -32,16 +29,28 @@ class _FetchSignInMethodsForEmailScreenState
               hint: 'Enter email',
               label: 'Email',
             ),
+            SizedBox(height: 10),
+            InputField(
+              controller: _passwordController,
+              hint: 'Enter password',
+              label: 'Password',
+              obscureText:
+                  true, // Make sure InputField widget supports this parameter
+            ),
             SizedBox(height: 20),
             Button(
               onTap: () async {
                 try {
                   final auth =
                       Provider.of<FirebaseAuth>(context, listen: false);
-                  List<String> methods = await auth
-                      .fetchSignInMethodsForEmail(_emailController.text);
+                  UserCredential credential =
+                      await auth.createUserWithEmailAndPassword(
+                    _emailController.text,
+                    _passwordController.text,
+                  );
                   setState(() {
-                    _result = 'Sign-in methods: ${methods.join(", ")}';
+                    _result =
+                        'User created: ${credential.user.uid}, Email: ${credential.user.email}';
                   });
                 } catch (e) {
                   setState(() {
@@ -49,7 +58,7 @@ class _FetchSignInMethodsForEmailScreenState
                   });
                 }
               },
-              title: 'Fetch Sign-In Methods',
+              title: 'Create User',
             ),
             SizedBox(height: 20),
             Text(_result, style: TextStyle(fontSize: 16)),
@@ -57,11 +66,5 @@ class _FetchSignInMethodsForEmailScreenState
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _emailController.dispose();
-    super.dispose();
   }
 }
