@@ -35,7 +35,7 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
   firebase_dart_admin_auth_sdk:
-    path: /home/brian/Aortem.io/gitlab-dev-july30/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk
+    path: ../../firebase-dart-admin-auth-sdk
   provider: ^6.1.2
   bot_toast: ^4.1.3
   google_sign_in: ^6.2.1
