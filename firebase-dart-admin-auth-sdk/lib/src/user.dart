@@ -5,13 +5,14 @@
 
 class User {
   final String uid;
-  final String? email;
-  final bool emailVerified;
-  final String? phoneNumber;
-  final String? displayName;
-  final String? photoURL;
-  String? _idToken;
-  DateTime? _idTokenExpiration;
+  String? email;
+  bool? emailVerified;
+  String? phoneNumber;
+  String? displayName;
+  String? photoURL;
+  String? idToken;
+  String? idTokenExpiration;
+  String? refreshToken;
 
   User({
     required this.uid,
@@ -20,21 +21,21 @@ class User {
     this.phoneNumber,
     this.displayName,
     this.photoURL,
+    this.idToken,
+    this.idTokenExpiration,
+    this.refreshToken,
   });
 
   bool get isAnonymous => email == null && phoneNumber == null;
 
   Future<String> getIdToken([bool forceRefresh = false]) async {
-    if (forceRefresh ||
-        _idToken == null ||
-        _idTokenExpiration == null ||
-        DateTime.now().isAfter(_idTokenExpiration!)) {
+    if (forceRefresh || idToken == null || idTokenExpiration == null) {
       // In a real implementation, make an API call to refresh the token here
       // For this, just simulate a token refresh
-      _idToken = 'refreshed_token_${DateTime.now().millisecondsSinceEpoch}';
-      _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
+      idToken = 'refreshed_token_${DateTime.now().millisecondsSinceEpoch}';
+      // _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
     }
-    return _idToken!;
+    return idToken!;
   }
 
   Map<String, dynamic> toMap() {
@@ -57,6 +58,23 @@ class User {
       phoneNumber: json['phoneNumber'],
       displayName: json['displayName'],
       photoURL: json['photoUrl'] ?? json['photoURL'],
+      idToken: json['idToken'],
+      idTokenExpiration: json['expiresIn'],
+      refreshToken: json['refreshToken'],
+    );
+  }
+
+  User copyWith(User user) {
+    return User(
+      uid: user.uid,
+      displayName: user.displayName ?? displayName,
+      email: user.email ?? email,
+      emailVerified: user.emailVerified ?? emailVerified,
+      idToken: user.idToken ?? idToken,
+      idTokenExpiration: user.idTokenExpiration ?? idTokenExpiration,
+      phoneNumber: user.phoneNumber ?? user.phoneNumber,
+      photoURL: user.photoURL ?? user.photoURL,
+      refreshToken: user.refreshToken ?? refreshToken,
     );
   }
 }
