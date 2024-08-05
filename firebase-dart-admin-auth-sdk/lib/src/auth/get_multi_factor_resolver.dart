@@ -1,47 +1,56 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/multi_factor_resolver.dart';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 
 class GetMultiFactorResolverService {
   final FirebaseAuth auth;
 
   GetMultiFactorResolverService(this.auth);
 
-  Future<MultiFactorResolver> resolve(AuthCredential credential) async {
+  Future<MultiFactorResolver> resolve(EmailAuthCredential credential) async {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
-      '/v1/accounts:signInWithPhoneNumber',
+      '/v1/accounts:signInWithPassword',
       {'key': auth.apiKey},
     );
 
-    final response = await auth.httpClient.post(
+    final response = await http.post(
       url,
       body: json.encode({
-        'idToken': await auth.currentUser?.getIdToken(),
-        'providerId': credential.providerId,
-        // Add other necessary credential data
+        'email': credential.email,
+        'password': credential.password,
+        'returnSecureToken': true,
       }),
       headers: {'Content-Type': 'application/json'},
     );
 
     if (response.statusCode != 200) {
-      throw FirebaseAuthException(
-        code: 'multi-factor-resolution-failed',
-        message: 'Failed to get multi-factor resolver: ${response.body}',
-      );
+      final errorData = json.decode(response.body);
+      if (errorData['error']['message'] == 'MULTI_FACTOR_AUTH_REQUIRED') {
+        final mfaInfo = errorData['mfaInfo'];
+        final sessionInfo = errorData['mfaPendingCredential'];
+
+        return MultiFactorResolver(
+          sessionId: sessionInfo,
+          hints: (mfaInfo as List?)
+                  ?.map((hint) => MultiFactorHint(
+                        factorId: hint['mfaEnrollmentId'],
+                        displayName: hint['displayName'] ?? 'Unknown',
+                      ))
+                  .toList() ??
+              [],
+        );
+      } else {
+        throw FirebaseAuthException(
+          code: 'sign-in-failed',
+          message: 'Failed to sign in: ${response.body}',
+        );
+      }
     }
 
-    final responseData = json.decode(response.body);
-
-    return MultiFactorResolver(
-      sessionId: responseData['sessionInfo'],
-      hints: (responseData['mfaInfo'] as List?)
-              ?.map((hint) => MultiFactorHint(
-                    factorId: hint['mfaEnrollmentId'],
-                    displayName: hint['displayName'],
-                  ))
-              .toList() ??
-          [],
+    throw FirebaseAuthException(
+      code: 'unexpected-response',
+      message: 'Unexpected response: MFA not required',
     );
   }
 }

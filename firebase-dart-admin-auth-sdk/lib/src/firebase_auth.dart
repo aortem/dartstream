@@ -352,9 +352,24 @@ class FirebaseAuth {
     return getRedirectResultService.getResult();
   }
 
+  Future<void> setIdToken(String idToken) async {
+    if (currentUser != null) {
+      currentUser!.updateIdToken(idToken);
+      idTokenChangedController.add(currentUser);
+    }
+  }
+
   Future<MultiFactorResolver> getMultiFactorResolver(
       AuthCredential credential) {
-    return getMultiFactorResolverService.resolve(credential);
+    if (credential is EmailAuthCredential) {
+      return getMultiFactorResolverService.resolve(credential);
+    } else {
+      throw FirebaseAuthException(
+        code: 'invalid-credential',
+        message:
+            'Only EmailAuthCredential is supported for multi-factor authentication.',
+      );
+    }
   }
 
   Future<List<String>> fetchSignInMethodsForEmail(String email) {

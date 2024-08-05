@@ -30,12 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _setupStreams() {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
-    auth.onIdTokenChanged().listen((User? user) {
+    auth.onIdTokenChanged().listen((User? user) async {
+      final idToken = user != null ? await user.getIdToken() : null;
       setState(() {
         _currentUser = user;
-        _currentIdToken = user?.getIdToken() as String?;
+        _currentIdToken = idToken;
       });
-      print('ID Token changed: ${user?.getIdToken()}');
+      print('ID Token changed: $idToken');
     });
 
     auth.onAuthStateChanged().listen((User? user) {

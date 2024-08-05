@@ -1,8 +1,3 @@
-//added emailVerified and phoneNumber fields
-//added isAnonymous getter to determine if the user is signed in anonymously
-//Added getIdToken method for token management
-//added toMap method for easy serialization
-
 class User {
   final String uid;
   final String? email;
@@ -12,6 +7,8 @@ class User {
   final String? photoURL;
   String? _idToken;
   DateTime? _idTokenExpiration;
+  String? refreshToken;
+  final bool mfaEnabled;
 
   User({
     required this.uid,
@@ -20,6 +17,8 @@ class User {
     this.phoneNumber,
     this.displayName,
     this.photoURL,
+    this.refreshToken,
+    this.mfaEnabled = false,
   });
 
   bool get isAnonymous => email == null && phoneNumber == null;
@@ -37,6 +36,12 @@ class User {
     return _idToken!;
   }
 
+  void updateIdToken(String newToken) {
+    _idToken = newToken;
+    _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
+    refreshToken = newToken;
+  }
+
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
@@ -46,6 +51,8 @@ class User {
       'displayName': displayName,
       'photoURL': photoURL,
       'isAnonymous': isAnonymous,
+      'refreshToken': refreshToken,
+      'mfaEnabled': mfaEnabled,
     };
   }
 
@@ -57,6 +64,8 @@ class User {
       phoneNumber: json['phoneNumber'],
       displayName: json['displayName'],
       photoURL: json['photoUrl'] ?? json['photoURL'],
+      refreshToken: json['refreshToken'],
+      mfaEnabled: json['mfaEnabled'] ?? false,
     );
   }
 }
