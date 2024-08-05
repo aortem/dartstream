@@ -23,7 +23,7 @@ dependencies:
   fixnum: ^1.1.0
   http: ^1.2.2
   http2: ^2.3.0
-  http_parser: ^4.1.0
+  http_parser: ^4.0.2 #Do not update.  Flutter SDK is currently tied to version 1.18 of the package collection
   intl: ^0.19.0
   intl_translation: ^0.20.0
   logging: ^1.2.0
