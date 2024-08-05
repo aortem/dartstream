@@ -13,7 +13,7 @@ class PhoneAuth {
       'recaptchaToken': await _getRecaptchaToken(),
     });
 
-    return response['sessionInfo'];
+    return response.body['sessionInfo'];
   }
 
   Future<UserCredential> verifyPhoneNumber(
@@ -23,14 +23,14 @@ class PhoneAuth {
       'code': smsCode,
     });
 
-    if (response['phoneNumber'] == null) {
+    if (response.body['phoneNumber'] == null) {
       throw FirebaseAuthException(
         code: 'invalid-verification-code',
         message: 'The SMS verification code is invalid.',
       );
     }
 
-    final userCredential = UserCredential.fromJson(response);
+    final userCredential = UserCredential.fromJson(response.body);
     auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
