@@ -13,7 +13,7 @@ class EmailPasswordAuth {
       'password': password,
       'returnSecureToken': true,
     });
-    print(response);
+
     final userCredential = UserCredential.fromJson(response);
     auth.updateCurrentUser(userCredential.user);
     return userCredential;
