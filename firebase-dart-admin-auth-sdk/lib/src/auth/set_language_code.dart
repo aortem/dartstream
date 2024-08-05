@@ -18,8 +18,6 @@ class SetLanguageCode {
         },
       );
 
-      print(response.toString());
-
       User user = User.fromJson(response);
       auth.updateCurrentUser(user);
       return user;
