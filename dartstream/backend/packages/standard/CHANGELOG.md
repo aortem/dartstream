@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.0.1-pre+10] - 2024-08-05
+
+### Remove Dart FFI Package to avoid conflict
+- downgrade http parser to 4.0.2 due to collection flutter sdk lock
+- added reminder in the pubspec not to update.
+
 ## [0.0.1-pre+9] - 2024-08-01
 
 ### Remove Dart FFI Package to avoid conflict
