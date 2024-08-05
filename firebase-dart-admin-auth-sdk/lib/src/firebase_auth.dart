@@ -1,17 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_link_with_phone_number.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/parseActionCodeURL%20.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/delete_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
@@ -23,6 +28,10 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart'
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
+
+import 'firebase_app.dart';
+import 'http_response.dart';
+import 'id_token_result_model.dart';
 
 class FirebaseAuth {
   final String? apiKey;
@@ -46,7 +55,9 @@ class FirebaseAuth {
   late RevokeAccessTokenService revokeAccessToken;
   late IdTokenChangedService idTokenChanged;
   late AuthStateChangedService authStateChanged;
-
+  late FirebasePhoneNumberLink firebasePhoneNumberLink;
+  late FirebaseParseUrlLink firebaseParseUrlLink;
+  late FirebaseDeleteUser firebaseDeleteUser;
   User? currentUser;
 
   /// StreamControllers for managing auth state and ID token change events
@@ -65,7 +76,7 @@ class FirebaseAuth {
     emailLink = EmailLinkAuth(this);
     phone = PhoneAuth(this);
     oauth = OAuthAuth(this);
-    signOUt = FirebaseSignOUt(this);
+    signOUt = FirebaseSignOUt();
     signInRedirect = SignInWithRedirectService(auth: this);
     updateUserService = UpdateCurrentUser(auth: this);
     useDeviceLanguage = UseDeviceLanguageService(auth: this);
@@ -78,6 +89,11 @@ class FirebaseAuth {
     idTokenChanged = IdTokenChangedService(auth: this);
     authStateChanged = AuthStateChangedService(auth: this);
     applyAction = ApplyActionCode(this);
+
+    ////////
+    firebasePhoneNumberLink = FirebasePhoneNumberLink(auth: this);
+    firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
+    firebaseDeleteUser = FirebaseDeleteUser(auth: this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -116,7 +132,7 @@ class FirebaseAuth {
   //   );
   // }
 
-  Future<Map<String, dynamic>> performRequest(
+  Future<HttpResponse> performRequest(
       String endpoint, Map<String, dynamic> body) async {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
@@ -135,8 +151,9 @@ class FirebaseAuth {
         message: error['message'],
       );
     }
-
-    return json.decode(response.body);
+    return HttpResponse(
+        statusCode: response.statusCode, body: json.decode(response.body));
+    //  return json.decode(response.body);
   }
 
   // updateCurrentUser method to automatically trigger the streams
@@ -146,12 +163,12 @@ class FirebaseAuth {
     idTokenChangedController.add(user);
   }
 
-  Future<UserCredential> signInWithEmailAndPassword(
+  Future<UserCredential?> signInWithEmailAndPassword(
       String email, String password) {
     return emailPassword.signIn(email, password);
   }
 
-  Future<UserCredential> createUserWithEmailAndPassword(
+  Future<UserCredential?> createUserWithEmailAndPassword(
       String email, String password) {
     return emailPassword.signUp(email, password);
   }
@@ -160,7 +177,8 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<UserCredential> signInWithCredential(AuthCredential credential) async {
+  Future<UserCredential?> signInWithCredential(
+      AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
     } else if (credential is PhoneAuthCredential) {
@@ -191,7 +209,7 @@ class FirebaseAuth {
   }
 
   Future<void> signOut() async {
-    if (currentUser == null) {
+    if (FirebaseApp.instance.getCurrentUser() == null) {
       throw FirebaseAuthException(
         code: 'user-not-signed-in',
         message: 'No user is currently signed in.',
@@ -199,11 +217,12 @@ class FirebaseAuth {
     }
 
     try {
-      await signOUt.signoutFromFirebase();
-      currentUser = null;
+      await signOUt.signOut();
+      FirebaseApp.instance.setCurrentUser(null);
+      log('User Signout ');
       return;
     } catch (e) {
-      print('Sign-out failed: $e');
+      log('Sign-out failed: $e');
       throw FirebaseAuthException(
         code: 'sign-out-error',
         message: 'Failed to sign out user.',
@@ -248,7 +267,7 @@ class FirebaseAuth {
     }
   }
 
-  Future<Map<String, dynamic>> verifyPasswordResetCode(String code) async {
+  Future<HttpResponse> verifyPasswordResetCode(String code) async {
     try {
       return await verifyPasswordReset.verifyPasswordResetCode(code);
     } catch (e) {
@@ -309,6 +328,153 @@ class FirebaseAuth {
   Future<void> sendSignInLinkToEmail(
       String email, ActionCodeSettings settings) {
     return emailLink.sendSignInLinkToEmail(email, settings);
+  }
+
+///////Firebase link with creential////////////
+  // Future<void> linkWithCredential(AuthCredential credential) async {
+  //   // Alternative Flow 1: Check if FirebaseApp is initialized
+  //   if (FirebaseApp.instance == null) {
+  //     throw Exception('FirebaseApp is not initialized');
+  //   }
+
+  //   // Alternative Flow 2: Check if a user is signed in
+  //   final user = await currentUser;
+  //   if (user == null) {
+  //     throw Exception('No user is signed in');
+  //   }
+
+  //   try {
+  //     // Attempt to link the credential to the current user
+  //     await user.linkWithCredential(credential);
+  //   } catch (e) {
+  //     log('Delete user failed: $e');
+  //     throw FirebaseAuthException(
+  //       code: 'delete-user-error',
+  //       message: 'Failed to delete user.',
+  //     );
+  //     // Alternative Flow 3: Check for invalid credential
+  //   }
+  // }
+
+  // Future<void> linkUserWithCredentials(String email, String password) async {
+  //   final user = currentUser;
+  //   final idToken = await user?.getIdToken();
+
+  //   final url = '(link unavailable)';
+  //   final response = await http.post(
+  //     Uri.parse(url),
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: jsonEncode({
+  //       'idToken': idToken,
+  //       'email': email,
+  //       'password': password,
+  //       'returnSecureToken': true,
+  //     }),
+  //   );
+
+  //   if (response.statusCode == 200) {
+  //     print('Credentials linked successfully');
+  //   } else {
+  //     print('Error linking credentials: ${response.statusCode}');
+  //   }
+  // }
+
+  ///////////a Firebase action code URL
+  Future<Map<String, dynamic>> parseActionCodeUrl(String url) async {
+    final uri = Uri.parse(url);
+    final queryParams = uri.queryParameters;
+
+    final code = queryParams['oobCode'];
+    final apiKey = queryParams['apiKey'];
+    final mode = queryParams['mode'];
+    final continueUrl = queryParams['continueUrl'];
+    final languageCode = queryParams['languageCode'];
+    final clientId = queryParams['clientId'];
+
+    return {
+      'code': code,
+      'apiKey': apiKey,
+      'mode': mode,
+      'continueUrl': continueUrl,
+      'languageCode': languageCode,
+      'clientId': clientId,
+    };
+  }
+
+  /////////////FirebaseUser phone number link
+  // Future<void> firebasePhoneNumberLinkMethod(String phone) async {
+  //   try {
+  //     await firebasePhoneNumberLink.sendVerificationCode(phone);
+  //   } catch (e) {
+  //     log("error is $e");
+  //     throw FirebaseAuthException(
+  //       code: 'vrtification - code -error',
+  //       message:
+  //           'Failed to send verification code to phone number: ${e.toString()}',
+  //     );
+  //   }
+  // }
+
+  ////////////FirebaseUser.deleteUser
+  Future<void> deleteFirebaseUser(String idToken) async {
+    if (FirebaseApp.instance.getCurrentUser() == null) {
+      throw FirebaseAuthException(
+        code: 'user-not-signed-in',
+        message: 'No user is currently signed in.',
+      );
+    }
+    final firebaseApp = FirebaseApp.instance;
+    final currentUser = firebaseApp.getCurrentUser();
+    try {
+      await firebaseDeleteUser.deleteUser(currentUser!);
+      FirebaseApp.instance.setCurrentUser(null);
+      log('User Deleted ');
+      return;
+    } catch (e) {
+      log('User Delete failed: $e');
+      throw FirebaseAuthException(
+        code: 'user-delete-error',
+        message: 'Failed to delete user.',
+      );
+    }
+    // final userId = await currentUser?.uid;
+    // try {
+    //   final url = 'delete';
+    //   final body = {
+    //     'idToken': idToken,
+    //     'localId': userId,
+    //   };
+
+    //   final response = await performRequest(url, body);
+    //   if (response.statusCode == 200) {
+    //     log('User deleted successfully');
+    //   } else {
+    //     log('Error deleting user: ${response.statusCode}');
+    //   }
+
+    //   currentUser = null;
+    //   return;
+    // } catch (e) {
+    //   log('Delete user failed: $e');
+    //   throw FirebaseAuthException(
+    //     code: 'delete-user-error',
+    //     message: 'Failed to delete user.',
+    //   );
+    // }
+  }
+
+  /////////FirebaseUser.getIdToken
+  Future<String?> getIdToken() async {
+    final user = currentUser;
+    return await user?.getIdToken();
+  }
+
+  //////////// FirebaseUser.getIdTokenResult
+  Future<IdTokenResult?> getIdTokenResult() async {
+    final user = currentUser;
+    return await user?.getIdTokenResult();
   }
 
   /// Disposes of the FirebaseAuth instance and releases resources.
