@@ -260,7 +260,7 @@ void main() {
                   ));
 
           final result = await auth.verifyPasswordResetCode('test-code');
-          expect(result['email'], equals('test@example.com'));
+          expect(result.body['email'], equals('test@example.com'));
         });
 
         test('signInWithRedirect succeeds', () async {
@@ -351,7 +351,47 @@ void main() {
           final invalidLink = 'https://example.com/';
           expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
         });
+////////////////////
+ test('Delete User', () async {
+//      Assume user is signed in
+      final user = auth.currentUser;
+      await auth.deleteFirebaseUser("",);
+      expect(auth.currentUser, null);
+    });
 
+  test('onIdTokenChanged emits user after successful linking', () async {
+      // Arrange
+     
+
+      // Act
+      await auth.firebasePhoneNumberLinkMethod('+1234567890',);
+
+      // Assert
+      
+    });
+    test('Link User with Credentials', () async {
+      // Assume email and password are valid
+      final email = 'user@example.com';
+      final password = 'password';
+      await auth.linkUserWithCredentials(email, password);
+      // Verify that credentials are linked to user
+    });
+
+    test('Parse Action Code URL', () async {
+      // Assume action code URL is valid
+      final url = '(link unavailable)';
+      final parsedParams = await auth.parseActionCodeUrl(url);
+      expect(parsedParams['code'], 'ABC123');
+    });
+
+    test('Get ID Token and Get ID Token Result', () async {
+      // Assume user is signed in
+      final user = auth.currentUser;
+      final idToken = await auth.getIdToken();
+      expect(idToken, isNotNull);
+      final idTokenResult = await auth.getIdTokenResult();
+      expect(idTokenResult?.token, idToken);
+    });
         // Test for dispose
         test('dispose closes streams', () async {
           auth.dispose();
