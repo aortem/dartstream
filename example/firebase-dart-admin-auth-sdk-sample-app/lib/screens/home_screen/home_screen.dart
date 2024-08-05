@@ -8,7 +8,6 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_res
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_multi_factor_resolver_screen/get_multi_factor_resolver_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_for_email_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/create_user_screen/create_user_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/connect_auth_emulator_screen/connect_auth_emulator_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -54,7 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      await auth.revokeToken(_currentIdToken!);
+      print('Revoking token: $_currentIdToken');
+      await auth.revokeAccessToken;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Token revoked successfully')),
       );
@@ -148,17 +148,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
               title: "Create User with Email and Password",
-            ),
-            10.vSpace,
-            ActionTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ConnectAuthEmulatorScreen()),
-                );
-              },
-              title: "Connect to Auth Emulator",
             ),
             10.vSpace,
             ActionTile(
