@@ -30,6 +30,12 @@ class UnlinkProviderScreen extends StatelessWidget {
                   onTap: () => value.unLinkProvider('apple.com'),
                   title: 'Apple',
                 ),
+                20.vSpace,
+                Button(
+                  loading: value.loading,
+                  onTap: () => value.unLinkProvider('facebook.com'),
+                  title: 'Facebook',
+                ),
               ],
             ),
           ),
