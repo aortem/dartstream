@@ -1,7 +1,7 @@
 ## 0.0.1-pre+4
 
 * Update dart format for static analysis
-* update to latest dart stard package
+* update to latest dart standard package
 
 
 
