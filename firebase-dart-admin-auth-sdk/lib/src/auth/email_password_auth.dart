@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 
 import '../firebase_app.dart';
@@ -29,7 +30,7 @@ class EmailPasswordAuth {
     }
   }
 
-  Future<UserCredential?> signUp(String email, String password) async {
+  Future<User> signUp(String email, String password) async {
     final response = await auth.performRequest('signUp', {
       'email': email,
       'password': password,
@@ -41,10 +42,8 @@ class EmailPasswordAuth {
 
       FirebaseApp.instance.setCurrentUser(userCredential.user);
 
-      return userCredential;
-    } else {
-      print('Error signing in: ${response.body}');
-      return null;
-    }
+    final user = User.fromJson(response);
+    auth.updateCurrentUser(user);
+    return user;
   }
 }
