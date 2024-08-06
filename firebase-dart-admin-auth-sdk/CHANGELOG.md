@@ -3,8 +3,6 @@
 * Update dart format for static analysis
 * update to latest dart standard package
 
-
-
 ## 0.0.1-pre+3
 
 * Update sendPasswordResetEmail
