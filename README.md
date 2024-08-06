@@ -103,6 +103,7 @@ Each tier offers escalating levels of support, from community forums to direct a
 - **Features**:
   - Unlimited Support Tickets with Guaranteed RSLA.
   - One Open/Active Ticket at a time.
+
 ### Enhanced Support
 - $100/month - Billed Annually.
 - 72-hour IRSLA.
