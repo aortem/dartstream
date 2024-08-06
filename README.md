@@ -94,17 +94,15 @@ Firebase Dart Admin Auth SDK offers various support tiers for our open-source pr
 Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
 ### Community Support
-
 - Free support provided by the Firebase Dart Admin Auth SDK community.
 
 ### Standard Support
-
 - $10/month - Billed Annually.
 - 10 business days (Monday-Friday) IRSLA
 - [Subscribe-Coming Soon]()
 - **Features**:
-  * Unlimited Support Tickets with Guaranteed RSLA.
-  * One Open/Active Ticket at a time.
+  - Unlimited Support Tickets with Guaranteed RSLA.
+  - One Open/Active Ticket at a time.
 
 ### Enhanced Support
 
