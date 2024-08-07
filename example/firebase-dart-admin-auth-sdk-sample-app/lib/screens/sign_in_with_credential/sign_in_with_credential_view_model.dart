@@ -54,7 +54,7 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     var signInAccount = await _googleSignIn.signIn();
     var signInAuth = await signInAccount?.authentication;
 
-    if (signInAuth == null) {
+    if (signInAuth == null || signInAccount == null) {
       throw Exception("Google Sign-In failed");
     }
 

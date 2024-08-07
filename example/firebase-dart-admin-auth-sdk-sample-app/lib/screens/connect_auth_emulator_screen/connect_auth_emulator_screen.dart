@@ -1,10 +1,11 @@
-// connect_auth_emulator_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
+import 'package:provider/provider.dart';
 
 class ConnectAuthEmulatorScreen extends StatefulWidget {
+  const ConnectAuthEmulatorScreen({Key? key}) : super(key: key);
+
   @override
   _ConnectAuthEmulatorScreenState createState() =>
       _ConnectAuthEmulatorScreenState();
@@ -21,7 +22,7 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connect Auth Emulator'),
+        title: Text('Connect to Auth Emulator'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -38,28 +39,12 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
               controller: _portController,
               hint: 'Enter port',
               label: 'Port',
+              textInputType: TextInputType.number,
             ),
             SizedBox(height: 20),
             Button(
-              onTap: () {
-                try {
-                  FirebaseAuth(
-                          apiKey: 'your_api_key', projectId: 'your_project_id')
-                      .connectAuthEmulator(
-                    _hostController.text,
-                    int.parse(_portController.text),
-                  );
-                  setState(() {
-                    _result =
-                        'Connected to Auth Emulator at ${_hostController.text}:${_portController.text}';
-                  });
-                } catch (e) {
-                  setState(() {
-                    _result = 'Error: ${e.toString()}';
-                  });
-                }
-              },
-              title: 'Connect to Auth Emulator',
+              onTap: _connectToEmulator,
+              title: 'Connect to Emulator',
             ),
             SizedBox(height: 20),
             Text(_result, style: TextStyle(fontSize: 16)),
@@ -67,5 +52,29 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
         ),
       ),
     );
+  }
+
+  void _connectToEmulator() {
+    final host = _hostController.text;
+    final port = int.tryParse(_portController.text) ?? 9099;
+
+    try {
+      final auth = Provider.of<FirebaseAuth>(context, listen: false);
+      auth.connectAuthEmulator(host, port);
+      setState(() {
+        _result = 'Connected to Auth Emulator at $host:$port';
+      });
+    } catch (e) {
+      setState(() {
+        _result = 'Error connecting to Auth Emulator: ${e.toString()}';
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _hostController.dispose();
+    _portController.dispose();
+    super.dispose();
   }
 }

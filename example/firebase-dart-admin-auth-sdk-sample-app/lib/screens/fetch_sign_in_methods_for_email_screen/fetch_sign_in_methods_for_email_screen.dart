@@ -49,7 +49,7 @@ class _FetchSignInMethodsForEmailScreenState
     );
   }
 
-  void _fetchSignInMethods() async {
+  Future<void> _fetchSignInMethods() async {
     setState(() {
       _isLoading = true;
       _result = '';

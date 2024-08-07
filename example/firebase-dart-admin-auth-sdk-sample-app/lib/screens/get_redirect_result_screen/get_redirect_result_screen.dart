@@ -13,25 +13,7 @@ class GetRedirectResultScreen extends StatefulWidget {
 
 class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
   String _result = '';
-
-  Future<void> _getRedirectResult() async {
-    try {
-      final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      UserCredential? result = await auth.getRedirectResult();
-      setState(() {
-        if (result != null && result.user != null) {
-          _result =
-              'Redirect result: ${result.user!.uid}, Email: ${result.user!.email}';
-        } else {
-          _result = 'No redirect result';
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _result = 'Error: ${e.toString()}';
-      });
-    }
-  }
+  bool _isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +25,45 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Button(
-              onTap: _getRedirectResult,
-              title: 'Get Redirect Result',
-            ),
+            _isLoading
+                ? CircularProgressIndicator()
+                : Button(
+                    onTap: _getRedirectResult,
+                    title: 'Get Redirect Result',
+                  ),
             SizedBox(height: 20),
             Text(_result, style: TextStyle(fontSize: 16)),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> _getRedirectResult() async {
+    setState(() {
+      _isLoading = true;
+      _result = '';
+    });
+
+    try {
+      final auth = Provider.of<FirebaseAuth>(context, listen: false);
+      UserCredential? result = await auth.getRedirectResult();
+      setState(() {
+        if (result != null) {
+          _result =
+              'Redirect result: UID: ${result.user.uid}, Email: ${result.user.email}';
+        } else {
+          _result = 'No redirect result';
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _result = 'Error: ${e.toString()}';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }
