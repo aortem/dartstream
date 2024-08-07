@@ -1,8 +1,8 @@
 class FirebaseAuthException implements Exception {
-  final String code;
-  final String message;
+  final String? code;
+  final String? message;
 
-  FirebaseAuthException({required this.code, required this.message});
+  FirebaseAuthException({ this.code,  this.message});
 
   @override
   String toString() => 'FirebaseAuthException: $code - $message';

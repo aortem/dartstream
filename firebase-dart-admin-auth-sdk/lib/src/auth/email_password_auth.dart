@@ -1,33 +1,50 @@
+import 'dart:developer';
+
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+
+import '../firebase_app.dart';
 
 class EmailPasswordAuth {
   final FirebaseAuth auth;
 
   EmailPasswordAuth(this.auth);
 
-  Future<UserCredential> signIn(String email, String password) async {
+  Future<UserCredential?> signIn(String email, String password) async {
     final response = await auth.performRequest('signInWithPassword', {
       'email': email,
       'password': password,
       'returnSecureToken': true,
     });
+    if (response.statusCode == 200) {
+      final userCredential = UserCredential.fromJson(response.body);
+      auth.updateCurrentUser(userCredential.user);
+      log("current user 123 ${userCredential.user}");
+      FirebaseApp.instance.setCurrentUser(userCredential.user);
 
-    final userCredential = UserCredential.fromJson(response);
-    auth.updateCurrentUser(userCredential.user);
-    return userCredential;
+      return userCredential;
+    } else {
+      log('Error signing in: ${response.body}');
+      return null;
+    }
   }
 
-  Future<User> signUp(String email, String password) async {
+  Future<UserCredential?> signUp(String email, String password) async {
     final response = await auth.performRequest('signUp', {
       'email': email,
       'password': password,
       'returnSecureToken': true,
     });
+    if (response.statusCode == 200) {
+      final userCredential = UserCredential.fromJson(response.body);
+      auth.updateCurrentUser(userCredential.user);
 
-    final user = User.fromJson(response);
-    auth.updateCurrentUser(user);
-    return user;
+      FirebaseApp.instance.setCurrentUser(userCredential.user);
+
+      return userCredential;
+    } else {
+      print('Error signing in: ${response.body}');
+      return null;
+    }
   }
 }

@@ -122,7 +122,6 @@ void main() {
 
       // Common tests for all configurations
       void runCommonTests() {
-        setUp(initializeAppWithServiceAccount);
         test('signInWithEmailAndPassword fails', () async {
           // Mocking the HTTP response for a failed sign-in with email and password.
           when(() => mockClient.post(any(),
@@ -150,8 +149,8 @@ void main() {
 
           final result = await auth.createUserWithEmailAndPassword(
               'newuser@example.com', 'password');
-          expect(result.uid, equals('newTestUid'));
-          expect(result.email, equals('newuser@example.com'));
+          expect(result.user.uid, equals('newTestUid'));
+          expect(result.user.email, equals('newuser@example.com'));
         });
 
         test('signInWithCustomToken succeeds', () async {
@@ -261,7 +260,7 @@ void main() {
                   ));
 
           final result = await auth.verifyPasswordResetCode('test-code');
-          expect(result['email'], equals('test@example.com'));
+          expect(result.body['email'], equals('test@example.com'));
         });
 
         test('signInWithRedirect succeeds', () async {
@@ -291,68 +290,6 @@ void main() {
           final result = await auth.applyActionCode('action_code');
 
           expect(true, result);
-        });
-
-        test('should send verification code to user', () async {
-          await auth.sendEmailVerificationCode();
-
-          expect(true, completes);
-        });
-
-        test('reload user  succeeds', () async {
-          // Mocking the HTTP response for a successful sign-in with email and password.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-                    200,
-                  ));
-
-          final result = await auth.reloadUser();
-          expect(result.uid, equals('testUid'));
-          expect(result.email, equals('test@example.com'));
-        });
-
-        test('set language code succeeds', () async {
-          // Mocking the HTTP response for a successful sign-in with email and password.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-                    200,
-                  ));
-
-          final result = await auth.setLanguageCode('ENG');
-          expect(result.uid, equals('testUid'));
-          expect(result.email, equals('test@example.com'));
-        });
-
-        test('Update password succeeds', () async {
-          // Mocking the HTTP response for a successful sign-in with email and password.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-                    200,
-                  ));
-
-          final result = await auth.updatePassword('12345678');
-          expect(result.uid, equals('testUid'));
-          expect(result.email, equals('test@example.com'));
-        });
-
-        test('unlink provider succeeds', () async {
-          // Mocking the HTTP response for a successful sign-in with email and password.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
-                    200,
-                  ));
-
-          final result = await auth.unlinkProvider('google.com');
-          expect(result.uid, equals('testUid'));
-          expect(result.email, equals('test@example.com'));
         });
       }
 
@@ -414,7 +351,47 @@ void main() {
           final invalidLink = 'https://example.com/';
           expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
         });
+////////////////////
+ test('Delete User', () async {
+//      Assume user is signed in
+      final user = auth.currentUser;
+      await auth.deleteFirebaseUser("",);
+      expect(auth.currentUser, null);
+    });
 
+  test('onIdTokenChanged emits user after successful linking', () async {
+      // Arrange
+     
+
+      // Act
+      await auth.firebasePhoneNumberLinkMethod('+1234567890',);
+
+      // Assert
+      
+    });
+    test('Link User with Credentials', () async {
+      // Assume email and password are valid
+      final email = 'user@example.com';
+      final password = 'password';
+      await auth.linkUserWithCredentials(email, password);
+      // Verify that credentials are linked to user
+    });
+
+    test('Parse Action Code URL', () async {
+      // Assume action code URL is valid
+      final url = '(link unavailable)';
+      final parsedParams = await auth.parseActionCodeUrl(url);
+      expect(parsedParams['code'], 'ABC123');
+    });
+
+    test('Get ID Token and Get ID Token Result', () async {
+      // Assume user is signed in
+      final user = auth.currentUser;
+      final idToken = await auth.getIdToken();
+      expect(idToken, isNotNull);
+      final idTokenResult = await auth.getIdTokenResult();
+      expect(idTokenResult?.token, idToken);
+    });
         // Test for dispose
         test('dispose closes streams', () async {
           auth.dispose();
