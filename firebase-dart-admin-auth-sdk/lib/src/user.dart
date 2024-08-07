@@ -3,6 +3,11 @@
 //Added getIdToken method for token management
 //added toMap method for easy serialization
 
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
+
+import 'id_token_result_model.dart';
+
 class User {
   final String uid;
   String? email;
@@ -11,7 +16,7 @@ class User {
   String? displayName;
   String? photoURL;
   String? idToken;
-  String? idTokenExpiration;
+  DateTime? _idTokenExpiration;
   String? refreshToken;
 
   User({
@@ -22,18 +27,17 @@ class User {
     this.displayName,
     this.photoURL,
     this.idToken,
-    this.idTokenExpiration,
     this.refreshToken,
   });
 
   bool get isAnonymous => email == null && phoneNumber == null;
 
   Future<String> getIdToken([bool forceRefresh = false]) async {
-    if (forceRefresh || idToken == null || idTokenExpiration == null) {
+    if (forceRefresh || idToken == null || _idTokenExpiration == null) {
       // In a real implementation, make an API call to refresh the token here
       // For this, just simulate a token refresh
       idToken = 'refreshed_token_${DateTime.now().millisecondsSinceEpoch}';
-      // _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
+      _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
     }
     return idToken!;
   }
@@ -59,7 +63,7 @@ class User {
       displayName: json['displayName'],
       photoURL: json['photoUrl'] ?? json['photoURL'],
       idToken: json['idToken'],
-      idTokenExpiration: json['expiresIn'],
+      //   idTokenExpiration: json['expiresIn'],
       refreshToken: json['refreshToken'],
     );
   }
@@ -71,10 +75,27 @@ class User {
       email: user.email ?? email,
       emailVerified: user.emailVerified ?? emailVerified,
       idToken: user.idToken ?? idToken,
-      idTokenExpiration: user.idTokenExpiration ?? idTokenExpiration,
+      // idTokenExpiration: user.idTokenExpiration ?? idTokenExpiration,
       phoneNumber: user.phoneNumber ?? user.phoneNumber,
       photoURL: user.photoURL ?? user.photoURL,
       refreshToken: user.refreshToken ?? refreshToken,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'User{uid: $uid, email: $email, emailVerified: $emailVerified, phoneNumber: $phoneNumber, displayName: $displayName, photoURL: $photoURL, _idToken: $idToken, _idTokenExpiration: $_idTokenExpiration}';
+  }
+
+  Future<IdTokenResult> getIdTokenResult([bool forceRefresh = false]) async {
+    final token = await getIdToken(forceRefresh);
+    return IdTokenResult(
+      token: token,
+      expirationTime: _idTokenExpiration?.millisecondsSinceEpoch ?? 0,
+      issuedAtTime: DateTime.now().millisecondsSinceEpoch,
+      signInProvider: 'password', // or 'phone' or '(link unavailable)' etc.
+      userId: uid,
+      authTime: DateTime.now().millisecondsSinceEpoch.toString(),
     );
   }
 }

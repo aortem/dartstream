@@ -13,7 +13,7 @@ class OAuthAuth extends AuthBase {
       'signInMethod': 'popup',
     });
 
-    final userCredential = UserCredential.fromJson(response);
+    final userCredential = UserCredential.fromJson(response.body);
     auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
