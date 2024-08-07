@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import '../firebase_dart_admin_auth_sdk.dart';
 import 'firebase_auth.dart';
 
 class FirebaseApp {
@@ -13,6 +14,16 @@ class FirebaseApp {
   static FirebaseAuth? firebaseAuth;
 
   FirebaseApp._(this._apiKey, this._projectId);
+  User? _currentUser;
+
+  // method to set the current user
+  void setCurrentUser(User? user) {
+    _currentUser = user;
+  }
+
+  User? getCurrentUser() {
+    return _currentUser;
+  }
 
   //Exposes the singleton
   static FirebaseApp get instance {

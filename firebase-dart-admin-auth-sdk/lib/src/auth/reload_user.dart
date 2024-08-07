@@ -19,7 +19,7 @@ class ReloadUser {
         },
       );
 
-      User user = User.fromJson((response['users'] as List)[0]);
+      User user = User.fromJson((response.body['users'] as List)[0]);
 
       auth.updateCurrentUser(user);
       return user;

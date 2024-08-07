@@ -12,7 +12,7 @@ class CustomTokenAuth {
       'returnSecureToken': true,
     });
 
-    final userCredential = UserCredential.fromJson(response);
+    final userCredential = UserCredential.fromJson(response.body);
     auth.updateCurrentUser(userCredential.user);
     return userCredential;
   }
