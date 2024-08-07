@@ -9,8 +9,16 @@ environment:
 # Add regular dependencies here.
 
 dependencies:
-  ds_standard_features: ^0.0.1-pre+10 #Standard Dart Team Utilities
+
+#------------------ STANDARD FEATURES---------------------------------
+## There are three standard libraries.  Each one can be used with a different xxx 
+
+  ds_standard_features: ^0.0.1-pre+10 #Standard Dart Team Utilities For HTTP //Default
+#  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
+#  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
   
+
+#------------------ XXXXXX FEATURES---------------------------------
 
 dev_dependencies:
   ds_tools_testing: ^0.0.1-pre+2 #Standard Dart Team Testing Tools
