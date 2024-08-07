@@ -7,14 +7,14 @@ class SignInWithRedirectService {
 
   Future<UserCredential> signInWithRedirect(String providerId) async {
     try {
-      final url = 'signInWithRedirect';
+      final url = 'v1/accounts:signInWithRedirect';
       final body = {
         'providerId': providerId,
       };
 
       final response = await auth.performRequest(url, body);
 
-      final userCredential = UserCredential.fromJson(response.body);
+      final userCredential = UserCredential.fromJson(response);
       auth.updateCurrentUser(userCredential.user);
       return userCredential;
     } catch (e) {
