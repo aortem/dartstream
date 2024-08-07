@@ -18,7 +18,7 @@ class SetLanguageCode {
         },
       );
 
-      User user = User.fromJson(response);
+      User user = User.fromJson(response.body);
       auth.updateCurrentUser(user);
       return user;
     } catch (e) {

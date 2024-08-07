@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class UseDeviceLanguageService {
@@ -13,7 +15,12 @@ class UseDeviceLanguageService {
         'languageCode': languageCode,
       };
 
-      await auth.performRequest(url, body);
+      final response = await auth.performRequest(url, body);
+      if (response.statusCode == 200) {
+        log("Language is set ");
+      } else {
+        print('update : ${response.body}');
+      }
     } catch (e) {
       print('Use device language failed: $e');
       throw FirebaseAuthException(
