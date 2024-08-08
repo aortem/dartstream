@@ -1,10 +1,10 @@
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/create_user_screen/create_user_screen.dart';
 
@@ -94,30 +94,6 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: _revokeToken,
               title: "Revoke Current Token",
             ),
-            10.vSpace,
-            ActionTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => InitializeRecaptchaConfigScreen()),
-                );
-              },
-              title: "Initialize reCAPTCHA Config",
-            ),
-            10.vSpace,
-            ActionTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GetRedirectResultScreen()),
-                );
-              },
-              title: "Get Redirect Result",
-            ),
-            10.vSpace,
-            10.vSpace,
             ActionTile(
               onTap: () {
                 Navigator.push(
@@ -130,6 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             10.vSpace,
             ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const GetRedirectResultScreen(),
+                ),
+              ),
+              title: "Get Redirect Result",
+            ),
+            10.vSpace,
+            ActionTile(
               onTap: () {
                 Navigator.push(
                   context,
@@ -137,6 +122,15 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               },
               title: "Create User with Email and Password",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const InitializeRecaptchaConfigScreen(),
+                ),
+              ),
+              title: "Initialize reCAPTCHA Config",
             ),
             10.vSpace,
             ActionTile(

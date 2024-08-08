@@ -1,69 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
-class GetRedirectResultScreen extends StatefulWidget {
+class GetRedirectResultViewModel extends ChangeNotifier {
+  bool loading = false;
+  UserCredential? result;
+
+  void setLoading(bool load) {
+    loading = load;
+    notifyListeners();
+  }
+
+  Future<void> getRedirectResult() async {
+    try {
+      setLoading(true);
+      result = await FirebaseApp.firebaseAuth?.getRedirectResult();
+      notifyListeners();
+    } catch (e) {
+      // Use your preferred method to show errors, e.g., BotToast
+      print('Error: ${e.toString()}');
+    } finally {
+      setLoading(false);
+    }
+  }
+}
+
+class GetRedirectResultScreen extends StatelessWidget {
   const GetRedirectResultScreen({Key? key}) : super(key: key);
 
   @override
-  _GetRedirectResultScreenState createState() =>
-      _GetRedirectResultScreenState();
-}
-
-class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
-  String _result = '';
-  bool _isLoading = false;
-
-  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Get Redirect Result'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _isLoading
-                ? CircularProgressIndicator()
-                : Button(
-                    onTap: _getRedirectResult,
-                    title: 'Get Redirect Result',
-                  ),
-            SizedBox(height: 20),
-            Text(_result, style: TextStyle(fontSize: 16)),
-          ],
+    return ChangeNotifierProvider(
+      create: (context) => GetRedirectResultViewModel(),
+      child: Consumer<GetRedirectResultViewModel>(
+        builder: (context, viewModel, child) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Get Redirect Result'),
+          ),
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Button(
+                  onTap: () => viewModel.getRedirectResult(),
+                  loading: viewModel.loading,
+                  title: 'Get Redirect Result',
+                ),
+                20.vSpace,
+                if (viewModel.result != null) ...[
+                  Text('User ID: ${viewModel.result!.user?.uid ?? 'N/A'}'),
+                  Text('Email: ${viewModel.result!.user?.email ?? 'N/A'}'),
+                  Text(
+                      'Display Name: ${viewModel.result!.user?.displayName ?? 'N/A'}'),
+                  // Add more user properties as needed
+                ] else if (!viewModel.loading) ...[
+                  Text('No redirect result available or not fetched yet.'),
+                ],
+              ],
+            ),
+          ),
         ),
       ),
     );
-  }
-
-  Future<void> _getRedirectResult() async {
-    setState(() {
-      _isLoading = true;
-      _result = '';
-    });
-
-    try {
-      final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      UserCredential? result = await auth.getRedirectResult();
-      setState(() {
-        if (result != null) {
-          _result =
-              'Redirect result: UID: ${result.user.uid}, Email: ${result.user.email}';
-        } else {
-          _result = 'No redirect result';
-        }
-      });
-    } catch (e) {
-      setState(() {
-        _result = 'Error: ${e.toString()}';
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 }

@@ -1,37 +1,44 @@
 import 'dart:convert';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:http/http.dart' as http;
+import '../exceptions.dart';
 
 class InitializeRecaptchaConfigService {
-  final FirebaseAuth auth;
+  final dynamic auth;
 
-  InitializeRecaptchaConfigService(this.auth);
+  InitializeRecaptchaConfigService({required this.auth});
 
-  Future<void> initialize() async {
-    final url = Uri.https(
-      'identitytoolkit.googleapis.com',
-      '/v1/recaptchaConfig',
-      {'key': auth.apiKey},
-    );
-
+  Future<void> initializeRecaptchaConfig() async {
     try {
-      final response = await http.post(
+      final url = Uri.https(
+        'identitytoolkit.googleapis.com',
+        '/v1/recaptchaConfig',
+        {'key': auth.apiKey},
+      );
+
+      final response = await auth.httpClient.post(
         url,
-        body: json.encode({'projectId': auth.projectId}),
-        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'clientType': 'CLIENT_TYPE_WEB', // Adjust if needed for mobile
+        }),
       );
 
       if (response.statusCode != 200) {
+        final error = json.decode(response.body)['error'];
         throw FirebaseAuthException(
-          code: 'recaptcha-init-failed',
-          message:
-              'Failed to initialize reCAPTCHA configuration: ${response.body}',
+          code: error['message'],
+          message: error['message'],
         );
       }
+
+      final data = json.decode(response.body);
+
+      // Store the reCAPTCHA configuration in the auth instance
+      auth.recaptchaConfig = data;
+
+      print('reCAPTCHA configuration loaded successfully');
     } catch (e) {
       throw FirebaseAuthException(
-        code: 'recaptcha-init-error',
-        message: 'Error initializing reCAPTCHA configuration: $e',
+        code: 'recaptcha-config-error',
+        message: 'Failed to initialize reCAPTCHA config: ${e.toString()}',
       );
     }
   }

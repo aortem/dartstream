@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
-// import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart' as exceptions;
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
@@ -25,13 +22,11 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
-import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
-// import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/multi_factor_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
 
 class FirebaseAuth {
   final String? apiKey;
@@ -57,13 +52,12 @@ class FirebaseAuth {
   late IdTokenChangedService idTokenChanged;
   late AuthStateChangedService authStateChanged;
 
-  late InitializeRecaptchaConfigService initializeRecaptchaConfigService;
-  late GetRedirectResultService getRedirectResultService;
-  // late GetMultiFactorResolverService getMultiFactorResolverService;
   late FetchSignInMethodsService fetchSignInMethods;
   late CreateUserWithEmailAndPasswordService
       createUserWithEmailAndPasswordService;
   late ConnectAuthEmulatorService connectAuthEmulatorService;
+  late GetRedirectResultService getRedirectResultService;
+  late InitializeRecaptchaConfigService initializeRecaptchaConfigService;
 
   User? currentUser;
 
@@ -97,13 +91,13 @@ class FirebaseAuth {
     authStateChanged = AuthStateChangedService(auth: this);
     applyAction = ApplyActionCode(this);
 
-    initializeRecaptchaConfigService = InitializeRecaptchaConfigService(this);
-    getRedirectResultService = GetRedirectResultService(this);
-    // getMultiFactorResolverService = GetMultiFactorResolverService(this);
     fetchSignInMethods = FetchSignInMethodsService(auth: this);
     createUserWithEmailAndPasswordService =
         CreateUserWithEmailAndPasswordService(this);
     connectAuthEmulatorService = ConnectAuthEmulatorService(this);
+    getRedirectResultService = GetRedirectResultService(auth: this);
+    initializeRecaptchaConfigService =
+        InitializeRecaptchaConfigService(auth: this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -347,10 +341,10 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) {
-    return emailLink.sendSignInLinkToEmail(email, settings);
-  }
+  // Future<void> sendSignInLinkToEmail(
+  //     String email, ActionCodeSettings settings) {
+  //   return emailLink.sendSignInLinkToEmail(email, settings);
+  // }
 
   /// Disposes of the FirebaseAuth instance and releases resources.
   void dispose() {
@@ -358,34 +352,6 @@ class FirebaseAuth {
     idTokenChangedController.close();
     httpClient.close();
   }
-
-  Future<void> initializeRecaptchaConfig() {
-    return initializeRecaptchaConfigService.initialize();
-  }
-
-  Future<UserCredential?> getRedirectResult() {
-    return getRedirectResultService.getResult();
-  }
-
-  Future<void> setIdToken(String idToken) async {
-    if (currentUser != null) {
-      currentUser!.updateIdToken(idToken);
-      idTokenChangedController.add(currentUser);
-    }
-  }
-
-  // Future<MultiFactorResolver> getMultiFactorResolver(
-  //     AuthCredential credential) {
-  //   if (credential is EmailAuthCredential) {
-  //     return getMultiFactorResolverService.resolve(credential);
-  //   } else {
-  //     throw FirebaseAuthException(
-  //       code: 'invalid-credential',
-  //       message:
-  //           'Only EmailAuthCredential is supported for multi-factor authentication.',
-  //     );
-  //   }
-  // }
 
   Future<List<String>> fetchSignInMethodsForEmail(String email) async {
     try {
@@ -397,6 +363,30 @@ class FirebaseAuth {
       throw FirebaseAuthException(
         code: 'fetch-sign-in-methods-error',
         message: 'Failed to fetch sign-in methods for email.',
+      );
+    }
+  }
+
+  Future<UserCredential?> getRedirectResult() async {
+    try {
+      return await getRedirectResultService.getRedirectResult();
+    } catch (e) {
+      print('Get redirect result failed: $e');
+      throw FirebaseAuthException(
+        code: 'get-redirect-result-error',
+        message: 'Failed to get redirect result.',
+      );
+    }
+  }
+
+  Future<void> initializeRecaptchaConfig() async {
+    try {
+      await initializeRecaptchaConfigService.initializeRecaptchaConfig();
+    } catch (e) {
+      print('Initialize reCAPTCHA config failed: $e');
+      throw FirebaseAuthException(
+        code: 'recaptcha-config-error',
+        message: 'Failed to initialize reCAPTCHA config.',
       );
     }
   }

@@ -114,8 +114,8 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
   Future<void> sendSignInLinkToEmail(
       String email, acs.ActionCodeSettings settings) async {
     try {
-      await FirebaseApp.firebaseAuth?.sendSignInLinkToEmail(email, settings);
-      BotToast.showText(text: "Sign-in link sent to email");
+      // await FirebaseApp.firebaseAuth?.sendSignInLinkToEmail(email, settings);
+      // BotToast.showText(text: "Sign-in link sent to email");
 
       // Store the email locally
       final prefs = await SharedPreferences.getInstance();
