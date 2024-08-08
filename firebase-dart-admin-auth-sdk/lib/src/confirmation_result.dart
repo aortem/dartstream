@@ -9,7 +9,6 @@ class ConfirmationResult {
       : _auth = auth;
 
   Future<UserCredential> confirm(String verificationCode) async {
-    return await _auth.phone
-        .verifyPhoneNumber(verificationId, verificationCode);
+    return await _auth.signInWithPhoneNumber(verificationId, verificationCode);
   }
 }

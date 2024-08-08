@@ -6,7 +6,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
+// import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
@@ -15,8 +15,8 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart'
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart' as exceptions;
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
 // New imports for Sprint 2 #16 to #21
@@ -28,7 +28,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
 // import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor_resolver.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods_for_email.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/multi_factor_resolver.dart';
@@ -59,8 +59,8 @@ class FirebaseAuth {
 
   late InitializeRecaptchaConfigService initializeRecaptchaConfigService;
   late GetRedirectResultService getRedirectResultService;
-  late GetMultiFactorResolverService getMultiFactorResolverService;
-  late FetchSignInMethodsForEmailService fetchSignInMethodsForEmailService;
+  // late GetMultiFactorResolverService getMultiFactorResolverService;
+  late FetchSignInMethodsService fetchSignInMethods;
   late CreateUserWithEmailAndPasswordService
       createUserWithEmailAndPasswordService;
   late ConnectAuthEmulatorService connectAuthEmulatorService;
@@ -99,8 +99,8 @@ class FirebaseAuth {
 
     initializeRecaptchaConfigService = InitializeRecaptchaConfigService(this);
     getRedirectResultService = GetRedirectResultService(this);
-    getMultiFactorResolverService = GetMultiFactorResolverService(this);
-    fetchSignInMethodsForEmailService = FetchSignInMethodsForEmailService(this);
+    // getMultiFactorResolverService = GetMultiFactorResolverService(this);
+    fetchSignInMethods = FetchSignInMethodsService(auth: this);
     createUserWithEmailAndPasswordService =
         CreateUserWithEmailAndPasswordService(this);
     connectAuthEmulatorService = ConnectAuthEmulatorService(this);
@@ -155,10 +155,9 @@ class FirebaseAuth {
     final response = await httpClient.post(url, body: json.encode(body));
 
     if (response.statusCode != 200) {
-      final error = json.decode(response.body)['error'];
-      throw FirebaseAuthException(
-        code: error['message'],
-        message: error['message'],
+      throw exceptions.FirebaseAuthException(
+        code: 'error-code',
+        message: 'Error message',
       );
     }
 
@@ -208,7 +207,23 @@ class FirebaseAuth {
 
   Future<UserCredential> signInWithPhoneNumber(
       String verificationId, String smsCode) {
-    return phone.verifyPhoneNumber(verificationId, smsCode);
+    return phone.verifyPhoneNumberWithCode(verificationId, smsCode);
+  }
+
+  Future<void> verifyPhoneNumber({
+    required String phoneNumber,
+    required PhoneVerificationCompleted verificationCompleted,
+    required PhoneVerificationFailed verificationFailed,
+    required PhoneCodeSent codeSent,
+    required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
+  }) {
+    return phone.verifyPhoneNumber(
+      phoneNumber: phoneNumber,
+      verificationCompleted: verificationCompleted,
+      verificationFailed: verificationFailed,
+      codeSent: codeSent,
+      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
+    );
   }
 
   Future<UserCredential> signInWithEmailLink(
@@ -359,21 +374,31 @@ class FirebaseAuth {
     }
   }
 
-  Future<MultiFactorResolver> getMultiFactorResolver(
-      AuthCredential credential) {
-    if (credential is EmailAuthCredential) {
-      return getMultiFactorResolverService.resolve(credential);
-    } else {
+  // Future<MultiFactorResolver> getMultiFactorResolver(
+  //     AuthCredential credential) {
+  //   if (credential is EmailAuthCredential) {
+  //     return getMultiFactorResolverService.resolve(credential);
+  //   } else {
+  //     throw FirebaseAuthException(
+  //       code: 'invalid-credential',
+  //       message:
+  //           'Only EmailAuthCredential is supported for multi-factor authentication.',
+  //     );
+  //   }
+  // }
+
+  Future<List<String>> fetchSignInMethodsForEmail(String email) async {
+    try {
+      List<String> methods =
+          await fetchSignInMethods.fetchSignInMethodsForEmail(email);
+      return methods;
+    } catch (e) {
+      print('Fetch sign-in methods failed: $e');
       throw FirebaseAuthException(
-        code: 'invalid-credential',
-        message:
-            'Only EmailAuthCredential is supported for multi-factor authentication.',
+        code: 'fetch-sign-in-methods-error',
+        message: 'Failed to fetch sign-in methods for email.',
       );
     }
-  }
-
-  Future<List<String>> fetchSignInMethodsForEmail(String email) {
-    return fetchSignInMethodsForEmailService.fetch(email);
   }
 
   Future<UserCredential> createUserWithEmailAndPassword(

@@ -8,4 +8,4 @@ export 'src/utils.dart';
 export 'src/confirmation_result.dart';
 export 'src/auth_credential.dart';
 export 'src/firebase_app.dart';
-export 'src/multi_factor_resolver.dart';
+// export 'src/multi_factor_resolver.dart';

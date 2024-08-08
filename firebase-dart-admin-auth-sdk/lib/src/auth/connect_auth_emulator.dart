@@ -6,16 +6,8 @@ class ConnectAuthEmulatorService {
   ConnectAuthEmulatorService(this.auth);
 
   void connect(String host, int port) {
-    final emulatorUrl = 'http://$host:$port';
-    auth.setEmulatorUrl(emulatorUrl);
-    print('Connected to Firebase Auth emulator at $emulatorUrl');
-  }
-}
-
-extension FirebaseAuthEmulator on FirebaseAuth {
-  void setEmulatorUrl(String url) {
-    // Implementation to set the emulator URL
-    // This could be a property of FirebaseAuth or affect how requests are made
-    print('Emulator URL set to: $url');
+    final url = 'http://$host:$port';
+    auth.setEmulatorUrl(url);
+    print('Connected to Firebase Auth Emulator at $url');
   }
 }

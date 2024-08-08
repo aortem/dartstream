@@ -24,22 +24,15 @@ class CreateUserWithEmailAndPasswordService {
     );
 
     if (response.statusCode != 200) {
+      final errorData = json.decode(response.body);
       throw FirebaseAuthException(
-        code: 'create-user-failed',
-        message: 'Failed to create new user: ${response.body}',
+        code: errorData['error']['message'],
+        message: 'Failed to create new user: ${errorData['error']['message']}',
       );
     }
 
     final responseData = json.decode(response.body);
-
-    return UserCredential(
-      user: User(
-        uid: responseData['localId'],
-        email: responseData['email'],
-        emailVerified: false,
-        // isAnonymous: false,
-      ),
-      // Add other credential properties as needed
-    );
+    final user = User.fromJson(responseData);
+    return UserCredential(user: user);
   }
 }

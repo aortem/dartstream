@@ -156,8 +156,8 @@ packages:
   firebase_dart_admin_auth_sdk:
     dependency: "direct main"
     description:
-      path: "/home/brian/Aortem.io/gitlab-dev-july30/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk"
-      relative: false
+      path: "../../firebase-dart-admin-auth-sdk"
+      relative: true
     source: path
     version: "0.0.1-pre+3"
   fixnum:

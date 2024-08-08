@@ -5,8 +5,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_multi_factor_resolver_screen/get_multi_factor_resolver_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_for_email_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/create_user_screen/create_user_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -118,23 +117,13 @@ class _HomeScreenState extends State<HomeScreen> {
               title: "Get Redirect Result",
             ),
             10.vSpace,
-            ActionTile(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => GetMultiFactorResolverScreen()),
-                );
-              },
-              title: "Get Multi-Factor Resolver",
-            ),
             10.vSpace,
             ActionTile(
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => FetchSignInMethodsForEmailScreen()),
+                      builder: (context) => FetchSignInMethodsScreen()),
                 );
               },
               title: "Fetch Sign-In Methods for Email",

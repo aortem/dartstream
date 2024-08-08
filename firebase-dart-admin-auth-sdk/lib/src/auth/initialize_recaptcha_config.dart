@@ -17,9 +17,7 @@ class InitializeRecaptchaConfigService {
     try {
       final response = await http.post(
         url,
-        body: json.encode({
-          'projectId': auth.projectId,
-        }),
+        body: json.encode({'projectId': auth.projectId}),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -30,9 +28,6 @@ class InitializeRecaptchaConfigService {
               'Failed to initialize reCAPTCHA configuration: ${response.body}',
         );
       }
-
-      // Process the response if needed
-      // final responseData = json.decode(response.body);
     } catch (e) {
       throw FirebaseAuthException(
         code: 'recaptcha-init-error',
