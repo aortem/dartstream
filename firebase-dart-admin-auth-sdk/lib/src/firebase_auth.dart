@@ -13,6 +13,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart' as exceptions;
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
@@ -26,7 +27,11 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/initialize_recaptcha_config.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/recaptcha_config.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/confirm_password_reset.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/check_action_code.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor.dart'
+    as multi_factor;
 
 class FirebaseAuth {
   final String? apiKey;
@@ -57,7 +62,10 @@ class FirebaseAuth {
       createUserWithEmailAndPasswordService;
   late ConnectAuthEmulatorService connectAuthEmulatorService;
   late GetRedirectResultService getRedirectResultService;
-  late InitializeRecaptchaConfigService initializeRecaptchaConfigService;
+  late final RecaptchaConfigService recaptchaConfigService;
+  late ConfirmPasswordResetService confirmPasswordResetService;
+  late CheckActionCodeService checkActionCodeService;
+  late final multi_factor.MultiFactorService multiFactorService;
 
   User? currentUser;
 
@@ -96,8 +104,10 @@ class FirebaseAuth {
         CreateUserWithEmailAndPasswordService(this);
     connectAuthEmulatorService = ConnectAuthEmulatorService(this);
     getRedirectResultService = GetRedirectResultService(auth: this);
-    initializeRecaptchaConfigService =
-        InitializeRecaptchaConfigService(auth: this);
+    recaptchaConfigService = RecaptchaConfigService(auth: this);
+    confirmPasswordResetService = ConfirmPasswordResetService(auth: this);
+    checkActionCodeService = CheckActionCodeService(auth: this);
+    multiFactorService = multi_factor.MultiFactorService(auth: this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -195,8 +205,15 @@ class FirebaseAuth {
     }
   }
 
-  Future<UserCredential> signInWithPopup(String providerId) {
-    return oauth.signInWithPopup(providerId);
+  Future<UserCredential> signInWithPopup(String providerId) async {
+    try {
+      return await oauth.signInWithPopup(providerId);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'popup-sign-in-error',
+        message: 'Failed to sign in with popup: ${e.toString()}',
+      );
+    }
   }
 
   Future<UserCredential> signInWithPhoneNumber(
@@ -381,12 +398,11 @@ class FirebaseAuth {
 
   Future<void> initializeRecaptchaConfig() async {
     try {
-      await initializeRecaptchaConfigService.initializeRecaptchaConfig();
+      await recaptchaConfigService.initializeRecaptchaConfig();
     } catch (e) {
-      print('Initialize reCAPTCHA config failed: $e');
       throw FirebaseAuthException(
         code: 'recaptcha-config-error',
-        message: 'Failed to initialize reCAPTCHA config.',
+        message: 'Failed to initialize reCAPTCHA config: ${e.toString()}',
       );
     }
   }
@@ -403,5 +419,39 @@ class FirebaseAuth {
   void setEmulatorUrl(String url) {
     // Implementation to set the emulator URL
     print('Emulator URL set to: $url');
+  }
+
+  Future<void> confirmPasswordReset(String code, String newPassword) async {
+    try {
+      await confirmPasswordResetService.confirmPasswordReset(code, newPassword);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'confirm-password-reset-error',
+        message: 'Failed to confirm password reset: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<ActionCodeInfo> checkActionCode(String code) async {
+    try {
+      return await checkActionCodeService.checkActionCode(code);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'check-action-code-error',
+        message: 'Failed to check action code: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<multi_factor.MultiFactorResolver> getMultiFactorResolver(
+      multi_factor.MultiFactorError error) async {
+    try {
+      return await multiFactorService.getMultiFactorResolver(error);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'multi-factor-resolver-error',
+        message: 'Failed to get multi-factor resolver: ${e.toString()}',
+      );
+    }
   }
 }

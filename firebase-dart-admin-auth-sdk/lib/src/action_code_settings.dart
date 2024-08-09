@@ -1,46 +1,33 @@
 class ActionCodeSettings {
-  final String url;
-  final bool handleCodeInApp;
-  final IOSSettings? iOS;
-  final AndroidSettings? android;
+  final String? url;
+  final bool? handleCodeInApp;
+  final String? iOSBundleId;
+  final String? androidPackageName;
+  final bool? androidInstallApp;
+  final String? androidMinimumVersion;
   final String? dynamicLinkDomain;
 
   ActionCodeSettings({
-    required this.url,
-    this.handleCodeInApp = false,
-    this.iOS,
-    this.android,
+    this.url,
+    this.handleCodeInApp,
+    this.iOSBundleId,
+    this.androidPackageName,
+    this.androidInstallApp,
+    this.androidMinimumVersion,
     this.dynamicLinkDomain,
   });
 
   Map<String, dynamic> toMap() {
     return {
-      'continueUrl': url,
-      'canHandleCodeInApp': handleCodeInApp,
-      if (iOS != null) 'iOSBundleId': iOS!.bundleId,
-      if (android != null) 'androidPackageName': android!.packageName,
-      if (android?.installApp != null) 'androidInstallApp': android!.installApp,
-      if (android?.minimumVersion != null)
-        'androidMinimumVersion': android!.minimumVersion,
-      if (dynamicLinkDomain != null) 'dynamicLinkDomain': dynamicLinkDomain,
-    };
+      'url': url,
+      'handleCodeInApp': handleCodeInApp,
+      'iOS': {'bundleId': iOSBundleId},
+      'android': {
+        'packageName': androidPackageName,
+        'installApp': androidInstallApp,
+        'minimumVersion': androidMinimumVersion,
+      },
+      'dynamicLinkDomain': dynamicLinkDomain,
+    }..removeWhere((key, value) => value == null);
   }
-}
-
-class IOSSettings {
-  final String bundleId;
-
-  IOSSettings({required this.bundleId});
-}
-
-class AndroidSettings {
-  final String packageName;
-  final bool? installApp;
-  final String? minimumVersion;
-
-  AndroidSettings({
-    required this.packageName,
-    this.installApp,
-    this.minimumVersion,
-  });
 }

@@ -1,10 +1,11 @@
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 import '../exceptions.dart';
 
-class InitializeRecaptchaConfigService {
+class RecaptchaConfigService {
   final dynamic auth;
 
-  InitializeRecaptchaConfigService({required this.auth});
+  RecaptchaConfigService({required this.auth});
 
   Future<void> initializeRecaptchaConfig() async {
     try {
@@ -14,12 +15,7 @@ class InitializeRecaptchaConfigService {
         {'key': auth.apiKey},
       );
 
-      final response = await auth.httpClient.post(
-        url,
-        body: json.encode({
-          'clientType': 'CLIENT_TYPE_WEB', // Adjust if needed for mobile
-        }),
-      );
+      final response = await http.post(url);
 
       if (response.statusCode != 200) {
         final error = json.decode(response.body)['error'];
@@ -29,12 +25,10 @@ class InitializeRecaptchaConfigService {
         );
       }
 
+      // Process the reCAPTCHA config response if needed
       final data = json.decode(response.body);
-
-      // Store the reCAPTCHA configuration in the auth instance
-      auth.recaptchaConfig = data;
-
-      print('reCAPTCHA configuration loaded successfully');
+      // TODO: Store or use the reCAPTCHA config as needed
+      print('reCAPTCHA config initialized: $data');
     } catch (e) {
       throw FirebaseAuthException(
         code: 'recaptcha-config-error',

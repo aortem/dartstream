@@ -2,6 +2,8 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_cre
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_and_password_screen/sign_in_with_email_and_password_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_link_screen/sign_in_with_email_link_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_phone_number_screen/sign_in_with_phone_number_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_custom_token_screen/sign_in_with_custom_token_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_popup_screen/sign_in_with_popup_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
+    isScrollControlled: true,
     builder: (context) => const SignInMethodsBottomSheet(),
   );
 }
@@ -18,51 +21,81 @@ class SignInMethodsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: 20.all,
-      child: Column(
-        children: [
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithEmailAndPasswordScreen(),
+    return DraggableScrollableSheet(
+      initialChildSize: 0.6,
+      minChildSize: 0.2,
+      maxChildSize: 0.9,
+      expand: false,
+      builder: (_, controller) {
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: ListView(
+            controller: controller,
+            children: [
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        const SignInWithEmailAndPasswordScreen(),
+                  ),
+                ),
+                title: "Sign In With Email&Password",
               ),
-            ),
-            title: "Sign In With Email&Password",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithPhoneNumberScreen(),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInWithPhoneNumberScreen(),
+                  ),
+                ),
+                title: "Sign In With Phone Number",
               ),
-            ),
-            title: "Sign In With Phone Number",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithEmailLinkScreen(),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInWithCustomTokenScreen(),
+                  ),
+                ),
+                title: "Sign In With Custom Token",
               ),
-            ),
-            title: "Sign In With Email Link",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithCredential(),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInWithPopupScreen(),
+                  ),
+                ),
+                title: "Sign In With Pop Up",
               ),
-            ),
-            title: "Sign In With Credential",
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInWithEmailLinkScreen(),
+                  ),
+                ),
+                title: "Sign In With Email Link",
+              ),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SignInWithCredential(),
+                  ),
+                ),
+                title: "Sign In With Credential",
+              ),
+            ],
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }

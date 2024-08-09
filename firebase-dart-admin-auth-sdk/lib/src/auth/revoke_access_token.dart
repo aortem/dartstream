@@ -1,4 +1,4 @@
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class RevokeAccessTokenService {
   final FirebaseAuth _auth;
@@ -6,8 +6,15 @@ class RevokeAccessTokenService {
   RevokeAccessTokenService({required FirebaseAuth auth}) : _auth = auth;
 
   Future<void> revokeToken(String idToken) async {
-    await _auth.performRequest('revokeToken', {
-      'token': idToken,
-    });
+    try {
+      await _auth.performRequest('revokeToken', {
+        'token': idToken,
+      });
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'revoke-token-error',
+        message: 'Failed to revoke token: ${e.toString()}',
+      );
+    }
   }
 }

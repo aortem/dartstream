@@ -1,5 +1,7 @@
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/multi_factor_resolver_screen/multi_factor_resolver_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/password_reset_screen/password_reset_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,12 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/create_user_screen/create_user_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/confirm_password_reset_screen/confirm_password_reset_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/check_action_code_screen/check_action_code_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/is_sign_in_with_email_link_screen/is_sign_in_with_email_link_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/revoke_token_screen/revoke_token_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/on_Id_Token_Changed/on_Id_Token_Changed.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/auth_state_test_screen/auth_state_test_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -77,6 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -94,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: _revokeToken,
               title: "Revoke Current Token",
             ),
+            10.vSpace,
             ActionTile(
               onTap: () {
                 Navigator.push(
@@ -131,6 +141,78 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               title: "Initialize reCAPTCHA Config",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const IsSignInWithEmailLinkScreen(),
+                ),
+              ),
+              title: "is sign in with email link",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const MultiFactorResolverScreen(),
+                ),
+              ),
+              title: "multi factor resolver",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => RevokeTokenScreen(auth: auth),
+                ),
+              ),
+              title: "revoke access token",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => AuthStateTestScreen(auth: auth),
+                ),
+              ),
+              title: "Auth State Changed",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => TestScreen(auth: auth),
+                ),
+              ),
+              title: "on id token changed",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => PasswordResetScreen(auth: auth),
+                ),
+              ),
+              title: "password reset email",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const CheckActionCodeScreen(),
+                ),
+              ),
+              title: "check action code",
+            ),
+            10.vSpace,
+            ActionTile(
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const ConfirmPasswordResetScreen(),
+                ),
+              ),
+              title: "Confirm Password Reset",
             ),
             10.vSpace,
             ActionTile(

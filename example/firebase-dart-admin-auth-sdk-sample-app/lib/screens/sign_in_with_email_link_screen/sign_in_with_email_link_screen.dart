@@ -1,54 +1,58 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:provider/provider.dart';
 
 class SignInWithEmailLinkScreen extends StatefulWidget {
-  const SignInWithEmailLinkScreen({super.key});
+  const SignInWithEmailLinkScreen({Key? key}) : super(key: key);
 
   @override
-  State<SignInWithEmailLinkScreen> createState() =>
+  _SignInWithEmailLinkScreenState createState() =>
       _SignInWithEmailLinkScreenState();
 }
 
 class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
-  final TextEditingController _emailLinkController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _linkController = TextEditingController();
 
-  @override
-  void dispose() {
-    _emailLinkController.dispose();
-    super.dispose();
+  Future<void> _signInWithEmailLink() async {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    try {
+      final userCredential = await auth.signInWithEmailLink(
+        _emailController.text,
+        _linkController.text,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Signed in as: ${userCredential.user.email}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign in with email link: $e')),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: SingleChildScrollView(
-          padding: 20.horizontal,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              InputField(
-                controller: _emailLinkController,
-                label: 'Email Link',
-                hint: '',
-              ),
-              20.vSpace,
-              Button(
-                onTap: () {},
-                title: 'Sign In',
-              ),
-              20.vSpace,
-              GestureDetector(
-                onTap: () => showSignMethodsBottomSheet(context),
-                child: const Text(
-                  'Explore more sign in options',
-                  textAlign: TextAlign.end,
-                ),
-              ),
-            ],
-          ),
+      appBar: AppBar(title: Text('Sign In with Email Link')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+              keyboardType: TextInputType.emailAddress,
+            ),
+            TextField(
+              controller: _linkController,
+              decoration: InputDecoration(labelText: 'Email Link'),
+            ),
+            ElevatedButton(
+              onPressed: _signInWithEmailLink,
+              child: Text('Sign In with Email Link'),
+            ),
+          ],
         ),
       ),
     );

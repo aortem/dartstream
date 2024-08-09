@@ -1,68 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-
-class InitializeRecaptchaConfigViewModel extends ChangeNotifier {
-  bool loading = false;
-  String? result;
-  String? errorMessage;
-
-  void setLoading(bool load) {
-    loading = load;
-    notifyListeners();
-  }
-
-  Future<void> initializeRecaptchaConfig() async {
-    try {
-      setLoading(true);
-      errorMessage = null;
-      await FirebaseApp.firebaseAuth?.initializeRecaptchaConfig();
-      result = "reCAPTCHA configuration initialized successfully";
-    } catch (e) {
-      errorMessage = e.toString();
-      print('Error: $errorMessage');
-    } finally {
-      setLoading(false);
-    }
-  }
-}
+import 'package:provider/provider.dart';
 
 class InitializeRecaptchaConfigScreen extends StatelessWidget {
   const InitializeRecaptchaConfigScreen({Key? key}) : super(key: key);
 
+  Future<void> _initializeRecaptchaConfig(BuildContext context) async {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    try {
+      await auth.initializeRecaptchaConfig();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('reCAPTCHA config initialized successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to initialize reCAPTCHA config: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => InitializeRecaptchaConfigViewModel(),
-      child: Consumer<InitializeRecaptchaConfigViewModel>(
-        builder: (context, viewModel, child) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Initialize reCAPTCHA Config'),
-          ),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Button(
-                  onTap: () => viewModel.initializeRecaptchaConfig(),
-                  loading: viewModel.loading,
-                  title: 'Initialize reCAPTCHA Config',
-                ),
-                20.vSpace,
-                if (viewModel.errorMessage != null) ...[
-                  Text('Error: ${viewModel.errorMessage}',
-                      style: TextStyle(color: Colors.red)),
-                ] else if (viewModel.result != null) ...[
-                  Text(viewModel.result!),
-                ] else if (!viewModel.loading) ...[
-                  Text('reCAPTCHA configuration not initialized yet.'),
-                ],
-              ],
-            ),
-          ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Initialize reCAPTCHA Config')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () => _initializeRecaptchaConfig(context),
+          child: Text('Initialize reCAPTCHA Config'),
         ),
       ),
     );

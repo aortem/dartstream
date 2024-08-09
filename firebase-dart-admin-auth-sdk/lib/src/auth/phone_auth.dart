@@ -58,6 +58,15 @@ class PhoneAuth {
       // Simulate auto-retrieval timeout after 30 seconds
       Timer(Duration(seconds: 30),
           () => codeAutoRetrievalTimeout(verificationId));
+
+      // Simulate automatic SMS code retrieval after 5 seconds
+      Timer(Duration(seconds: 5), () {
+        final credential = PhoneAuthProvider.credential(
+          verificationId: verificationId,
+          smsCode: '123456', // Simulated SMS code
+        );
+        verificationCompleted(credential);
+      });
     } catch (e) {
       verificationFailed(FirebaseAuthException(
         code: 'verification-failed',

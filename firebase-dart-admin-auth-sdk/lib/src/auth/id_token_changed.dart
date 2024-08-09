@@ -1,24 +1,16 @@
 import 'dart:async';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class IdTokenChangedService {
-  final FirebaseAuth _auth;
-  final StreamController<User?> _controller =
-      StreamController<User?>.broadcast();
+  final FirebaseAuth auth;
 
-  IdTokenChangedService({required FirebaseAuth auth}) : _auth = auth {
-    // Listen to the auth instance for ID token changes
-    _auth.idTokenChangedController.stream.listen((user) {
-      _controller.add(user);
-    });
-  }
+  IdTokenChangedService({required this.auth});
 
   Stream<User?> onIdTokenChanged() {
-    return _controller.stream;
+    return auth.idTokenChangedController.stream;
   }
 
-  void dispose() {
-    _controller.close();
+  void simulateIdTokenChange(User? user) {
+    auth.idTokenChangedController.add(user);
   }
 }
