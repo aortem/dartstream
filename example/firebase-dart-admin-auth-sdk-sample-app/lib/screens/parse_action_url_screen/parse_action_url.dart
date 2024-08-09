@@ -25,19 +25,31 @@ class ParseActionUrl extends StatelessWidget {
             children: [
               InputField(
                 controller: parseActionUrlController,
-                label: 'Email Link',
+                label: 'Parse Link',
                 hint: '',
               ),
               20.vSpace,
               Button(
                 onTap: () async {
+                  String actionCodeUrl = "https://example.com/finishSignUp?mode=resetPassword&oobCode=abc123&continueUrl=https://example.com/home&lang=en";
+
+                  Map<String, String>? parsedData =  await FirebaseApp.firebaseAuth?.parseActionCodeUrl(actionCodeUrl);
+
+                  if (parsedData != null) {
+                    print("Mode: ${parsedData['mode']}");
+                    print("OobCode: ${parsedData['oobCode']}");
+                    print("ContinueUrl: ${parsedData['continueUrl']}");
+                    print("Lang: ${parsedData['lang']}");
+                  } else {
+                    print("Invalid action code URL.");
+                  }
                   var parseUrlresult = await FirebaseApp.firebaseAuth
                       ?.parseActionCodeUrl(parseActionUrlController.text);
 
                   log("Parse Action Code Url   $parseUrlresult");
-                  log("Parse Action Code Url   ${parseUrlresult?['code']}");
+              //    log("Parse Action Code Url   ${parseUrlresult?['code']}");
                 },
-                title: 'Sign In',
+                title: 'Submit',
               ),
               20.vSpace,
               parseUrlresult == null
