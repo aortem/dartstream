@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../update_current_user/update_current_user.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -191,14 +192,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
-                    var tokenId = await FirebaseApp.firebaseAuth
-                        ?.updateUserInformation(
-                            FirebaseApp.firebaseAuth?.currentUser!.idToken! ??
-                                "",
-                            {
-                          'email': "ubabar12@gmail.com",
-                          'phone': '123456789'
-                        });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => UpdateUserScreen(),
+                      ),
+                    );
                   },
                   title: "Update Current User",
                 ),

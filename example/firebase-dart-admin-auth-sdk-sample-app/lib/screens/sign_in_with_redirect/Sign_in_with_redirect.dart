@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 
-import 'dart:convert';
-import 'dart:developer';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
@@ -11,7 +9,7 @@ class OAuthSelectionScreen extends StatelessWidget {
     final auth = FirebaseApp.firebaseAuth;
     await auth?.signInWithRedirect(providerUrl);
     try {
-      final userInfo = await auth?.handleRedirectResult();
+      final userInfo = await auth?.signInWithRedirectResult(providerUrl);
       print('User info: $userInfo');
     } catch (e) {
       print('Error: $e');
