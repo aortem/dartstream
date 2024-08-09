@@ -13,14 +13,23 @@ class FirebaseDeleteUser {
     try {
       final idToken = user.idToken; // Force token refresh
       log("response code ${user.idToken}");
+      log("uid${user.uid}");
       if (idToken == null || idToken.isEmpty) {
         log('Error: ID Token is null or empty.');
         return;
       }
-
+      //   {targetProjectId: "fire-base-dart-admin-auth-sdk", localId: "siXwlGYa1RVpvPZyp0qRdaKswPp2"}
+      // localId
+      //     :
+      // "siXwlGYa1RVpvPZyp0qRdaKswPp2"
+      // targetProjectId
+      //     :
+      // "fire-base-dart-admin-auth-sdk"
       // Make the delete request
       final response = await auth.performRequest('delete', {
-        'idToken': idToken,
+        // 'idToken': idToken,
+        "targetProjectId": FirebaseApp.firebaseAuth?.projectId,
+        'localId': user.uid
       });
       log("response code $response");
 
