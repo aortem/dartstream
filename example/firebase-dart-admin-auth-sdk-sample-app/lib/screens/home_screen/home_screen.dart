@@ -80,11 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Send Password Reset Email",
                 ),
                 10.vSpace,
-                ActionTile(
-                  onTap: () {},
-                  title: "Sign Out",
-                ),
-                10.vSpace,
+
                 ActionTile(
                   loading: value.loading,
                   onTap: () => value.reloadUser(),
@@ -110,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const SignUpScreen(),
                         ));
-                        BotToast.showText(text: 'User is signOut');
+                        BotToast.showText(text: 'User is deleted');
                       } else {
                         log('No user is currently signed in.');
                       }
@@ -198,6 +194,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) => UpdateUserScreen(),
                       ),
                     );
+
+
                   },
                   title: "Update Current User",
                 ),

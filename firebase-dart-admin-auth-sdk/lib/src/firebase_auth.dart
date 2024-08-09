@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
@@ -230,6 +231,8 @@ class FirebaseAuth {
   }
 
   Future<void> signOut() async {
+    log("hekko");
+    log("hekko${FirebaseApp.instance.getCurrentUser()}");
     if (FirebaseApp.instance.getCurrentUser() == null) {
       throw FirebaseAuthException(
         code: 'user-not-signed-in',
@@ -398,32 +401,71 @@ class FirebaseAuth {
   }
 
 ///////Firebase link with creential////////////
-  Future<void> linkWithCredential(AuthCredential credential) async {
-    firebaseLinkWithCredentailsUser.linkWithCredential(
-        idToken: currentUser!.idToken!,
-        accessToken: "accessToken",
-        providerId: 'google.com');
+  // Future<void> linkWithCredential(AuthCredential credential) async {
+  //   firebaseLinkWithCredentailsUser.linkWithCredential(
+  //       idToken: currentUser!.idToken!,
+  //       accessToken: "accessToken",
+  //       providerId: 'google.com');
+  // }
+  Future<UserCredential?> linkWithCredential(AuthCredential credential) async {
+    final currentUser = FirebaseApp.instance.getCurrentUser();
+
+    if (currentUser == null) {
+      throw FirebaseAuthException(
+        code: 'no-current-user',
+        message: 'No user is currently signed in.',
+      );
+    }
+
+    if (credential is EmailAuthCredential) {
+      // Re-authenticate the user with email and password before linking
+      final authResult = await signInWithEmailAndPassword(
+          credential.email, credential.password);
+      return firebaseLinkWithCredentailsUser.linkCredential(
+          currentUser, currentUser.idToken);
+    } else if (credential is PhoneAuthCredential) {
+      // Verify the phone number and link
+      final authResult = await signInWithPhoneNumber(
+          credential.verificationId, credential.smsCode);
+      return firebaseLinkWithCredentailsUser.linkCredential(
+          currentUser, currentUser.idToken);
+    } else if (credential is OAuthCredential) {
+      // Sign in with OAuth and link
+      final authResult = await signInWithPopup(credential.providerId);
+      return firebaseLinkWithCredentailsUser.linkCredential(
+          currentUser, currentUser.idToken);
+    } else {
+      throw FirebaseAuthException(
+        code: 'unsupported-credential',
+        message: 'Unsupported credential type',
+      );
+    }
   }
 
   ///////////a Firebase action code URL
-  Future<Map<String, dynamic>> parseActionCodeUrl(String url) async {
-    final uri = Uri.parse(url);
-    final queryParams = uri.queryParameters;
+  Future<dynamic> parseActionCodeUrl(String url) async {
+    Uri uri = Uri.parse(url);
 
-    final code = queryParams['oobCode'];
-    final apiKey = queryParams['apiKey'];
-    final mode = queryParams['mode'];
-    final continueUrl = queryParams['continueUrl'];
-    final languageCode = queryParams['languageCode'];
-    final clientId = queryParams['clientId'];
+    if (uri.queryParameters.isEmpty) {
+      return null;
+    }
 
+    // Extract query parameters
+    String? mode = uri.queryParameters['mode'];
+    String? oobCode = uri.queryParameters['oobCode'];
+    String? continueUrl = uri.queryParameters['continueUrl'];
+    String? lang = uri.queryParameters['lang'];
+
+    if (mode == null || oobCode == null) {
+      return null;
+    }
+
+    // Return the parsed parameters as a map
     return {
-      'code': code,
-      'apiKey': apiKey,
       'mode': mode,
-      'continueUrl': continueUrl,
-      'languageCode': languageCode,
-      'clientId': clientId,
+      'oobCode': oobCode,
+      'continueUrl': continueUrl ?? '',
+      'lang': lang ?? '',
     };
   }
 

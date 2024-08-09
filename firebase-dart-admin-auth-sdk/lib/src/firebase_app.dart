@@ -89,7 +89,7 @@ class FirebaseApp {
     }
     return firebaseAuth ??= FirebaseAuth(
       apiKey: _apiKey,
-      projectId: _apiKey,
+      projectId: _projectId,
     );
   }
 }
