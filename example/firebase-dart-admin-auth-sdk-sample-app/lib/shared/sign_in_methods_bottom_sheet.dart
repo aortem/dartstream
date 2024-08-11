@@ -6,6 +6,8 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
+
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -61,6 +63,17 @@ class SignInMethodsBottomSheet extends StatelessWidget {
             ),
             title: "Sign In With Credential",
           ),
+          20.vSpace,
+          ActionTile(
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => OAuthSelectionScreen(),
+              ),
+            ),
+            title: "Sign In With Redirect",
+          ),
+          20.vSpace,
         ],
       ),
     );
