@@ -14,15 +14,14 @@ void main() async {
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'AIzaSyBli2c-dmD4w2kLHmZU3UtewETvuruVAN4',
-      projectId: 'fire-base-dart-admin-auth-sdk',
+      apiKey: '',
+      projectId: '',
     );
   } else {
     //When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
       //To initialize with service account put the path to the json file in the function below
-      String serviceAccountContent =
-          await rootBundle.loadString('assets/service_account.json');
+      String serviceAccountContent = await rootBundle.loadString('');
 
       // Initialize Firebase with the service account content
       await FirebaseApp.initializeAppWithServiceAccount(
