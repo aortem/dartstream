@@ -119,42 +119,6 @@ class FirebaseAuth {
         FirebaseLinkWithCredentailsUser(auth: this);
   }
 
-  // factory FirebaseAuth.fromServiceAccountWithKeys({
-  //   required String serviceAccountKeyFilePath,
-  // }) {
-  //   final apiKey = 'your_api_key';
-  //   final projectId = 'your_project_id';
-  //   return FirebaseAuth._(
-  //     apiKey: apiKey,
-  //     projectId: projectId,
-  //     httpClient: http.Client(),
-  //   );
-  // }
-
-  // factory FirebaseAuth.fromEnvironmentVariables({
-  //   required String apiKey,
-  //   required String projectId,
-  // }) {
-  //   return FirebaseAuth._(
-  //     apiKey: apiKey,
-  //     projectId: projectId,
-  //     httpClient: http.Client(),
-  //   );
-  // }
-
-  // factory FirebaseAuth.fromServiceAccountWithoutKeyImpersonation({
-  //   required String serviceAccountEmail,
-  //   required String userEmail,
-  // }) {
-  //   final apiKey = 'your_api_key';
-  //   final projectId = 'your_project_id';
-  //   return FirebaseAuth._(
-  //     apiKey: apiKey,
-  //     projectId: projectId,
-  //     httpClient: http.Client(),
-  //   );
-  // }
-
   Future<HttpResponse> performRequest(
       String endpoint, Map<String, dynamic> body) async {
     final url = Uri.https(
@@ -400,13 +364,6 @@ class FirebaseAuth {
     return emailLink.sendSignInLinkToEmail(email, settings);
   }
 
-///////Firebase link with creential////////////
-  // Future<void> linkWithCredential(AuthCredential credential) async {
-  //   firebaseLinkWithCredentailsUser.linkWithCredential(
-  //       idToken: currentUser!.idToken!,
-  //       accessToken: "accessToken",
-  //       providerId: 'google.com');
-  // }
   Future<UserCredential?> linkWithCredential(AuthCredential credential) async {
     final currentUser = FirebaseApp.instance.getCurrentUser();
 
