@@ -36,31 +36,6 @@ class FirebasePhoneNumberLink {
             idToken, phoneNumber, sessionInfo, verificationCode, auth.apiKey!);
       }
     }
-
-    //
-    // Future<void> firebasePhoneAuthWithReCaptcha(String phoneNumber) async {
-    //   // Step 1: Render reCAPTCHA widget in the web app
-    //
-    // }
-
-//     try {
-//       final url = 'sendVerificationCode';
-//       final body = {
-//        'phoneNumber': phoneNumber,
-//       'returnSecureToken': true,
-//       };
-//
-//          final response = await auth.performRequest(url, body);
-// log("response$response");
-//
-//
-//     } catch (e) {
-//       print('Verify code failed: $e');
-//       throw FirebaseAuthException(
-//         code: 'verify-code-error',
-//         message: 'Failed to verify phone number code.',
-//       );
-//     }
   }
 
   Future<String?> _executeRecaptcha(String siteKey) async {
