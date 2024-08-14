@@ -8,6 +8,8 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
+
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,

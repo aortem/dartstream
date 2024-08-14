@@ -17,14 +17,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.4.1"
-  archive:
-    dependency: transitive
-    description:
-      name: archive
-      sha256: cb6a278ef2dbb298455e1a713bda08524a175630ec643a242c399c932a0a1f7d
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.6.1"
   args:
     dependency: transitive
     description:
@@ -125,10 +117,10 @@ packages:
     dependency: transitive
     description:
       name: ds_standard_features
-      sha256: ed11b80f98ffb5f81857f72da4742f87279ff92c0af90e64503a6bb2211550f8
+      sha256: "58bc987cd7b16ade9f52e12cd0fe537fc0f2fe4fe4f05b3cec3d6bd7e4989595"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1-pre+8"
+    version: "0.0.1-pre+11"
   fake_async:
     dependency: transitive
     description:
@@ -159,7 +151,7 @@ packages:
       path: "../../firebase-dart-admin-auth-sdk"
       relative: true
     source: path
-    version: "0.0.1-pre+3"
+    version: "0.0.1-pre+4"
   fixnum:
     dependency: transitive
     description:
@@ -186,6 +178,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_web_auth:
+    dependency: "direct main"
+    description:
+      name: flutter_web_auth
+      sha256: a69fa8f43b9e4d86ac72176bf747b735e7b977dd7cf215076d95b87cb05affdd
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.5.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -203,10 +203,10 @@ packages:
     dependency: transitive
     description:
       name: google_identity_services_web
-      sha256: "000b7a31e1fa17ee04b6c0553a2b2ea18f9f9352e4dcc0c9fcc785cf10f2484e"
+      sha256: "5be191523702ba8d7a01ca97c17fca096822ccf246b0a9f11923a6ded06199b6"
       url: "https://pub.dev"
     source: hosted
-    version: "0.2.2"
+    version: "0.3.1+4"
   google_sign_in:
     dependency: "direct main"
     description:
@@ -219,10 +219,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_android
-      sha256: d30fb34b659679ea74397e9748b4ab5d720720d57dcc79538f1b3c4a68654cb3
+      sha256: "5a47ebec9af97daf0822e800e4f101c3340b5ebc3f6898cf860c1a71b53cf077"
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.27"
+    version: "6.1.28"
   google_sign_in_ios:
     dependency: transitive
     description:
@@ -243,26 +243,10 @@ packages:
     dependency: transitive
     description:
       name: google_sign_in_web
-      sha256: "794f5494a945d6dd2654c52f979594ecd2558e5c82ce8272295ba371c93015e6"
+      sha256: "042805a21127a85b0dc46bba98a37926f17d2439720e8a459d27045d8ef68055"
       url: "https://pub.dev"
     source: hosted
-    version: "0.12.2+1"
-  googleapis_auth:
-    dependency: transitive
-    description:
-      name: googleapis_auth
-      sha256: af7c3a3edf9d0de2e1e0a77e994fae0a581c525fa7012af4fa0d4a52ed9484da
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.4.1"
-  grpc:
-    dependency: transitive
-    description:
-      name: grpc
-      sha256: e93ee3bce45c134bf44e9728119102358c7cd69de7832d9a874e2e74eb8cab40
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.4"
+    version: "0.12.4+2"
   http:
     dependency: transitive
     description:
@@ -291,18 +275,18 @@ packages:
     dependency: transitive
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.1"
+    version: "0.19.0"
   intl_translation:
     dependency: transitive
     description:
       name: intl_translation
-      sha256: ce26a8371d7527d3cb5c78503ccd5f0b99faa528229d684d5e9192adcb4353ab
+      sha256: b858d88b569f3c529e992ba7186aa495f3e862897df60edb932563c619943610
       url: "https://pub.dev"
     source: hosted
-    version: "0.19.0"
+    version: "0.20.0"
   js:
     dependency: transitive
     description:
@@ -447,14 +431,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
-  protobuf:
-    dependency: transitive
-    description:
-      name: protobuf
-      sha256: "68645b24e0716782e58948f8467fd42a880f255096a821f9e7d0ec625b00c84d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.1.0"
   provider:
     dependency: "direct main"
     description:

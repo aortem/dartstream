@@ -43,14 +43,14 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                 try {
                   final auth =
                       Provider.of<FirebaseAuth>(context, listen: false);
-                  UserCredential credential =
+                  UserCredential? credential =
                       await auth.createUserWithEmailAndPassword(
                     _emailController.text,
                     _passwordController.text,
                   );
                   setState(() {
                     _result =
-                        'User created: ${credential.user.uid}, Email: ${credential.user.email}';
+                        'User created: ${credential?.user.uid}, Email: ${credential?.user.email}';
                   });
                 } catch (e) {
                   setState(() {

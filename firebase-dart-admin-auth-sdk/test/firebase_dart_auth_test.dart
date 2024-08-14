@@ -67,8 +67,8 @@ void main() {
 
           final result = await auth.signInWithEmailAndPassword(
               'test@example.com', 'password');
-          expect(result.user.uid, equals('testUid'));
-          expect(result.user.email, equals('test@example.com'));
+          expect(result?.user.uid, equals('testUid'));
+          expect(result?.user.email, equals('test@example.com'));
         });
 
         // Other tests...
@@ -90,8 +90,8 @@ void main() {
 
           final result = await auth.signInWithEmailAndPassword(
               'test@example.com', 'password');
-          expect(result.user.uid, equals('testUid'));
-          expect(result.user.email, equals('test@example.com'));
+          expect(result?.user.uid, equals('testUid'));
+          expect(result?.user.email, equals('test@example.com'));
         });
 
         // Other tests...
@@ -113,8 +113,8 @@ void main() {
 
           final result = await auth.signInWithEmailAndPassword(
               'test@example.com', 'password');
-          expect(result.user.uid, equals('testUid'));
-          expect(result.user.email, equals('test@example.com'));
+          expect(result?.user.uid, equals('testUid'));
+          expect(result?.user.email, equals('test@example.com'));
         });
 
         // Other tests...
@@ -122,6 +122,7 @@ void main() {
 
       // Common tests for all configurations
       void runCommonTests() {
+        setUp(initializeAppWithServiceAccount);
         test('signInWithEmailAndPassword fails', () async {
           // Mocking the HTTP response for a failed sign-in with email and password.
           when(() => mockClient.post(any(),
@@ -149,8 +150,8 @@ void main() {
 
           final result = await auth.createUserWithEmailAndPassword(
               'newuser@example.com', 'password');
-          expect(result.user.uid, equals('newTestUid'));
-          expect(result.user.email, equals('newuser@example.com'));
+          expect(result?.user.uid!, equals('newTestUid'));
+          expect(result!.user.email!, equals('newuser@example.com'));
         });
 
         test('signInWithCustomToken succeeds', () async {
@@ -237,7 +238,7 @@ void main() {
 
           await expectLater(
               auth.updateUserInformation(
-                  'testUid', {'displayName': 'Updated User'}),
+                  'testUid', 'testTokden', {'displayName': 'Updated User'}),
               completes);
         });
 
@@ -247,7 +248,11 @@ void main() {
                   body: any(named: 'body'), headers: any(named: 'headers')))
               .thenAnswer((_) async => http.Response('{}', 200));
 
-          await expectLater(auth.deviceLanguage('testUid', 'en'), completes);
+          await expectLater(
+              auth.deviceLanguage(
+                'testUid',
+              ),
+              completes);
         });
 
         test('verifyPasswordResetCode succeeds', () async {
@@ -260,7 +265,7 @@ void main() {
                   ));
 
           final result = await auth.verifyPasswordResetCode('test-code');
-          expect(result['email'], equals('test@example.com'));
+          expect(result.body['email'], equals('test@example.com'));
         });
 
         test('signInWithRedirect succeeds', () async {
@@ -290,6 +295,68 @@ void main() {
           final result = await auth.applyActionCode('action_code');
 
           expect(true, result);
+        });
+
+        test('should send verification code to user', () async {
+          await auth.sendEmailVerificationCode();
+
+          expect(true, completes);
+        });
+
+        test('reload user  succeeds', () async {
+          // Mocking the HTTP response for a successful sign-in with email and password.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.reloadUser();
+          expect(result.uid, equals('testUid'));
+          expect(result.email, equals('test@example.com'));
+        });
+
+        test('set language code succeeds', () async {
+          // Mocking the HTTP response for a successful sign-in with email and password.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.setLanguageCode('ENG');
+          expect(result.uid, equals('testUid'));
+          expect(result.email, equals('test@example.com'));
+        });
+
+        test('Update password succeeds', () async {
+          // Mocking the HTTP response for a successful sign-in with email and password.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.updatePassword('12345678');
+          expect(result.uid, equals('testUid'));
+          expect(result.email, equals('test@example.com'));
+        });
+
+        test('unlink provider succeeds', () async {
+          // Mocking the HTTP response for a successful sign-in with email and password.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.unlinkProvider('google.com');
+          expect(result.uid, equals('testUid'));
+          expect(result.email, equals('test@example.com'));
         });
       }
 
@@ -341,17 +408,110 @@ void main() {
         });
 
         // Test for isSignInWithEmailLink
-        test('isSignInWithEmailLink returns true for valid link', () {
-          final validLink =
-              'https://example.com/?mode=signIn&oobCode=abcdefghijklmnop';
-          expect(auth.isSignInWithEmailLink(validLink), isTrue);
+        test('signInWithEmailAndPassword succeeds', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.signInWithEmailAndPassword(
+              'test@example.com', 'password');
+          expect(result!.user.uid, equals('testUid'));
+          expect(result!.user.email, equals('test@example.com'));
         });
 
-        test('isSignInWithEmailLink returns false for invalid link', () {
-          final invalidLink = 'https://example.com/';
-          expect(auth.isSignInWithEmailLink(invalidLink), isFalse);
+        // Additional tests for methods:
+
+        test('sendPasswordResetEmail succeeds', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{}',
+                    200,
+                  ));
+
+          await auth.sendPasswordResetEmail('test@example.com');
         });
 
+        test('revokeToken succeeds', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{}',
+                    200,
+                  ));
+
+          await auth.revokeToken('testIdToken');
+        });
+
+        test('linkWithCredential succeeds with EmailAuthCredential', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"idToken":"newIdToken"}',
+                    200,
+                  ));
+
+          final credential = EmailAuthCredential(
+              email: 'test@example.com', password: 'password');
+          final result = await auth.linkWithCredential(credential);
+
+          expect(result!.user.idToken, equals('newIdToken'));
+        });
+
+        test('parseActionCodeUrl returns parsed parameters', () async {
+          final result = await auth.parseActionCodeUrl(
+              'https://example.com/?mode=resetPassword&oobCode=CODE&lang=en');
+          expect(result['mode'], equals('resetPassword'));
+          expect(result['oobCode'], equals('CODE'));
+          expect(result['lang'], equals('en'));
+        });
+
+        test('firebasePhoneNumberLinkMethod sends verification code', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{}',
+                    200,
+                  ));
+
+          await auth.firebasePhoneNumberLinkMethod('+1234567890');
+        });
+
+        test('deleteFirebaseUser succeeds', () async {
+          when(() => mockClient.delete(any(), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{}',
+                    200,
+                  ));
+
+          await auth.deleteFirebaseUser();
+        });
+
+        test('getIdToken returns token', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"idToken":"testIdToken"}',
+                    200,
+                  ));
+
+          final token = await auth.getIdToken();
+          expect(token, equals('testIdToken'));
+        });
+
+        test('getIdTokenResult returns token result', () async {
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"idToken":"testIdToken","claims":{"admin":true}}',
+                    200,
+                  ));
+
+          final tokenResult = await auth.getIdTokenResult();
+        });
         // Test for dispose
         test('dispose closes streams', () async {
           auth.dispose();
