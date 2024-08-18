@@ -16,6 +16,7 @@ class EmailPasswordAuth {
       'password': password,
       'returnSecureToken': true,
     });
+    print(response.body.toString());
     if (response.statusCode == 200) {
       final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);

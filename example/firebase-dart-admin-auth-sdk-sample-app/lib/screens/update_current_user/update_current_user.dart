@@ -1,13 +1,12 @@
-
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
 class UpdateUserScreen extends StatefulWidget {
   @override
-  _UpdateUserScreenState createState() => _UpdateUserScreenState();
+  UpdateUserScreenState createState() => UpdateUserScreenState();
 }
 
-class _UpdateUserScreenState extends State<UpdateUserScreen> {
+class UpdateUserScreenState extends State<UpdateUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _displayNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -30,18 +29,16 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
         User? user = auth.getCurrentUser();
 
         if (user != null) {
-
-          FirebaseApp.firebaseAuth?.updateUserInformation(user.uid,user.idToken!,{
+          FirebaseApp.firebaseAuth
+              ?.updateUserInformation(user.uid, user.idToken!, {
             'email': _emailController.text,
             'phoneNumber': _phoneNumberController.text,
             'password': _passwordController.text,
             'displayName': _displayNameController.text,
-
           });
 
-
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('User details updated successfully!')),
+            const SnackBar(content: Text('User details updated successfully!')),
           );
           Navigator.pop(context);
         }
@@ -56,16 +53,16 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Update User Details')),
+      appBar: AppBar(title: const Text('Update User Details')),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
           child: ListView(
             children: <Widget>[
               TextFormField(
                 controller: _displayNameController,
-                decoration: InputDecoration(labelText: 'Display Name'),
+                decoration: const InputDecoration(labelText: 'Display Name'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your display name';
@@ -75,7 +72,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
               ),
               TextFormField(
                 controller: _phoneNumberController,
-                decoration: InputDecoration(labelText: 'Phone Number'),
+                decoration: const InputDecoration(labelText: 'Phone Number'),
                 validator: (value) {
                   if (value!.isEmpty) {
                     return 'Please enter your phone number';
@@ -85,7 +82,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
               ),
               TextFormField(
                 controller: _emailController,
-                decoration: InputDecoration(labelText: 'Email'),
+                decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
                   if (value!.isEmpty || !value.contains('@')) {
@@ -96,7 +93,7 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
               ),
               TextFormField(
                 controller: _passwordController,
-                decoration: InputDecoration(labelText: 'Password'),
+                decoration: const InputDecoration(labelText: 'Password'),
                 obscureText: true,
                 validator: (value) {
                   if (value!.isEmpty || value.length < 6) {
@@ -105,10 +102,10 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
                   return null;
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _updateUser,
-                child: Text('Update'),
+                child: const Text('Update'),
               ),
             ],
           ),

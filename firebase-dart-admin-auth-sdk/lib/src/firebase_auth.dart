@@ -1,13 +1,16 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_additional_user_info.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/link_provider_to_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
@@ -17,7 +20,9 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/unlink_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_email.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
@@ -74,6 +79,11 @@ class FirebaseAuth {
   late FirebaseDeleteUser firebaseDeleteUser;
   late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
 
+  late GetAdditionalUserInfo _getAdditionalUserInfo;
+  late LinkProviderToUser _linkProviderToUser;
+  late UpdateProfile _updateProfile;
+  late VerifyEmail _verifyEmail;
+
   User? currentUser;
 
   /// StreamControllers for managing auth state and ID token change events
@@ -117,6 +127,11 @@ class FirebaseAuth {
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
     firebaseLinkWithCredentailsUser =
         FirebaseLinkWithCredentailsUser(auth: this);
+
+    _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
+    _linkProviderToUser = LinkProviderToUser(auth: this);
+    _updateProfile = UpdateProfile(this);
+    _verifyEmail = VerifyEmail(this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -199,7 +214,7 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<Future<UserCredential?>> signInWithCredential(
+  Future<UserCredential?> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
@@ -440,6 +455,40 @@ class FirebaseAuth {
         message: 'Unsupported credential type',
       );
     }
+  }
+
+  Future<User> getAdditionalUserInfo() async {
+    return await _getAdditionalUserInfo.getAdditionalUserInfo(
+      currentUser?.idToken,
+    );
+  }
+
+  Future<User> linkProviderToUser(
+    String providerId,
+    String providerIdToken,
+  ) async {
+    return _linkProviderToUser.linkProviderToUser(
+      currentUser?.idToken,
+      providerId,
+      providerIdToken,
+    );
+  }
+
+  Future<User> updateProfile(
+    String displayName,
+    String displayImage,
+  ) async {
+    return await _updateProfile.updateProfile(
+      displayName,
+      displayImage,
+      currentUser?.idToken,
+    );
+  }
+
+  Future<bool> verifyEmail() async {
+    return await _verifyEmail.verifyEmail(
+      currentUser?.idToken,
+    );
   }
 
   ///////////a Firebase action code URL

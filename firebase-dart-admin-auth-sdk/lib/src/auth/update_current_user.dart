@@ -7,13 +7,13 @@ class UpdateCurrentUser {
 
   UpdateCurrentUser({required this.auth});
 
-  Future<void> updateCurrentUser(String userId,String IdToken,
+  Future<void> updateCurrentUser(String userId, String idToken,
       [Map<String, dynamic>? userData]) async {
     try {
       final url = 'update';
 
       final response = await auth.performRequest(url, {
-        'idToken': IdToken,
+        'idToken': idToken,
         'localId': userId,
         'returnSecureToken': true,
       });
