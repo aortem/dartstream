@@ -16,8 +16,7 @@ class CustomTokenAuth {
         'returnSecureToken': true,
       });
 
-      final userCredential =
-          UserCredential.fromJson(response as Map<String, dynamic>);
+      final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);
       return userCredential;
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_ema
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_phone_number_screen/sign_in_with_phone_number_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_custom_token_screen/sign_in_with_custom_token_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_popup_screen/sign_in_with_popup_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -73,6 +74,16 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                   ),
                 ),
                 title: "Sign In With Pop Up",
+              ),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => OAuthSelectionScreen(),
+                  ),
+                ),
+                title: "Sign In With Redirect",
               ),
               20.vSpace,
               ActionTile(

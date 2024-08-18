@@ -12,14 +12,14 @@ class ConfirmPasswordResetScreen extends StatefulWidget {
 
 class _ConfirmPasswordResetScreenState
     extends State<ConfirmPasswordResetScreen> {
-  final TextEditingController _codeController = TextEditingController();
+  final TextEditingController _resetLinkController = TextEditingController();
   final TextEditingController _newPasswordController = TextEditingController();
 
   Future<void> _confirmPasswordReset() async {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
     try {
-      await auth.confirmPasswordReset(
-          _codeController.text, _newPasswordController.text);
+      String oobCode = _extractOobCode(_resetLinkController.text);
+      await auth.confirmPasswordReset(oobCode, _newPasswordController.text);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Password reset confirmed successfully')),
       );
@@ -28,6 +28,11 @@ class _ConfirmPasswordResetScreenState
         SnackBar(content: Text('Failed to confirm password reset: $e')),
       );
     }
+  }
+
+  String _extractOobCode(String resetLink) {
+    Uri uri = Uri.parse(resetLink);
+    return uri.queryParameters['oobCode'] ?? '';
   }
 
   @override
@@ -39,8 +44,8 @@ class _ConfirmPasswordResetScreenState
         child: Column(
           children: [
             TextField(
-              controller: _codeController,
-              decoration: InputDecoration(labelText: 'Reset Code'),
+              controller: _resetLinkController,
+              decoration: InputDecoration(labelText: 'Reset Link'),
             ),
             TextField(
               controller: _newPasswordController,

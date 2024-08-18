@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:provider/provider.dart';
 
 class PasswordResetScreen extends StatefulWidget {
-  final FirebaseAuth auth;
-
-  const PasswordResetScreen({Key? key, required this.auth}) : super(key: key);
+  const PasswordResetScreen({Key? key}) : super(key: key);
 
   @override
   _PasswordResetScreenState createState() => _PasswordResetScreenState();
@@ -19,8 +18,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       _message = '';
     });
 
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
     try {
-      await widget.auth.sendPasswordResetEmail(_emailController.text.trim());
+      await auth.sendPasswordResetEmail(_emailController.text.trim());
       setState(() {
         _message = 'Password reset email sent successfully!';
       });

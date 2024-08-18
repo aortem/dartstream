@@ -28,7 +28,8 @@ import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
+    as acs;
 
 // New imports for Sprint 2 #16 to #21
 import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
@@ -224,10 +225,10 @@ class FirebaseAuth {
   //     String email, String password) {
   //   return emailPassword.signUp(email, password);
   // } my assined ticket in issue #11 done down
-  Future<UserCredential?> createUserWithEmailAndPassword(
-      String email, String password) {
-    return emailPassword.signUp(email, password);
-  }
+  // Future<UserCredential?> createUserWithEmailAndPassword(
+  //     String email, String password) {
+  //   return emailPassword.signUp(email, password);
+  // }
 
   Future<UserCredential> signInWithCustomToken(String token) {
     return customToken.signInWithCustomToken(token);
@@ -452,10 +453,11 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  // Future<void> sendSignInLinkToEmail(
-  //     String email, ActionCodeSettings settings) {
-  //   return emailLink.sendSignInLinkToEmail(email, settings);
-  // }
+  Future<void> sendSignInLinkToEmail(
+      String email, ActionCodeSettings settings) {
+    return emailLink.sendSignInLinkToEmail(
+        email, settings as acs.ActionCodeSettings);
+  }
 
 ///////Firebase link with creential////////////
   // Future<void> linkWithCredential(AuthCredential credential) async {
@@ -619,10 +621,10 @@ class FirebaseAuth {
     }
   }
 
-  // Future<UserCredential> createUserWithEmailAndPassword(
-  //     String email, String password) {
-  //   return createUserWithEmailAndPasswordService.create(email, password);
-  // }
+  Future<UserCredential> createUserWithEmailAndPassword(
+      String email, String password) {
+    return createUserWithEmailAndPasswordService.create(email, password);
+  }
 
   void connectAuthEmulator(String host, int port) {
     connectAuthEmulatorService.connect(host, port);
@@ -633,16 +635,16 @@ class FirebaseAuth {
     print('Emulator URL set to: $url');
   }
 
-  Future<void> confirmPasswordReset(String code, String newPassword) async {
-    try {
-      await confirmPasswordResetService.confirmPasswordReset(code, newPassword);
-    } catch (e) {
-      throw FirebaseAuthException(
-        code: 'confirm-password-reset-error',
-        message: 'Failed to confirm password reset: ${e.toString()}',
-      );
-    }
+Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
+  try {
+    await confirmPasswordResetService.confirmPasswordReset(oobCode, newPassword);
+  } catch (e) {
+    throw FirebaseAuthException(
+      code: 'confirm-password-reset-error',
+      message: 'Failed to confirm password reset: ${e.toString()}',
+    );
   }
+}
 
   Future<ActionCodeInfo> checkActionCode(String code) async {
     try {

@@ -6,7 +6,7 @@ class ConfirmPasswordResetService {
 
   ConfirmPasswordResetService({required this.auth});
 
-  Future<void> confirmPasswordReset(String code, String newPassword) async {
+  Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
     try {
       final url = Uri.https(
         'identitytoolkit.googleapis.com',
@@ -17,7 +17,7 @@ class ConfirmPasswordResetService {
       final response = await auth.httpClient.post(
         url,
         body: json.encode({
-          'oobCode': code,
+          'oobCode': oobCode,
           'newPassword': newPassword,
         }),
       );

@@ -1,16 +1,34 @@
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'dart:convert';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
 class PasswordResetEmailService {
-  final FirebaseAuth _auth;
+  final dynamic auth;
 
-  PasswordResetEmailService({required FirebaseAuth auth}) : _auth = auth;
+  PasswordResetEmailService({required this.auth});
 
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      await _auth.performRequest('sendOobCode', {
-        'requestType': 'PASSWORD_RESET',
-        'email': email,
-      });
+      final url = Uri.https(
+        'identitytoolkit.googleapis.com',
+        '/v1/accounts:sendOobCode',
+        {'key': auth.apiKey},
+      );
+
+      final response = await auth.httpClient.post(
+        url,
+        body: json.encode({
+          'requestType': 'PASSWORD_RESET',
+          'email': email,
+        }),
+      );
+
+      if (response.statusCode != 200) {
+        final error = json.decode(response.body)['error'];
+        throw FirebaseAuthException(
+          code: error['message'],
+          message: error['message'],
+        );
+      }
     } catch (e) {
       throw FirebaseAuthException(
         code: 'password-reset-error',

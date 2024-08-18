@@ -150,15 +150,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => PasswordResetScreen(auth: auth),
-                    ),
-                  ),
-                  title: "Send Password Reset Email",
-                ),
-                10.vSpace,
-                ActionTile(
                   loading: value.loading,
                   onTap: () => value.reloadUser(),
                   title: "Reload User",
@@ -283,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: _revokeToken,
-                  title: "Revoke Current Token",
+                  title: "Revoke Access Token",
                 ),
                 10.vSpace,
                 ActionTile(
@@ -351,7 +342,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       builder: (context) => RevokeTokenScreen(auth: auth),
                     ),
                   ),
-                  title: "Revoke access token",
+                  title: "Revoke Current token",
                 ),
                 10.vSpace,
                 ActionTile(
@@ -379,6 +370,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   title: "Check action code",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => PasswordResetScreen(),
+                    ),
+                  ),
+                  title: "Send Password Reset Email",
                 ),
                 10.vSpace,
                 ActionTile(
