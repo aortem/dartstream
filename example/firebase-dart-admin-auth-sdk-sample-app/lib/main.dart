@@ -8,29 +8,29 @@ import 'package:flutter/services.dart';
 
 void main() async {
   //If you are on web, initialize with enviroment variables
-  if (kIsWeb) {
-    //Pass the enviroment variables into the function below, I.E API key and project ID
-    FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'Add your own project API Key',
-      projectId: 'Add your project Id',
-    );
-  } else {
-    //When working with mobile
-    if (Platform.isAndroid || Platform.isIOS) {
-      //To initialize with service account put the path to the json file in the function below
-      String serviceAccountContent = await rootBundle.loadString(
-          'assets/service_account.json'); //Add your own JSON service account
+//  if (kIsWeb) {
+  //Pass the enviroment variables into the function below, I.E API key and project ID
+  FirebaseApp.initializeAppWithEnvironmentVariables(
+    apiKey: 'AIzaSyBli2c-dmD4w2kLHmZU3UtewETvuruVAN4',
+    projectId: 'fire-base-dart-admin-auth-sdk',
+  );
+  // } else {
+  //   //When working with mobile
+  //   if (Platform.isAndroid || Platform.isIOS) {
+  //     //To initialize with service account put the path to the json file in the function below
+  //     String serviceAccountContent = await rootBundle.loadString(
+  //         'assets/service_account.json'); //Add your own JSON service account
 
-      // Initialize Firebase with the service account content
-      await FirebaseApp.initializeAppWithServiceAccount(
-        serviceAccountContent: serviceAccountContent,
-        serviceAccountKeyFilePath: '',
-      );
+  //     // Initialize Firebase with the service account content
+  //     await FirebaseApp.initializeAppWithServiceAccount(
+  //       serviceAccountContent: serviceAccountContent,
+  //       serviceAccountKeyFilePath: '',
+  //     );
 
-      //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
-    }
-  }
+  //     //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
+  //     //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
+  //   }
+  // }
 
   FirebaseApp.instance.getAuth();
   runApp(const MyApp());

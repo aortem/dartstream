@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -80,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Send Password Reset Email",
                 ),
                 10.vSpace,
-
                 ActionTile(
                   loading: value.loading,
                   onTap: () => value.reloadUser(),
@@ -194,8 +194,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         builder: (context) => UpdateUserScreen(),
                       ),
                     );
-
-
                   },
                   title: "Update Current User",
                 ),
@@ -203,11 +201,43 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     // var tokenId=
-                    FirebaseApp.firebaseAuth?.deviceLanguage('en');
+                    FirebaseApp.firebaseAuth?.setLanguageCodeMethod('en');
 
                     // log("token result  $tokenId");
                   },
-                  title: "device Language",
+                  title: "setdevice Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth?.getLanguageCodeMethod();
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "get device Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth?.getAuthBeforeChange();
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "before auth state change",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => PersistenceSelectorDropdown(),
+                      ),
+                    );
+                  },
+                  title: " Set Presistance",
                 ),
                 10.vSpace,
               ],

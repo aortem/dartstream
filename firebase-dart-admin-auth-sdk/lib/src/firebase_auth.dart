@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
+
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
@@ -34,9 +34,15 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
 import 'auth/auth_link_with_phone_number.dart';
+
+import 'auth/before_auth_state_change.dart';
 import 'auth/parseActionCodeURL .dart';
+import 'auth/set_persistence.dart';
+import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/delete_user.dart';
+import 'firebase_user/get_language_code.dart';
 import 'firebase_user/link_with_credentails.dart';
+import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
 
 class FirebaseAuth {
@@ -74,6 +80,13 @@ class FirebaseAuth {
   late FirebaseDeleteUser firebaseDeleteUser;
   late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
 
+////Ticketr 5,7,23,24,61
+  late FirebaseSignInAnonymously signInAnonymously;
+  late SetPresistence setPresistence;
+  late LanguageService setLanguageService;
+  late LanguagGetService getLanguageService;
+  late FirebaseBeforeAuthStateChangeService
+      firebaseBeforeAuthStateChangeService;
   User? currentUser;
 
   /// StreamControllers for managing auth state and ID token change events
@@ -117,6 +130,13 @@ class FirebaseAuth {
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
     firebaseLinkWithCredentailsUser =
         FirebaseLinkWithCredentailsUser(auth: this);
+
+    signInAnonymously = FirebaseSignInAnonymously(this);
+    setPresistence = SetPresistence(auth: this);
+    setLanguageService = LanguageService(auth: this);
+    getLanguageService = LanguagGetService(auth: this);
+    firebaseBeforeAuthStateChangeService =
+        FirebaseBeforeAuthStateChangeService(this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -516,6 +536,46 @@ class FirebaseAuth {
   Future<IdTokenResult?> getIdTokenResult() async {
     final user = currentUser;
     return await user?.getIdTokenResult();
+  }
+
+/////////////////Firebase SignIn Anonymously /////////////////////////
+
+  Future<UserCredential?> signInAnonymouslyMethod() async {
+    try {
+      return await signInAnonymously.signInAnonymously();
+    } catch (e) {
+      print('Sign-in with redirect failed: $e');
+      throw FirebaseAuthException(
+        code: 'sign-in-redirect-error',
+        message: 'Failed to sign in with redirect.',
+      );
+    }
+  }
+
+///////////////////////////////
+  Future<void> setPresistanceMethod(String presistanceType) {
+    return setPresistence.setPersistence(presistanceType);
+  }
+
+/////////////////
+  Future<void> setLanguageCodeMethod(String languageCode) {
+    return setLanguageService.setLanguagePreference(
+        currentUser!.uid, currentUser!.idToken!, languageCode);
+  }
+
+  ///////////////////
+  Future<void> getLanguageCodeMethod() {
+    return getLanguageService.getLanguagePreference(
+      currentUser!.uid,
+      currentUser!.idToken!,
+    );
+  }
+
+  ////////
+  Future<void> getAuthBeforeChange() {
+    return firebaseBeforeAuthStateChangeService.beforeAuthStateChange(
+      currentUser!.idToken!,
+    );
   }
 
   /// Disposes of the FirebaseAuth instance and releases resources.

@@ -4,6 +4,7 @@ import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/set_language_code.dart';
 
 class MockClient extends Mock implements http.Client {}
 
@@ -520,7 +521,134 @@ void main() {
           await expectLater(
               auth.onAuthStateChanged().isEmpty, completion(isTrue));
         });
+
+        //////////////////  test signInAnonymously////////////////
+
+        test('signInAnonymously succeeds', () async {
+          // Mocking the HTTP response for a successful anonymous sign-in.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"kind":"identitytoolkit#SignupNewUserResponse","localId":"anonUid","idToken":"anonIdToken","refreshToken":"anonRefreshToken","expiresIn":"3600"}',
+                    200,
+                  ));
+
+          final result = await auth.signInAnonymouslyMethod();
+          expect(result?.user.uid, equals('anonUid'));
+          expect(result?.user.idToken, equals('anonIdToken'));
+          expect(result?.user.refreshToken, equals('anonRefreshToken'));
+          expect(result?.user.email, isNull);
+        });
+
+        test('signInAnonymously fails', () async {
+          // Mocking the HTTP response for a failed anonymous sign-in.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"error":{"code":400,"message":"OPERATION_NOT_ALLOWED","errors":[{"message":"OPERATION_NOT_ALLOWED","domain":"global","reason":"invalid"}]}}',
+                    400,
+                  ));
+
+          expect(
+            () => auth.signInAnonymouslyMethod(),
+            throwsA(isA<FirebaseAuthException>()),
+          );
+        }); ////////////////////////////test setPersistence
+
+        test('setPersistence succeeds', () async {
+          // Mocking the HTTP response for a successful set persistence.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response('{}', 200));
+
+          await expectLater(
+            auth.setPresistanceMethod(
+                'local'), // Replace 'local' with desired persistence type for the test
+            completes,
+          );
+        });
+
+        test('setPersistence fails with invalid API key', () async {
+          // Mocking the HTTP response for a failed set persistence due to invalid API key.
+          when(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+              .thenAnswer((_) async => http.Response(
+                    '{"error":{"code":400,"message":"INVALID_API_KEY","errors":[{"message":"INVALID_API_KEY","domain":"global","reason":"invalid"}]}}',
+                    400,
+                  ));
+
+          expect(
+            () => auth.setPresistanceMethod(
+                'local'), // Replace 'local' with desired persistence type for the test
+            throwsA(isA<FirebaseAuthException>()),
+          );
+        });
       });
+    });
+    //////////////////////////
+     group('LanguageService', () {
+    late LanguageService languageService;
+    late MockClient mockClient;
+
+    setUp(() {
+      mockClient = MockClient();
+      languageService = LanguageService(auth: );
+    });
+
+    test('setLanguagePreference succeeds', () async {
+      // Mocking the HTTP response for a successful language preference set.
+      when(() => mockClient.patch(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response('{}', 200));
+
+      await expectLater(
+        languageService.setLanguagePreference('test-user-id', 'en'),
+        completes,
+      );
+    });
+
+    test('setLanguagePreference fails with error', () async {
+      // Mocking the HTTP response for a failed language preference set.
+      when(() => mockClient.patch(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"error":{"code":400,"message":"FAILED_TO_SET_LANGUAGE"}}',
+                400,
+              ));
+
+      await expectLater(
+        languageService.setLanguagePreference('test-user-id', 'en'),
+        completes,
+      );
+    });
+
+    test('getLanguagePreference succeeds and retrieves language code', () async {
+      // Mocking the HTTP response for a successful retrieval of language preference.
+      final mockResponse = {
+        "fields": {
+          "languageCode": {"stringValue": "en"}
+        }
+      };
+
+      when(() => mockClient.get(any(), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(jsonEncode(mockResponse), 200));
+
+      final languageCode = await languageService.getLanguagePreference('test-user-id');
+
+      expect(languageCode, 'en');
+    });
+
+    test('getLanguagePreference fails with error', () async {
+      // Mocking the HTTP response for a failed retrieval of language preference.
+      when(() => mockClient.get(any(), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"error":{"code":404,"message":"USER_NOT_FOUND"}}',
+                404,
+              ));
+
+      final languageCode = await languageService.getLanguagePreference('test-user-id');
+
+      expect(languageCode, isNull);
     });
   });
 }
