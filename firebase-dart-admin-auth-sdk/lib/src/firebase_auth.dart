@@ -544,38 +544,70 @@ class FirebaseAuth {
     try {
       return await signInAnonymously.signInAnonymously();
     } catch (e) {
-      print('Sign-in with redirect failed: $e');
+      print('Sign-in with anonymously failed: $e');
       throw FirebaseAuthException(
-        code: 'sign-in-redirect-error',
-        message: 'Failed to sign in with redirect.',
+        code: 'sign-in-anonymously-error',
+        message: 'Failed to sign in with anonymously.',
       );
     }
   }
 
 ///////////////////////////////
   Future<void> setPresistanceMethod(String presistanceType) {
-    return setPresistence.setPersistence(presistanceType);
+    try {
+      return setPresistence.setPersistence(presistanceType);
+    } catch (e) {
+      print('Failed Set Persistence: $e');
+      throw FirebaseAuthException(
+        code: 'set-persistence-error',
+        message: 'Failed to Set Persistence.',
+      );
+    }
   }
 
 /////////////////
   Future<void> setLanguageCodeMethod(String languageCode) {
-    return setLanguageService.setLanguagePreference(
-        currentUser!.uid, currentUser!.idToken!, languageCode);
+    try {
+      return setLanguageService.setLanguagePreference(
+          currentUser!.uid, currentUser!.idToken!, languageCode);
+    } catch (e) {
+      print('Failed Set Language: $e');
+      throw FirebaseAuthException(
+        code: 'set-language-error',
+        message: 'Failed to set language.',
+      );
+    }
   }
 
   ///////////////////
   Future<void> getLanguageCodeMethod() {
-    return getLanguageService.getLanguagePreference(
-      currentUser!.uid,
-      currentUser!.idToken!,
-    );
+    try {
+      return getLanguageService.getLanguagePreference(
+        currentUser!.uid,
+        currentUser!.idToken!,
+      );
+    } catch (e) {
+      print('Failed to Get Set Language: $e');
+      throw FirebaseAuthException(
+        code: 'get-set-language-error',
+        message: 'Failed to Get Set Language.',
+      );
+    }
   }
 
   ////////
   Future<void> getAuthBeforeChange() {
-    return firebaseBeforeAuthStateChangeService.beforeAuthStateChange(
-      currentUser!.idToken!,
-    );
+    try {
+      return firebaseBeforeAuthStateChangeService.beforeAuthStateChange(
+        currentUser!.idToken!,
+      );
+    } catch (e) {
+      print('Failed Before Auth State Changed: $e');
+      throw FirebaseAuthException(
+        code: 'before-auth-state-changed-error',
+        message: 'Failed to Before Auth State Changed.',
+      );
+    }
   }
 
   /// Disposes of the FirebaseAuth instance and releases resources.
