@@ -1,7 +1,5 @@
 ## 0.0.1-pre+4
 
-- Update dart format for static analysis
-- update to latest dart standard package
 - Sample App Package Name Fix
 - Service Account Firebase initialization method on Sample App fixed
 - FirebaseAuth.createUserWithEmailAndPassword feature implemented in Sample App
@@ -19,7 +17,20 @@
 - Update the User model
 - Added a copy with function to the user model
 - Used the copy with function in the updateUser method.
-- Added web and grpc libraries to the pubspec.yaml_
+- Added web and grpc libraries to the pubspec.yaml
+- FirebaseAuth.signOut feature implemented in the Sample App
+- FirebaseAuth.updateCurrentUser feature implemented in Sample App
+- FirebaseLink.parseActionCodeURL feature implemented in Sample App
+- FirebaseUser.deleteUser feature implemented in Sample App
+- FirebaseUser.getIdToken feature implemented in Sample App
+- FirebaseUser.getIdTokenResult feature implemented in Sample App
+- FirebaseAuth.getMultiFactorResolver Method implemented in Sample App
+- FirebaseAuth.fetchSignInMethodsForEmail implemented in Sample App
+- FirebaseAuth.connectAuthEmulator implemented in Sample App
+- FirebaseAuth.sendPasswordResetEmail Method implemented in Sample App
+- FirebaseAuth.revokeAccessToken Method implemented in Sample App
+- FirebaseAuth.onIdTokenChanged Method implemented in Sample App
+- FirebaseAuth.onAuthStateChanged Method implemented in Sample App
 
 ## 0.0.1-pre+3
 
