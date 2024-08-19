@@ -18,14 +18,7 @@ class FirebaseDeleteUser {
         log('Error: ID Token is null or empty.');
         return;
       }
-      //   {targetProjectId: "fire-base-dart-admin-auth-sdk", localId: "siXwlGYa1RVpvPZyp0qRdaKswPp2"}
-      // localId
-      //     :
-      // "siXwlGYa1RVpvPZyp0qRdaKswPp2"
-      // targetProjectId
-      //     :
-      // "fire-base-dart-admin-auth-sdk"
-      // Make the delete request
+      //
       final response = await auth.performRequest('delete', {
         // 'idToken': idToken,
         "targetProjectId": FirebaseApp.firebaseAuth?.projectId,
