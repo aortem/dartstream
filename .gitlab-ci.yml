@@ -6,12 +6,16 @@ stages:
 coverage_job:
   stage: test
   script:
-    - echo "Current directory:"
+    - echo "Running in directory:"
     - pwd
-    - echo "Listing contents of the current directory:"
-    - ls -la
+    - echo "Listing root directory:"
+    - ls -la /
+    - echo "Listing build directory:"
+    - ls -la /builds/
+    - echo "Listing project root:"
+    - ls -la /builds/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk
     - echo "Navigating to the firebase-dart-admin-auth-sdk directory:"
-    - cd firebase-dart-admin-auth-sdk
+    - cd /builds/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk
     - echo "Listing contents of firebase-dart-admin-auth-sdk:"
     - ls -la
     - echo "Checking if the test directory exists:"
@@ -20,7 +24,11 @@ coverage_job:
     - dart pub get
     - echo "Running dart tests with coverage:"
     - dart test test --coverage="coverage"
+    - echo "Listing coverage directory:"
+    - ls -la coverage
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/coverage/
+      - coverage/
+    expire_in: 1 week
+    when: always
   coverage: '/^TOTAL.+?(\d+\%)$/'
