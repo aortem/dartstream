@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
+//import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
+import 'auth/auth_redirect_link_stub.dart'
+    if (dart.library.html) 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -33,9 +35,12 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
-import 'auth/auth_link_with_phone_number.dart';
-import 'auth/parseActionCodeURL .dart';
+//import 'auth/auth_link_with_phone_number.dart';
+import 'auth/auth_link_with_phone_number_stub.dart'
+    if (dart.library.html) 'auth/auth_link_with_phone_number.dart';
 import 'firebase_user/delete_user.dart';
+
+import 'auth/parseActionCodeURL .dart';
 import 'firebase_user/link_with_credentails.dart';
 import 'id_token_result_model.dart';
 
