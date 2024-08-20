@@ -6,12 +6,11 @@ stages:
 coverage_job:
   stage: test
   script:
+    - cd firebase-dart-admin-auth-sdk
     - dart pub get
-    #- dart test --coverage="coverage"
-   # - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
-    - dart test firebase-dart-admin-auth-sdk/test --coverage="coverage
+    - dart test test --coverage="coverage"
+    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
   artifacts:
     paths:
-      - coverage/
+      - firebase-dart-admin-auth-sdk/coverage/
   coverage: '/^TOTAL.+?(\d+\%)$/'
-
