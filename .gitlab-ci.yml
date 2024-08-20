@@ -19,8 +19,15 @@ coverage_job:
     - echo "Running dart pub get:"
     - dart pub get
     - echo "Running dart tests with coverage:"
-    - dart test test --coverage="coverage"
+    - dart test --coverage="coverage"
+    - echo "Converting coverage to lcov format:"
+    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+    - echo "Listing contents of the coverage directory:"
+    - ls -la coverage
   artifacts:
     paths:
+      - firebase-dart-admin-auth-sdk/coverage/lcov.info
       - firebase-dart-admin-auth-sdk/coverage/
+    expire_in: 1 week
+    when: always
   coverage: '/^TOTAL.+?(\d+\%)$/'
