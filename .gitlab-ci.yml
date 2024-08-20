@@ -8,7 +8,8 @@ coverage_job:
   script:
     - dart pub get
     - dart test --coverage="coverage"
-    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+   # - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
+    - dart test firebase-dart-admin-auth-sdk/test --coverage="coverage
   artifacts:
     paths:
       - coverage/
