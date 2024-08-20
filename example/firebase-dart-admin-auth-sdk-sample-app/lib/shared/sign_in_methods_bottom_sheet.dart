@@ -45,16 +45,16 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 ),
                 title: "Sign In With Email&Password",
               ),
-              20.vSpace,
-              ActionTile(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const SignInWithPhoneNumberScreen(),
-                  ),
-                ),
-                title: "Sign In With Phone Number",
-              ),
+              // 20.vSpace,
+              // ActionTile(
+              //   onTap: () => Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => const SignInWithPhoneNumberScreen(),
+              //     ),
+              //   ),
+              //   title: "Sign In With Phone Number",
+              // ),
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(
@@ -70,7 +70,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const SignInWithPopupScreen(),
+                    builder: (context) => const SignInWithPopupTestScreen(),
                   ),
                 ),
                 title: "Sign In With Pop Up",

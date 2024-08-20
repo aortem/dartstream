@@ -24,6 +24,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart' as exceptions;
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/popup_redirect_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
@@ -200,9 +201,10 @@ class FirebaseAuth {
     final response = await httpClient.post(url, body: json.encode(body));
 
     if (response.statusCode != 200) {
-      throw exceptions.FirebaseAuthException(
-        code: 'error-code',
-        message: 'Error message',
+      final error = json.decode(response.body)['error'];
+      throw FirebaseAuthException(
+        code: error['message'],
+        message: error['message'],
       );
     }
     return HttpResponse(
@@ -242,7 +244,7 @@ class FirebaseAuth {
       return signInWithPhoneNumber(
           credential.verificationId, credential.smsCode);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(credential.providerId);
+      return signInWithPopup(credential.providerId as AuthProvider);
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
@@ -251,10 +253,16 @@ class FirebaseAuth {
     }
   }
 
-  Future<UserCredential> signInWithPopup(String providerId) async {
+  Future<UserCredential> signInWithPopup(
+    AuthProvider provider, {
+    PopupRedirectResolver? resolver,
+  }) async {
     try {
-      return await oauth.signInWithPopup(providerId);
+      return await oauth.signInWithPopup(provider, resolver: resolver);
     } catch (e) {
+      if (e is FirebaseAuthException) {
+        rethrow;
+      }
       throw FirebaseAuthException(
         code: 'popup-sign-in-error',
         message: 'Failed to sign in with popup: ${e.toString()}',
@@ -490,7 +498,8 @@ class FirebaseAuth {
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {
       // Sign in with OAuth and link
-      final authResult = await signInWithPopup(credential.providerId);
+      final authResult =
+          await signInWithPopup(credential.providerId as AuthProvider);
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else {
@@ -635,16 +644,17 @@ class FirebaseAuth {
     print('Emulator URL set to: $url');
   }
 
-Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
-  try {
-    await confirmPasswordResetService.confirmPasswordReset(oobCode, newPassword);
-  } catch (e) {
-    throw FirebaseAuthException(
-      code: 'confirm-password-reset-error',
-      message: 'Failed to confirm password reset: ${e.toString()}',
-    );
+  Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
+    try {
+      await confirmPasswordResetService.confirmPasswordReset(
+          oobCode, newPassword);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'confirm-password-reset-error',
+        message: 'Failed to confirm password reset: ${e.toString()}',
+      );
+    }
   }
-}
 
   Future<ActionCodeInfo> checkActionCode(String code) async {
     try {
