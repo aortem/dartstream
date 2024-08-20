@@ -6,16 +6,17 @@ stages:
 coverage_job:
   stage: test
   script:
-    - echo "Listing root directory:"
+    - echo "Listing contents of the root directory:"
     - ls -la
-    - echo "Navigating to firebase-dart-admin-auth-sdk directory and listing contents:"
+    - echo "Navigating to the firebase-dart-admin-auth-sdk directory:"
     - cd firebase-dart-admin-auth-sdk
+    - echo "Listing contents of firebase-dart-admin-auth-sdk:"
     - ls -la
-    - echo "Listing contents of the test directory:"
-    - ls -la test
+    - echo "Checking if the test directory exists:"
+    - if [ -d "test" ]; then echo "Test directory exists"; else echo "Test directory does not exist"; fi
     - echo "Running dart pub get:"
     - dart pub get
-    - echo "Running tests with coverage:"
+    - echo "Running dart tests with coverage:"
     - dart test test --coverage="coverage"
   artifacts:
     paths:
