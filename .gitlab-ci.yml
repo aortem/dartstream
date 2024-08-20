@@ -6,8 +6,16 @@ stages:
 coverage_job:
   stage: test
   script:
+    - echo "Listing root directory:"
+    - ls -la
+    - echo "Navigating to firebase-dart-admin-auth-sdk directory and listing contents:"
     - cd firebase-dart-admin-auth-sdk
+    - ls -la
+    - echo "Listing contents of the test directory:"
+    - ls -la test
+    - echo "Running dart pub get:"
     - dart pub get
+    - echo "Running tests with coverage:"
     - dart test test --coverage="coverage"
   artifacts:
     paths:
