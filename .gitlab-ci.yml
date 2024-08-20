@@ -9,7 +9,6 @@ coverage_job:
     - cd firebase-dart-admin-auth-sdk
     - dart pub get
     - dart test test --coverage="coverage"
-    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --packages=.packages --report-on=lib
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/coverage/
