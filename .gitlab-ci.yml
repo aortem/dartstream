@@ -6,7 +6,7 @@ stages:
 coverage_job:
   stage: test
   script:
-    - echo "Listing contents of the root directory:"
+    - echo "Listing contents of the current directory:"
     - ls -la
     - echo "Navigating to the firebase-dart-admin-auth-sdk directory:"
     - cd firebase-dart-admin-auth-sdk
