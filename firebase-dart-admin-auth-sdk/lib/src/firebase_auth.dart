@@ -153,6 +153,7 @@ class FirebaseAuth {
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
+      log("error is $error ");
       throw FirebaseAuthException(
         code: error['message'],
         message: error['message'],
@@ -557,6 +558,7 @@ class FirebaseAuth {
     try {
       return firebaseBeforeAuthStateChangeService.beforeAuthStateChange(
         currentUser!.idToken!,
+        currentUser!.refreshToken!,
       );
     } catch (e) {
       print('Failed Before Auth State Changed: $e');

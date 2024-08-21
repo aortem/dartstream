@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_credential/sign_in_with_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_and_password_screen/sign_in_with_email_and_password_screen.dart';
@@ -7,6 +10,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
+import '../screens/home_screen/home_screen.dart';
 import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
 
 void showSignMethodsBottomSheet(BuildContext context) {
@@ -76,8 +80,25 @@ class SignInMethodsBottomSheet extends StatelessWidget {
           ),
           20.vSpace,
           ActionTile(
-            onTap: () async =>
-                await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod(),
+            onTap: () async {
+              try {
+                var user =
+                    await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod();
+
+                BotToast.showText(text: '${user?.user.email} just signed in');
+                log("message$user");
+                if (user != null) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomeScreen(),
+                      ));
+                }
+              } catch (e) {
+                BotToast.showText(text: e.toString());
+              } finally {}
+            },
+            //  await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod(),
             title: "Sign In Anonymously ",
           ),
           20.vSpace,
