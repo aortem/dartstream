@@ -1,8 +1,5 @@
-import 'dart:convert';
-import 'dart:developer';
 
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 
 class FirebaseLinkWithCredentailsUser {
   final FirebaseAuth auth;

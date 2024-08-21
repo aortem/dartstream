@@ -151,7 +151,7 @@ void main() {
 
           final result = await auth.createUserWithEmailAndPassword(
               'newuser@example.com', 'password');
-          expect(result?.user.uid!, equals('newTestUid'));
+          expect(result?.user.uid, equals('newTestUid'));
           expect(result!.user.email!, equals('newuser@example.com'));
         });
 
@@ -420,7 +420,7 @@ void main() {
           final result = await auth.signInWithEmailAndPassword(
               'test@example.com', 'password');
           expect(result!.user.uid, equals('testUid'));
-          expect(result!.user.email, equals('test@example.com'));
+          expect(result.user.email, equals('test@example.com'));
         });
 
         // Additional tests for methods:
