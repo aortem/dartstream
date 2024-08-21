@@ -4,7 +4,8 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart'
+    if (dart.library.io) 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link_mobile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -30,7 +31,6 @@ import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
 // New imports for Sprint 2 #16 to #21
 import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
@@ -411,8 +411,11 @@ class FirebaseAuth {
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
   Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) {
-    return emailLink.sendSignInLinkToEmail(email, settings);
+    String email,
+  ) {
+    return emailLink.sendSignInLinkToEmail(
+      email,
+    );
   }
 
 ///////Firebase link with creential////////////

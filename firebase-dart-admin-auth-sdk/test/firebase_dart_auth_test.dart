@@ -2,8 +2,6 @@ import 'dart:async';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
-    as acs;
 
 class MockClient extends Mock implements http.Client {}
 
@@ -189,13 +187,15 @@ void main() {
                   body: any(named: 'body'), headers: any(named: 'headers')))
               .thenAnswer((_) async => http.Response('{}', 200));
 
-          final settings = acs.ActionCodeSettings(
-            url: 'https://example.com/finishSignUp?cartId=1234',
-            handleCodeInApp: true,
-          );
+          // final settings = ActionCodeSettings(
+          //   url: 'https://example.com/finishSignUp?cartId=1234',
+          //   handleCodeInApp: true,
+          // );
 
           await expectLater(
-            auth.sendSignInLinkToEmail('test@example.com', settings),
+            auth.sendSignInLinkToEmail(
+              'test@example.com',
+            ),
             completes,
           );
         });
@@ -400,7 +400,10 @@ void main() {
                     200,
                   ));
 
-          final result = await auth.linkProviderToUser('', '');
+          final result = await auth.linkProviderToUser(
+            'google.com',
+            '',
+          );
           expect(result.uid, equals('testUid'));
           expect(result.email, equals('test@example.com'));
         });

@@ -21,7 +21,7 @@ class LinkProviderToUser {
         {
           "idToken": idToken,
           "providerId": providerId,
-          "providerIdToken": providerIdToken,
+          "postBody": 'id_token=$providerIdToken&providerId=$providerId',
           "returnSecureToken": true,
         },
       );

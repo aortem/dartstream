@@ -32,7 +32,7 @@ class HomeScreenViewModel extends ChangeNotifier {
   late final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: scopes,
     signInOption: SignInOption.standard,
-    clientId: 'x',
+    clientId: '',
   );
   final FirebaseAuth? _firebaseSdk = FirebaseApp.firebaseAuth;
 
@@ -133,11 +133,11 @@ class HomeScreenViewModel extends ChangeNotifier {
       }
 
       var signInAuth = await signInAccount?.authentication;
-
       await _firebaseSdk?.linkProviderToUser(
         getPlatformId(),
         signInAuth!.idToken!,
       );
+
       refreshUser();
     } catch (e) {
       BotToast.showText(text: e.toString());
