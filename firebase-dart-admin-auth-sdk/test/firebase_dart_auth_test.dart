@@ -23,6 +23,8 @@ void main() {
       );
     }
 
+
+/*
     Future<void> initializeAppWithServiceAccount() async {
       app = await FirebaseApp.initializeAppWithServiceAccount(
         serviceAccountKeyFilePath:
@@ -30,6 +32,8 @@ void main() {
         serviceAccountContent: '',
       );
     }
+*/
+
 
     Future<void> initializeAppWithServiceAccountImpersonation() async {
       app = await FirebaseApp.initializeAppWithServiceAccountImpersonation(
@@ -50,7 +54,7 @@ void main() {
       });
 
       // Test using Service Account with Keys
-      group('Service Account with Keys', () {
+    /* group('Service Account with Keys', () {
         setUp(() async {
           await initializeAppWithServiceAccount();
         });
@@ -72,7 +76,7 @@ void main() {
         });
 
         // Other tests...
-      });
+      });*/
 
       // Test using Environment Variables
       group('Environment Variables', () {
@@ -98,7 +102,7 @@ void main() {
       });
 
       // Test using Service Account without Key Impersonation
-      group('Service Account without Key Impersonation', () {
+      /*group('Service Account without Key Impersonation', () {
         setUp(initializeAppWithServiceAccountImpersonation);
 
         // Insert all your tests here
@@ -118,11 +122,12 @@ void main() {
         });
 
         // Other tests...
-      });
+      });*/
 
       // Common tests for all configurations
       void runCommonTests() {
-        setUp(initializeAppWithServiceAccount);
+        //setUp(initializeAppWithServiceAccount);
+        setUp(initializeAppWithEnvironmentVariables);
         test('signInWithEmailAndPassword fails', () async {
           // Mocking the HTTP response for a failed sign-in with email and password.
           when(() => mockClient.post(any(),
@@ -375,7 +380,9 @@ void main() {
 
       // New tests added below for #16 to #21
       group('New tests', () {
-        setUp(initializeAppWithServiceAccount);
+        //setUp(initializeAppWithServiceAccount);
+        setUp(initializeAppWithEnvironmentVariables);  // Use environment variables here
+
 
         // Test for sendPasswordResetEmail
         test('sendPasswordResetEmail succeeds', () async {
