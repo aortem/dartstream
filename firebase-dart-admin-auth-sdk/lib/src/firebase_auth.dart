@@ -47,7 +47,7 @@ import 'id_token_result_model.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
-  late final http.Client httpClient;
+  late http.Client httpClient;
 
   late EmailPasswordAuth emailPassword;
   late CustomTokenAuth customToken;
@@ -92,7 +92,8 @@ class FirebaseAuth {
     this.projectId,
     http.Client? httpClient, // Add this parameter
   }) {
-    this.httpClient = httpClient ?? http.Client(); // Use the injected client or default to a new one
+    this.httpClient = httpClient ??
+        http.Client(); // Use the injected client or default to a new one
     emailPassword = EmailPasswordAuth(this);
     customToken = CustomTokenAuth(this);
     emailLink = EmailLinkAuth(this);
@@ -127,6 +128,7 @@ class FirebaseAuth {
 
   Future<HttpResponse> performRequest(
       String endpoint, Map<String, dynamic> body) async {
+    //log(apiKey.toString());
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:$endpoint',
@@ -213,6 +215,7 @@ class FirebaseAuth {
     try {
       await signOUt.signOut();
       FirebaseApp.instance.setCurrentUser(null);
+      currentUser = null;
       log('User Signout ');
       return;
     } catch (e) {
