@@ -90,8 +90,9 @@ class FirebaseAuth {
   FirebaseAuth({
     this.apiKey,
     this.projectId,
+    http.Client? httpClient, // Add this parameter
   }) {
-    httpClient = http.Client();
+    this.httpClient = httpClient ?? http.Client(); // Use the injected client or default to a new one
     emailPassword = EmailPasswordAuth(this);
     customToken = CustomTokenAuth(this);
     emailLink = EmailLinkAuth(this);
