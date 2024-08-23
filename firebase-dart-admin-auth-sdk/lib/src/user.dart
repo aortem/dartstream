@@ -2,10 +2,6 @@
 //added isAnonymous getter to determine if the user is signed in anonymously
 //Added getIdToken method for token management
 //added toMap method for easy serialization
-
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
-
 import 'id_token_result_model.dart';
 
 class User {
@@ -97,5 +93,33 @@ class User {
       userId: uid,
       authTime: DateTime.now().millisecondsSinceEpoch.toString(),
     );
+  }
+
+  // Implement value-based equality
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is User &&
+        other.uid == uid &&
+        other.email == email &&
+        other.emailVerified == emailVerified &&
+        other.phoneNumber == phoneNumber &&
+        other.displayName == displayName &&
+        other.photoURL == photoURL &&
+        other.idToken == idToken &&
+        other._idTokenExpiration == _idTokenExpiration;
+  }
+
+  @override
+  int get hashCode {
+    return uid.hashCode ^
+        email.hashCode ^
+        emailVerified.hashCode ^
+        phoneNumber.hashCode ^
+        displayName.hashCode ^
+        photoURL.hashCode ^
+        idToken.hashCode ^
+        _idTokenExpiration.hashCode;
   }
 }
