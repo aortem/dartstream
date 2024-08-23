@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_base.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_provider.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/popup_redirect_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
 
 class OAuthAuth extends AuthBase {
   OAuthAuth(super.auth);
@@ -16,14 +18,14 @@ class OAuthAuth extends AuthBase {
     final authUrl = await _getAuthUrl(provider);
     final result = await resolver.resolvePopup(authUrl);
 
-    if (result.containsKey('error')) {
+    if (result == null || result['error'] != null) {
       throw FirebaseAuthException(
-        code: result['error']['code'],
-        message: result['error']['message'],
+        code: 'popup-closed-by-user',
+        message: 'The popup was closed before authentication could complete.',
       );
     }
 
-    final response = await auth.performRequest('signInWithIdp', {
+    final HttpResponse response = await auth.performRequest('signInWithIdp', {
       'providerId': provider.providerId,
       'signInMethod': 'popup',
       'idToken': result['idToken'],
@@ -36,12 +38,11 @@ class OAuthAuth extends AuthBase {
   }
 
   Future<String> _getAuthUrl(AuthProvider provider) async {
-    final response = await auth.performRequest('getAuthUrl', {
+    final HttpResponse response = await auth.performRequest('getAuthUri', {
       'providerId': provider.providerId,
-      'continueUri':
-          'http://localhost:5000', // Replace with your actual callback URL
+      'continueUri': 'http://localhost',
     });
 
-    return response.body['authUrl'];
+    return response.body['authUri'];
   }
 }

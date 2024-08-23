@@ -1,118 +1,105 @@
-// import 'package:flutter/material.dart';
-// import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-// import 'package:firebase_dart_admin_auth_sdk/src/auth_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
-// class SignInWithPhoneNumberScreen extends StatefulWidget {
-//   const SignInWithPhoneNumberScreen({Key? key}) : super(key: key);
+class PhoneAuthTestScreen extends StatefulWidget {
+  @override
+  _PhoneAuthTestScreenState createState() => _PhoneAuthTestScreenState();
+}
 
-//   @override
-//   _SignInWithPhoneNumberScreenState createState() =>
-//       _SignInWithPhoneNumberScreenState();
-// }
+class _PhoneAuthTestScreenState extends State<PhoneAuthTestScreen> {
+  final FirebaseAuth _auth = FirebaseAuth();
+  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _smsCodeController = TextEditingController();
 
-// // class _SignInWithPhoneNumberScreenState
-// //     extends State<SignInWithPhoneNumberScreen> {
-// //   final FirebaseAuth _auth = FirebaseAuth();
-// //   final TextEditingController _phoneNumberController = TextEditingController();
-// //   final TextEditingController _smsCodeController = TextEditingController();
+  String _verificationId = '';
+  bool _codeSent = false;
 
-// //   String? _verificationId;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Phone Authentication Test'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            TextField(
+              controller: _phoneNumberController,
+              decoration: InputDecoration(labelText: 'Phone Number'),
+              keyboardType: TextInputType.phone,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('Send Verification Code'),
+              onPressed: _sendVerificationCode,
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: _smsCodeController,
+              decoration: InputDecoration(labelText: 'SMS Code'),
+              keyboardType: TextInputType.number,
+              enabled: _codeSent,
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              child: Text('Verify and Sign In'),
+              onPressed: _codeSent ? _verifyAndSignIn : null,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Scaffold(
-// //       appBar: AppBar(
-// //         title: Text('Sign In with Phone Number'),
-// //       ),
-// //       body: Padding(
-// //         padding: EdgeInsets.all(16.0),
-// //         child: Column(
-// //           crossAxisAlignment: CrossAxisAlignment.stretch,
-// //           children: [
-// //             TextField(
-// //               controller: _phoneNumberController,
-// //               decoration: InputDecoration(labelText: 'Phone Number'),
-// //               keyboardType: TextInputType.phone,
-// //             ),
-// //             SizedBox(height: 16),
-// //             ElevatedButton(
-// //               child: Text('Send Verification Code'),
-// //               onPressed: _verifyPhoneNumber,
-// //             ),
-// //             SizedBox(height: 16),
-// //             TextField(
-// //               controller: _smsCodeController,
-// //               decoration: InputDecoration(labelText: 'SMS Code'),
-// //               keyboardType: TextInputType.number,
-// //             ),
-// //             SizedBox(height: 16),
-// //             ElevatedButton(
-// //               child: Text('Sign In'),
-// //               onPressed: _signInWithPhoneNumber,
-// //             ),
-// //           ],
-// //         ),
-// //       ),
-// //     );
-// //   }
+  Future<void> _sendVerificationCode() async {
+    try {
+      final phoneNumber = _phoneNumberController.text.trim();
+      final appVerifier = RecaptchaVerifier(
+        container: 'recaptcha-container',
+        size: RecaptchaVerifierSize.invisible,
+        theme: RecaptchaVerifierTheme.light,
+      );
 
-// //   Future<void> _verifyPhoneNumber() async {
-// //     try {
-// //       await _auth.verifyPhoneNumber(
-// //         phoneNumber: _phoneNumberController.text,
-// //         verificationCompleted: (PhoneAuthCredential credential) async {
-// //           await _auth.signInWithCredential(credential);
-// //           ScaffoldMessenger.of(context).showSnackBar(
-// //             SnackBar(content: Text('Auto-verified and signed in successfully')),
-// //           );
-// //         },
-// //         verificationFailed: (FirebaseAuthException e) {
-// //           ScaffoldMessenger.of(context).showSnackBar(
-// //             SnackBar(content: Text('Verification failed: ${e.message}')),
-// //           );
-// //         },
-// //         codeSent: (String verificationId, int? resendToken) {
-// //           setState(() {
-// //             _verificationId = verificationId;
-// //           });
-// //           ScaffoldMessenger.of(context).showSnackBar(
-// //             SnackBar(content: Text('Verification code sent')),
-// //           );
-// //         },
-// //         codeAutoRetrievalTimeout: (String verificationId) {
-// //           setState(() {
-// //             _verificationId = verificationId;
-// //           });
-// //         },
-// //       );
-// //     } catch (e) {
-// //       ScaffoldMessenger.of(context).showSnackBar(
-// //         SnackBar(content: Text('Error: ${e.toString()}')),
-// //       );
-// //     }
-// //   }
+      final ConfirmationResult confirmationResult =
+          await _auth.signInWithPhoneNumber(phoneNumber, appVerifier);
 
-// //   Future<void> _signInWithPhoneNumber() async {
-// //     if (_verificationId == null) {
-// //       ScaffoldMessenger.of(context).showSnackBar(
-// //         SnackBar(content: Text('Please verify your phone number first')),
-// //       );
-// //       return;
-// //     }
+      setState(() {
+        _verificationId = confirmationResult.verificationId;
+        _codeSent = true;
+      });
 
-// //     try {
-// //       final credential = PhoneAuthProvider.instance.credential(
-// //         verificationId: _verificationId!,
-// //         smsCode: _smsCodeController.text,
-// //       );
-// //       await _auth.signInWithCredential(credential);
-// //       ScaffoldMessenger.of(context).showSnackBar(
-// //         SnackBar(content: Text('Signed in successfully')),
-// //       );
-// //     } catch (e) {
-// //       ScaffoldMessenger.of(context).showSnackBar(
-// //         SnackBar(content: Text('Error: ${e.toString()}')),
-// //       );
-// //     }
-// //   }
-// // }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Verification code sent')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+
+  Future<void> _verifyAndSignIn() async {
+    try {
+      final smsCode = _smsCodeController.text.trim();
+      final AuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: _verificationId,
+        smsCode: smsCode,
+      );
+
+      final UserCredential userCredential =
+          await _auth.signInWithCredential(credential) as UserCredential;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content:
+                Text('Successfully signed in: ${userCredential.user?.uid}')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: ${e.toString()}')),
+      );
+    }
+  }
+}

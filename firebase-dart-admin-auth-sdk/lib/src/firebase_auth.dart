@@ -56,6 +56,7 @@ import 'id_token_result_model.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
+  final String? authDomain;
 
   late final http.Client httpClient;
 
@@ -109,6 +110,7 @@ class FirebaseAuth {
   FirebaseAuth({
     this.apiKey,
     this.projectId,
+    this.authDomain,
   }) {
     httpClient = http.Client();
     emailPassword = EmailPasswordAuth(this);
@@ -236,13 +238,13 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<Future<UserCredential?>> signInWithCredential(
+  Future<Future<Object?>> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
     } else if (credential is PhoneAuthCredential) {
       return signInWithPhoneNumber(
-          credential.verificationId, credential.smsCode);
+          credential.verificationId, credential.smsCode as ApplicationVerifier);
     } else if (credential is OAuthCredential) {
       return signInWithPopup(credential.providerId as AuthProvider);
     } else {
@@ -270,9 +272,18 @@ class FirebaseAuth {
     }
   }
 
-  Future<UserCredential> signInWithPhoneNumber(
-      String verificationId, String smsCode) {
-    return phone.verifyPhoneNumberWithCode(verificationId, smsCode);
+  Future<ConfirmationResult> signInWithPhoneNumber(
+    String phoneNumber,
+    ApplicationVerifier appVerifier,
+  ) async {
+    try {
+      return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'phone-auth-error',
+        message: 'Failed to sign in with phone number: ${e.toString()}',
+      );
+    }
   }
 
   Future<void> verifyPhoneNumber({
@@ -493,7 +504,7 @@ class FirebaseAuth {
     } else if (credential is PhoneAuthCredential) {
       // Verify the phone number and link
       final authResult = await signInWithPhoneNumber(
-          credential.verificationId, credential.smsCode);
+          credential.verificationId, credential.smsCode as ApplicationVerifier);
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {

@@ -10,10 +10,12 @@ class FirebaseApp {
   final String? _apiKey;
   //The ID of the project
   final String? _projectId;
+  //The authDomain of the project
+  final String _authdomain;
 
   static FirebaseAuth? firebaseAuth;
 
-  FirebaseApp._(this._apiKey, this._projectId);
+  FirebaseApp._(this._apiKey, this._projectId, this._authdomain);
   User? _currentUser;
 
   // method to set the current user
@@ -39,12 +41,14 @@ class FirebaseApp {
   static Future<FirebaseApp> initializeAppWithEnvironmentVariables({
     required String apiKey,
     required String projectId,
+    required String authdomain,
   }) async {
     //Asserts that the API key and Project Id is not empty
     assert(apiKey.isNotEmpty, "API Key cannot be empty");
     assert(projectId.isNotEmpty, "Project ID Key cannott be empty");
+    assert(authdomain.isNotEmpty, "Auth Domain cannot be empty");
     //Returns an intance of FirebaseApp if it exist or create a new instance based on the parameter passed
-    return _instance ??= FirebaseApp._(apiKey, projectId);
+    return _instance ??= FirebaseApp._(apiKey, projectId, authdomain);
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
@@ -59,6 +63,7 @@ class FirebaseApp {
     return _instance ??= FirebaseApp._(
       serviceAccount['private_key'], // Update with the actual key field
       serviceAccount['project_id'], // Update with the actual project ID field
+      serviceAccount['auth_domain'], // Update with the actual auth domain field
     );
   }
 
@@ -76,6 +81,7 @@ class FirebaseApp {
     return _instance ??= FirebaseApp._(
       'your_api_key',
       'your_project_id',
+      'your_auth_domain',
     );
   }
 
@@ -90,6 +96,7 @@ class FirebaseApp {
     return firebaseAuth ??= FirebaseAuth(
       apiKey: _apiKey,
       projectId: _projectId,
+      authDomain: _authdomain,
     );
   }
 }

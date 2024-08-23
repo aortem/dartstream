@@ -16,6 +16,7 @@ void main() async {
     FirebaseApp.initializeAppWithEnvironmentVariables(
       apiKey: '',
       projectId: '',
+      authdomain: '',
     );
   } else {
     //When working with mobile

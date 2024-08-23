@@ -9,3 +9,4 @@ export 'src/confirmation_result.dart';
 export 'src/auth_credential.dart';
 export 'src/firebase_app.dart';
 export 'src/auth_provider.dart';
+export 'src/application_verifier.dart';

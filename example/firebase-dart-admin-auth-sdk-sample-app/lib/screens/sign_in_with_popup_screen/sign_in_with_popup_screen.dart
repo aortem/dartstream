@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
-class SignInWithPopupTestScreen extends StatefulWidget {
-  const SignInWithPopupTestScreen({Key? key}) : super(key: key);
+class SignInWithPopupScreen extends StatefulWidget {
+  const SignInWithPopupScreen({Key? key}) : super(key: key);
 
   @override
-  _SignInWithPopupTestScreenState createState() =>
-      _SignInWithPopupTestScreenState();
+  _SignInWithPopupScreenState createState() => _SignInWithPopupScreenState();
 }
 
-class _SignInWithPopupTestScreenState extends State<SignInWithPopupTestScreen> {
+class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
   String _resultMessage = '';
 
   Future<void> _signInWithPopup(
@@ -51,16 +50,6 @@ class _SignInWithPopupTestScreenState extends State<SignInWithPopupTestScreen> {
               onPressed: () =>
                   _signInWithPopup(context, FacebookAuthProvider()),
               child: Text('Sign In with Facebook'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => _signInWithPopup(context, TwitterAuthProvider()),
-              child: Text('Sign In with Twitter'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () => _signInWithPopup(context, GithubAuthProvider()),
-              child: Text('Sign In with GitHub'),
             ),
             SizedBox(height: 20),
             Text(

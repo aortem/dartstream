@@ -1,3 +1,5 @@
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
 abstract class AuthProvider {
   String get providerId;
 }
@@ -20,4 +22,19 @@ class TwitterAuthProvider implements AuthProvider {
 class GithubAuthProvider implements AuthProvider {
   @override
   String get providerId => 'github.com';
+}
+
+class PhoneAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'phone';
+
+  static PhoneAuthCredential credential({
+    required String verificationId,
+    required String smsCode,
+  }) {
+    return PhoneAuthCredential(
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
+  }
 }

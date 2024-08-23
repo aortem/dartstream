@@ -3,29 +3,32 @@ import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
-
-typedef PhoneVerificationCompleted = void Function(
-    PhoneAuthCredential credential);
-typedef PhoneVerificationFailed = void Function(FirebaseAuthException e);
-typedef PhoneCodeSent = void Function(String verificationId, int? resendToken);
-typedef PhoneCodeAutoRetrievalTimeout = void Function(String verificationId);
+import 'package:firebase_dart_admin_auth_sdk/src/confirmation_result.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/application_verifier.dart';
 
 class PhoneAuth {
   final FirebaseAuth auth;
 
   PhoneAuth(this.auth);
 
-  Future<String> sendVerificationCode(String phoneNumber) async {
+  Future<ConfirmationResult> signInWithPhoneNumber(
+    String phoneNumber,
+    ApplicationVerifier appVerifier,
+  ) async {
+    final recaptchaToken = await appVerifier.verify();
     final response = await auth.performRequest('sendVerificationCode', {
       'phoneNumber': phoneNumber,
-      'recaptchaToken': await _getRecaptchaToken(),
+      'recaptchaToken': recaptchaToken,
     });
 
-    return response.body['sessionInfo'];
+    final verificationId = response.body['sessionInfo'];
+    return ConfirmationResult(auth: auth, verificationId: verificationId);
   }
 
-  Future<UserCredential> verifyPhoneNumberWithCode(
-      String verificationId, String smsCode) async {
+  Future<UserCredential> confirmPhoneNumber(
+    String verificationId,
+    String smsCode,
+  ) async {
     final response = await auth.performRequest('verifyPhoneNumber', {
       'sessionInfo': verificationId,
       'code': smsCode,
@@ -51,9 +54,17 @@ class PhoneAuth {
     required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
   }) async {
     try {
-      final verificationId = await sendVerificationCode(phoneNumber);
-      codeSent(verificationId,
-          null); // We don't use resendToken in this implementation
+      final appVerifier = RecaptchaVerifier(
+        container: 'recaptcha-container',
+        size: RecaptchaVerifierSize.invisible,
+        theme: RecaptchaVerifierTheme.light,
+      );
+
+      final confirmationResult =
+          await signInWithPhoneNumber(phoneNumber, appVerifier);
+      final verificationId = confirmationResult.verificationId;
+
+      codeSent(verificationId, null);
 
       // Simulate auto-retrieval timeout after 30 seconds
       Timer(Duration(seconds: 30),
@@ -74,12 +85,6 @@ class PhoneAuth {
       ));
     }
   }
-
-  Future<String> _getRecaptchaToken() async {
-    // In a real implementation, you would integrate with reCAPTCHA here
-    // For this example, we'll just return a dummy token
-    return 'dummy_recaptcha_token';
-  }
 }
 
 class PhoneAuthProvider {
@@ -91,3 +96,9 @@ class PhoneAuthProvider {
         verificationId: verificationId, smsCode: smsCode);
   }
 }
+
+typedef PhoneVerificationCompleted = void Function(
+    PhoneAuthCredential credential);
+typedef PhoneVerificationFailed = void Function(FirebaseAuthException e);
+typedef PhoneCodeSent = void Function(String verificationId, int? resendToken);
+typedef PhoneCodeAutoRetrievalTimeout = void Function(String verificationId);
