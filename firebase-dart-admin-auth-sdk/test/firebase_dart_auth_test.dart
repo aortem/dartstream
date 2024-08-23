@@ -5,10 +5,14 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;
 
+//import 'package:mockito/mockito.dart'; // Import mockito
+
 class MockClient extends Mock implements http.Client {}
 
 void main() {
-  setUpAll(() {
+  setUpAll(() async {
+ 
+    // Register mock values
     registerFallbackValue(Uri());
     registerFallbackValue(<String, String>{});
   });
@@ -24,15 +28,29 @@ void main() {
     }
 
 
-/*
+
     Future<void> initializeAppWithServiceAccount() async {
+      final fakeServiceAccountJson = '''
+      {
+        "type": "service_account",
+        "project_id": "mock-project-id",
+        "private_key_id": "mock-private-key-id",
+        "private_key": "-----BEGIN PRIVATE KEY-----\\nmock-private-key\\n-----END PRIVATE KEY-----\\n",
+        "client_email": "mock-client-email@mock-project-id.iam.gserviceaccount.com",
+        "client_id": "mock-client-id",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/mock-client-email"
+      }
+      ''';
       app = await FirebaseApp.initializeAppWithServiceAccount(
         serviceAccountKeyFilePath:
             '../test.json',
-        serviceAccountContent: '',
+        serviceAccountContent: fakeServiceAccountJson,
       );
     }
-*/
+
 
 
     Future<void> initializeAppWithServiceAccountImpersonation() async {
@@ -50,11 +68,15 @@ void main() {
       setUp(() async {
         mockClient = MockClient(); // Initializing the MockClient
         await initializeAppWithEnvironmentVariables();
-        auth = app.getAuth();
+        auth = FirebaseAuth(
+          apiKey: 'FIREBASE_API_KEY',
+          projectId: 'FIREBASE_PROJECT_ID',
+          httpClient: mockClient, // Inject the mock client here
+        );
       });
 
       // Test using Service Account with Keys
-    /* group('Service Account with Keys', () {
+     group('Service Account with Keys', () {
         setUp(() async {
           await initializeAppWithServiceAccount();
         });
@@ -71,12 +93,20 @@ void main() {
 
           final result = await auth.signInWithEmailAndPassword(
               'test@example.com', 'password');
+
+          // Verify that the post method on the mock client was called
+          verify(() => mockClient.post(any(),
+                  body: any(named: 'body'), headers: any(named: 'headers')))
+                .called(1);
+
           expect(result?.user?.uid, equals('testUid'));
           expect(result?.user?.email, equals('test@example.com'));
+          // Ensure no real network requests were made
+          verifyNoMoreInteractions(mockClient);
         });
 
         // Other tests...
-      });*/
+      });
 
       // Test using Environment Variables
       group('Environment Variables', () {
@@ -93,7 +123,7 @@ void main() {
                   ));
 
           final result = await auth.signInWithEmailAndPassword(
-              'test@example.com', 'password');
+              'fpirahmadi@aortem.io', 'password');
           expect(result?.user?.uid, equals('testUid'));
           expect(result?.user?.email, equals('test@example.com'));
         });
@@ -102,7 +132,7 @@ void main() {
       });
 
       // Test using Service Account without Key Impersonation
-      /*group('Service Account without Key Impersonation', () {
+      group('Service Account without Key Impersonation', () {
         setUp(initializeAppWithServiceAccountImpersonation);
 
         // Insert all your tests here
@@ -122,7 +152,7 @@ void main() {
         });
 
         // Other tests...
-      });*/
+      });
 
       // Common tests for all configurations
       void runCommonTests() {
