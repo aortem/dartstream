@@ -1,7 +1,8 @@
-<div style="text-align: center;">
-  <img src="./images/dartstream-logo.png" alt="DartStream Logo" width="200">
-</div>
 
+<div align="center">
+
+<img src="./images/dartstream-logo.png" alt="DartStream Logo">
+</div>
 
 # DartStream
 
