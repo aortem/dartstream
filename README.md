@@ -1,4 +1,7 @@
-![DartStream Logo](./images/dartstream-logo.png)
+<p align="center">
+  <img src="./images/dartstream-logo.png" alt="DartStream Logo" width="200">
+</p>
+
 
 # DartStream
 
