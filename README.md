@@ -1,3 +1,5 @@
+![DartStream Logo](./images/dartstream-logo.png)
+
 # DartStream
 
 DartStream is a minimal, efficient, and scalable server-side framework designed for the Dart programming language. Inspired by the simplicity and flexibility of other frameworks like Dartfrog and Alfred, DartStream offers a streamlined approach to building server-side applications, making it an ideal choice for developers looking to leverage Dart's capabilities.

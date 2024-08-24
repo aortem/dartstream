@@ -12,6 +12,7 @@ dependencies:
 
 # STANDARD PACKAGES - Built By The Dart Team
   grpc: ^3.2.4
+  matcher: ^0.12.16+1
  
 #Globally Activated Package
 #executables:
