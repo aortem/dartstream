@@ -26,8 +26,8 @@ coverage_job:
     - ls -la coverage
   artifacts:
     paths:
-      - coverage/lcov.info
-      - coverage/
+      - firebase-dart-admin-auth-sdk/coverage/lcov.info
+      - firebase-dart-admin-auth-sdk/coverage/
     expire_in: 1 week
     when: always
   coverage: '/^TOTAL.+?(\d+\%)$/'
