@@ -1,39 +1,56 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
-import '../exceptions.dart';
+import 'dart:async';
+import 'dart:html' as html;
+import 'dart:js' as js;
 
 class RecaptchaConfigService {
-  final dynamic auth;
+  static const String recaptchaScriptUrl =
+      'https://www.google.com/recaptcha/api.js?render=';
+  String? _siteKey;
+  bool _isInitialized = false;
 
-  RecaptchaConfigService({required this.auth});
+  Future<void> initializeRecaptchaConfig(String siteKey) async {
+    if (_isInitialized) return;
 
-  Future<void> initializeRecaptchaConfig() async {
     try {
-      final url = Uri.https(
-        'identitytoolkit.googleapis.com',
-        '/v1/recaptchaConfig',
-        {'key': auth.apiKey},
-      );
-
-      final response = await http.post(url);
-
-      if (response.statusCode != 200) {
-        final error = json.decode(response.body)['error'];
-        throw FirebaseAuthException(
-          code: error['message'],
-          message: error['message'],
-        );
-      }
-
-      // Process the reCAPTCHA config response if needed
-      final data = json.decode(response.body);
-      // TODO: Store or use the reCAPTCHA config as needed
-      print('reCAPTCHA config initialized: $data');
+      _siteKey = siteKey;
+      await _loadRecaptchaScript();
+      _isInitialized = true;
     } catch (e) {
-      throw FirebaseAuthException(
-        code: 'recaptcha-config-error',
-        message: 'Failed to initialize reCAPTCHA config: ${e.toString()}',
-      );
+      throw Exception('Failed to initialize reCAPTCHA: $e');
     }
+  }
+
+  Future<void> _loadRecaptchaScript() async {
+    if (_siteKey == null) throw Exception('Site key is not set');
+
+    final scriptElement = html.ScriptElement()
+      ..src = '$recaptchaScriptUrl$_siteKey'
+      ..async = true
+      ..defer = true;
+
+    html.document.head?.children.add(scriptElement);
+
+    await scriptElement.onLoad.first;
+  }
+
+  Future<String?> getRecaptchaToken() async {
+    if (!_isInitialized) throw Exception('reCAPTCHA is not initialized');
+
+    final completer = Completer<String?>();
+
+    js.context.callMethod('grecaptcha.ready', [
+      () {
+        js.context.callMethod('grecaptcha.execute', [
+          _siteKey,
+          {'action': 'submit'}
+        ]).then((token) {
+          completer.complete(token as String?);
+        }).catchError((error) {
+          completer.completeError(error);
+        });
+      }
+    ]);
+
+    return completer.future;
   }
 }

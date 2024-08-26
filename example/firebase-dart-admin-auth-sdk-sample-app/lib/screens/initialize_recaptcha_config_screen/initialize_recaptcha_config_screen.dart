@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:provider/provider.dart';
 
 class InitializeRecaptchaConfigScreen extends StatelessWidget {
-  const InitializeRecaptchaConfigScreen({Key? key}) : super(key: key);
+  final FirebaseAuth auth;
+
+  const InitializeRecaptchaConfigScreen({Key? key, required this.auth})
+      : super(key: key);
 
   Future<void> _initializeRecaptchaConfig(BuildContext context) async {
-    final auth = Provider.of<FirebaseAuth>(context, listen: false);
     try {
-      await auth.initializeRecaptchaConfig();
+      // TODO: Replace with your actual reCAPTCHA site key
+      const String siteKey =
+          'YOUR_RECAPTCHA_SITE_KEY'; //'YOUR_RECAPTCHA_SITE_KEY';
+      await auth.initializeRecaptchaConfig(siteKey);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('reCAPTCHA config initialized successfully')),
       );

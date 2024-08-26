@@ -143,7 +143,7 @@ class FirebaseAuth {
         CreateUserWithEmailAndPasswordService(this);
     connectAuthEmulatorService = ConnectAuthEmulatorService(this);
     getRedirectResultService = GetRedirectResultService(auth: this);
-    recaptchaConfigService = RecaptchaConfigService(auth: this);
+    recaptchaConfigService = RecaptchaConfigService();
     confirmPasswordResetService = ConfirmPasswordResetService(auth: this);
     checkActionCodeService = CheckActionCodeService(auth: this);
     multiFactorService = multi_factor.MultiFactorService(auth: this);
@@ -630,9 +630,9 @@ class FirebaseAuth {
     }
   }
 
-  Future<void> initializeRecaptchaConfig() async {
+  Future<void> initializeRecaptchaConfig(String siteKey) async {
     try {
-      await recaptchaConfigService.initializeRecaptchaConfig();
+      await recaptchaConfigService.initializeRecaptchaConfig(siteKey);
     } catch (e) {
       throw FirebaseAuthException(
         code: 'recaptcha-config-error',
