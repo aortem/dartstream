@@ -40,4 +40,6 @@ class LanguageService {
       print('Error setting language preference: $e');
     }
   }
+
+  getLanguagePreference(String s) {}
 }
