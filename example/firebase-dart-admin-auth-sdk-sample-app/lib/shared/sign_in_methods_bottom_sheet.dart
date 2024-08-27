@@ -73,7 +73,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => OAuthSelectionScreen(),
+                builder: (context) => const OAuthSelectionScreen(),
               ),
             ),
             title: "Sign In With Redirect",
@@ -91,7 +91,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => HomeScreen(),
+                        builder: (context) => const HomeScreen(),
                       ));
                 }
               } catch (e) {

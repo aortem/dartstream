@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LinkPhoneNumberScreen(),
+                        builder: (context) => const LinkPhoneNumberScreen(),
                       ),
                     );
                   },
@@ -191,7 +191,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UpdateUserScreen(),
+                        builder: (context) => const UpdateUserScreen(),
                       ),
                     );
                   },
@@ -235,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => PersistenceSelectorDropdown(),
+                        builder: (context) => const PersistenceSelectorDropdown(),
                       ),
                     );
                   },

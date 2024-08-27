@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'firebase_presistance.dart';
 
 class PersistenceSelectorDropdown extends StatefulWidget {
-  PersistenceSelectorDropdown();
+  const PersistenceSelectorDropdown({super.key});
 
   @override
   _PersistenceSelectorDropdownState createState() =>
@@ -23,7 +23,7 @@ class _PersistenceSelectorDropdownState
         body: Center(
       child: DropdownButton<String>(
         value: _selectedPersistence,
-        hint: Text('Choose Persistence Option'),
+        hint: const Text('Choose Persistence Option'),
         onChanged: (String? newValue) async {
           setState(() {
             _selectedPersistence = newValue;
@@ -41,7 +41,7 @@ class _PersistenceSelectorDropdownState
             }
           }
         },
-        items: [
+        items: const [
           DropdownMenuItem(
             value: FirebasePersistence.LOCAL,
             child: Text('Local'),
