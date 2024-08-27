@@ -7,12 +7,22 @@ import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
 //import 'package:mockito/mockito.dart'; // Import mockito
 
 class MockClient extends Mock implements http.Client {}
-
+FirebaseAuth? auth; // Declare auth outside of the main function
 void main() async {
   setUpAll(() async {
     // Register mock values
     registerFallbackValue(Uri());
     registerFallbackValue(<String, String>{});
+  });
+
+  tearDown(() {
+    // Code to clean up after each test
+    auth = null; // Reset auth to null after each test to avoid side effects
+  });
+
+  tearDownAll(() async {
+    // Code to clean up after all tests are completed
+    auth?.dispose(); // Dispose the auth instance to clean up resources
   });
 
   final fakeServiceAccountJson = '''
@@ -47,7 +57,7 @@ void main() async {
           userEmail: 'your-user-email@example.com',
         ),
   };
-  FirebaseAuth? auth;
+  //FirebaseAuth? auth;
   for (var element in firebaseAppIntializationMethods.entries) {
     MockClient mockClient = MockClient();
 
