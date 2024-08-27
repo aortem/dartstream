@@ -201,7 +201,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     // var tokenId=
-                    FirebaseApp.firebaseAuth?.setLanguageCodeMethod('en');
+                    FirebaseApp.firebaseAuth?.setLanguageCodeMethod(
+                        'en', 'firebasdartadminauthsdk');
 
                     // log("token result  $tokenId");
                   },
@@ -211,7 +212,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     // var tokenId=
-                    FirebaseApp.firebaseAuth?.getLanguageCodeMethod();
+                    FirebaseApp.firebaseAuth
+                        ?.getLanguageCodeMethod('firebasdartadminauthsdk');
 
                     // log("token result  $tokenId");
                   },

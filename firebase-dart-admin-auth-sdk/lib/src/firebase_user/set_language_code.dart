@@ -5,15 +5,16 @@ import '../../firebase_dart_admin_auth_sdk.dart';
 class LanguageService {
   final FirebaseAuth auth;
 
-  LanguageService({required this.auth});
+  LanguageService({
+    required this.auth,
+  });
 
-  // Simulated function to "set" the language code
-  Future<void> setLanguagePreference(
-      String userId, String tokenId, String languageCode) async {
+  Future<void> setLanguagePreference(String userId, String tokenId,
+      String languageCode, String databaseName) async {
     try {
-      // This example assumes you're storing the language code in a Firestore document.
+      // Use the databaseName variable in the URL
       final url =
-          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/(default)/documents/users/$userId';
+          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
 
       final body = jsonEncode({
         "fields": {
@@ -39,6 +40,4 @@ class LanguageService {
       print('Error setting language preference: $e');
     }
   }
-
-  // Function to retrieve the language preference
 }

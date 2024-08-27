@@ -82,7 +82,7 @@ class FirebaseAuth {
 
 ////Ticketr 5,7,23,24,61
   late FirebaseSignInAnonymously signInAnonymously;
-  late SetPresistence setPresistence;
+  late PersistenceService setPresistence;
   late LanguageService setLanguageService;
   late LanguagGetService getLanguageService;
   late FirebaseBeforeAuthStateChangeService
@@ -132,7 +132,7 @@ class FirebaseAuth {
         FirebaseLinkWithCredentailsUser(auth: this);
 
     signInAnonymously = FirebaseSignInAnonymously(this);
-    setPresistence = SetPresistence(auth: this);
+    setPresistence = PersistenceService(auth: this);
     setLanguageService = LanguageService(auth: this);
     getLanguageService = LanguagGetService(auth: this);
     firebaseBeforeAuthStateChangeService =
@@ -511,9 +511,12 @@ class FirebaseAuth {
   }
 
 ///////////////////////////////
-  Future<void> setPresistanceMethod(String presistanceType) {
+  ///////////////////////////////
+  Future<void> setPresistanceMethod(
+      String presistanceType, String databaseName) {
     try {
-      return setPresistence.setPersistence(presistanceType);
+      return setPresistence.setPersistence(currentUser!.uid,
+          currentUser!.idToken!, presistanceType, databaseName);
     } catch (e) {
       print('Failed Set Persistence: $e');
       throw FirebaseAuthException(
@@ -524,10 +527,10 @@ class FirebaseAuth {
   }
 
 /////////////////
-  Future<void> setLanguageCodeMethod(String languageCode) {
+  Future<void> setLanguageCodeMethod(String languageCode, String dataBaseName) {
     try {
       return setLanguageService.setLanguagePreference(
-          currentUser!.uid, currentUser!.idToken!, languageCode);
+          currentUser!.uid, currentUser!.idToken!, languageCode, dataBaseName);
     } catch (e) {
       print('Failed Set Language: $e');
       throw FirebaseAuthException(
@@ -538,17 +541,15 @@ class FirebaseAuth {
   }
 
   ///////////////////
-  Future<void> getLanguageCodeMethod() {
+  Future<void> getLanguageCodeMethod(String databaseName) {
     try {
       return getLanguageService.getLanguagePreference(
-        currentUser!.uid,
-        currentUser!.idToken!,
-      );
+          currentUser!.uid, currentUser!.idToken!, databaseName);
     } catch (e) {
-      print('Failed to Get Set Language: $e');
+      // print('Failed to Get Set Language: $e');
       throw FirebaseAuthException(
-        code: 'get-set-language-error',
-        message: 'Failed to Get Set Language.',
+        code: 'get-language-error',
+        message: 'No language is set ',
       );
     }
   }

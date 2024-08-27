@@ -7,10 +7,12 @@ class LanguagGetService {
 
   LanguagGetService({required this.auth});
 
-  Future<String?> getLanguagePreference(String userId, String tokenId) async {
+  Future<String?> getLanguagePreference(
+      String userId, String tokenId, String databaseName) async {
     try {
+      // Use the databaseName variable in the URL
       final url =
-          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/(default)/documents/users/$userId';
+          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
 
       final response = await http.get(
         Uri.parse(url),

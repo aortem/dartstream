@@ -8,12 +8,12 @@ void main() async {
     // Sign up a new user
     final newUser = await auth.createUserWithEmailAndPassword(
         'newuser@example.com', 'password123');
-    print('User created: ${newUser.email}');
+    print('User created: ${newUser?.user.displayName}');
 
     // Sign in with the new user
     final userCredential = await auth.signInWithEmailAndPassword(
         'newuser@example.com', 'password123');
-    print('Signed in: ${userCredential.user.email}');
+    print('Signed in: ${userCredential?.user.email}');
   } catch (e) {
     print('Error: $e');
   }

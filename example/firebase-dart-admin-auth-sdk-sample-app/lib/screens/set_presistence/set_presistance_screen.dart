@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
@@ -22,12 +24,21 @@ class _PersistenceSelectorDropdownState
       child: DropdownButton<String>(
         value: _selectedPersistence,
         hint: Text('Choose Persistence Option'),
-        onChanged: (String? newValue) {
+        onChanged: (String? newValue) async {
           setState(() {
             _selectedPersistence = newValue;
           });
           if (newValue != null) {
-            FirebaseApp.firebaseAuth?.setPresistanceMethod(newValue);
+            if (_selectedPersistence != null) {
+              try {
+                final response = await FirebaseApp.firebaseAuth
+                    ?.setPresistanceMethod(
+                        _selectedPersistence!, 'firebasdartadminauthsdk');
+                //  log("response of pressitance $response");
+              } catch (e) {
+                log("response of pressitance $e");
+              }
+            }
           }
         },
         items: [
