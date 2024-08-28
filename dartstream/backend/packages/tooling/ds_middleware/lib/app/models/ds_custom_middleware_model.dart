@@ -7,6 +7,13 @@ class DsCustomMiddleWareRequest {
 
   DsCustomMiddleWareRequest(this.method, this.uri, this.headers, this.body,
       {this.routeParams = const {}});
+  DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
+    // Create a new Request object with the updated headers
+    return DsCustomMiddleWareRequest(method, uri, headers ?? this.headers, body,
+        routeParams: routeParams);
+  }
+
+  // Added new 'copyWith' method
   DsCustomMiddleWareRequest copyWith({
     String? method,
     Uri? uri,
