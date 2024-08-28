@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:io';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-//import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
 import 'auth/auth_redirect_link_stub.dart'
     if (dart.library.html) 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
@@ -442,7 +440,7 @@ class FirebaseAuth {
     } catch (e) {
       log("error is $e");
       throw FirebaseAuthException(
-        code: 'vrtification - code -error',
+        code: 'verification-code-error',
         message:
             'Failed to send verification code to phone number: ${e.toString()}',
       );
@@ -451,7 +449,7 @@ class FirebaseAuth {
 
   ////////////FirebaseUser.deleteUser
   Future<void> deleteFirebaseUser() async {
-    if (FirebaseApp.instance.getCurrentUser() == null) {
+    if (FirebaseApp.instance.getCurrentUser() == null && currentUser == null) {
       throw FirebaseAuthException(
         code: 'user-not-signed-in',
         message: 'No user is currently signed in.',
