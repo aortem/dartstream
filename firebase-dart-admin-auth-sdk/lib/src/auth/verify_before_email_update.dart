@@ -1,4 +1,3 @@
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
@@ -16,22 +15,12 @@ class VerifyBeforeEmailUpdate {
     try {
       assert(idToken != null, 'Id token cannot be null');
 
-      final response = await auth.performRequest('update', {
-        'idToken': idToken,
-        'email': email,
-        'returnSecureToken': false,
-      });
-
-      User user = User.fromJson(response.body);
-
-      auth.updateCurrentUser(user);
-
       await auth.performRequest(
         'sendOobCode',
         {
-          "requestType": "VERIFY_EMAIL",
+          "requestType": "VERIFY_AND_CHANGE_EMAIL",
           "idToken": auth.currentUser?.idToken,
-          "email": email,
+          "newEmail": email,
           if (action != null) "actionCodeSettings": action.toMap(),
         },
       );
