@@ -81,23 +81,6 @@ class HomeScreenViewModel extends ChangeNotifier {
     }
   }
 
-  bool verifyBeforeEmailUpdateLoading = false;
-  void setVerifyBeforeEmailUpdateLoading(bool load) {
-    verificationLoading = load;
-    notifyListeners();
-  }
-
-  Future<void> verifyBeforeEmailUpdate() async {
-    try {
-      setVerifyBeforeEmailUpdateLoading(true);
-      await _firebaseSdk?.verifyEmail();
-    } catch (e) {
-      BotToast.showText(text: e.toString());
-    } finally {
-      setVerifyBeforeEmailUpdateLoading(false);
-    }
-  }
-
   bool getAdditionalInfoLoading = false;
   void setAdditionalInfoLoading(bool load) {
     getAdditionalInfoLoading = load;

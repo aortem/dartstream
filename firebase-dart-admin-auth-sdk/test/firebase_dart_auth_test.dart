@@ -417,7 +417,8 @@ void main() {
                     200,
                   ));
 
-          final result = await auth.verifyEmail();
+          final result = await auth.verifyBeforeEmailUpdate('test2@gmail.com',
+              action: ActionCodeSettings(url: ''));
           expect(true, equals(result));
         });
       }

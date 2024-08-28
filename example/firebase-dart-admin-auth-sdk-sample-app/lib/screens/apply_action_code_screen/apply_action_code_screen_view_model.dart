@@ -10,11 +10,14 @@ class ApplyActionCodeScreenViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> applyActionCode(String actionCode) async {
+  Future<void> applyActionCode(
+      String actionCode, VoidCallback onSuccess) async {
     try {
       setLoading(true);
 
       await FirebaseApp.firebaseAuth?.applyActionCode(actionCode);
+
+      onSuccess();
 
       BotToast.showText(text: 'Success');
     } catch (e) {

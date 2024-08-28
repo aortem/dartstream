@@ -23,7 +23,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_email.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_before_email_update.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
@@ -37,6 +37,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart'
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
 import 'auth/auth_link_with_phone_number.dart';
 import 'auth/parseActionCodeURL .dart';
@@ -82,7 +83,7 @@ class FirebaseAuth {
   late GetAdditionalUserInfo _getAdditionalUserInfo;
   late LinkProviderToUser _linkProviderToUser;
   late UpdateProfile _updateProfile;
-  late VerifyEmail _verifyEmail;
+  late VerifyBeforeEmailUpdate _verifyBeforeEmailUpdate;
 
   User? currentUser;
 
@@ -131,7 +132,7 @@ class FirebaseAuth {
     _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
     _linkProviderToUser = LinkProviderToUser(auth: this);
     _updateProfile = UpdateProfile(this);
-    _verifyEmail = VerifyEmail(this);
+    _verifyBeforeEmailUpdate = VerifyBeforeEmailUpdate(this);
   }
 
   // factory FirebaseAuth.fromServiceAccountWithKeys({
@@ -488,9 +489,14 @@ class FirebaseAuth {
     );
   }
 
-  Future<bool> verifyEmail() async {
-    return await _verifyEmail.verifyEmail(
+  Future<bool> verifyBeforeEmailUpdate(
+    String newEmail, {
+    ActionCodeSettings? action,
+  }) async {
+    return await _verifyBeforeEmailUpdate.verifyBeforeEmailUpdate(
       currentUser?.idToken,
+      newEmail,
+      action: action,
     );
   }
 

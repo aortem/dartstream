@@ -10,6 +10,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/s
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_profile_screen/update_profile_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_before_email_update_screen/verify_before_email_update_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -53,9 +54,12 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ActionTile(
-                  onTap: () => value.verifyBeforeEmailUpdate(),
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VerifyBeforeEmailUpdate(),
+                      )),
                   title: "Verify Before Update Email",
-                  loading: value.verifyBeforeEmailUpdateLoading,
                 ),
                 10.vSpace,
                 ActionTile(
