@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class DsCustomMiddleWareRequest {
   final String method;
   final Uri uri;
@@ -37,6 +39,17 @@ class DsCustomMiddleWareRequest {
       routeParams: routeParams ?? this.routeParams,
       queryParams ?? this.queryParams,
     );
+  }
+
+  //add read to support body parsing
+  Stream<List<int>> read() {
+    if (body is String) {
+      return Stream.value(utf8.encode(body as String));
+    } else if (body is List<int>) {
+      return Stream.value(body as List<int>);
+    } else {
+      throw UnsupportedError('Unsupported body type: ${body.runtimeType}');
+    }
   }
 }
 
