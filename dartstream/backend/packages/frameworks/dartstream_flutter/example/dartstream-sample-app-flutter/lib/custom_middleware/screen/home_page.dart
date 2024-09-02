@@ -11,59 +11,57 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final RequestInterceptor _requestInterceptor = RequestInterceptor();
 
-  Future<void> _testRouting() async {
-    // Example request for dynamic routing
+  Future<void> _testDynamicRouting() async {
     final dynamicRequest = DsCustomMiddleWareRequest(
       'GET',
-      Uri.parse('/users/123'),
+      Uri.parse('https://api.example.com/users/123'),
       {},
       null,
     );
     final dynamicResponse =
         await _requestInterceptor.handle(dynamicRequest, (request) async {
-      // Forward the request to the next middleware (if any)
       return DsCustomMiddleWareResponse.ok('Dynamic routing handled');
     });
     print('Dynamic Routing Response: ${dynamicResponse.body}');
+  }
 
-    // Example request for index routing
+  Future<void> _testIndexRouting() async {
     final indexRequest = DsCustomMiddleWareRequest(
       'GET',
-      Uri.parse('/index'),
+      Uri.parse('https://api.example.com/index'),
       {},
       null,
     );
     final indexResponse =
         await _requestInterceptor.handle(indexRequest, (request) async {
-      // Forward the request to the next middleware (if any)
       return DsCustomMiddleWareResponse.ok('Index routing handled');
     });
     print('Index Routing Response: ${indexResponse.body}');
+  }
 
-    // Example request for print routing
+  Future<void> _testPrintRouting() async {
     final printRequest = DsCustomMiddleWareRequest(
       'GET',
-      Uri.parse('/print/someinfo'),
+      Uri.parse('https://api.example.com/print/someinfo'),
       {'Accept': 'text/plain'},
       null,
     );
     final printResponse =
         await _requestInterceptor.handle(printRequest, (request) async {
-      // Forward the request to the next middleware (if any)
       return DsCustomMiddleWareResponse.ok('Print routing handled');
     });
     print('Print Routing Response: ${printResponse.body}');
+  }
 
-    // Example request for nested routing
+  Future<void> _testNestedRouting() async {
     final nestedRequest = DsCustomMiddleWareRequest(
       'GET',
-      Uri.parse('/users/123/profile'),
+      Uri.parse('https://api.example.com/users/123/profile'),
       {},
       null,
     );
     final nestedResponse =
         await _requestInterceptor.handle(nestedRequest, (request) async {
-      // Forward the request to the next middleware (if any)
       return DsCustomMiddleWareResponse.ok('Nested routing handled');
     });
     print('Nested Routing Response: ${nestedResponse.body}');
@@ -75,10 +73,31 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Custom Middleware Demo'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: _testRouting,
-          child: Text('Test Routing'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: _testDynamicRouting,
+              child: Text(' Dynamic Routing'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _testIndexRouting,
+              child: Text(' Index Routing'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _testPrintRouting,
+              child: Text(' Print Routing'),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _testNestedRouting,
+              child: Text(' Nested Routing'),
+            ),
+          ],
         ),
       ),
     );
