@@ -2,7 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
-class SignInWithEmailLinkScreenViewModel extends ChangeNotifier {
+class SendSignInWithEmailLinkScreenViewModel extends ChangeNotifier {
   bool loading = false;
 
   final FirebaseAuth? _firebaseSdk = FirebaseApp.firebaseAuth;
@@ -18,6 +18,8 @@ class SignInWithEmailLinkScreenViewModel extends ChangeNotifier {
       await _firebaseSdk?.sendSignInLinkToEmail(
         email,
       );
+
+      BotToast.showText(text: 'Sign in link sent to $email');
     } catch (e) {
       BotToast.showText(text: e.toString());
     } finally {

@@ -1,18 +1,19 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_link_screen/sign_in_with_email_link_screen_view_model.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_link_screen/send_sign_in_with_email_link_screen_view_model.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class SignInWithEmailLinkScreen extends StatefulWidget {
-  const SignInWithEmailLinkScreen({super.key});
+class SendSignInWithEmailLinkScreen extends StatefulWidget {
+  const SendSignInWithEmailLinkScreen({super.key});
 
   @override
-  State<SignInWithEmailLinkScreen> createState() =>
-      _SignInWithEmailLinkScreenState();
+  State<SendSignInWithEmailLinkScreen> createState() =>
+      _SendSignInWithEmailLinkScreenState();
 }
 
-class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
+class _SendSignInWithEmailLinkScreenState
+    extends State<SendSignInWithEmailLinkScreen> {
   final TextEditingController _emailLinkController = TextEditingController();
 
   @override
@@ -24,8 +25,8 @@ class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => SignInWithEmailLinkScreenViewModel(),
-      child: Consumer<SignInWithEmailLinkScreenViewModel>(
+      create: (context) => SendSignInWithEmailLinkScreenViewModel(),
+      child: Consumer<SendSignInWithEmailLinkScreenViewModel>(
         builder: (context, value, child) => Scaffold(
           body: Center(
             child: SingleChildScrollView(
@@ -36,14 +37,14 @@ class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
                 children: [
                   InputField(
                     controller: _emailLinkController,
-                    label: 'Email Link',
+                    label: 'Email',
                     hint: '',
                   ),
                   20.vSpace,
                   Button(
                     onTap: () =>
                         value.sendSignInLinkToEmail(_emailLinkController.text),
-                    title: 'Sign In',
+                    title: 'Send Sign In Link',
                     loading: value.loading,
                   ),
                   20.vSpace,

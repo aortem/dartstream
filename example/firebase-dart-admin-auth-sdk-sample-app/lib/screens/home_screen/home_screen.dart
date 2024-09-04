@@ -233,7 +233,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async => value.getAdditionalUserInfo(),
                   loading: value.getAdditionalInfoLoading,
-                  title: "Get Additionan User Info",
+                  title: "Get Additional User Info",
                 ),
                 10.vSpace,
                 ActionTile(

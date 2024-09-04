@@ -18,6 +18,8 @@ class UpdateProfileScreenViewModel extends ChangeNotifier {
     try {
       setLoading(true);
       await FirebaseApp.firebaseAuth?.updateProfile(displayName, displayImage);
+
+      BotToast.showText(text: 'Update Successfull');
       onSuccess();
     } catch (e) {
       BotToast.showText(text: e.toString());

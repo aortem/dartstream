@@ -91,6 +91,8 @@ class HomeScreenViewModel extends ChangeNotifier {
     try {
       setAdditionalInfoLoading(true);
       await _firebaseSdk?.getAdditionalUserInfo();
+
+      BotToast.showText(text: 'Additional Info Gotten Successfully');
       refreshUser();
     } catch (e) {
       BotToast.showText(text: e.toString());

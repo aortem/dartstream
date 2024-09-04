@@ -1,6 +1,6 @@
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_credential/sign_in_with_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_and_password_screen/sign_in_with_email_and_password_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_link_screen/sign_in_with_email_link_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_email_link_screen/send_sign_in_with_email_link_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_phone_number_screen/sign_in_with_phone_number_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
@@ -48,7 +48,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const SignInWithEmailLinkScreen(),
+                builder: (context) => const SendSignInWithEmailLinkScreen(),
               ),
             ),
             title: "Sign In With Email Link",

@@ -411,11 +411,11 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  Future<void> sendSignInLinkToEmail(
-    String email,
-  ) {
+  Future<void> sendSignInLinkToEmail(String email,
+      {ActionCodeSettings? actionCode}) {
     return emailLink.sendSignInLinkToEmail(
       email,
+      actionCode: actionCode,
     );
   }
 
