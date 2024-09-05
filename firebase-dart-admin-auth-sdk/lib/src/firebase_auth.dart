@@ -251,18 +251,18 @@ class FirebaseAuth {
     }
   }
 
-  Future<Map<String, dynamic>> signInWithRedirectResult(
-      String providerId) async {
-    try {
-      return await signInRedirect.handleRedirectResult();
-    } catch (e) {
-      print('Sign-in with redirect failed: $e');
-      throw FirebaseAuthException(
-        code: 'sign-in-redirect-error',
-        message: 'Failed to sign in with redirect.',
-      );
-    }
-  }
+  // Future<Map<String, dynamic>> signInWithRedirectResult(
+  //     String providerId) async {
+  //   try {
+  //     return await signInRedirect.handleRedirectResult();
+  //   } catch (e) {
+  //     print('Sign-in with redirect failed: $e');
+  //     throw FirebaseAuthException(
+  //       code: 'sign-in-redirect-error',
+  //       message: 'Failed to sign in with redirect.',
+  //     );
+  //   }
+  // }
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {
