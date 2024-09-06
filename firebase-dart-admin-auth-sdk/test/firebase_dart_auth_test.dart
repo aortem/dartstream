@@ -22,6 +22,7 @@ void main() {
       app = await FirebaseApp.initializeAppWithEnvironmentVariables(
         apiKey: 'FIREBASE_API_KEY',
         projectId: 'FIREBASE_PROJECT_ID',
+        authdomain: 'FIREBASE_AUTH_DOMAIN',
       );
     }
 
