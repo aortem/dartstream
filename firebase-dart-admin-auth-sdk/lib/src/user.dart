@@ -3,8 +3,6 @@
 //Added getIdToken method for token management
 //added toMap method for easy serialization
 
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
 
 import 'id_token_result_model.dart';
 

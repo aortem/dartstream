@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
@@ -150,6 +151,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
+                  onTap: () {},
+                  title: "Send Password Reset Email",
+                ),
+                10.vSpace,
+                ActionTile(
                   loading: value.loading,
                   onTap: () => value.reloadUser(),
                   title: "Reload User",
@@ -190,7 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LinkPhoneNumberScreen(),
+                        builder: (context) => const LinkPhoneNumberScreen(),
                       ),
                     );
                   },
@@ -258,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UpdateUserScreen(),
+                        builder: (context) => const UpdateUserScreen(),
                       ),
                     );
                   },
@@ -267,7 +273,29 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
-                    FirebaseApp.firebaseAuth?.deviceLanguage('en');
+                    FirebaseApp.firebaseAuth?.setLanguageCodeMethod(
+                        'en', 'firebasdartadminauthsdk');
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "setdevice Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth
+                        ?.getLanguageCodeMethod('firebasdartadminauthsdk');
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "get device Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth?.getAuthBeforeChange();
                   },
                   title: "Device Language",
                 ),

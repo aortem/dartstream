@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import '../firebase_dart_admin_auth_sdk.dart';
-import 'firebase_auth.dart';
 
 class FirebaseApp {
   ///Instance of the Firebase App
