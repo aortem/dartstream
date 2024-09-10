@@ -266,10 +266,10 @@ packages:
     dependency: "direct main"
     description:
       name: ds_standard_features
-      sha256: ed11b80f98ffb5f81857f72da4742f87279ff92c0af90e64503a6bb2211550f8
+      sha256: "58bc987cd7b16ade9f52e12cd0fe537fc0f2fe4fe4f05b3cec3d6bd7e4989595"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.1-pre+8"
+    version: "0.0.1-pre+11"
   ds_tools_testing:
     dependency: "direct dev"
     description:
@@ -306,10 +306,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_dart
-      sha256: c89a43aebdfb0f76c00bad3bcdad2c5b53f9145fd7af371e4bd92a6e8a6c8fe2
+      sha256: cdf962c0c5fd12aae10b8db7bbd6daeddcf7fcc1b5b082e67b1e5a8300405df5
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.5"
+    version: "1.2.1"
   firebaseapis:
     dependency: transitive
     description:
@@ -350,22 +350,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.2"
-  google_identity_services_web:
-    dependency: transitive
-    description:
-      name: google_identity_services_web
-      sha256: "5be191523702ba8d7a01ca97c17fca096822ccf246b0a9f11923a6ded06199b6"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.3.1+4"
-  googleapis_auth:
-    dependency: transitive
-    description:
-      name: googleapis_auth
-      sha256: befd71383a955535060acde8792e7efc11d2fccd03dd1d3ec434e85b68775938
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.6.0"
   graphs:
     dependency: transitive
     description:
@@ -374,14 +358,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
-  grpc:
-    dependency: transitive
-    description:
-      name: grpc
-      sha256: e93ee3bce45c134bf44e9728119102358c7cd69de7832d9a874e2e74eb8cab40
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.4"
   hive:
     dependency: transitive
     description:
@@ -434,18 +410,18 @@ packages:
     dependency: transitive
     description:
       name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.1"
+    version: "0.19.0"
   intl_translation:
     dependency: transitive
     description:
       name: intl_translation
-      sha256: ce26a8371d7527d3cb5c78503ccd5f0b99faa528229d684d5e9192adcb4353ab
+      sha256: b858d88b569f3c529e992ba7186aa495f3e862897df60edb932563c619943610
       url: "https://pub.dev"
     source: hosted
-    version: "0.19.0"
+    version: "0.20.0"
   io:
     dependency: transitive
     description:
