@@ -14,7 +14,7 @@ dependencies:
 #------------------ STANDARD FEATURES---------------------------------
 ## There are three standard libraries.  Each one can be used with a different xxx 
 
-  ds_standard_features: ^0.0.1-pre+8 #Standard Dart Team Utilities For HTTP //Default
+  ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
   build_web_compilers: ^4.0.11
 #  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
 #  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
