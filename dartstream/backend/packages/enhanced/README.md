@@ -4,7 +4,7 @@
 
 DS Enhanced Packages are any packages that are not built by the core dart team.  Many of these packages greatly enhance functionality to the Dart core.
 
-Third party packages are actually broken up into several different categories depending on the use case:
+Third party packages are broken up into several different categories depending on the use case:
 
 - authentication
 - database
@@ -12,6 +12,11 @@ Third party packages are actually broken up into several different categories de
 - google_dev
 - payments
 - general_third_party
+
+## Package Modularity
+
+Take note that the enchanced package has more flexibility than the standard or tools package, given the number of possible dependency permutations.  We have given users the option to import the full enchanced  library, or choose custom modules based on the groups listed above.
+
 
 ## Package Conflicts and Aliases
 
