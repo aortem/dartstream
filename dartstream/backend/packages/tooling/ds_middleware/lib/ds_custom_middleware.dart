@@ -6,3 +6,5 @@ library ds_custom_middleware;
 // //EXPORTS
 export 'app/middleware/ds_custom_core_middleware.dart';
 export 'app/models/ds_custom_middleware_model.dart';
+export 'ds_custom_middleware_base.dart';
+export 'ds_custom_middleware_interceptor.dart';
