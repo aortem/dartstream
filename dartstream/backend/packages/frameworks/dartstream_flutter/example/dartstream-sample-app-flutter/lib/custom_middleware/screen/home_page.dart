@@ -3,6 +3,16 @@ import 'package:ds_custom_middleware/src/model/ds_request_model.dart';
 import 'package:ds_custom_middleware/src/model/ds_response_model.dart';
 import 'package:flutter/material.dart';
 
+// Import the new test files
+import '../body_parser/body_parser_test.dart';
+import '../cors_middleware/cors_middleware_test.dart';
+import '../error_handler/error_handler_test.dart';
+import '../http_helpers/http_helpers_test.dart';
+
+import '../logger/logger_test.dart';
+import '../query_string_handler/query_string_handler_test.dart';
+import '../websocket/websocket_test.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -67,6 +77,42 @@ class _HomePageState extends State<HomePage> {
     print('Nested Routing Response: ${nestedResponse.body}');
   }
 
+  // New test functions
+  Future<void> _testBodyParser() async {
+    final result = await testBodyParser();
+    print(result);
+  }
+
+  Future<void> _testCorsMiddleware() async {
+    final result = await testCorsMiddleware();
+    print(result);
+  }
+
+  Future<void> _testErrorHandler() async {
+    final result = await testErrorHandler();
+    print(result);
+  }
+
+  void _testHttpHelpers() {
+    final result = testHttpHelpers();
+    print(result);
+  }
+
+  void _testLogger() {
+    final result = testLogger();
+    print(result);
+  }
+
+  void _testQueryStringHandler() {
+    final result = testQueryStringHandler();
+    print(result);
+  }
+
+  void _testWebSocket() {
+    final result = testWebSocket();
+    print(result);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -75,29 +121,67 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            ElevatedButton(
-              onPressed: _testDynamicRouting,
-              child: Text(' Dynamic Routing'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _testIndexRouting,
-              child: Text(' Index Routing'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _testPrintRouting,
-              child: Text(' Print Routing'),
-            ),
-            SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _testNestedRouting,
-              child: Text(' Nested Routing'),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              ElevatedButton(
+                onPressed: _testDynamicRouting,
+                child: Text('Test Dynamic Routing'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testIndexRouting,
+                child: Text('Test Index Routing'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testPrintRouting,
+                child: Text('Test Print Routing'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testNestedRouting,
+                child: Text('Test Nested Routing'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testBodyParser,
+                child: Text('Test Body Parser'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testCorsMiddleware,
+                child: Text('Test CORS Middleware'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testErrorHandler,
+                child: Text('Test Error Handler'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testHttpHelpers,
+                child: Text('Test HTTP Helpers'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testLogger,
+                child: Text('Test Logger'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testQueryStringHandler,
+                child: Text('Test Query String Handler'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testWebSocket,
+                child: Text('Test WebSocket'),
+              ),
+            ],
+          ),
         ),
       ),
     );
