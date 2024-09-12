@@ -47,6 +47,14 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/confirm_password_reset.dar
 import 'package:firebase_dart_admin_auth_sdk/src/auth/check_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor.dart'
     as multi_factor;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart'
+    as phone_auth;
+import 'package:firebase_dart_admin_auth_sdk/src/confirmation_result.dart'
+    as confirmation_result;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
+    as auth_state;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
+    as id_token;
 import 'auth/auth_link_with_phone_number.dart';
 
 import 'auth/before_auth_state_change.dart';
@@ -63,6 +71,7 @@ class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
   final String? authDomain;
+  final String? messagingSenderId;
 
   late final http.Client httpClient;
 
@@ -86,9 +95,9 @@ class FirebaseAuth {
 
   // New service declarations for Sprint 2 #16 to #21
   late PasswordResetEmailService passwordResetEmail;
-  late RevokeAccessTokenService revokeAccessToken;
-  late IdTokenChangedService idTokenChanged;
-  late AuthStateChangedService authStateChanged;
+  late RevokeAccessTokenService revokeAccessTokenService;
+  late OnIdTokenChangedService _onIdTokenChangedService;
+  late OnAuthStateChangedService _onAuthStateChangedService;
 
   late FetchSignInMethodsService fetchSignInMethods;
   late CreateUserWithEmailAndPasswordService
@@ -124,6 +133,7 @@ class FirebaseAuth {
     this.apiKey,
     this.projectId,
     this.authDomain,
+    this.messagingSenderId,
   }) {
     httpClient = http.Client();
     emailPassword = EmailPasswordAuth(this);
@@ -146,9 +156,9 @@ class FirebaseAuth {
 
     // New service initializations for Sprint 2 #16 to #21
     passwordResetEmail = PasswordResetEmailService(auth: this);
-    revokeAccessToken = RevokeAccessTokenService(auth: this);
-    idTokenChanged = IdTokenChangedService(auth: this);
-    authStateChanged = AuthStateChangedService(auth: this);
+    revokeAccessTokenService = RevokeAccessTokenService(auth: this);
+    _onIdTokenChangedService = OnIdTokenChangedService(this);
+    _onAuthStateChangedService = OnAuthStateChangedService(this);
     applyAction = ApplyActionCode(this);
 
     fetchSignInMethods = FetchSignInMethodsService(auth: this);
@@ -243,49 +253,30 @@ class FirebaseAuth {
   Future<UserCredential> signInWithPopup(
     AuthProvider provider, {
     PopupRedirectResolver? resolver,
-  }) async {
-    try {
-      return await oauth.signInWithPopup(provider, resolver: resolver);
-    } catch (e) {
-      if (e is FirebaseAuthException) {
-        rethrow;
-      }
-      throw FirebaseAuthException(
-        code: 'popup-sign-in-error',
-        message: 'Failed to sign in with popup: ${e.toString()}',
-      );
-    }
+  }) {
+    return oauth.signInWithPopup(provider, resolver: resolver);
   }
 
   Future<ConfirmationResult> signInWithPhoneNumber(
     String phoneNumber,
     ApplicationVerifier appVerifier,
   ) async {
-    try {
-      return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
-    } catch (e) {
-      throw FirebaseAuthException(
-        code: 'phone-auth-error',
-        message: 'Failed to sign in with phone number: ${e.toString()}',
-      );
-    }
+    return phone.signInWithPhoneNumber(phoneNumber, appVerifier);
   }
 
-  Future<void> verifyPhoneNumber({
-    required String phoneNumber,
-    required PhoneVerificationCompleted verificationCompleted,
-    required PhoneVerificationFailed verificationFailed,
-    required PhoneCodeSent codeSent,
-    required PhoneCodeAutoRetrievalTimeout codeAutoRetrievalTimeout,
-  }) {
-    return phone.verifyPhoneNumber(
-      phoneNumber: phoneNumber,
-      verificationCompleted: verificationCompleted,
-      verificationFailed: verificationFailed,
-      codeSent: codeSent,
-      codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-    );
-  }
+  // Future<ConfirmationResult> signInWithPhoneNumber(
+  //   String phoneNumber,
+  //   ApplicationVerifier appVerifier,
+  // ) async {
+  //   try {
+  //     return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
+  //   } catch (e) {
+  //     throw FirebaseAuthException(
+  //       code: 'phone-auth-error',
+  //       message: 'Failed to sign in with phone number: ${e.toString()}',
+  //     );
+  //   }
+  // }
 
   Future<UserCredential> signInWithEmailLink(
       String email, String emailLinkUrl) {
@@ -430,25 +421,49 @@ class FirebaseAuth {
   }
 
   /// Revokes the specified access token.
-  Future<void> revokeToken(String idToken) async {
+  Future<void> revokeAccessToken(String idToken) async {
     try {
-      await revokeAccessToken.revokeToken(idToken);
+      await revokeAccessTokenService.revokeAccessToken();
     } catch (e) {
       throw FirebaseAuthException(
-        code: 'token-revocation-error',
+        code: 'revoke-access-token-error',
         message: 'Failed to revoke access token: ${e.toString()}',
       );
     }
   }
 
   /// Returns a stream of User objects when the ID token changes.
-  Stream<User?> onIdTokenChanged() {
-    return idTokenChangedController.stream;
+  // Stream<User?> onIdTokenChanged() {
+  //   return idTokenChangedController.stream;
+  // }
+
+  auth_state.Unsubscribe onAuthStateChanged(
+    auth_state.NextOrObserver<User?> nextOrObserver, {
+    auth_state.ErrorFn? error,
+    auth_state.CompleteFn? completed,
+  }) {
+    return _onAuthStateChangedService.onAuthStateChanged(
+      nextOrObserver,
+      error: error,
+      completed: completed,
+    );
   }
 
   /// Returns a stream of User objects when the auth state changes.
-  Stream<User?> onAuthStateChanged() {
-    return authStateChangedController.stream;
+  // Stream<User?> onAuthStateChanged() {
+  //   return authStateChangedController.stream;
+  // }
+
+  id_token.Unsubscribe onIdTokenChanged(
+    id_token.NextOrObserver<User?> nextOrObserver, {
+    id_token.ErrorFn? error,
+    id_token.CompleteFn? completed,
+  }) {
+    return _onIdTokenChangedService.onIdTokenChanged(
+      nextOrObserver,
+      error: error,
+      completed: completed,
+    );
   }
 
   /// Checks if the provided URL is a valid sign-in link for email authentication.

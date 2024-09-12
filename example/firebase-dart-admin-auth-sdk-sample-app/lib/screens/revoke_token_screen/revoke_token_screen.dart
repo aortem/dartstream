@@ -1,28 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:provider/provider.dart';
 
-class RevokeTokenScreen extends StatefulWidget {
-  final FirebaseAuth auth;
-
-  const RevokeTokenScreen({Key? key, required this.auth}) : super(key: key);
-
+class RevokeAccessTokenScreen extends StatefulWidget {
   @override
-  _RevokeTokenScreenState createState() => _RevokeTokenScreenState();
+  _RevokeAccessTokenScreenState createState() =>
+      _RevokeAccessTokenScreenState();
 }
 
-class _RevokeTokenScreenState extends State<RevokeTokenScreen> {
-  final TextEditingController _tokenController = TextEditingController();
+class _RevokeAccessTokenScreenState extends State<RevokeAccessTokenScreen> {
   String _result = '';
 
-  Future<void> _revokeToken() async {
+  Future<void> _revokeAccessToken() async {
     setState(() {
-      _result = 'Revoking token...';
+      _result = 'Revoking access token...';
     });
 
     try {
-      await widget.auth.revokeToken(_tokenController.text);
+      final auth = Provider.of<FirebaseAuth>(context, listen: false);
+
+      // Revoke the token
+      await auth.revokeAccessToken('');
+
       setState(() {
-        _result = 'Token revoked successfully';
+        _result =
+            'Access token revoked successfully. You have been signed out.';
+      });
+
+      // Navigate back to the splash screen after a short delay
+      Future.delayed(Duration(seconds: 2), () {
+        Navigator.of(context).pushReplacementNamed('/');
       });
     } catch (e) {
       setState(() {
@@ -35,27 +42,20 @@ class _RevokeTokenScreenState extends State<RevokeTokenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Revoke Token'),
+        title: Text('Revoke Access Token'),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _tokenController,
-              decoration: InputDecoration(
-                labelText: 'ID Token',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 16),
             ElevatedButton(
-              onPressed: _revokeToken,
-              child: Text('Revoke Token'),
+              onPressed: _revokeAccessToken,
+              child: Text('Revoke Access Token and Sign Out'),
             ),
             SizedBox(height: 16),
-            Text(_result),
+            Text(_result, textAlign: TextAlign.center),
           ],
         ),
       ),

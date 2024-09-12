@@ -11,10 +11,13 @@ class FirebaseApp {
   final String? _projectId;
   //The authDomain of the project
   final String _authdomain;
+  //The messagingSenderId of the project
+  final String _messagingSenderId;
 
   static FirebaseAuth? firebaseAuth;
 
-  FirebaseApp._(this._apiKey, this._projectId, this._authdomain);
+  FirebaseApp._(
+      this._apiKey, this._projectId, this._authdomain, this._messagingSenderId);
   User? _currentUser;
 
   // method to set the current user
@@ -41,13 +44,16 @@ class FirebaseApp {
     required String apiKey,
     required String projectId,
     required String authdomain,
+    required String messagingSenderId,
   }) async {
     //Asserts that the API key and Project Id is not empty
     assert(apiKey.isNotEmpty, "API Key cannot be empty");
     assert(projectId.isNotEmpty, "Project ID Key cannott be empty");
     assert(authdomain.isNotEmpty, "Auth Domain cannot be empty");
+    assert(messagingSenderId.isNotEmpty, "Messaging Sender ID cannot be empty");
     //Returns an intance of FirebaseApp if it exist or create a new instance based on the parameter passed
-    return _instance ??= FirebaseApp._(apiKey, projectId, authdomain);
+    return _instance ??=
+        FirebaseApp._(apiKey, projectId, authdomain, messagingSenderId);
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
@@ -63,6 +69,8 @@ class FirebaseApp {
       serviceAccount['private_key'], // Update with the actual key field
       serviceAccount['project_id'], // Update with the actual project ID field
       serviceAccount['auth_domain'], // Update with the actual auth domain field
+      serviceAccount[
+          'messaging_sender_id'], // Update with the actual messaging sender
     );
   }
 
@@ -81,6 +89,7 @@ class FirebaseApp {
       'your_api_key',
       'your_project_id',
       'your_auth_domain',
+      'your_messaging_sender_id',
     );
   }
 
@@ -96,6 +105,7 @@ class FirebaseApp {
       apiKey: _apiKey,
       projectId: _projectId,
       authDomain: _authdomain,
+      messagingSenderId: _messagingSenderId,
     );
   }
 }

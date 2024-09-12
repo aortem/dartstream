@@ -23,6 +23,7 @@ void main() {
         apiKey: 'FIREBASE_API_KEY',
         projectId: 'FIREBASE_PROJECT_ID',
         authdomain: 'FIREBASE_AUTH_DOMAIN',
+        messagingSenderId: 'FIREBASE_MESSAGE_SENDER_ID',
       );
     }
 

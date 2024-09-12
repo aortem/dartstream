@@ -6,6 +6,10 @@ import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
+    as auth_state;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
+    as id_token;
 
 class SignInWithCredentialViewModel extends ChangeNotifier {
   List<String> scopes = <String>[
@@ -92,19 +96,37 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
 
   Future<void> revokeToken(String idToken) async {
     try {
-      await FirebaseApp.firebaseAuth?.revokeToken(idToken);
+      await FirebaseApp.firebaseAuth?.revokeAccessToken(idToken);
       BotToast.showText(text: "Token revoked successfully");
     } catch (e) {
       BotToast.showText(text: "Failed to revoke token: ${e.toString()}");
     }
   }
 
-  Stream<User?> onIdTokenChanged() {
-    return FirebaseApp.firebaseAuth?.onIdTokenChanged() ?? Stream.empty();
+  auth_state.Unsubscribe onIdTokenChanged(
+    auth_state.NextOrObserver<User?> nextOrObserver, {
+    auth_state.ErrorFn? error,
+    auth_state.CompleteFn? completed,
+  }) {
+    return FirebaseApp.firebaseAuth?.onIdTokenChanged(
+          nextOrObserver,
+          error: error,
+          completed: completed,
+        ) ??
+        () {};
   }
 
-  Stream<User?> onAuthStateChanged() {
-    return FirebaseApp.firebaseAuth?.onAuthStateChanged() ?? Stream.empty();
+  auth_state.Unsubscribe onAuthStateChanged(
+    auth_state.NextOrObserver<User?> nextOrObserver, {
+    auth_state.ErrorFn? error,
+    auth_state.CompleteFn? completed,
+  }) {
+    return FirebaseApp.firebaseAuth?.onAuthStateChanged(
+          nextOrObserver,
+          error: error,
+          completed: completed,
+        ) ??
+        () {};
   }
 
   bool isSignInWithEmailLink(String emailLink) {

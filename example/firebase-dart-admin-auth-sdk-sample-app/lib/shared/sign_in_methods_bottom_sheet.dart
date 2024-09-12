@@ -55,7 +55,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => PhoneAuthTestScreen(),
+                    builder: (context) => SignInWithPhoneNumberScreen(),
                   ),
                 ),
                 title: "Sign In With Phone Number",

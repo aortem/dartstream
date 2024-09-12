@@ -1,3 +1,4 @@
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
@@ -27,8 +28,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
     return ChangeNotifierProvider(
-      create: (context) => SignUpViewModel(),
+      create: (context) => SignUpViewModel(auth),
       child: Consumer<SignUpViewModel>(
         builder: (context, value, child) => Scaffold(
           body: SafeArea(

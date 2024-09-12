@@ -1,15 +1,32 @@
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class ConfirmationResult {
+  final FirebaseAuth auth;
   final String verificationId;
-  final FirebaseAuth _auth;
+  final String phoneNumber;
 
-  ConfirmationResult({required this.verificationId, required FirebaseAuth auth})
-      : _auth = auth;
+  ConfirmationResult({
+    required this.auth,
+    required this.verificationId,
+    required this.phoneNumber,
+  });
 
   Future<UserCredential> confirm(String verificationCode) async {
-    return await _auth.phone
-        .confirmPhoneNumber(verificationId, verificationCode);
+    final response = await auth.performRequest('signInWithPhoneNumber', {
+      'sessionInfo': verificationId,
+      'code': verificationCode,
+      'key': auth.apiKey,
+    });
+
+    if (response.body['idToken'] == null) {
+      throw FirebaseAuthException(
+        code: 'invalid-verification-code',
+        message: 'The SMS verification code is invalid.',
+      );
+    }
+
+    final userCredential = UserCredential.fromJson(response.body);
+    auth.updateCurrentUser(userCredential.user);
+    return userCredential;
   }
 }

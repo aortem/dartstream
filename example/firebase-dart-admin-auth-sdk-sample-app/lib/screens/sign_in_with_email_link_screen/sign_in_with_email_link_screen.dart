@@ -13,21 +13,25 @@ class SignInWithEmailLinkScreen extends StatefulWidget {
 class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _linkController = TextEditingController();
+  String _result = '';
 
   Future<void> _signInWithEmailLink() async {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    setState(() {
+      _result = 'Signing in...';
+    });
     try {
       final userCredential = await auth.signInWithEmailLink(
         _emailController.text,
         _linkController.text,
       );
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Signed in as: ${userCredential.user.email}')),
-      );
+      setState(() {
+        _result = 'Signed in successfully: ${userCredential.user.email}';
+      });
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to sign in with email link: $e')),
-      );
+      setState(() {
+        _result = 'Error: ${e.toString()}';
+      });
     }
   }
 
@@ -38,20 +42,25 @@ class _SignInWithEmailLinkScreenState extends State<SignInWithEmailLinkScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
               controller: _emailController,
               decoration: InputDecoration(labelText: 'Email'),
               keyboardType: TextInputType.emailAddress,
             ),
+            SizedBox(height: 16),
             TextField(
               controller: _linkController,
               decoration: InputDecoration(labelText: 'Email Link'),
             ),
+            SizedBox(height: 16),
             ElevatedButton(
               onPressed: _signInWithEmailLink,
               child: Text('Sign In with Email Link'),
             ),
+            SizedBox(height: 16),
+            Text(_result, style: TextStyle(fontWeight: FontWeight.bold)),
           ],
         ),
       ),

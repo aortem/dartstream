@@ -13,9 +13,12 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
+    as auth_state;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
+    as id_token;
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
-import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
@@ -38,31 +41,95 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var UserIdToken;
-  String? _currentIdToken;
   User? _currentUser;
+  String? _currentIdToken;
   bool _isConnectedToEmulator = false;
+  late auth_state.Unsubscribe _authStateUnsubscribe;
+  late id_token.Unsubscribe _idTokenUnsubscribe;
+
+  var UserIdToken;
 
   @override
   void initState() {
     super.initState();
-    _setupStreams();
+    _setupAuthListeners();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _fetchCurrentIdToken();
+    });
   }
 
-  void _setupStreams() {
+  void _setupAuthListeners() {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
-    auth.onIdTokenChanged().listen((User? user) async {
-      final idToken = user != null ? await user.getIdToken() : null;
-      setState(() {
-        _currentUser = user;
-        _currentIdToken = idToken;
-      });
-      print('ID Token changed: $idToken');
-    });
 
-    auth.onAuthStateChanged().listen((User? user) {
-      print('Auth State changed: ${user?.uid}');
+    _idTokenUnsubscribe = auth.onIdTokenChanged(
+      (User? user) async {
+        final idToken = user != null ? await user.getIdToken() : null;
+        setState(() {
+          _currentUser = user;
+          _currentIdToken = idToken;
+        });
+        print('ID Token changed: $idToken');
+      },
+      error: (FirebaseAuthException error, StackTrace? stackTrace) {
+        print('ID Token change error: ${error.message}');
+        if (stackTrace != null) {
+          print('Stack trace: $stackTrace');
+        }
+      },
+      completed: () {
+        print('ID Token change stream completed');
+      },
+    );
+    _authStateUnsubscribe = auth.onAuthStateChanged(
+      (User? user) {
+        setState(() {
+          _currentUser = user;
+        });
+        print('Auth State changed: ${user?.uid}');
+      },
+      error: (Object error, StackTrace? stackTrace) {
+        print('Auth State change error: $error');
+        if (stackTrace != null) {
+          print('Stack trace: $stackTrace');
+        }
+      },
+      completed: () {
+        print('Auth State change stream completed');
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _authStateUnsubscribe();
+    _idTokenUnsubscribe();
+    super.dispose();
+  }
+
+  Future<void> _fetchCurrentIdToken() async {
+    final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    final user = auth.currentUser;
+    setState(() {
+      _currentUser = user;
+      if (user != null) {
+        user.getIdToken(true).then((idToken) {
+          setState(() {
+            _currentIdToken = idToken;
+          });
+        }).catchError((error) {
+          print("Error fetching token: $error");
+          _currentIdToken = null;
+        });
+      } else {
+        _currentIdToken = null;
+      }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchCurrentIdToken();
   }
 
   Future<void> _revokeToken() async {
@@ -75,11 +142,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      print('Revoking token: $_currentIdToken');
-      await auth.revokeAccessToken;
+      await auth.revokeAccessToken(_currentIdToken!);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Token revoked successfully')),
       );
+      // Navigate to the splash screen or login screen after successful revocation
+      Navigator.of(context).pushReplacementNamed('/');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to revoke token: $e')),
@@ -301,11 +369,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: _revokeToken,
-                  title: "Revoke Access Token",
-                ),
-                10.vSpace,
-                ActionTile(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -365,12 +428,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => RevokeTokenScreen(auth: auth),
-                    ),
-                  ),
-                  title: "Revoke Current token",
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => RevokeAccessTokenScreen(),
+                      ),
+                    );
+                  },
+                  title: "Revoke Access token",
                 ),
                 10.vSpace,
                 ActionTile(
@@ -385,7 +450,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => TestScreen(auth: auth),
+                      builder: (context) => OnIdTokenChangedScreen(auth: auth),
                     ),
                   ),
                   title: "On id token changed",

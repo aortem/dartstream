@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
+    as auth_state;
 
 class AuthStateTestScreen extends StatefulWidget {
   final FirebaseAuth auth;
@@ -12,15 +14,33 @@ class AuthStateTestScreen extends StatefulWidget {
 
 class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   User? _currentUser;
+  late auth_state.Unsubscribe _unsubscribe;
 
   @override
   void initState() {
     super.initState();
-    widget.auth.onAuthStateChanged().listen((User? user) {
-      setState(() {
-        _currentUser = user;
-      });
-    });
+    _unsubscribe = widget.auth.onAuthStateChanged(
+      (User? user) {
+        setState(() {
+          _currentUser = user;
+        });
+      },
+      error: (Object error, StackTrace? stackTrace) {
+        print('Auth state change error: $error');
+        if (stackTrace != null) {
+          print('Stack trace: $stackTrace');
+        }
+      },
+      completed: () {
+        print('Auth state change stream completed');
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _unsubscribe();
+    super.dispose();
   }
 
   @override

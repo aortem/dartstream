@@ -3,6 +3,10 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
 class SignUpViewModel extends ChangeNotifier {
+  final FirebaseAuth _auth;
+
+  SignUpViewModel(this._auth);
+
   bool loading = false;
   void setLoading(bool load) {
     loading = load;
@@ -17,13 +21,17 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       setLoading(true);
 
-      var user = await FirebaseApp.firebaseAuth
-          ?.createUserWithEmailAndPassword(email, password);
+      UserCredential? userCredential =
+          await _auth.createUserWithEmailAndPassword(email, password);
 
-      BotToast.showText(text: '${user?.user.email} just signed in');
-      onSuccess();
+      if (userCredential != null && userCredential.user != null) {
+        BotToast.showText(text: '${userCredential.user!.email} just signed up');
+        onSuccess();
+      } else {
+        BotToast.showText(text: 'Failed to create user');
+      }
     } catch (e) {
-      BotToast.showText(text: e.toString());
+      BotToast.showText(text: 'Sign up error: ${e.toString()}');
     } finally {
       setLoading(false);
     }

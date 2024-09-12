@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 
 class GetRedirectResultService {
-  final dynamic auth;
+  final FirebaseAuth auth;
 
   GetRedirectResultService({required this.auth});
 
@@ -32,20 +33,28 @@ class GetRedirectResultService {
 
       final data = json.decode(response.body);
 
-      // If there's no user data, it means no redirect sign-in was performed
       if (!data.containsKey('localId')) {
         return null;
       }
 
-      // Create and return a UserCredential object
+      final user = User.fromJson(data);
+
+      final additionalUserInfo = AdditionalUserInfo(
+        isNewUser: data['isNewUser'] ?? false,
+        providerId: data['providerId'] ?? '',
+        profile: data['profile'],
+      );
+
+      final credential = OAuthCredential(
+        providerId: data['providerId'] ?? '',
+        accessToken: data['oauthAccessToken'],
+        idToken: data['oauthIdToken'],
+      );
+
       return UserCredential(
-        user: User(
-          uid: data['localId'],
-          email: data['email'],
-          displayName: data['displayName'],
-          // Add other user properties as needed
-        ),
-        // Add additional credential information if available
+        user: user,
+        additionalUserInfo: additionalUserInfo,
+        credential: credential,
       );
     } catch (e) {
       throw FirebaseAuthException(

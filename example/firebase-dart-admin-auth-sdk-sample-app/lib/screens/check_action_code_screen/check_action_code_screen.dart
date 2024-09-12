@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/check_action_code.dart'; // Add this import
+import 'package:firebase_dart_admin_auth_sdk/src/auth/check_action_code.dart';
 
 class CheckActionCodeScreen extends StatefulWidget {
   const CheckActionCodeScreen({Key? key}) : super(key: key);

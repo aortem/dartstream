@@ -5,22 +5,31 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class GetRedirectResultViewModel extends ChangeNotifier {
-  bool loading = false;
-  UserCredential? result;
+  bool _loading = false;
+  UserCredential? _result;
+  String? _error;
+
+  bool get loading => _loading;
+  UserCredential? get result => _result;
+  String? get error => _error;
 
   void setLoading(bool load) {
-    loading = load;
+    _loading = load;
     notifyListeners();
   }
 
   Future<void> getRedirectResult() async {
+    setLoading(true);
+    _error = null;
+    _result = null;
+
     try {
-      setLoading(true);
-      result = await FirebaseApp.firebaseAuth?.getRedirectResult();
-      notifyListeners();
+      _result = await FirebaseApp.instance.getAuth().getRedirectResult();
+      if (_result == null) {
+        _error = 'No redirect result available.';
+      }
     } catch (e) {
-      // Use your preferred method to show errors, e.g., BotToast
-      print('Error: ${e.toString()}');
+      _error = e.toString();
     } finally {
       setLoading(false);
     }
@@ -50,14 +59,24 @@ class GetRedirectResultScreen extends StatelessWidget {
                   title: 'Get Redirect Result',
                 ),
                 20.vSpace,
-                if (viewModel.result != null) ...[
-                  Text('User ID: ${viewModel.result!.user?.uid ?? 'N/A'}'),
-                  Text('Email: ${viewModel.result!.user?.email ?? 'N/A'}'),
+                if (viewModel.error != null) ...[
+                  Text('Error: ${viewModel.error}',
+                      style: TextStyle(color: Colors.red)),
+                ] else if (viewModel.result != null) ...[
+                  Text('User ID: ${viewModel.result!.user.uid}'),
+                  Text('Email: ${viewModel.result!.user.email ?? 'N/A'}'),
                   Text(
-                      'Display Name: ${viewModel.result!.user?.displayName ?? 'N/A'}'),
-                  // Add more user properties as needed
+                      'Display Name: ${viewModel.result!.user.displayName ?? 'N/A'}'),
+                  Text(
+                      'Provider ID: ${viewModel.result!.additionalUserInfo?.providerId ?? 'N/A'}'),
+                  Text(
+                      'Is New User: ${viewModel.result!.additionalUserInfo?.isNewUser ?? 'N/A'}'),
+                  if (viewModel.result!.credential is OAuthCredential)
+                    Text(
+                        'Access Token: ${(viewModel.result!.credential as OAuthCredential).accessToken ?? 'N/A'}'),
                 ] else if (!viewModel.loading) ...[
-                  Text('No redirect result available or not fetched yet.'),
+                  Text(
+                      'No redirect result available. Try signing in with a redirect method first.'),
                 ],
               ],
             ),

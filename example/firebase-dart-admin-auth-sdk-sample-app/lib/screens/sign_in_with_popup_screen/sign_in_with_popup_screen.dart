@@ -15,9 +15,18 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
   Future<void> _signInWithPopup(
       BuildContext context, AuthProvider provider) async {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
+    if (auth == null) {
+      setState(() {
+        _resultMessage =
+            'Firebase Auth not initialized. Please check your initialization.';
+      });
+      return;
+    }
+
     setState(() {
       _resultMessage = 'Signing in...';
     });
+
     try {
       final userCredential = await auth.signInWithPopup(provider);
       setState(() {

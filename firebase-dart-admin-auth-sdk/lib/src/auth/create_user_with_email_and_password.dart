@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 
 class CreateUserWithEmailAndPasswordService {
   final FirebaseAuth auth;
@@ -33,6 +34,22 @@ class CreateUserWithEmailAndPasswordService {
 
     final responseData = json.decode(response.body);
     final user = User.fromJson(responseData);
-    return UserCredential(user: user);
+
+    final additionalUserInfo = AdditionalUserInfo(
+      isNewUser: true,
+      providerId: 'password',
+      profile: null,
+    );
+
+    final credential = EmailAuthCredential(
+      email: email,
+      password: password,
+    );
+
+    return UserCredential(
+      user: user,
+      additionalUserInfo: additionalUserInfo,
+      credential: credential,
+    );
   }
 }

@@ -17,7 +17,7 @@ class PopupRedirectResolver {
     return html.window.open(
       url,
       'authPopup',
-      'width=$POPUP_WIDTH,height=$POPUP_HEIGHT,left=$left,top=$top',
+      'width=$POPUP_WIDTH,height=$POPUP_HEIGHT,left=$left,top=$top,resizable=yes,scrollbars=yes',
     );
   }
 
@@ -29,7 +29,11 @@ class PopupRedirectResolver {
         final data = event.data;
         if (data is Map<String, dynamic> && data['type'] == 'auth_result') {
           html.window.removeEventListener('message', listener);
-          completer.complete(data);
+          completer.complete({
+            'idToken': data['idToken'],
+            'accessToken': data['accessToken'],
+            'redirectUrl': data['redirectUrl'] ?? 'http://localhost/callback',
+          });
         }
       }
     }
