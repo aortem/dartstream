@@ -7,6 +7,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/parse_action_url_screen/parse_action_url.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/set_language_code_screen/set_language_code_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/storage_screen/storage.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
@@ -235,13 +236,23 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const PersistenceSelectorDropdown(),
+                        builder: (context) =>
+                            const PersistenceSelectorDropdown(),
                       ),
                     );
                   },
                   title: " Set Presistance",
                 ),
                 10.vSpace,
+                10.vSpace,
+                ActionTile(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => StorageExample(),
+                    ),
+                  ),
+                  title: "Storage",
+                ),
               ],
             ),
           ),

@@ -48,6 +48,7 @@ import 'id_token_result_model.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
+  final String? bucketName;
   late final http.Client httpClient;
 
   late EmailPasswordAuth emailPassword;
@@ -98,6 +99,7 @@ class FirebaseAuth {
   FirebaseAuth({
     this.apiKey,
     this.projectId,
+    this.bucketName,
   }) {
     httpClient = http.Client();
     emailPassword = EmailPasswordAuth(this);
