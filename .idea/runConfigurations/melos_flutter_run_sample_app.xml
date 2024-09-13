@@ -1,6 +1,0 @@
-<component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Flutter Run -&gt; 'sample_app'" type="FlutterRunConfigurationType" factoryName="Flutter">
-    <option name="filePath" value="$PROJECT_DIR$/dartstream/backend/packages/frameworks/dartstream_flutter/example/dartstream-sample-app-flutter/lib/main.dart" />
-    <method v="2" />
-  </configuration>
-</component>
