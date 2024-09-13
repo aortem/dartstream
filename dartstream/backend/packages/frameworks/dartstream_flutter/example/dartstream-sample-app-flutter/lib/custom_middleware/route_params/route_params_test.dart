@@ -1,16 +1,17 @@
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
-import 'package:ds_custom_middleware/routing/ds_route_params.dart';
+import 'package:ds_custom_middleware/src/routing/dynamic_routing.dart';
+import 'package:ds_custom_middleware/src/model/ds_request_model.dart';
 
-String testRouteParams() {
-  final routeParamHandler = DsRouteParamHandler();
+Future<String> testRouteParams() async {
+  final router = Router();
+
   final request = DsCustomMiddleWareRequest(
     'GET',
-    Uri.parse('http://localhost:8080/users/123'),
+    Uri.parse('/users/123/profile'),
     {},
     null,
-    {},
   );
-  final updatedRequest =
-      routeParamHandler.addParamsToRequest(request, '/users/:userId');
-  return 'Route param extracted: ${updatedRequest.routeParams['userId']}';
+
+  final response = await router.handleRequest(request);
+
+  return 'Route params test completed. Response: ${response.body}';
 }

@@ -1,9 +1,12 @@
-import 'package:ds_custom_middleware/app/logging/ds_logger.dart';
+import 'package:ds_custom_middleware/src/logging/ds_logger.dart';
 
-String testLogger() {
+String testLogging() {
   DsLogger.initialize();
-  DsLogger.info('Test info message');
-  DsLogger.warning('Test warning message');
-  DsLogger.error('Test error message');
-  return 'Logged messages. Check log file for details.';
+
+  DsLogger.debug('This is a debug message');
+  DsLogger.info('This is an info message');
+  DsLogger.warning('This is a warning message');
+  DsLogger.error('This is an error message');
+
+  return 'Logging test completed. Check the console for log messages.';
 }

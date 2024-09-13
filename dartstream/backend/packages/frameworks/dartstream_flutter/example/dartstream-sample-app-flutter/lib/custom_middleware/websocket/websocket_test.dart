@@ -1,6 +1,13 @@
-import 'package:ds_custom_middleware/app/websockets/ds_websocket_handler.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
-String testWebSocket() {
-  final handler = DsWebSocketHandler();
-  return 'WebSocket handler initialized';
+Future<String> testWebSocket() async {
+  final channel = WebSocketChannel.connect(Uri.parse('ws://localhost:8080/ws'));
+
+  channel.sink.add('Hello, WebSocket!');
+
+  final response = await channel.stream.first;
+
+  await channel.sink.close();
+
+  return 'WebSocket test completed. Response: $response';
 }
