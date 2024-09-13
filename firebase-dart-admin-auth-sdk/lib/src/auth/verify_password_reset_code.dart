@@ -1,19 +1,25 @@
+import 'dart:developer';
 
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
 
 class VerifyPasswordResetCodeService {
   final FirebaseAuth auth;
 
   VerifyPasswordResetCodeService({required this.auth});
 
-  Future<Map<String, dynamic>> verifyPasswordResetCode(String code) async {
+  Future<HttpResponse> verifyPasswordResetCode(String code) async {
     try {
       final url = 'resetPassword';
       final body = {
         'oobCode': code,
       };
 
-      return await auth.performRequest(url, body);
+      final response = await auth.performRequest(url, body);
+      if (response.statusCode == 200) {
+        log("paswword reset$response");
+      }
+      return response;
     } catch (e) {
       print('Verify password reset code failed: $e');
       throw FirebaseAuthException(

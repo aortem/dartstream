@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:convert';
+import '../firebase_dart_admin_auth_sdk.dart';
 import 'firebase_auth.dart';
 
 class FirebaseApp {
@@ -13,6 +14,16 @@ class FirebaseApp {
   static FirebaseAuth? firebaseAuth;
 
   FirebaseApp._(this._apiKey, this._projectId);
+  User? _currentUser;
+
+  // method to set the current user
+  void setCurrentUser(User? user) {
+    _currentUser = user;
+  }
+
+  User? getCurrentUser() {
+    return _currentUser;
+  }
 
   //Exposes the singleton
   static FirebaseApp get instance {
@@ -37,25 +48,17 @@ class FirebaseApp {
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
+    required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
-    //Asserts that the path being provided is not empty
-    assert(serviceAccountKeyFilePath.isNotEmpty,
-        "Service account key path cannot be empty");
+    // Parse the JSON content
+    final serviceAccount = json.decode(serviceAccountContent);
 
-    //Check if the file path provided exist
-    bool exist = await File(serviceAccountKeyFilePath).exists();
-
-    //If not throws an exception
-    if (!exist) {
-      throw Exception("This file path does not exist");
-    }
-
-    //TODO: Implement API to get access token
+    // TODO: Implement API to get access token
 
     return _instance ??= FirebaseApp._(
-      'your_api_key',
-      'your_project_id',
+      serviceAccount['private_key'], // Update with the actual key field
+      serviceAccount['project_id'], // Update with the actual project ID field
     );
   }
 
@@ -86,7 +89,7 @@ class FirebaseApp {
     }
     return firebaseAuth ??= FirebaseAuth(
       apiKey: _apiKey,
-      projectId: _apiKey,
+      projectId: _projectId,
     );
   }
 }
