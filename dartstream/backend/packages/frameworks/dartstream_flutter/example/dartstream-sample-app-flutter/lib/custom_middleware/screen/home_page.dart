@@ -4,14 +4,17 @@ import 'package:ds_custom_middleware/src/model/ds_response_model.dart';
 import 'package:flutter/material.dart';
 
 // Import the new test files
-import '../body_parser/body_parser_test.dart';
-import '../cors_middleware/cors_middleware_test.dart';
-import '../error_handler/error_handler_test.dart';
+import '../body_parsing/body_parsing_test.dart';
+import '../cors/cors_test.dart';
+import '../error_handling/error_handling_test.dart';
 import '../http_helpers/http_helpers_test.dart';
-
 import '../logger/logger_test.dart';
-import '../query_string_handler/query_string_handler_test.dart';
+import '../query_string/query_string_test.dart';
 import '../websocket/websocket_test.dart';
+import '../static_files/static_files_test.dart';
+import '../authorization/authorization_test.dart';
+import '../route_params/route_params_test.dart';
+import '../file_system_routing/file_system_routing_test.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -78,18 +81,18 @@ class _HomePageState extends State<HomePage> {
   }
 
   // New test functions
-  Future<void> _testBodyParser() async {
-    final result = await testBodyParser();
+  Future<void> _testBodyParsing() async {
+    final result = await testBodyParsing();
     print(result);
   }
 
-  Future<void> _testCorsMiddleware() async {
-    final result = await testCorsMiddleware();
+  Future<void> _testCors() async {
+    final result = await testCors();
     print(result);
   }
 
-  Future<void> _testErrorHandler() async {
-    final result = await testErrorHandler();
+  Future<void> _testErrorHandling() async {
+    final result = await testErrorHandling();
     print(result);
   }
 
@@ -98,18 +101,38 @@ class _HomePageState extends State<HomePage> {
     print(result);
   }
 
-  void _testLogger() {
-    final result = testLogger();
+  void _testLogging() {
+    final result = testLogging();
     print(result);
   }
 
-  void _testQueryStringHandler() {
-    final result = testQueryStringHandler();
+  void _testQueryString() {
+    final result = testQueryString();
     print(result);
   }
 
   void _testWebSocket() {
     final result = testWebSocket();
+    print(result);
+  }
+
+  Future<void> _testStaticFiles() async {
+    final result = await testStaticFiles();
+    print(result);
+  }
+
+  Future<void> _testAuthorization() async {
+    final result = await testAuthorization();
+    print(result);
+  }
+
+  Future<void> _testRouteParams() async {
+    final result = await testRouteParams();
+    print(result);
+  }
+
+  Future<void> _testFileSystemRouting() async {
+    final result = await testFileSystemRouting();
     print(result);
   }
 
@@ -147,18 +170,18 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testBodyParser,
-                child: Text('Test Body Parser'),
+                onPressed: _testBodyParsing,
+                child: Text('Test Body Parsing'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testCorsMiddleware,
-                child: Text('Test CORS Middleware'),
+                onPressed: _testCors,
+                child: Text('Test CORS'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testErrorHandler,
-                child: Text('Test Error Handler'),
+                onPressed: _testErrorHandling,
+                child: Text('Test Error Handling'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
@@ -167,18 +190,38 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testLogger,
-                child: Text('Test Logger'),
+                onPressed: _testLogging,
+                child: Text('Test Logging'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testQueryStringHandler,
-                child: Text('Test Query String Handler'),
+                onPressed: _testQueryString,
+                child: Text('Test Query String'),
               ),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _testWebSocket,
                 child: Text('Test WebSocket'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testStaticFiles,
+                child: Text('Test Static Files'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testAuthorization,
+                child: Text('Test Authorization'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testRouteParams,
+                child: Text('Test Route Params'),
+              ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: _testFileSystemRouting,
+                child: Text('Test File System Routing'),
               ),
             ],
           ),
