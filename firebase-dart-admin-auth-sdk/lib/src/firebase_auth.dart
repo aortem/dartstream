@@ -1,9 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+<<<<<<< HEAD
 
+=======
+>>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_redirect_link.dart';
+import 'auth/auth_redirect_link_stub.dart'
+    if (dart.library.html) 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -33,6 +37,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
+<<<<<<< HEAD
 import 'auth/auth_link_with_phone_number.dart';
 
 import 'auth/before_auth_state_change.dart';
@@ -41,6 +46,14 @@ import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/delete_user.dart';
 import 'firebase_user/get_language_code.dart';
+=======
+//import 'auth/auth_link_with_phone_number.dart';
+import 'auth/auth_link_with_phone_number_stub.dart'
+    if (dart.library.html) 'auth/auth_link_with_phone_number.dart';
+import 'firebase_user/delete_user.dart';
+
+import 'auth/parseActionCodeURL .dart';
+>>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 import 'firebase_user/link_with_credentails.dart';
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
@@ -48,7 +61,7 @@ import 'id_token_result_model.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
-  late final http.Client httpClient;
+  late http.Client httpClient;
 
   late EmailPasswordAuth emailPassword;
   late CustomTokenAuth customToken;
@@ -98,8 +111,10 @@ class FirebaseAuth {
   FirebaseAuth({
     this.apiKey,
     this.projectId,
+    http.Client? httpClient, // Add this parameter
   }) {
-    httpClient = http.Client();
+    this.httpClient = httpClient ??
+        http.Client(); // Use the injected client or default to a new one
     emailPassword = EmailPasswordAuth(this);
     customToken = CustomTokenAuth(this);
     emailLink = EmailLinkAuth(this);
@@ -141,6 +156,7 @@ class FirebaseAuth {
 
   Future<HttpResponse> performRequest(
       String endpoint, Map<String, dynamic> body) async {
+    //log(apiKey.toString());
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:$endpoint',
@@ -228,6 +244,7 @@ class FirebaseAuth {
     try {
       await signOUt.signOut();
       FirebaseApp.instance.setCurrentUser(null);
+      currentUser = null;
       log('User Signout ');
       return;
     } catch (e) {
@@ -454,7 +471,7 @@ class FirebaseAuth {
     } catch (e) {
       log("error is $e");
       throw FirebaseAuthException(
-        code: 'vrtification - code -error',
+        code: 'verification-code-error',
         message:
             'Failed to send verification code to phone number: ${e.toString()}',
       );
@@ -463,7 +480,7 @@ class FirebaseAuth {
 
   ////////////FirebaseUser.deleteUser
   Future<void> deleteFirebaseUser() async {
-    if (FirebaseApp.instance.getCurrentUser() == null) {
+    if (FirebaseApp.instance.getCurrentUser() == null && currentUser == null) {
       throw FirebaseAuthException(
         code: 'user-not-signed-in',
         message: 'No user is currently signed in.',

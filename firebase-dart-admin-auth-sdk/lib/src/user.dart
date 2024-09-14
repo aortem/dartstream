@@ -2,8 +2,11 @@
 //added isAnonymous getter to determine if the user is signed in anonymously
 //Added getIdToken method for token management
 //added toMap method for easy serialization
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 import 'id_token_result_model.dart';
 
 class User {
@@ -95,5 +98,33 @@ class User {
       userId: uid,
       authTime: DateTime.now().millisecondsSinceEpoch.toString(),
     );
+  }
+
+  // Implement value-based equality
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is User &&
+        other.uid == uid &&
+        other.email == email &&
+        other.emailVerified == emailVerified &&
+        other.phoneNumber == phoneNumber &&
+        other.displayName == displayName &&
+        other.photoURL == photoURL &&
+        other.idToken == idToken &&
+        other._idTokenExpiration == _idTokenExpiration;
+  }
+
+  @override
+  int get hashCode {
+    return uid.hashCode ^
+        email.hashCode ^
+        emailVerified.hashCode ^
+        phoneNumber.hashCode ^
+        displayName.hashCode ^
+        photoURL.hashCode ^
+        idToken.hashCode ^
+        _idTokenExpiration.hashCode;
   }
 }
