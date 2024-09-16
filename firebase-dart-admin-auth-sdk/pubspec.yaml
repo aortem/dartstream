@@ -15,10 +15,7 @@ dependencies:
 ## There are three standard libraries.  Each one can be used with a different xxx 
 
   ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
-<<<<<<< HEAD
-=======
   build_web_compilers: ^4.0.11
->>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 #  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
 #  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
   
@@ -32,3 +29,4 @@ dev_dependencies:
   test: ^1.19.5
   test_reporter: any #required to generate JUnit report 
   coverage: ^1.0.3  #required to generate JUnit report 
+  http: any

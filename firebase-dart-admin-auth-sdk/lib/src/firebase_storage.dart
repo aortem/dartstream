@@ -18,9 +18,6 @@ class FirebaseStorage {
   }) {
     // Ensure that FirebaseApp is initialized
     final firebaseApp = FirebaseApp.instance;
-    if (firebaseApp == null) {
-      throw Exception('FirebaseApp is not initialized.');
-    }
 
     // Use FirebaseApp's projectId and apiKey
     final projectId = firebaseApp.getAuth().projectId;
