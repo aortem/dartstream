@@ -1,10 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-<<<<<<< HEAD
 
-=======
->>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'auth/auth_redirect_link_stub.dart'
     if (dart.library.html) 'auth/auth_redirect_link.dart';
@@ -37,23 +34,17 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
-<<<<<<< HEAD
-import 'auth/auth_link_with_phone_number.dart';
-
 import 'auth/before_auth_state_change.dart';
-import 'auth/parseActionCodeURL .dart';
+
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
-import 'firebase_user/delete_user.dart';
 import 'firebase_user/get_language_code.dart';
-=======
 //import 'auth/auth_link_with_phone_number.dart';
 import 'auth/auth_link_with_phone_number_stub.dart'
     if (dart.library.html) 'auth/auth_link_with_phone_number.dart';
 import 'firebase_user/delete_user.dart';
 
 import 'auth/parseActionCodeURL .dart';
->>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
 import 'firebase_user/link_with_credentails.dart';
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
@@ -62,7 +53,7 @@ class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
   late http.Client httpClient;
-
+  final String? bucketName;
   late EmailPasswordAuth emailPassword;
   late CustomTokenAuth customToken;
   late EmailLinkAuth emailLink;
@@ -112,6 +103,7 @@ class FirebaseAuth {
     this.apiKey,
     this.projectId,
     http.Client? httpClient, // Add this parameter
+    this.bucketName,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
