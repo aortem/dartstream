@@ -346,6 +346,55 @@ void main() async {
       expect(result?.email, equals('test@example.com'));
     });
 
+    //Test update profile
+    test('update profile', () async {
+      // Mocking the HTTP response for a successful sign-in with email and password.
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"drake","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600","photoUrl":"sampleimage"}',
+                200,
+              ));
+
+      final result = await auth?.updateProfile('drake', 'sampleimage');
+      expect(result?.displayName, equals('drake'));
+      expect(result?.photoURL, equals('sampleimage'));
+    });
+
+    //verify before email update
+    test('verifyBeforeEmailUpdate', () async {
+      // Mocking the HTTP response for a successful sign-in with email and password.
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response('{}', 200));
+
+      expectLater(
+          auth?.verifyBeforeEmailUpdate(
+            'sample@example.com',
+          ),
+          completes);
+    });
+
+    //Get additional Info
+    test(
+      'Get additional Info',
+      () async {
+        // Mocking the HTTP response for a successful sign-in with email and password.
+        when(() => mockClient.post(any(),
+            body: any(named: 'body'),
+            headers: any(named: 'headers'))).thenAnswer(
+          (_) async => http.Response(
+            '{"users":[{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"testUid","email":"test@example.com","displayName":"drake","idToken":"testIdToken","registered":true,"refreshToken":"testRefreshToken","expiresIn":"3600","photoUrl":"sampleimage"}]}',
+            200,
+          ),
+        );
+
+        final result = await auth?.getAdditionalUserInfo();
+        expect(result?.displayName, equals('drake'));
+        expect(result?.photoURL, equals('sampleimage'));
+      },
+    );
+
     // Test for sendPasswordResetEmail
     test('sendPasswordResetEmail succeeds', () async {
       when(() => mockClient.post(any(),
