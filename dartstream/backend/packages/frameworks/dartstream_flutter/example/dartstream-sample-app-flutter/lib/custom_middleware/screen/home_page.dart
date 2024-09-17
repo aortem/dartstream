@@ -24,7 +24,13 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final RequestInterceptor _requestInterceptor = RequestInterceptor();
   String _webSocketStatus = '';
-  bool _useMockWebSocket = false;
+  String _testResult = '';
+
+  void _updateTestResult(String result) {
+    setState(() {
+      _testResult = result;
+    });
+  }
 
   Future<void> _testDynamicRouting() async {
     final dynamicRequest = DsCustomMiddleWareRequest(
@@ -103,8 +109,9 @@ class _HomePageState extends State<HomePage> {
     print(result);
   }
 
-  void _testLogging() {
-    final result = testLogging();
+  void _testLogger() {
+    final result = testLogger();
+    _updateTestResult(result);
     print(result);
   }
 
@@ -130,6 +137,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _testAuthorization() async {
     final result = await testAuthorization();
+    _updateTestResult(result);
     print(result);
   }
 
@@ -197,7 +205,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 16),
               ElevatedButton(
-                onPressed: _testLogging,
+                onPressed: _testLogger,
                 child: Text('Test Logging'),
               ),
               SizedBox(height: 16),

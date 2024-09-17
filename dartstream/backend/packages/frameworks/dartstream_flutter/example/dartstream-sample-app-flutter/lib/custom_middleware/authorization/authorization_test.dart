@@ -18,18 +18,39 @@ Future<String> testAuthorization() async {
     null,
   );
 
+  final noRoleRequest = DsCustomMiddleWareRequest(
+    'GET',
+    Uri.parse('/sensitive-data'),
+    {},
+    null,
+  );
+
   final authorizedResponse = await auth.authorize(
     authorizedRequest,
     'read_sensitive_data',
-    (req) async => DsCustomMiddleWareResponse.ok('Sensitive data'),
+    (req) async => DsCustomMiddleWareResponse.ok('Access granted'),
   );
 
   final unauthorizedResponse = await auth.authorize(
     unauthorizedRequest,
     'read_sensitive_data',
-    (req) async => DsCustomMiddleWareResponse.ok('Sensitive data'),
+    (req) async => DsCustomMiddleWareResponse.ok('This should not be seen'),
   );
 
-  return 'Authorized response status: ${authorizedResponse.statusCode}\n'
-      'Unauthorized response status: ${unauthorizedResponse.statusCode}';
+  final noRoleResponse = await auth.authorize(
+    noRoleRequest,
+    'read_sensitive_data',
+    (req) async => DsCustomMiddleWareResponse.ok('This should not be seen'),
+  );
+
+  return 'Authorization Test Results:\n'
+      'Authorized request (admin):\n'
+      '  Status: ${authorizedResponse.statusCode}\n'
+      '  Body: ${authorizedResponse.body}\n\n'
+      'Unauthorized request (user):\n'
+      '  Status: ${unauthorizedResponse.statusCode}\n'
+      '  Body: ${unauthorizedResponse.body}\n\n'
+      'No role request:\n'
+      '  Status: ${noRoleResponse.statusCode}\n'
+      '  Body: ${noRoleResponse.body}';
 }
