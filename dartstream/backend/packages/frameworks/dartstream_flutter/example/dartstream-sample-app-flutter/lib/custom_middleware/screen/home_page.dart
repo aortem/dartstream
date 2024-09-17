@@ -23,6 +23,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final RequestInterceptor _requestInterceptor = RequestInterceptor();
+  String _webSocketStatus = '';
+  bool _useMockWebSocket = false;
 
   Future<void> _testDynamicRouting() async {
     final dynamicRequest = DsCustomMiddleWareRequest(
@@ -111,9 +113,14 @@ class _HomePageState extends State<HomePage> {
     print(result);
   }
 
-  void _testWebSocket() {
-    final result = testWebSocket();
-    print(result);
+  Future<void> _testWebSocket() async {
+    setState(() {
+      _webSocketStatus = 'Connecting...';
+    });
+    final result = await testWebSocket();
+    setState(() {
+      _webSocketStatus = result;
+    });
   }
 
   Future<void> _testStaticFiles() async {
@@ -203,6 +210,9 @@ class _HomePageState extends State<HomePage> {
                 onPressed: _testWebSocket,
                 child: Text('Test WebSocket'),
               ),
+              SizedBox(height: 8),
+              Text(_webSocketStatus,
+                  style: TextStyle(fontWeight: FontWeight.bold)),
               SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _testStaticFiles,
