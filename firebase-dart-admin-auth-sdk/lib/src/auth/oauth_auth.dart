@@ -36,22 +36,14 @@ class OAuthAuth extends AuthBase {
       }
 
       final HttpResponse response = await auth.performRequest(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp',
+        'signInWithIdp',
         {
-          'key': auth.apiKey,
           'providerId': provider.providerId,
           'requestUri': result['redirectUrl'],
           'postBody':
               'id_token=${result['idToken']}&access_token=${result['accessToken']}',
         },
       );
-
-      if (response.statusCode != 200) {
-        throw FirebaseAuthException(
-          code: 'sign-in-failed',
-          message: 'Failed to sign in: ${response.body}',
-        );
-      }
 
       final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);
@@ -74,20 +66,12 @@ class OAuthAuth extends AuthBase {
 
   Future<String> _getAuthUrl(AuthProvider provider) async {
     final HttpResponse response = await auth.performRequest(
-      'https://identitytoolkit.googleapis.com/v1/accounts:getAuthUri',
+      'getAuthUri',
       {
-        'key': auth.apiKey,
         'providerId': provider.providerId,
         'continueUri': 'http://localhost', // Or your actual redirect URI
       },
     );
-
-    if (response.statusCode != 200) {
-      throw FirebaseAuthException(
-        code: 'auth-uri-error',
-        message: 'Failed to get auth URI: ${response.body}',
-      );
-    }
 
     return response.body['authUri'];
   }

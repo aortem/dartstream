@@ -19,8 +19,10 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   @override
   void initState() {
     super.initState();
+    _currentUser = widget.auth.currentUser;
     _unsubscribe = widget.auth.onAuthStateChanged(
       (User? user) {
+        print("Auth state changed. User: ${user?.email ?? 'null'}");
         setState(() {
           _currentUser = user;
         });
@@ -43,6 +45,21 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
     super.dispose();
   }
 
+  Future<void> _signOut() async {
+    try {
+      await widget.auth.signOut();
+      print('User signed out successfully');
+      setState(() {
+        _currentUser = null;
+      });
+    } catch (e) {
+      print('Sign out failed: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Sign out failed: $e')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,34 +73,15 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
             Text(
               _currentUser == null
                   ? 'No user is currently signed in.'
-                  : 'Current user: ${_currentUser!.email}',
+                  : 'This user: ${_currentUser!.email} is signed in',
               style: TextStyle(fontSize: 18),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  await widget.auth.signInWithEmailAndPassword(
-                    'test@example.com',
-                    'password123',
-                  );
-                } catch (e) {
-                  print('Sign in failed: $e');
-                }
-              },
-              child: Text('Sign In'),
-            ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  await widget.auth.signOut();
-                } catch (e) {
-                  print('Sign out failed: $e');
-                }
-              },
-              child: Text('Sign Out'),
-            ),
+            if (_currentUser != null)
+              ElevatedButton(
+                onPressed: _signOut,
+                child: Text('Sign Out'),
+              ),
           ],
         ),
       ),

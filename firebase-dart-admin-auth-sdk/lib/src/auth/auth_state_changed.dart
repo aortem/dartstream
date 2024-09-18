@@ -12,7 +12,6 @@ class OnAuthStateChangedService {
       StreamController<User?>.broadcast();
 
   OnAuthStateChangedService(this._auth) {
-    // Listen to auth state changes
     _auth.authStateChangedController.stream.listen(
       (User? user) {
         _notifyListeners(user);

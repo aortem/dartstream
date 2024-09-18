@@ -42,6 +42,30 @@ class _OnIdTokenChangedScreenState extends State<OnIdTokenChangedScreen> {
     );
   }
 
+  Future<void> _refreshIdToken() async {
+    setState(() {
+      _lastIdTokenChange = 'Refreshing ID token...';
+    });
+
+    try {
+      final user = widget.auth.currentUser;
+      if (user != null) {
+        final token = await user.getIdToken(true);
+        setState(() {
+          _lastIdTokenChange = 'Token refreshed: ${token.substring(0, 10)}...';
+        });
+      } else {
+        setState(() {
+          _lastIdTokenChange = 'No user signed in to refresh token';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _lastIdTokenChange = 'Error refreshing token: $e';
+      });
+    }
+  }
+
   @override
   void dispose() {
     _unsubscribe();
@@ -66,15 +90,7 @@ class _OnIdTokenChangedScreenState extends State<OnIdTokenChangedScreen> {
                 style: TextStyle(fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-                try {
-                  await widget.auth.currentUser?.getIdToken(true);
-                } catch (e) {
-                  setState(() {
-                    _lastIdTokenChange = 'Error refreshing token: $e';
-                  });
-                }
-              },
+              onPressed: _refreshIdToken,
               child: Text('Refresh ID Token'),
             ),
           ],
