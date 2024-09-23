@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 class ActionTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
+  final bool loading;
   const ActionTile({
     super.key,
     required this.onTap,
     required this.title,
+    this.loading = false,
   });
 
   @override
@@ -24,7 +26,13 @@ class ActionTile extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(title),
+            loading
+                ? const SizedBox(
+                    height: 15,
+                    width: 15,
+                    child: CircularProgressIndicator(),
+                  )
+                : Text(title),
             const Icon(
               Icons.arrow_forward_ios,
               color: Colors.purple,
