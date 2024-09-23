@@ -277,9 +277,9 @@ class FirebaseAuth {
   }
 
   Future<void> updateUserInformation(
-      String userId, Map<String, dynamic> userData) async {
+      String userId, String idToken, Map<String, dynamic> userData) async {
     try {
-      await updateUserService.updateCurrentUser(userId, userData);
+      await updateUserService.updateCurrentUser(userId, idToken, userData);
     } catch (e) {
       print('Update current user information failed: $e');
       throw FirebaseAuthException(
