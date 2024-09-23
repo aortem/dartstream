@@ -20,7 +20,7 @@ class SignUpViewModel extends ChangeNotifier {
       var user = await FirebaseApp.firebaseAuth
           ?.createUserWithEmailAndPassword(email, password);
 
-      BotToast.showText(text: '${user?.user.email} just signed in');
+      BotToast.showText(text: '${user?.email} just signed in');
       onSuccess();
     } catch (e) {
       BotToast.showText(text: e.toString());
