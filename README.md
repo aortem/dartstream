@@ -7,6 +7,9 @@ Firebase Dart Admin Auth SDK is designed to provide select out of the box featur
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 0159ae3 (update readme)
 | Method                                       | Supported |
 |--------------------------------------------- |-----------|
 | FirebaseApp.getAuth                          | ❌        |
