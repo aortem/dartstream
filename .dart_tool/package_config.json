@@ -3,571 +3,951 @@
   "packages": [
     {
       "name": "_fe_analyzer_shared",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-73.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/_fe_analyzer_shared-73.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "_macros",
+<<<<<<< HEAD
       "rootUri": "file:///usr/local/Cellar/dart/3.5.2/libexec/pkg/_macros",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/development/flutter/bin/cache/dart-sdk/pkg/_macros",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "analyzer",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/analyzer-6.8.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/analyzer-6.8.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "ansicolor",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/ansicolor-2.0.3",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/ansicolor-2.0.3",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "archive",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/archive-3.6.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/archive-3.6.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "args",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/args-2.5.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/args-2.5.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "async",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/async-2.11.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/async-2.11.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "bazel_worker",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/bazel_worker-1.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/bazel_worker-1.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "boolean_selector",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/boolean_selector-2.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/boolean_selector-2.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "build",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build-2.4.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build-2.4.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "build_config",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_config-1.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_config-1.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "build_daemon",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_daemon-4.0.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_daemon-4.0.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "build_modules",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_modules-5.0.9",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_modules-5.0.9",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "build_resolvers",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_resolvers-2.4.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_resolvers-2.4.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "build_runner",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_runner-2.4.12",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_runner-2.4.12",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "build_runner_core",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_runner_core-7.3.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_runner_core-7.3.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "build_test",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_test-2.2.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_test-2.2.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "build_web_compilers",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/build_web_compilers-4.0.11",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/build_web_compilers-4.0.11",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.5"
     },
     {
       "name": "built_collection",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/built_collection-5.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/built_collection-5.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "built_value",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/built_value-8.9.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/built_value-8.9.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "characters",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/characters-1.3.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/characters-1.3.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "checked_yaml",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/checked_yaml-2.0.3",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/checked_yaml-2.0.3",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "clock",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/clock-1.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/clock-1.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "code_builder",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/code_builder-4.10.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/code_builder-4.10.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "collection",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/collection-1.19.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/collection-1.19.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "convert",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/convert-3.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/convert-3.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "coverage",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/coverage-1.9.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/coverage-1.9.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "crypto",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/crypto-3.0.5",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/crypto-3.0.5",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "csslib",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/csslib-1.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/csslib-1.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "dart_style",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/dart_style-2.3.6",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/dart_style-2.3.6",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "ds_standard_features",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/ds_standard_features-0.0.1-pre+11",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/ds_standard_features-0.0.1-pre+11",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "ds_tools_testing",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/ds_tools_testing-0.0.1-pre+2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/ds_tools_testing-0.0.1-pre+2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "fake_async",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/fake_async-1.3.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/fake_async-1.3.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "file",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/file-7.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/file-7.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "fixnum",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/fixnum-1.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/fixnum-1.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "freezed_annotation",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/freezed_annotation-2.4.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/freezed_annotation-2.4.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "frontend_server_client",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/frontend_server_client-4.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/frontend_server_client-4.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "glob",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/glob-2.1.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/glob-2.1.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "graphs",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/graphs-2.3.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/graphs-2.3.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "html",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/html-0.15.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/html-0.15.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "http",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/http-1.2.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/http-1.2.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "http2",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/http2-2.3.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/http2-2.3.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "http_multi_server",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/http_multi_server-3.2.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/http_multi_server-3.2.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "http_parser",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/http_parser-4.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/http_parser-4.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "intl",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/intl-0.19.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/intl-0.19.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "intl_translation",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/intl_translation-0.20.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/intl_translation-0.20.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "io",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/io-1.0.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/io-1.0.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "js",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/js-0.7.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/js-0.7.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "json_annotation",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/json_annotation-4.9.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/json_annotation-4.9.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "lints",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/lints-4.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/lints-4.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "logging",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/logging-1.2.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/logging-1.2.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "macros",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/macros-0.1.2-main.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/macros-0.1.2-main.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "matcher",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/matcher-0.12.16+1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/matcher-0.12.16+1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "meta",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/meta-1.15.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/meta-1.15.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "mime",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/mime-1.0.5",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/mime-1.0.5",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
     {
       "name": "mockito",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/mockito-5.4.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/mockito-5.4.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "mocktail",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/mocktail-1.0.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/mocktail-1.0.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "node_preamble",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/node_preamble-2.0.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/node_preamble-2.0.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "os_detect",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/os_detect-2.0.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/os_detect-2.0.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "package_config",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/package_config-2.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/package_config-2.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "path",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/path-1.9.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/path-1.9.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "pool",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/pool-1.5.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/pool-1.5.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "protobuf",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/protobuf-3.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/protobuf-3.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "pub_semver",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/pub_semver-2.1.4",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/pub_semver-2.1.4",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "pubspec_parse",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/pubspec_parse-1.3.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/pubspec_parse-1.3.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "scratch_space",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/scratch_space-1.0.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/scratch_space-1.0.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "shelf",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/shelf-1.4.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/shelf-1.4.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "shelf_packages_handler",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/shelf_packages_handler-3.0.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/shelf_packages_handler-3.0.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "shelf_static",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/shelf_static-1.1.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/shelf_static-1.1.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "shelf_web_socket",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/shelf_web_socket-2.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/shelf_web_socket-2.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "source_gen",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/source_gen-1.5.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/source_gen-1.5.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "source_map_stack_trace",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/source_map_stack_trace-2.1.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/source_map_stack_trace-2.1.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "source_maps",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/source_maps-0.10.12",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/source_maps-0.10.12",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "source_span",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/source_span-1.10.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/source_span-1.10.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "sprintf",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/sprintf-7.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/sprintf-7.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "stack_trace",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/stack_trace-1.11.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/stack_trace-1.11.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.18"
     },
     {
       "name": "stream_channel",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/stream_channel-2.1.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/stream_channel-2.1.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
     {
       "name": "stream_transform",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/stream_transform-2.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/stream_transform-2.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "string_scanner",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/string_scanner-1.3.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/string_scanner-1.3.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.1"
     },
     {
       "name": "term_glyph",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/term_glyph-1.2.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/term_glyph-1.2.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.12"
     },
     {
       "name": "test",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/test-1.25.8",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/test-1.25.8",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "test_api",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/test_api-0.7.3",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/test_api-0.7.3",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "test_core",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/test_core-0.6.5",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/test_core-0.6.5",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "test_reporter",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/test_reporter-1.1.3",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/test_reporter-1.1.3",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "timing",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/timing-1.0.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/timing-1.0.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.14"
     },
     {
       "name": "typed_data",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/typed_data-1.3.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/typed_data-1.3.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "universal_io",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/universal_io-2.2.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.17"
     },
     {
       "name": "uuid",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/uuid-4.4.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/uuid-4.4.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "vm_service",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/vm_service-14.2.5",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/vm_service-14.2.5",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "watcher",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/watcher-1.1.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/watcher-1.1.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "web",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/web-1.0.0",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/web-1.0.0",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.4"
     },
     {
       "name": "web_socket",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/web_socket-0.1.6",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/web_socket-0.1.6",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "web_socket_channel",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/web_socket_channel-3.0.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
     {
       "name": "webkit_inspection_protocol",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/webkit_inspection_protocol-1.2.1",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/webkit_inspection_protocol-1.2.1",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "3.0"
     },
     {
       "name": "yaml",
+<<<<<<< HEAD
       "rootUri": "file:///Users/user/.pub-cache/hosted/pub.dev/yaml-3.1.2",
+=======
+      "rootUri": "file:///Users/farimahpirahmadi/.pub-cache/hosted/pub.dev/yaml-3.1.2",
+>>>>>>> 8f39b92 (added pubspec to root)
       "packageUri": "lib/",
       "languageVersion": "2.19"
     },
@@ -578,8 +958,17 @@
       "languageVersion": "3.4"
     }
   ],
+<<<<<<< HEAD
   "generated": "2024-09-10T07:02:46.070673Z",
   "generator": "pub",
   "generatorVersion": "3.5.2",
   "pubCache": "file:///Users/user/.pub-cache"
+=======
+  "generated": "2024-08-20T18:03:13.910840Z",
+  "generator": "pub",
+  "generatorVersion": "3.5.0",
+  "flutterRoot": "file:///Users/farimahpirahmadi/development/flutter",
+  "flutterVersion": "3.24.0",
+  "pubCache": "file:///Users/farimahpirahmadi/.pub-cache"
+>>>>>>> 8f39b92 (added pubspec to root)
 }
