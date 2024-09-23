@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'firebase_auth.dart';
 
 class FirebaseApp {
