@@ -11,7 +11,7 @@ class OAuthSelectionScreen extends StatelessWidget {
     final auth = FirebaseApp.firebaseAuth;
     await auth?.signInWithRedirect(providerUrl);
     try {
-      final userInfo = await auth?.signInWithRedirectResult(providerUrl);
+      final userInfo = await auth?.handleRedirectResult();
       print('User info: $userInfo');
     } catch (e) {
       print('Error: $e');
