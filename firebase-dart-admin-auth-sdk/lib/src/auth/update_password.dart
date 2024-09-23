@@ -20,7 +20,7 @@ class UpdatePassword {
         "returnSecureToken": true
       });
 
-      User user = User.fromJson(response.body);
+      User user = User.fromJson(response);
       auth.updateCurrentUser(user);
       return user;
     } catch (e) {
