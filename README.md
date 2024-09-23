@@ -6,21 +6,17 @@ Firebase Dart Admin Auth SDK is designed to provide select out of the box featur
 
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 0159ae3 (update readme)
-| Method                                       | Supported |
-|--------------------------------------------- |-----------|
+| Method                        | Supported                |
+|-------------------------------|--------------------------|
 | FirebaseApp.getAuth                          | ❌        |
 | FirebaseApp.initializeAuth                   | ❌        |
 | FirebaseStorage.getStorage                   | ❌        |
-| FirebaseAuth.applyActionCode                 | ❌        |
+| FirebaseAuth.applyActionCode                 | ✅        |
 | FirebaseAuth.beforeAuthStateChanged          | ❌        |
 | FirebaseAuth.checkActionCode                 | ❌        |
 | FirebaseAuth.confirmPasswordReset            | ❌        |
-| FirebaseAuth.connectAuthEmulator             | ❌        |
-| FirebaseAuth.createUserWithEmailAndPassword  | ❌        |
+| FirebaseAuth.connectAuthEmulator             | ✅        |
+| FirebaseAuth.createUserWithEmailAndPassword  | ✅        |
 | FirebaseAuth.fetchSignInMethodsForEmail      | ❌        |
 | FirebaseAuth.getMultiFactorResolver          | ❌        |
 | FirebaseAuth.getRedirectResult               | ❌        |
@@ -28,18 +24,18 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.isSignInWithEmailLink           | ❌        |
 | FirebaseAuth.onAuthStateChanged              | ❌        |
 | FirebaseAuth.onIdTokenChanged                | ❌        |
-| FirebaseAuth.revokeAccessToken               | ❌        |
+| FirebaseAuth.revokeAccessToken               | ✅        |
 | FirebaseAuth.sendPasswordResetEmail          | ❌        |
-| FirebaseAuth.sendSignInLinkToEmail           | ✅        |
-| FirebaseAuth.setLanguageCode                 | ❌        |
+| FirebaseAuth.sendSignInLinkToEmail           | ❌        |
+| FirebaseAuth.setLanguageCode                 | ✅        |
 | FirebaseAuth.setPersistence                  | ❌        |
 | FirebaseAuth.signInAnonymously               | ❌        |
 | FirebaseAuth.signInWithCredential            | ✅        |
-| FirebaseAuth.signInWithCustomToken           | ✅        |
+| FirebaseAuth.signInWithCustomToken           | ❌        |
 | FirebaseAuth.signInWithEmailAndPassword      | ✅        |
-| FirebaseAuth.signInWithEmailLink             | ✅        |
-| FirebaseAuth.signInWithPhoneNumber           | ✅        |
-| FirebaseAuth.signInWithPopup                 | ✅        |
+| FirebaseAuth.signInWithEmailLink             | ❌        |
+| FirebaseAuth.signInWithPhoneNumber           | ❌        |
+| FirebaseAuth.signInWithPopup                 | ❌        |
 | FirebaseAuth.signInWithRedirect              | ❌        |
 | FirebaseAuth.signOut                         | ❌        |
 | FirebaseAuth.updateCurrentUser               | ❌        |
@@ -58,74 +54,15 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.reauthenticateWithPhoneNumber   | ❌        |
 | FirebaseUser.reauthenticateWithPopUp         | ❌        |
 | FirebaseUser.reauthenticateWithRedirect      | ❌        |
-| FirebaseUser.reload                          | ❌        |
-| FirebaseUser.sendEmailVerification           | ❌        |
-| FirebaseUser.unlink                          | ❌        |
+| FirebaseUser.reload                          | ✅        |
+| FirebaseUser.sendEmailVerification           | ✅        |
+| FirebaseUser.unlink                          | ✅        |
 | FirebaseUser.updateEmail                     | ❌        |
-| FirebaseUser.updatePassword                  | ❌        |
+| FirebaseUser.updatePassword                  | ✅        |
 | FirebaseUser.updatePhoneNumber               | ❌        |
 | FirebaseUser.updateProfile                   | ❌        |
 | FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
 | FirebaseUserCredential.getAdditionalUserInfo | ❌        |
-=======
-| Method | Supported |
-|----|----|
-| FirebaseApp.getAuth | ❌ |
-| FirebaseApp.initializeAuth | ❌ |
-| FirebaseStorage.getStorage | ❌ |
-| FirebaseAuth.applyActionCode | ✅ |
-| FirebaseAuth.beforeAuthStateChanged | ❌ |
-| FirebaseAuth.checkActionCode | ❌ |
-| FirebaseAuth.confirmPasswordReset | ❌ |
-| FirebaseAuth.connectAuthEmulator | ✅ |
-| FirebaseAuth.createUserWithEmailAndPassword | ✅ |
-| FirebaseAuth.fetchSignInMethodsForEmail | ❌ |
-| FirebaseAuth.getMultiFactorResolver | ❌ |
-| FirebaseAuth.getRedirectResult | ❌ |
-| FirebaseAuth.initializeRecaptchaConfig | ❌ |
-| FirebaseAuth.isSignInWithEmailLink | ❌ |
-| FirebaseAuth.onAuthStateChanged | ❌ |
-| FirebaseAuth.onIdTokenChanged | ❌ |
-| FirebaseAuth.revokeAccessToken | ✅ |
-| FirebaseAuth.sendPasswordResetEmail | ❌ |
-| FirebaseAuth.sendSignInLinkToEmail | ❌ |
-| FirebaseAuth.setLanguageCode | ✅ |
-| FirebaseAuth.setPersistence | ❌ |
-| FirebaseAuth.signInAnonymously | ❌ |
-| FirebaseAuth.signInWithCredential | ✅ |
-| FirebaseAuth.signInWithCustomToken | ❌ |
-| FirebaseAuth.signInWithEmailAndPassword | ✅ |
-| FirebaseAuth.signInWithEmailLink | ❌ |
-| FirebaseAuth.signInWithPhoneNumber | ❌ |
-| FirebaseAuth.signInWithPopup | ❌ |
-| FirebaseAuth.signInWithRedirect | ❌ |
-| FirebaseAuth.signOut | ❌ |
-| FirebaseAuth.updateCurrentUser | ❌ |
-| FirebaseAuth.useDeviceLanguage | ❌ |
-| FirebaseAuth.verifyPasswordResetCode | ❌ |
-| FirebaseLink.parseActionCodeURL | ❌ |
-| FirebaseUser.deleteUser | ❌ |
-| FirebaseUser.getIdToken | ❌ |
-| FirebaseUser.getIdTokenResult | ❌ |
-| FirebaseUser.linkWithCredential | ❌ |
-| FirebaseUser.linkWithPhoneNumber | ❌ |
-| FirebaseUser.linkWithPopup | ❌ |
-| FirebaseUser.linkWithRedirect | ❌ |
-| FirebaseUser.multiFactor | ❌ |
-| FirebaseUser.reauthenticateWithCredential | ❌ |
-| FirebaseUser.reauthenticateWithPhoneNumber | ❌ |
-| FirebaseUser.reauthenticateWithPopUp | ❌ |
-| FirebaseUser.reauthenticateWithRedirect | ❌ |
-| FirebaseUser.reload | ✅ |
-| FirebaseUser.sendEmailVerification | ✅ |
-| FirebaseUser.unlink | ✅ |
-| FirebaseUser.updateEmail | ❌ |
-| FirebaseUser.updatePassword | ✅ |
-| FirebaseUser.updatePhoneNumber | ❌ |
-| FirebaseUser.updateProfile | ❌ |
-| FirebaseUser.verifyBeforeUpdateEmail | ❌ |
-| FirebaseUserCredential.getAdditionalUserInfo | ❌ |
->>>>>>> a0afb44 (update features checklist)
 
 
 ## Available Versions
@@ -164,14 +101,6 @@ Each tier offers escalating levels of support, from community forums to direct a
 * Free support provided by the Firebase Dart Admin Auth SDK community.
 
 ### Standard Support
-<<<<<<< HEAD
-- $10/month - Billed Annually.
-- 10 business days (Monday-Friday) IRSLA
-- [Subscribe-Coming Soon]()
-- **Features**:
-  - Unlimited Support Tickets with Guaranteed RSLA.
-  - One Open/Active Ticket at a time.
-=======
 
 * $10/month - Billed Annually.
 * 10 business days (Monday-Friday) IRSLA
@@ -179,7 +108,6 @@ Each tier offers escalating levels of support, from community forums to direct a
 * **Features**:
   * Unlimited Support Tickets with Guaranteed RSLA.
   * One Open/Active Ticket at a time.
->>>>>>> a0afb44 (update features checklist)
 
 ### Enhanced Support
 
