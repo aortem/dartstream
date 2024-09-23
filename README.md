@@ -3,8 +3,10 @@
 Firebase Dart Admin Auth SDK is designed to provide select out of the box features of Firebase in Dart.  Both low level and high level abstractions are provided.
 
 ## Features
+
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
 
+<<<<<<< HEAD
 | Method                                       | Supported |
 |--------------------------------------------- |-----------|
 | FirebaseApp.getAuth                          | ❌        |
@@ -62,11 +64,72 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.updateProfile                   | ❌        |
 | FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
 | FirebaseUserCredential.getAdditionalUserInfo | ❌        |
+=======
+| Method | Supported |
+|----|----|
+| FirebaseApp.getAuth | ❌ |
+| FirebaseApp.initializeAuth | ❌ |
+| FirebaseStorage.getStorage | ❌ |
+| FirebaseAuth.applyActionCode | ✅ |
+| FirebaseAuth.beforeAuthStateChanged | ❌ |
+| FirebaseAuth.checkActionCode | ❌ |
+| FirebaseAuth.confirmPasswordReset | ❌ |
+| FirebaseAuth.connectAuthEmulator | ✅ |
+| FirebaseAuth.createUserWithEmailAndPassword | ✅ |
+| FirebaseAuth.fetchSignInMethodsForEmail | ❌ |
+| FirebaseAuth.getMultiFactorResolver | ❌ |
+| FirebaseAuth.getRedirectResult | ❌ |
+| FirebaseAuth.initializeRecaptchaConfig | ❌ |
+| FirebaseAuth.isSignInWithEmailLink | ❌ |
+| FirebaseAuth.onAuthStateChanged | ❌ |
+| FirebaseAuth.onIdTokenChanged | ❌ |
+| FirebaseAuth.revokeAccessToken | ✅ |
+| FirebaseAuth.sendPasswordResetEmail | ❌ |
+| FirebaseAuth.sendSignInLinkToEmail | ❌ |
+| FirebaseAuth.setLanguageCode | ✅ |
+| FirebaseAuth.setPersistence | ❌ |
+| FirebaseAuth.signInAnonymously | ❌ |
+| FirebaseAuth.signInWithCredential | ✅ |
+| FirebaseAuth.signInWithCustomToken | ❌ |
+| FirebaseAuth.signInWithEmailAndPassword | ✅ |
+| FirebaseAuth.signInWithEmailLink | ❌ |
+| FirebaseAuth.signInWithPhoneNumber | ❌ |
+| FirebaseAuth.signInWithPopup | ❌ |
+| FirebaseAuth.signInWithRedirect | ❌ |
+| FirebaseAuth.signOut | ❌ |
+| FirebaseAuth.updateCurrentUser | ❌ |
+| FirebaseAuth.useDeviceLanguage | ❌ |
+| FirebaseAuth.verifyPasswordResetCode | ❌ |
+| FirebaseLink.parseActionCodeURL | ❌ |
+| FirebaseUser.deleteUser | ❌ |
+| FirebaseUser.getIdToken | ❌ |
+| FirebaseUser.getIdTokenResult | ❌ |
+| FirebaseUser.linkWithCredential | ❌ |
+| FirebaseUser.linkWithPhoneNumber | ❌ |
+| FirebaseUser.linkWithPopup | ❌ |
+| FirebaseUser.linkWithRedirect | ❌ |
+| FirebaseUser.multiFactor | ❌ |
+| FirebaseUser.reauthenticateWithCredential | ❌ |
+| FirebaseUser.reauthenticateWithPhoneNumber | ❌ |
+| FirebaseUser.reauthenticateWithPopUp | ❌ |
+| FirebaseUser.reauthenticateWithRedirect | ❌ |
+| FirebaseUser.reload | ✅ |
+| FirebaseUser.sendEmailVerification | ✅ |
+| FirebaseUser.unlink | ✅ |
+| FirebaseUser.updateEmail | ❌ |
+| FirebaseUser.updatePassword | ✅ |
+| FirebaseUser.updatePhoneNumber | ❌ |
+| FirebaseUser.updateProfile | ❌ |
+| FirebaseUser.verifyBeforeUpdateEmail | ❌ |
+| FirebaseUserCredential.getAdditionalUserInfo | ❌ |
+>>>>>>> a0afb44 (update features checklist)
 
 
 ## Available Versions
 
 Firebase Dart Admin Auth SDK is available in two versions to cater to different needs and scales:
+
+
 
 1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
 2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
@@ -87,43 +150,55 @@ We welcome contributions of all forms from the community! If you're interested i
 
 Firebase Dart Admin Auth SDK offers various support tiers for our open-source products with an Initial Response Service Level Agreement (IRSLA):
 
-- **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
-- **Enhanced Support**: $100/month with a 72-hour IRSLA, billed annually.
+* **Community Support**: Free, community-driven support with no guaranteed response time.
+* **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
+* **Enhanced Support**: $100/month with a 72-hour IRSLA, billed annually.
 
 Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
 
 ### Community Support
-- Free support provided by the Firebase Dart Admin Auth SDK community.
+
+* Free support provided by the Firebase Dart Admin Auth SDK community.
 
 ### Standard Support
+<<<<<<< HEAD
 - $10/month - Billed Annually.
 - 10 business days (Monday-Friday) IRSLA
 - [Subscribe-Coming Soon]()
 - **Features**:
   - Unlimited Support Tickets with Guaranteed RSLA.
   - One Open/Active Ticket at a time.
+=======
+
+* $10/month - Billed Annually.
+* 10 business days (Monday-Friday) IRSLA
+* [Subscribe-Coming Soon]()
+* **Features**:
+  * Unlimited Support Tickets with Guaranteed RSLA.
+  * One Open/Active Ticket at a time.
+>>>>>>> a0afb44 (update features checklist)
 
 ### Enhanced Support
-- $100/month - Billed Annually.
-- 72-hour IRSLA.
-- [Subscribe-Coming Soon]()
-- **Features**:
-  - Everything in Standard Support Plus.
-  - Access to Roadmap.
-  - Feature Request Upvoting (Priority feature request).
-  - One Open/Active Ticket at a time.
+
+* $100/month - Billed Annually.
+* 72-hour IRSLA.
+* [Subscribe-Coming Soon]()
+* **Features**:
+  * Everything in Standard Support Plus.
+  * Access to Roadmap.
+  * Feature Request Upvoting (Priority feature request).
+  * One Open/Active Ticket at a time.
 
   ### Enterprise Support (Beta)
-- $450/month - Billed Annually
-- 48-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/cN2fZU5Db3Fx4ko6ot)
-- **Features**:
-  - Everything in Enhanced Support Plus:
-  - Comprehensive support for a broader range of Dart backend development open source projects.
-  - Premium access to our exclusive enterprise customer forum.
-  - Early access to cutting-edge features.
-  - Exclusive access to Partner/Reseller/Channel Program.
+* $450/month - Billed Annually
+* 48-hour IRSLA.
+* [Subscribe](https://buy.stripe.com/cN2fZU5Db3Fx4ko6ot)
+* **Features**:
+  * Everything in Enhanced Support Plus:
+  * Comprehensive support for a broader range of Dart backend development open source projects.
+  * Premium access to our exclusive enterprise customer forum.
+  * Early access to cutting-edge features.
+  * Exclusive access to Partner/Reseller/Channel Program.
 
 
 Enterprise Support is designed for businesses, agencies, and partners seeking top-tier support across a wide range of Dart backend and server-side projects.  All Open Source projects that are part of the Aortem Collective are included in the Enterprise subscription, with more projects being added soon.
