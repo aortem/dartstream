@@ -7,14 +7,9 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/set_language_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/unlink_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
@@ -46,12 +41,6 @@ class FirebaseAuth {
   late VerifyPasswordResetCodeService verifyPasswordReset;
   late ApplyActionCode applyAction;
 
-  late ReloadUser _reloadUser;
-  late SendEmailVerificationCode _sendEmailVerificationCode;
-  late SetLanguageCode _setLanguageCode;
-  late UnlinkProvider _unlinkProvider;
-  late UpdatePassword _updatePassword;
-
   // New service declarations for Sprint 2 #16 to #21
   late PasswordResetEmailService passwordResetEmail;
   late RevokeAccessTokenService revokeAccessToken;
@@ -82,12 +71,6 @@ class FirebaseAuth {
     useDeviceLanguage = UseDeviceLanguageService(auth: this);
     verifyPasswordReset = VerifyPasswordResetCodeService(auth: this);
     applyAction = ApplyActionCode(this);
-
-    _reloadUser = ReloadUser(auth: this);
-    _sendEmailVerificationCode = SendEmailVerificationCode(auth: this);
-    _setLanguageCode = SetLanguageCode(auth: this);
-    _unlinkProvider = UnlinkProvider(auth: this);
-    _updatePassword = UpdatePassword(auth: this);
 
     // New service initializations for Sprint 2 #16 to #21
     passwordResetEmail = PasswordResetEmailService(auth: this);
@@ -158,9 +141,9 @@ class FirebaseAuth {
 
   // updateCurrentUser method to automatically trigger the streams
   void updateCurrentUser(User user) {
-    currentUser = currentUser == null ? user : currentUser?.copyWith(user);
-    authStateChangedController.add(currentUser);
-    idTokenChangedController.add(currentUser);
+    currentUser = user;
+    authStateChangedController.add(user);
+    idTokenChangedController.add(user);
   }
 
   Future<UserCredential> signInWithEmailAndPassword(
@@ -278,38 +261,6 @@ class FirebaseAuth {
 
   Future<bool> applyActionCode(String actionCode) {
     return applyAction.applyActionCode(actionCode);
-  }
-
-  Future<User> reloadUser() {
-    return _reloadUser.reloadUser(
-      currentUser?.idToken,
-    );
-  }
-
-  Future<void> sendEmailVerificationCode() {
-    return _sendEmailVerificationCode
-        .sendEmailVerificationCode(currentUser?.idToken);
-  }
-
-  Future<User> setLanguageCode(String languageCode) {
-    return _setLanguageCode.setLanguageCode(
-      currentUser?.idToken,
-      languageCode,
-    );
-  }
-
-  Future<User> unlinkProvider(String providerId) {
-    return _unlinkProvider.unlinkProvider(
-      currentUser?.idToken,
-      providerId,
-    );
-  }
-
-  Future<User> updatePassword(String newPassowrd) {
-    return _updatePassword.updatePassword(
-      newPassowrd,
-      currentUser?.idToken,
-    );
   }
 
   // New methods with complete functionality Sprint 2 #16 to #21
