@@ -5,6 +5,7 @@ Firebase Dart Admin Auth SDK is designed to provide select out of the box featur
 ## Features
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
 
+<<<<<<< HEAD
 | Method                                       | Supported |
 |--------------------------------------------- |-----------|
 | FirebaseApp.getAuth                          | ❌        |
@@ -16,6 +17,19 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.confirmPasswordReset            | ❌        |
 | FirebaseAuth.connectAuthEmulator             | ❌        |
 | FirebaseAuth.createUserWithEmailAndPassword  | ❌        |
+=======
+| Method                        | Supported                |
+|-------------------------------|--------------------------|
+| FirebaseApp.getAuth                          | ❌        |
+| FirebaseApp.initializeAuth                   | ❌        |
+| FirebaseStorage.getStorage                   | ❌        |
+| FirebaseAuth.applyActionCode                 | ✅        |
+| FirebaseAuth.beforeAuthStateChanged          | ❌        |
+| FirebaseAuth.checkActionCode                 | ❌        |
+| FirebaseAuth.confirmPasswordReset            | ❌        |
+| FirebaseAuth.connectAuthEmulator             | ✅        |
+| FirebaseAuth.createUserWithEmailAndPassword  | ✅        |
+>>>>>>> cf1f55a (chore: README formating)
 | FirebaseAuth.fetchSignInMethodsForEmail      | ❌        |
 | FirebaseAuth.getMultiFactorResolver          | ❌        |
 | FirebaseAuth.getRedirectResult               | ❌        |
@@ -23,6 +37,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.isSignInWithEmailLink           | ❌        |
 | FirebaseAuth.onAuthStateChanged              | ❌        |
 | FirebaseAuth.onIdTokenChanged                | ❌        |
+<<<<<<< HEAD
 | FirebaseAuth.revokeAccessToken               | ❌        |
 | FirebaseAuth.sendPasswordResetEmail          | ❌        |
 | FirebaseAuth.sendSignInLinkToEmail           | ✅        |
@@ -35,6 +50,20 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.signInWithEmailLink             | ✅        |
 | FirebaseAuth.signInWithPhoneNumber           | ✅        |
 | FirebaseAuth.signInWithPopup                 | ✅        |
+=======
+| FirebaseAuth.revokeAccessToken               | ✅        |
+| FirebaseAuth.sendPasswordResetEmail          | ❌        |
+| FirebaseAuth.sendSignInLinkToEmail           | ❌        |
+| FirebaseAuth.setLanguageCode                 | ✅        |
+| FirebaseAuth.setPersistence                  | ❌        |
+| FirebaseAuth.signInAnonymously               | ❌        |
+| FirebaseAuth.signInWithCredential            | ✅        |
+| FirebaseAuth.signInWithCustomToken           | ❌        |
+| FirebaseAuth.signInWithEmailAndPassword      | ✅        |
+| FirebaseAuth.signInWithEmailLink             | ❌        |
+| FirebaseAuth.signInWithPhoneNumber           | ❌        |
+| FirebaseAuth.signInWithPopup                 | ❌        |
+>>>>>>> cf1f55a (chore: README formating)
 | FirebaseAuth.signInWithRedirect              | ❌        |
 | FirebaseAuth.signOut                         | ❌        |
 | FirebaseAuth.updateCurrentUser               | ❌        |
@@ -53,11 +82,19 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.reauthenticateWithPhoneNumber   | ❌        |
 | FirebaseUser.reauthenticateWithPopUp         | ❌        |
 | FirebaseUser.reauthenticateWithRedirect      | ❌        |
+<<<<<<< HEAD
 | FirebaseUser.reload                          | ❌        |
 | FirebaseUser.sendEmailVerification           | ❌        |
 | FirebaseUser.unlink                          | ❌        |
 | FirebaseUser.updateEmail                     | ❌        |
 | FirebaseUser.updatePassword                  | ❌        |
+=======
+| FirebaseUser.reload                          | ✅        |
+| FirebaseUser.sendEmailVerification           | ✅        |
+| FirebaseUser.unlink                          | ✅        |
+| FirebaseUser.updateEmail                     | ❌        |
+| FirebaseUser.updatePassword                  | ✅        |
+>>>>>>> cf1f55a (chore: README formating)
 | FirebaseUser.updatePhoneNumber               | ❌        |
 | FirebaseUser.updateProfile                   | ❌        |
 | FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
