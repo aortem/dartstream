@@ -11,18 +11,17 @@ class FirebaseDeleteUser {
 
   Future<void> deleteUser(User user) async {
     try {
-      final idToken = user.idToken; // Force token refresh
-      log("response code ${user.idToken}");
-      log("uid${user.uid}");
+      // Fetch a fresh ID token
+      final idToken = await user.getIdToken(true); // Force token refresh
+
       if (idToken == null || idToken.isEmpty) {
         log('Error: ID Token is null or empty.');
         return;
       }
-      //
+
+      // Make the delete request
       final response = await auth.performRequest('delete', {
-        // 'idToken': idToken,
-        "targetProjectId": FirebaseApp.firebaseAuth?.projectId,
-        'localId': user.uid
+        'idToken': idToken,
       });
       log("response code $response");
 

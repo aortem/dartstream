@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
+
 import 'firebase_auth.dart';
+import 'user.dart';
 
 class FirebaseApp {
   ///Instance of the Firebase App
@@ -10,6 +11,17 @@ class FirebaseApp {
   final String? _apiKey;
   //The ID of the project
   final String? _projectId;
+
+  User? _currentUser;
+
+  // method to set the current user
+  void setCurrentUser(User? user) {
+    _currentUser = user;
+  }
+
+  User? getCurrentUser() {
+    return _currentUser;
+  }
 
   static FirebaseAuth? firebaseAuth;
 

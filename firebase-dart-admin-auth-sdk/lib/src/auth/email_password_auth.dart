@@ -19,7 +19,7 @@ class EmailPasswordAuth {
     if (response.statusCode == 200) {
       final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);
-      log("current user 123 ${userCredential.user.idToken}");
+      log("current user 123 ${userCredential.user}");
       FirebaseApp.instance.setCurrentUser(userCredential.user);
 
       return userCredential;
