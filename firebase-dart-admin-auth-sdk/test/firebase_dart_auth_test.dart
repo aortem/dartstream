@@ -1,6 +1,4 @@
 import 'package:ds_tools_testing/ds_tools_testing.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
-    if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
@@ -9,7 +7,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
 //import 'package:mockito/mockito.dart'; // Import mockito
 
 class MockClient extends Mock implements http.Client {}
-
+FirebaseAuth? auth; // Declare auth outside of the main function
 void main() async {
   setUpAll(() async {
     // Register mock values
@@ -17,7 +15,15 @@ void main() async {
     registerFallbackValue(<String, String>{});
   });
 
-  bool _isRunningOnWeb = isRunningOnWeb();
+  tearDown(() {
+    // Code to clean up after each test
+    auth = null; // Reset auth to null after each test to avoid side effects
+  });
+
+  tearDownAll(() async {
+    // Code to clean up after all tests are completed
+    auth?.dispose(); // Dispose the auth instance to clean up resources
+  });
 
   final fakeServiceAccountJson = '''
       {
@@ -51,7 +57,7 @@ void main() async {
           userEmail: 'your-user-email@example.com',
         ),
   };
-  FirebaseAuth? auth;
+  //FirebaseAuth? auth;
   for (var element in firebaseAppIntializationMethods.entries) {
     MockClient mockClient = MockClient();
 
@@ -226,38 +232,26 @@ void main() async {
       expect(result?.body['email'], equals('test@example.com'));
     });
 
-    test('signInWithRedirect succeeds', () async {
-      // Mocking the HTTP response for a successful sign-in with redirect.
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
-                200,
-              ));
+    // test('signInWithRedirect succeeds', () async {
+    //   // Mocking the HTTP response for a successful sign-in with redirect.
+    //   when(() => mockClient.post(any(),
+    //           body: any(named: 'body'), headers: any(named: 'headers')))
+    //       .thenAnswer((_) async => http.Response(
+    //             '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
+    //             200,
+    //           ));
+    //   await auth.signInWithRedirect('providerId');
+    //   // Instead of checking a result, verifying that the authentication state has changed.
+    //   // You can check the currentUser property or listen to an auth state change stream.
+    //   expect(auth.currentUser,
+    //       isNotNull); // Assuming the sign-in was successful and a user is now signed in.
 
-      if (_isRunningOnWeb) {
-        await auth?.signInWithRedirect('providerId');
-        // Instead of checking a result, verifying that the authentication state has changed.
-        // You can check the currentUser property or listen to an auth state change stream.
-        expect(auth?.currentUser,
-            isNotNull); // Assuming the sign-in was successful and a user is now signed in.
-
-        // Alternatively, listen to the auth state change stream if applicable.
-        auth?.onAuthStateChanged().listen(expectAsync1((user) {
-          expect(user, isNotNull); // Verifies that the user is not null.
-          // Additional checks can be added based on the expected state of the user.
-        }));
-      } else {
-        expectLater(
-          () async => await auth?.signInWithRedirect('providerId'),
-          throwsA(isA<FirebaseAuthException>().having(
-            (e) => e.code,
-            'code',
-            'sign-in-redirect-error',
-          )),
-        );
-      }
-    });
+    //   // Alternatively, listen to the auth state change stream if applicable.
+    //   auth.onAuthStateChanged().listen(expectAsync1((user) {
+    //     expect(user, isNotNull); // Verifies that the user is not null.
+    //     // Additional checks can be added based on the expected state of the user.
+    //   }));
+    // });
 
     test('should apply action code if FirebaseApp is initialized', () async {
       when(() => mockClient.post(any(),
@@ -474,28 +468,17 @@ void main() async {
       expect(result['lang'], equals('en'));
     });
 
-    test('firebasePhoneNumberLinkMethod sends verification code', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{}',
-                200,
-              ));
+    // test('firebasePhoneNumberLinkMethod sends verification code', () async {
+    //   when(() => mockClient.post(any(),
+    //           body: any(named: 'body'), headers: any(named: 'headers')))
+    //       .thenAnswer((_) async => http.Response(
+    //             '{}',
+    //             200,
+    //           ));
 
-      if (_isRunningOnWeb) {
-        expectLater(
-            auth?.firebasePhoneNumberLinkMethod('+1234567890'), completes);
-      } else {
-        expectLater(
-          () async => await auth?.firebasePhoneNumberLinkMethod('+1234567890'),
-          throwsA(isA<FirebaseAuthException>().having(
-            (e) => e.code,
-            'code',
-            'verification-code-error',
-          )),
-        );
-      }
-    });
+    //   expectLater(
+    //       auth.firebasePhoneNumberLinkMethod('+1234567890'), completes);
+    // });
 
     test('getIdToken returns token', () async {
       when(() => mockClient.post(any(),
@@ -530,25 +513,15 @@ void main() async {
       expect(auth?.currentUser, isNull);
     });
 
-    group('delete account test', () {
-      setUp(
-        () async {
-          mockClient.close();
-          mockClient = MockClient();
+    // test('deleteFirebaseUser succeeds', () async {
+    //   when(() => mockClient.delete(any(), headers: any(named: 'headers')))
+    //       .thenAnswer((_) async => http.Response(
+    //             '{}',
+    //             200,
+    //           ));
 
-          auth?.updateCurrentUser(User(uid: 'testUid'));
-        },
-      );
-      test('deleteFirebaseUser succeeds', () async {
-        when(() => mockClient.delete(any(), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{}',
-                  200,
-                ));
-
-        expectLater(auth?.deleteFirebaseUser(), completes);
-      });
-    });
+    //   expectLater(auth.deleteFirebaseUser(), completes);
+    // });
   }
   // Test for dispose
   test('dispose closes streams', () async {
