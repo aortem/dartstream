@@ -5,17 +5,17 @@ Firebase Dart Admin Auth SDK is designed to provide select out of the box featur
 ## Features
 This implementation does not yet support all functionalities of the firebase authentication service. Here is a list of functionalities with the current support status:
 
-| Method                        | Supported                |
-|-------------------------------|--------------------------|
+| Method                                       | Supported |
+|--------------------------------------------- |-----------|
 | FirebaseApp.getAuth                          | ❌        |
 | FirebaseApp.initializeAuth                   | ❌        |
 | FirebaseStorage.getStorage                   | ❌        |
-| FirebaseAuth.applyActionCode                 | ✅        |
+| FirebaseAuth.applyActionCode                 | ❌        |
 | FirebaseAuth.beforeAuthStateChanged          | ❌        |
 | FirebaseAuth.checkActionCode                 | ❌        |
 | FirebaseAuth.confirmPasswordReset            | ❌        |
-| FirebaseAuth.connectAuthEmulator             | ✅        |
-| FirebaseAuth.createUserWithEmailAndPassword  | ✅        |
+| FirebaseAuth.connectAuthEmulator             | ❌        |
+| FirebaseAuth.createUserWithEmailAndPassword  | ❌        |
 | FirebaseAuth.fetchSignInMethodsForEmail      | ❌        |
 | FirebaseAuth.getMultiFactorResolver          | ❌        |
 | FirebaseAuth.getRedirectResult               | ❌        |
@@ -23,18 +23,18 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.isSignInWithEmailLink           | ❌        |
 | FirebaseAuth.onAuthStateChanged              | ❌        |
 | FirebaseAuth.onIdTokenChanged                | ❌        |
-| FirebaseAuth.revokeAccessToken               | ✅        |
+| FirebaseAuth.revokeAccessToken               | ❌        |
 | FirebaseAuth.sendPasswordResetEmail          | ❌        |
-| FirebaseAuth.sendSignInLinkToEmail           | ❌        |
-| FirebaseAuth.setLanguageCode                 | ✅        |
+| FirebaseAuth.sendSignInLinkToEmail           | ✅        |
+| FirebaseAuth.setLanguageCode                 | ❌        |
 | FirebaseAuth.setPersistence                  | ❌        |
 | FirebaseAuth.signInAnonymously               | ❌        |
 | FirebaseAuth.signInWithCredential            | ✅        |
-| FirebaseAuth.signInWithCustomToken           | ❌        |
+| FirebaseAuth.signInWithCustomToken           | ✅        |
 | FirebaseAuth.signInWithEmailAndPassword      | ✅        |
-| FirebaseAuth.signInWithEmailLink             | ❌        |
-| FirebaseAuth.signInWithPhoneNumber           | ❌        |
-| FirebaseAuth.signInWithPopup                 | ❌        |
+| FirebaseAuth.signInWithEmailLink             | ✅        |
+| FirebaseAuth.signInWithPhoneNumber           | ✅        |
+| FirebaseAuth.signInWithPopup                 | ✅        |
 | FirebaseAuth.signInWithRedirect              | ❌        |
 | FirebaseAuth.signOut                         | ❌        |
 | FirebaseAuth.updateCurrentUser               | ❌        |
@@ -53,11 +53,11 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.reauthenticateWithPhoneNumber   | ❌        |
 | FirebaseUser.reauthenticateWithPopUp         | ❌        |
 | FirebaseUser.reauthenticateWithRedirect      | ❌        |
-| FirebaseUser.reload                          | ✅        |
-| FirebaseUser.sendEmailVerification           | ✅        |
-| FirebaseUser.unlink                          | ✅        |
+| FirebaseUser.reload                          | ❌        |
+| FirebaseUser.sendEmailVerification           | ❌        |
+| FirebaseUser.unlink                          | ❌        |
 | FirebaseUser.updateEmail                     | ❌        |
-| FirebaseUser.updatePassword                  | ✅        |
+| FirebaseUser.updatePassword                  | ❌        |
 | FirebaseUser.updatePhoneNumber               | ❌        |
 | FirebaseUser.updateProfile                   | ❌        |
 | FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
