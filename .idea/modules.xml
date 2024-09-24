@@ -2,14 +2,18 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/cli_util/melos_ds_cli.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/cli_util/melos_ds_cli.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_middleware/melos_ds_dartstream.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_middleware/melos_ds_dartstream.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_cli_util/melos_ds_cli.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_cli_util/melos_ds_cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_middleware/melos_ds_custom_middleware.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_middleware/melos_ds_custom_middleware.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/enhanced/core/authentication/melos_ds_enhanced_authentication_features.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/enhanced/core/authentication/melos_ds_enhanced_authentication_features.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/enhanced/melos_ds_enhanced_features.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/enhanced/melos_ds_enhanced_features.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/shelf/melos_ds_shelf.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/shelf/melos_ds_shelf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_shelf/melos_ds_shelf.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_shelf/melos_ds_shelf.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/standard/melos_ds_standard_features.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/standard/melos_ds_standard_features.iml" />
-      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/linting/melos_ds_tools_linting.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/linting/melos_ds_tools_linting.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/standard_grpc/melos_ds_standard_features_grpc.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/standard_grpc/melos_ds_standard_features_grpc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/standard_web/melos_ds_standard_features_web.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/standard_web/melos_ds_standard_features_web.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/cli/melos_ds_tools_cli.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/cli/melos_ds_tools_cli.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/general/melos_ds_tools_general.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/general/melos_ds_tools_general.iml" />
       <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/testing/melos_ds_tools_testing.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/tooling/ds_tools/testing/melos_ds_tools_testing.iml" />
+      <module fileurl="file://$PROJECT_DIR$/dartstream/backend/packages/frameworks/dartstream_flutter/example/dartstream-sample-app-flutter/melos_sample_app.iml" filepath="$PROJECT_DIR$/dartstream/backend/packages/frameworks/dartstream_flutter/example/dartstream-sample-app-flutter/melos_sample_app.iml" />
       <module fileurl="file://$PROJECT_DIR$/melos_ds_melos.iml" filepath="$PROJECT_DIR$/melos_ds_melos.iml" />
     </modules>
   </component>
