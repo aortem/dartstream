@@ -48,6 +48,7 @@ void main() async {
         FirebaseApp.initializeAppWithEnvironmentVariables(
           apiKey: 'FIREBASE_API_KEY',
           projectId: 'FIREBASE_PROJECT_ID',
+          bucketName: 'FIREBASE_STORAGE_BUCKET_NAME',
         ),
     'service_account': () => FirebaseApp.initializeAppWithServiceAccount(
           serviceAccountContent: fakeServiceAccountJson,

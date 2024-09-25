@@ -29,3 +29,4 @@ dev_dependencies:
   test: ^1.19.5
   test_reporter: any #required to generate JUnit report 
   coverage: ^1.0.3  #required to generate JUnit report 
+  http: any

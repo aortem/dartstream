@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'dart:convert';
-import 'dart:html';
+// import 'dart:html';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import '../../firebase_dart_admin_auth_sdk.dart';
 
@@ -11,8 +11,8 @@ class FirebasePhoneNumberLink {
   FirebasePhoneNumberLink({required this.auth});
 
   Future<void> sendVerificationCode(String phoneNumber) async {
-    final reCaptchaVerifier = DivElement()..id = 'recaptcha-container';
-    document.body!.append(reCaptchaVerifier);
+    // final reCaptchaVerifier = DivElement()..id = 'recaptcha-container';
+    // document.body!.append(reCaptchaVerifier);
 
     // Step 2: Wait for the user to complete the reCAPTCHA
     // This is done automatically by Firebase in the web environment
@@ -42,36 +42,36 @@ class FirebasePhoneNumberLink {
     final completer = Completer<String>();
 
     // Wait until the reCAPTCHA script is fully loaded
-    final script = ScriptElement()
-      ..src = 'https://www.google.com/recaptcha/api.js?render=explicit'
-      ..async = true
-      ..onLoad.listen((_) {
-        // Execute the reCAPTCHA when the script is loaded
-        _renderRecaptcha(siteKey, completer);
-      });
+    // final script = ScriptElement()
+    //   ..src = 'https://www.google.com/recaptcha/api.js?render=explicit'
+    //   ..async = true
+    //   ..onLoad.listen((_) {
+    //     // Execute the reCAPTCHA when the script is loaded
+    //     _renderRecaptcha(siteKey, completer);
+    //   });
 
-    document.body!.append(script);
+    // document.body!.append(script);
 
     return completer.future;
   }
 
   void _renderRecaptcha(String siteKey, Completer<String> completer) {
-    final script = ScriptElement();
-    script.text = '''
-    grecaptcha.ready(function() {
-      grecaptcha.execute('$siteKey', {action: 'submit'}).then(function(token) {
-        window.postMessage({'recaptchaToken': token}, '*');
-      });
-    });
-  ''';
-    document.body!.append(script);
+    //   final script = ScriptElement();
+    //   script.text = '''
+    //   grecaptcha.ready(function() {
+    //     grecaptcha.execute('$siteKey', {action: 'submit'}).then(function(token) {
+    //       window.postMessage({'recaptchaToken': token}, '*');
+    //     });
+    //   });
+    // ''';
+    //   document.body!.append(script);
 
     // Listen for the reCAPTCHA response
-    window.onMessage.listen((event) {
-      if (event.data != null && event.data['recaptchaToken'] != null) {
-        completer.complete(event.data['recaptchaToken']);
-      }
-    });
+    // window.onMessage.listen((event) {
+    //   if (event.data != null && event.data['recaptchaToken'] != null) {
+    //     completer.complete(event.data['recaptchaToken']);
+    //   }
+    // });
   }
 
   Future<String> _getVerificationCodeFromUser() async {

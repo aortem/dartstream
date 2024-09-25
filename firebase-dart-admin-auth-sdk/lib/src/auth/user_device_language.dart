@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:developer';
 
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -39,5 +38,6 @@ class UseDeviceLanguageService {
         message: 'Failed to set device language.',
       );
     }
+    return null;
   }
 }

@@ -8,7 +8,7 @@ import '../../shared/button.dart';
 import '../../shared/input_field.dart';
 
 class ParseActionUrl extends StatelessWidget {
-  ParseActionUrl({Key? key}) : super(key: key);
+  ParseActionUrl({super.key});
   final TextEditingController parseActionUrlController =
       TextEditingController();
 
@@ -53,42 +53,42 @@ class ParseActionUrl extends StatelessWidget {
               ),
               20.vSpace,
               parseUrlresult == null
-                  ? SizedBox()
+                  ? const SizedBox()
                   : Column(
                       children: [
                         Row(
                           children: [
-                            Text('code'),
+                            const Text('code'),
                             Text(parseUrlresult['code'])
                           ],
                         ),
                         Row(
                           children: [
-                            Text('apiKey'),
+                            const Text('apiKey'),
                             Text(parseUrlresult['apiKey'])
                           ],
                         ),
                         Row(
                           children: [
-                            Text('mode'),
+                            const Text('mode'),
                             Text(parseUrlresult['mode'])
                           ],
                         ),
                         Row(
                           children: [
-                            Text('continueUrl'),
+                            const Text('continueUrl'),
                             Text(parseUrlresult['continueUrl'])
                           ],
                         ),
                         Row(
                           children: [
-                            Text('languageCode'),
+                            const Text('languageCode'),
                             Text(parseUrlresult['languageCode'])
                           ],
                         ),
                         Row(
                           children: [
-                            Text('clientId'),
+                            const Text('clientId'),
                             Text(parseUrlresult['clientId'])
                           ],
                         ),

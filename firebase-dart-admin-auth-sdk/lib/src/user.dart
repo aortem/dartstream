@@ -2,6 +2,7 @@
 //added isAnonymous getter to determine if the user is signed in anonymously
 //Added getIdToken method for token management
 //added toMap method for easy serialization
+
 import 'id_token_result_model.dart';
 
 class User {
