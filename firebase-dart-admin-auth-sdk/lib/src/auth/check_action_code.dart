@@ -1,8 +1,8 @@
 import 'dart:convert';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class CheckActionCodeService {
-  final dynamic auth;
+  final FirebaseAuth auth;
 
   CheckActionCodeService({required this.auth});
 
@@ -42,14 +42,17 @@ class CheckActionCodeService {
 
 class ActionCodeInfo {
   final String operation;
-  final String data;
+  final Map<String, dynamic> data;
 
   ActionCodeInfo({required this.operation, required this.data});
 
   factory ActionCodeInfo.fromJson(Map<String, dynamic> json) {
     return ActionCodeInfo(
-      operation: json['operation'] ?? '',
-      data: json['data'] ?? '',
+      operation: json['requestType'],
+      data: {
+        'email': json['email'],
+        'newEmail': json['newEmail'],
+      }..removeWhere((key, value) => value == null),
     );
   }
 }

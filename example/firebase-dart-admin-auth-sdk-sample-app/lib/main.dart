@@ -15,8 +15,8 @@ void main() async {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
       apiKey: 'YOUR_API_KEY', // 'YOUR_API_KEY'
-      projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
       authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
+      projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
       messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
       bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
     );

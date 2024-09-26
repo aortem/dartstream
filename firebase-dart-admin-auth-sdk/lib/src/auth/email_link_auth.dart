@@ -1,7 +1,8 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
+import 'dart:developer' as developer;
 
 class EmailLinkAuth {
   final FirebaseAuth auth;
@@ -34,8 +35,12 @@ class EmailLinkAuth {
 
       final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);
+      developer.log('Signed in successfully with email link',
+          name: 'EmailLinkAuth');
       return userCredential;
     } catch (e) {
+      developer.log('Failed to sign in with email link: $e',
+          name: 'EmailLinkAuth', error: e);
       throw FirebaseAuthException(
         code: 'email-link-sign-in-failed',
         message: 'Failed to sign in with email link: ${e.toString()}',
@@ -44,17 +49,30 @@ class EmailLinkAuth {
   }
 
   bool isSignInWithEmailLink(String emailLink) {
-    final Uri? uri = Uri.tryParse(emailLink);
-    if (uri == null) return false;
+    try {
+      final uri = Uri.parse(emailLink);
+      final mode = uri.queryParameters['mode'];
+      final oobCode = uri.queryParameters['oobCode'];
 
-    final String? mode = uri.queryParameters['mode'];
-    final String? oobCode = uri.queryParameters['oobCode'];
-
-    return mode == 'signIn' && oobCode != null && oobCode.isNotEmpty;
+      return mode == 'signIn' && oobCode != null && oobCode.isNotEmpty;
+    } catch (e) {
+      developer.log('Invalid email link format: $e',
+          name: 'EmailLinkAuth', error: e);
+      return false;
+    }
   }
 
   String _extractOobCode(String emailLink) {
-    final uri = Uri.parse(emailLink);
-    return uri.queryParameters['oobCode'] ?? '';
+    try {
+      final uri = Uri.parse(emailLink);
+      return uri.queryParameters['oobCode'] ?? '';
+    } catch (e) {
+      developer.log('Failed to extract oobCode: $e',
+          name: 'EmailLinkAuth', error: e);
+      throw FirebaseAuthException(
+        code: 'invalid-email-link',
+        message: 'Failed to extract oobCode from email link.',
+      );
+    }
   }
 }

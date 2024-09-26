@@ -12,6 +12,17 @@ class FacebookAuthProvider implements AuthProvider {
 class GoogleAuthProvider implements AuthProvider {
   @override
   String get providerId => 'google.com';
+
+  static OAuthCredential credential({
+    String? accessToken,
+    String? idToken,
+  }) {
+    return OAuthCredential(
+      providerId: 'google.com',
+      accessToken: accessToken,
+      idToken: idToken,
+    );
+  }
 }
 
 class TwitterAuthProvider implements AuthProvider {

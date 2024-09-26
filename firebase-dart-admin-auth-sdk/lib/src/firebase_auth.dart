@@ -287,7 +287,7 @@ class FirebaseAuth {
   Future<ConfirmationResult> signInWithPhoneNumber(
     String phoneNumber,
     ApplicationVerifier appVerifier,
-  ) async {
+  ) {
     return phone.signInWithPhoneNumber(phoneNumber, appVerifier);
   }
 
@@ -305,9 +305,8 @@ class FirebaseAuth {
   //   }
   // }
 
-  Future<UserCredential> signInWithEmailLink(
-      String email, String emailLinkUrl) {
-    return emailLink.signInWithEmailLink(email, emailLinkUrl);
+  Future<UserCredential> signInWithEmailLink(String email, String emailLink) {
+    return this.emailLink.signInWithEmailLink(email, emailLink);
   }
 
   Future<void> signOut() async {
@@ -805,7 +804,16 @@ class FirebaseAuth {
 
   Future<ActionCodeInfo> checkActionCode(String code) async {
     try {
-      return await checkActionCodeService.checkActionCode(code);
+      final result = await checkActionCodeService.checkActionCode(code);
+      if (result.operation == 'PASSWORD_RESET') {
+        // If it's a password reset, we'll handle it specially
+        return result;
+      } else {
+        throw FirebaseAuthException(
+          code: 'invalid-action',
+          message: 'The action code is not for password reset.',
+        );
+      }
     } catch (e) {
       throw FirebaseAuthException(
         code: 'check-action-code-error',

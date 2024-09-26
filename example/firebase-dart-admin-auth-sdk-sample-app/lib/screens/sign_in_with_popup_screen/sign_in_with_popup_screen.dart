@@ -3,7 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class SignInWithPopupScreen extends StatefulWidget {
-  const SignInWithPopupScreen({Key? key}) : super(key: key);
+  const SignInWithPopupScreen({super.key});
 
   @override
   _SignInWithPopupScreenState createState() => _SignInWithPopupScreenState();
@@ -36,7 +36,7 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign In with Popup Test')),
+      appBar: AppBar(title: const Text('Sign In with Popup Test')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,23 +44,23 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
           children: [
             ElevatedButton(
               onPressed: () => _signInWithPopup(context, GoogleAuthProvider()),
-              child: Text('Sign In with Google'),
+              child: const Text('Sign In with Google'),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () =>
                   _signInWithPopup(context, FacebookAuthProvider()),
-              child: Text('Sign In with Facebook'),
+              child: const Text('Sign In with Facebook'),
             ),
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Result:',
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: Container(
-                padding: EdgeInsets.all(10),
+                padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(5),

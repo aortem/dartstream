@@ -3,6 +3,8 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class SignInWithPhoneNumberScreen extends StatefulWidget {
+  const SignInWithPhoneNumberScreen({super.key});
+
   @override
   _SignInWithPhoneNumberScreenState createState() =>
       _SignInWithPhoneNumberScreenState();
@@ -26,55 +28,56 @@ class _SignInWithPhoneNumberScreenState
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In with Phone Number'),
+        title: const Text('Sign In with Phone Number'),
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   TextField(
                     controller: _recaptchaSiteKeyController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'reCAPTCHA Site Key',
                       hintText: 'Enter your reCAPTCHA site key',
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: () => _initializeRecaptchaConfig(auth),
-                    child: Text('Initialize reCAPTCHA Config'),
+                    child: const Text('Initialize reCAPTCHA Config'),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _phoneNumberController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Phone Number',
                       hintText: '+1234567890',
                     ),
                     keyboardType: TextInputType.phone,
                     enabled: _recaptchaInitialized,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _recaptchaInitialized
                         ? () => _sendVerificationCode(auth)
                         : null,
-                    child: Text('Send Verification Code'),
+                    child: const Text('Send Verification Code'),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   TextField(
                     controller: _smsCodeController,
-                    decoration: InputDecoration(labelText: 'Verification Code'),
+                    decoration:
+                        const InputDecoration(labelText: 'Verification Code'),
                     keyboardType: TextInputType.number,
                     enabled: _codeSent,
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: _codeSent ? () => _verifyCode(auth) : null,
-                    child: Text('Verify Code'),
+                    child: const Text('Verify Code'),
                   ),
                 ],
               ),
