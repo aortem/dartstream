@@ -1,6 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import '../firebase_dart_admin_auth_sdk.dart';
+
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_storage.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 
 class FirebaseApp {
   ///Instance of the Firebase App
@@ -13,11 +16,12 @@ class FirebaseApp {
   final String _authdomain;
   //The messagingSenderId of the project
   final String _messagingSenderId;
-
+  final String? _bucketName;
   static FirebaseAuth? firebaseAuth;
 
-  FirebaseApp._(
-      this._apiKey, this._projectId, this._authdomain, this._messagingSenderId);
+  static FirebaseStorage? firebaseStorage;
+  FirebaseApp._(this._apiKey, this._projectId, this._authdomain,
+      this._messagingSenderId, this._bucketName);
   User? _currentUser;
 
   // method to set the current user
@@ -45,15 +49,18 @@ class FirebaseApp {
     required String projectId,
     required String authdomain,
     required String messagingSenderId,
+    required String bucketName,
   }) async {
-    //Asserts that the API key and Project Id is not empty
+    // Asserts that the API key, Project ID, and Bucket Name are not empty
     assert(apiKey.isNotEmpty, "API Key cannot be empty");
-    assert(projectId.isNotEmpty, "Project ID Key cannott be empty");
+    assert(projectId.isNotEmpty, "Project ID cannot be empty");
+    assert(bucketName.isNotEmpty, "Bucket Name cannot be empty");
     assert(authdomain.isNotEmpty, "Auth Domain cannot be empty");
     assert(messagingSenderId.isNotEmpty, "Messaging Sender ID cannot be empty");
-    //Returns an intance of FirebaseApp if it exist or create a new instance based on the parameter passed
-    return _instance ??=
-        FirebaseApp._(apiKey, projectId, authdomain, messagingSenderId);
+
+    // Returns an instance of FirebaseApp if it exists or create a new instance based on the parameters passed
+    return _instance ??= FirebaseApp._(
+        apiKey, projectId, authdomain, messagingSenderId, bucketName);
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
@@ -71,6 +78,7 @@ class FirebaseApp {
       serviceAccount['auth_domain'], // Update with the actual auth domain field
       serviceAccount[
           'messaging_sender_id'], // Update with the actual messaging sender
+      serviceAccount['bucket_name'], // Update with the actual bucket name field
     );
   }
 
@@ -78,18 +86,19 @@ class FirebaseApp {
     required String serviceAccountEmail,
     required String userEmail,
   }) async {
-    //Assert the values passed are not empty
+    // Assert the values passed are not empty
     assert(serviceAccountEmail.isNotEmpty,
         "Service Account Email cannot be empty");
     assert(userEmail.isNotEmpty, "User email cannot be empty");
 
-    //TODO: Implement API to get access token
+    // TODO: Implement API to get access token
 
     return _instance ??= FirebaseApp._(
       'your_api_key',
       'your_project_id',
       'your_auth_domain',
       'your_messaging_sender_id',
+      'your_bucket_name', // Replace with your bucket name
     );
   }
 
@@ -106,6 +115,21 @@ class FirebaseApp {
       projectId: _projectId,
       authDomain: _authdomain,
       messagingSenderId: _messagingSenderId,
+      bucketName: _bucketName,
+    );
+  }
+
+  FirebaseStorage getStorage() {
+    assert(_apiKey != null, 'API Key is null');
+    assert(_projectId != null, 'Project ID is null');
+    if (_instance == null) {
+      throw ("FirebaseApp is not initialized. Please call initializeApp() first.");
+    }
+    // Use the getStorage method to obtain a FirebaseStorage instance
+    return firebaseStorage ??= FirebaseStorage.getStorage(
+      apiKey: _apiKey!,
+      projectId: _projectId!,
+      bucketName: _bucketName!,
     );
   }
 }

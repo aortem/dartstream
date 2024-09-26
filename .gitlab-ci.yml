@@ -1,0 +1,33 @@
+image: dart:stable
+
+stages:
+  - test
+
+coverage_job:
+  stage: test
+  script:
+    - echo "Current directory:"
+    - pwd
+    - echo "Listing contents of the current directory:"
+    - ls -la
+    - echo "Navigating to the firebase-dart-admin-auth-sdk directory:"
+    - cd firebase-dart-admin-auth-sdk
+    - echo "Listing contents of firebase-dart-admin-auth-sdk:"
+    - ls -la
+    - echo "Checking if the test directory exists:"
+    - if [ -d "test" ]; then echo "Test directory exists"; else echo "Test directory does not exist"; fi
+    - echo "Running dart pub get:"
+    - dart pub get
+    - echo "Running dart tests with coverage:"
+    - dart test --coverage="coverage"
+    - echo "Converting coverage to lcov format:"
+    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --package=./ --report-on=lib
+    - echo "Listing contents of the coverage directory:"
+    - ls -la coverage
+  artifacts:
+    paths:
+      - coverage/lcov.info
+      - coverage/
+    expire_in: 1 week
+    when: always
+  coverage: '/^TOTAL.+?(\d+\%)$/'
