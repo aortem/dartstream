@@ -2,7 +2,8 @@
 //added isAnonymous getter to determine if the user is signed in anonymously
 //Added getIdToken method for token management
 //added toMap method for easy serialization
-
+import 'dart:convert';
+import 'package:firebase_dart_admin_auth_sdk/src/provider_user_info.dart';
 import 'id_token_result_model.dart';
 
 class User {
@@ -15,6 +16,13 @@ class User {
   String? idToken;
   DateTime? _idTokenExpiration;
   String? refreshToken;
+  List<ProviderUserInfo>? providerUserInfo;
+  DateTime? passwordUpdatedAt;
+  DateTime? validSince;
+  bool? disabled;
+  DateTime? lastLoginAt;
+  DateTime? createdAt;
+  Map<String, dynamic>? customAttributes;
   final bool mfaEnabled;
 
   User({
@@ -25,6 +33,13 @@ class User {
     this.displayName,
     this.photoURL,
     this.refreshToken,
+    this.createdAt,
+    this.customAttributes,
+    this.disabled,
+    this.lastLoginAt,
+    this.passwordUpdatedAt,
+    this.providerUserInfo,
+    this.validSince,
     this.mfaEnabled = false,
     this.idToken,
   });
@@ -73,6 +88,37 @@ class User {
       idToken: json['idToken'],
       //   idTokenExpiration: json['expiresIn'],
       refreshToken: json['refreshToken'],
+      createdAt: json['createdAt'] == null
+          ? null
+          : DateTime?.fromMillisecondsSinceEpoch(
+              int.tryParse(json['createdAt'].toString()) ?? 0,
+            ),
+      customAttributes: json['customAttributes'] == null
+          ? null
+          : jsonDecode(json['customAttributes']),
+      disabled: json['disabled'],
+      lastLoginAt: json['lastLoginAt'] == null
+          ? null
+          : DateTime?.fromMillisecondsSinceEpoch(
+              int.tryParse(json['lastLoginAt'].toString()) ?? 0,
+            ),
+      passwordUpdatedAt: json['passwordUpdatedAt'] == null
+          ? null
+          : DateTime?.fromMillisecondsSinceEpoch(
+              int.tryParse(json['passwordUpdatedAt'].toString()) ?? 0,
+            ),
+      providerUserInfo: json['providerUserInfo'] == null
+          ? null
+          : json['providerUserInfo'] != null
+              ? (json['providerUserInfo'] as List)
+                  .map((e) => ProviderUserInfo.fromJson(e))
+                  .toList()
+              : null,
+      validSince: json['validSince'] == null
+          ? null
+          : DateTime?.fromMillisecondsSinceEpoch(
+              int.tryParse(json['validSince'].toString()) ?? 0,
+            ),
     );
   }
 
@@ -87,6 +133,13 @@ class User {
       phoneNumber: user.phoneNumber ?? user.phoneNumber,
       photoURL: user.photoURL ?? user.photoURL,
       refreshToken: user.refreshToken ?? refreshToken,
+      createdAt: user.createdAt ?? createdAt,
+      customAttributes: user.customAttributes ?? customAttributes,
+      disabled: user.disabled ?? disabled,
+      lastLoginAt: user.lastLoginAt ?? lastLoginAt,
+      passwordUpdatedAt: user.passwordUpdatedAt ?? passwordUpdatedAt,
+      providerUserInfo: user.providerUserInfo ?? providerUserInfo,
+      validSince: user.validSince ?? validSince,
     );
   }
 

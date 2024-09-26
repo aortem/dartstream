@@ -1,5 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:developer';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/apply_action_code_screen/apply_action_code_screen.dart';
@@ -10,6 +10,8 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/s
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/storage_screen/storage.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_profile_screen/update_profile_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_before_email_update_screen/verify_before_email_update_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -175,9 +177,19 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Consumer<HomeScreenViewModel>(
         builder: (context, value, child) => Scaffold(
           appBar: AppBar(
+            leading: Text(value.displayName),
             title: const Text(
               'Test App',
             ),
+            actions: [
+              if (value.displayImage != null && value.displayImage!.isNotEmpty)
+                Text(
+                  value.displayImage.toString(),
+                ),
+              Text(
+                "No of linked providers ${value.numberOfLinkedProviders}",
+              )
+            ],
           ),
           body: SingleChildScrollView(
             padding: 20.horizontal,
@@ -187,12 +199,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 Text('Current User: ${_currentUser?.uid ?? 'None'}'),
                 10.vSpace,
                 ActionTile(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VerifyBeforeEmailUpdate(),
+                      )),
                   title: "Verify Before Update Email",
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () {},
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UpdateProfileScreen(),
+                      ),
+                    );
+                    value.setLoading(false);
+                  },
                   title: "Update Profile",
                 ),
                 10.vSpace,
@@ -294,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () async {
                     var tokenId = await FirebaseApp.firebaseAuth?.getIdToken();
                     setState(() {
-                      UserIdToken = tokenId;
+                      userIdToken = tokenId;
                     });
                     log("token is $tokenId");
                   },
@@ -322,7 +346,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ParseActionUrl(),
+                      builder: (context) => const ParseActionUrl(),
                     ));
                   },
                   title: "Parse Action Code Url",
@@ -489,6 +513,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: _isConnectedToEmulator
                       ? "Connected to Emulator"
                       : "Connect to Auth Emulator",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.getAdditionalUserInfo(),
+                  loading: value.getAdditionalInfoLoading,
+                  title: "Get Additional User Info",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.linkProvider(),
+                  loading: value.linkProviderLoading,
+                  title: "Link Provider to User",
                 ),
                 10.vSpace,
                 10.vSpace,

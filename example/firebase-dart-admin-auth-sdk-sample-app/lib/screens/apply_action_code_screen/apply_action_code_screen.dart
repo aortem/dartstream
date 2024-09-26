@@ -1,4 +1,5 @@
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/apply_action_code_screen/apply_action_code_screen_view_model.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
@@ -41,6 +42,13 @@ class _ApplyActionCodeScreenState extends State<ApplyActionCodeScreen> {
                   Button(
                     onTap: () => value.applyActionCode(
                       _actionCodeController.text,
+                      () => Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                        (route) => false,
+                      ),
                     ),
                     title: 'Apply Action Code',
                     loading: value.loading,

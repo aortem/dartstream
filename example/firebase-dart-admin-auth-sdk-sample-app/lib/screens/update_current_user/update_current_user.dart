@@ -1,4 +1,3 @@
-
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
@@ -6,10 +5,10 @@ class UpdateUserScreen extends StatefulWidget {
   const UpdateUserScreen({super.key});
 
   @override
-  _UpdateUserScreenState createState() => _UpdateUserScreenState();
+  UpdateUserScreenState createState() => UpdateUserScreenState();
 }
 
-class _UpdateUserScreenState extends State<UpdateUserScreen> {
+class UpdateUserScreenState extends State<UpdateUserScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _displayNameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
@@ -32,15 +31,13 @@ class _UpdateUserScreenState extends State<UpdateUserScreen> {
         User? user = auth.getCurrentUser();
 
         if (user != null) {
-
-          FirebaseApp.firebaseAuth?.updateUserInformation(user.uid,user.idToken!,{
+          FirebaseApp.firebaseAuth
+              ?.updateUserInformation(user.uid, user.idToken!, {
             'email': _emailController.text,
             'phoneNumber': _phoneNumberController.text,
             'password': _passwordController.text,
             'displayName': _displayNameController.text,
-
           });
-
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('User details updated successfully!')),

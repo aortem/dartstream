@@ -16,7 +16,7 @@ class UnlinkProviderScreenViewModel extends ChangeNotifier {
 
       await FirebaseApp.firebaseAuth?.unlinkProvider(providerId);
 
-      BotToast.showText(text: 'Success');
+      BotToast.showText(text: 'Provider Unlinked Successfully');
     } catch (e) {
       BotToast.showText(text: e.toString());
     } finally {

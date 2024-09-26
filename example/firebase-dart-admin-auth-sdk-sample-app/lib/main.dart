@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   //If you are on web, initialize with enviroment variables
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
@@ -19,13 +18,14 @@ void main() async {
     projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
     authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
     messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
-    bucketname: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+    bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
   } else {
     //  When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
       //  To initialize with service account put the path to the json file in the function below
       String serviceAccountContent = await rootBundle.loadString(
-          'assets/service_account.json'); //Add your own JSON service account
+        'assets/service_account.json',
+      ); //Add your own JSON service account
 
       // Initialize Firebase with the service account content
       await FirebaseApp.initializeAppWithServiceAccount(

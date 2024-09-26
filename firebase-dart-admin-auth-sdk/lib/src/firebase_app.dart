@@ -69,9 +69,6 @@ class FirebaseApp {
   }) async {
     // Parse the JSON content
     final serviceAccount = json.decode(serviceAccountContent);
-
-    // TODO: Implement API to get access token
-
     return _instance ??= FirebaseApp._(
       serviceAccount['private_key'], // Update with the actual key field
       serviceAccount['project_id'], // Update with the actual project ID field

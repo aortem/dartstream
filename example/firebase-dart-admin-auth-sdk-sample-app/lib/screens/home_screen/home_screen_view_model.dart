@@ -1,8 +1,45 @@
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/platform_provider.dart';
+import 'package:flutter/foundation.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
+  HomeScreenViewModel() {
+    _googleSignIn.onCurrentUserChanged.listen(
+      (event) async {
+        signInAccount = event;
+      },
+    );
+
+    refreshUser();
+  }
+
+  void refreshUser() {
+    displayName = _firebaseSdk?.currentUser?.displayName ?? '';
+    displayImage = _firebaseSdk?.currentUser?.photoURL;
+    numberOfLinkedProviders =
+        _firebaseSdk?.currentUser?.providerUserInfo?.length ?? 0;
+    notifyListeners();
+  }
+
+  GoogleSignInAccount? signInAccount;
+  List<String> scopes = <String>[
+    'email',
+    'https://www.googleapis.com/auth/contacts.readonly',
+  ];
+
+  late final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: scopes,
+    signInOption: SignInOption.standard,
+    clientId: '',
+  );
+  final FirebaseAuth? _firebaseSdk = FirebaseApp.firebaseAuth;
+
+  String displayName = '';
+  String? displayImage;
+  int numberOfLinkedProviders = 0;
+
   bool loading = false;
   void setLoading(bool load) {
     loading = load;
@@ -12,7 +49,8 @@ class HomeScreenViewModel extends ChangeNotifier {
   Future<void> reloadUser() async {
     try {
       setLoading(true);
-      await FirebaseApp.firebaseAuth?.reloadUser();
+      await _firebaseSdk?.reloadUser();
+      refreshUser();
       BotToast.showText(text: 'Reload Successful');
     } catch (e) {
       BotToast.showText(text: e.toString());
@@ -32,7 +70,7 @@ class HomeScreenViewModel extends ChangeNotifier {
     try {
       setVerificationLoading(true);
 
-      await FirebaseApp.firebaseAuth?.sendEmailVerificationCode();
+      await _firebaseSdk?.sendEmailVerificationCode();
 
       onSuccess();
       BotToast.showText(text: 'Code Sent');
@@ -40,6 +78,56 @@ class HomeScreenViewModel extends ChangeNotifier {
       BotToast.showText(text: e.toString());
     } finally {
       setVerificationLoading(false);
+    }
+  }
+
+  bool getAdditionalInfoLoading = false;
+  void setAdditionalInfoLoading(bool load) {
+    getAdditionalInfoLoading = load;
+    notifyListeners();
+  }
+
+  Future<void> getAdditionalUserInfo() async {
+    try {
+      setAdditionalInfoLoading(true);
+      await _firebaseSdk?.getAdditionalUserInfo();
+
+      BotToast.showText(text: 'Additional Info Gotten Successfully');
+      refreshUser();
+    } catch (e) {
+      BotToast.showText(text: e.toString());
+    } finally {
+      setAdditionalInfoLoading(false);
+    }
+  }
+
+  bool linkProviderLoading = false;
+  void setLinkProviderLoading(bool load) {
+    linkProviderLoading = load;
+    notifyListeners();
+  }
+
+  Future<void> linkProvider() async {
+    try {
+      setLinkProviderLoading(true);
+
+      if (kIsWeb) {
+        signInAccount = await _googleSignIn.signInSilently();
+      } else {
+        signInAccount = await _googleSignIn.signIn();
+      }
+
+      var signInAuth = await signInAccount?.authentication;
+      await _firebaseSdk?.linkProviderToUser(
+        getPlatformId(),
+        signInAuth!.idToken!,
+      );
+
+      refreshUser();
+    } catch (e) {
+      BotToast.showText(text: e.toString());
+    } finally {
+      setLinkProviderLoading(false);
     }
   }
 }

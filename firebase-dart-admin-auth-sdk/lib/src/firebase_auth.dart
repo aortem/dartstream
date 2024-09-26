@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -10,6 +12,8 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_additional_user_info.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/link_provider_to_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
@@ -19,7 +23,9 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/unlink_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_before_email_update.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart' as exceptions;
@@ -38,6 +44,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart'
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
 import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
@@ -120,6 +127,11 @@ class FirebaseAuth {
   late FirebaseDeleteUser firebaseDeleteUser;
   late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
 
+  late GetAdditionalUserInfo _getAdditionalUserInfo;
+  late LinkProviderToUser _linkProviderToUser;
+  late UpdateProfile _updateProfile;
+  late VerifyBeforeEmailUpdate _verifyBeforeEmailUpdate;
+
 ////Ticketr 5,7,23,24,61
   late FirebaseSignInAnonymously signInAnonymously;
   late PersistenceService setPresistence;
@@ -191,6 +203,11 @@ class FirebaseAuth {
     getLanguageService = LanguagGetService(auth: this);
     firebaseBeforeAuthStateChangeService =
         FirebaseBeforeAuthStateChangeService(this);
+
+    _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
+    _linkProviderToUser = LinkProviderToUser(auth: this);
+    _updateProfile = UpdateProfile(this);
+    _verifyBeforeEmailUpdate = VerifyBeforeEmailUpdate(this);
   }
 
   Future<HttpResponse> performRequest(
@@ -483,10 +500,12 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) {
+  Future<void> sendSignInLinkToEmail(String email,
+      {ActionCodeSettings? actionCode}) {
     return emailLink.sendSignInLinkToEmail(
-        email, settings as acs.ActionCodeSettings);
+      email,
+      actionCode: actionCode,
+    );
   }
 
   Future<UserCredential?> linkWithCredential(AuthCredential credential) async {
@@ -523,6 +542,45 @@ class FirebaseAuth {
         message: 'Unsupported credential type',
       );
     }
+  }
+
+  Future<User> getAdditionalUserInfo() async {
+    return await _getAdditionalUserInfo.getAdditionalUserInfo(
+      currentUser?.idToken,
+    );
+  }
+
+  Future<User> linkProviderToUser(
+    String providerId,
+    String providerIdToken,
+  ) async {
+    return _linkProviderToUser.linkProviderToUser(
+      currentUser?.idToken,
+      providerId,
+      providerIdToken,
+    );
+  }
+
+  Future<User> updateProfile(
+    String displayName,
+    String displayImage,
+  ) async {
+    return await _updateProfile.updateProfile(
+      displayName,
+      displayImage,
+      currentUser?.idToken,
+    );
+  }
+
+  Future<bool> verifyBeforeEmailUpdate(
+    String newEmail, {
+    ActionCodeSettings? action,
+  }) async {
+    return await _verifyBeforeEmailUpdate.verifyBeforeEmailUpdate(
+      currentUser?.idToken,
+      newEmail,
+      action: action,
+    );
   }
 
   ///////////a Firebase action code URL
