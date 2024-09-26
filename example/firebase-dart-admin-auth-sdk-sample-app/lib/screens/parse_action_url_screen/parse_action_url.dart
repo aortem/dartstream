@@ -100,8 +100,6 @@ class _ParseActionUrlState extends State<ParseActionUrl> {
                           children: [
                             const Text('languageCode'),
                             Text(parseUrlresult?['languageCode'])
-                            const Text('languageCode'),
-                            Text(parseUrlresult['languageCode'])
                           ],
                         ),
                         Row(

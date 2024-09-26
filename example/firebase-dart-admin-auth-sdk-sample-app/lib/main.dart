@@ -14,11 +14,12 @@ void main() async {
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-    apiKey: 'YOUR_API_KEY', // 'YOUR_API_KEY'
-    projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
-    authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
-    messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
-    bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+      apiKey: 'YOUR_API_KEY', // 'YOUR_API_KEY'
+      projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
+      authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
+      messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
+      bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+    );
   } else {
     //  When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {

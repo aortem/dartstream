@@ -318,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () async {
                     var tokenId = await FirebaseApp.firebaseAuth?.getIdToken();
                     setState(() {
-                      userIdToken = tokenId;
+                      UserIdToken = tokenId;
                     });
                     log("token is $tokenId");
                   },
