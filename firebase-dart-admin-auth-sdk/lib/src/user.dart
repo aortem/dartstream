@@ -4,6 +4,7 @@
 //added toMap method for easy serialization
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/src/provider_user_info.dart';
+
 import 'id_token_result_model.dart';
 
 class User {

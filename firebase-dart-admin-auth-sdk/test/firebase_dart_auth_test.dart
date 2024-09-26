@@ -3,6 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
     if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 
 //import 'package:mockito/mockito.dart'; // Import mockito
 
@@ -46,6 +47,7 @@ void main() async {
         FirebaseApp.initializeAppWithEnvironmentVariables(
           apiKey: 'FIREBASE_API_KEY',
           projectId: 'FIREBASE_PROJECT_ID',
+          bucketName: 'FIREBASE_STORAGE_BUCKET_NAME',
         ),
     'service_account': () => FirebaseApp.initializeAppWithServiceAccount(
           serviceAccountContent: fakeServiceAccountJson,

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class OAuthSelectionScreen extends StatelessWidget {
+  const OAuthSelectionScreen({super.key});
+
   void _selectProvider(BuildContext context, String providerUrl) async {
     final auth = FirebaseApp.firebaseAuth;
-    await auth?.signInWithRedirect(providerUrl);
-    try {
-      final userInfo = await auth?.signInWithRedirectResult(providerUrl);
-      print('User info: $userInfo');
-    } catch (e) {
-      print('Error: $e');
-    }
+    // await auth?.signInWithRedirect(providerUrl);
+    // try {
+    //   final userInfo = await auth?.signInWithRedirectResult(providerUrl);
+    //   print('User info: $userInfo');
+    // } catch (e) {
+    //   print('Error: $e');
+    // }
   }
 
   @override

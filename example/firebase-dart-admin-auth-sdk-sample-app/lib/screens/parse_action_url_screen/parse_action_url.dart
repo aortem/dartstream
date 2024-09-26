@@ -7,24 +7,12 @@ import 'package:flutter/material.dart';
 import '../../shared/button.dart';
 import '../../shared/input_field.dart';
 
-class ParseActionUrl extends StatefulWidget {
-  const ParseActionUrl({super.key});
-
-  @override
-  State<ParseActionUrl> createState() => _ParseActionUrlState();
-}
-
-class _ParseActionUrlState extends State<ParseActionUrl> {
-  final TextEditingController _parseActionUrlController =
+class ParseActionUrl extends StatelessWidget {
+  ParseActionUrl({super.key});
+  final TextEditingController parseActionUrlController =
       TextEditingController();
 
   Map<String, dynamic>? parseUrlresult;
-
-  @override
-  void dispose() {
-    _parseActionUrlController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +25,7 @@ class _ParseActionUrlState extends State<ParseActionUrl> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               InputField(
-                controller: _parseActionUrlController,
+                controller: parseActionUrlController,
                 label: 'Parse Link',
                 hint: '',
               ),
@@ -60,7 +48,7 @@ class _ParseActionUrlState extends State<ParseActionUrl> {
                     log("Invalid action code URL.");
                   }
                   var parseUrlresult = await FirebaseApp.firebaseAuth
-                      ?.parseActionCodeUrl(_parseActionUrlController.text);
+                      ?.parseActionCodeUrl(parseActionUrlController.text);
 
                   log("Parse Action Code Url   $parseUrlresult");
                   //    log("Parse Action Code Url   ${parseUrlresult?['code']}");

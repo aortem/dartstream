@@ -2,6 +2,8 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 
 class UpdateUserScreen extends StatefulWidget {
+  const UpdateUserScreen({super.key});
+
   @override
   UpdateUserScreenState createState() => UpdateUserScreenState();
 }

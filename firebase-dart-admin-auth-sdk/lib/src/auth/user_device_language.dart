@@ -38,5 +38,6 @@ class UseDeviceLanguageService {
         message: 'Failed to set device language.',
       );
     }
+    return null;
   }
 }
