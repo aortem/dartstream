@@ -266,17 +266,10 @@ packages:
     dependency: "direct main"
     description:
       name: ds_standard_features
-<<<<<<< HEAD
-      sha256: "6d14b0625aa7709c708961825299dcd31b252de7ea0ed725e89b92cbcbdf7b68"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.0.1-pre+10"
-=======
       sha256: "58bc987cd7b16ade9f52e12cd0fe537fc0f2fe4fe4f05b3cec3d6bd7e4989595"
       url: "https://pub.dev"
     source: hosted
     version: "0.0.1-pre+11"
->>>>>>> 446aaefeaed6d465b7bd9c923a9e144462edeeb2
   ds_tools_testing:
     dependency: "direct dev"
     description:
