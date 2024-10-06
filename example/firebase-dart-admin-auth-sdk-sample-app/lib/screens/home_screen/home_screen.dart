@@ -107,7 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const SignUpScreen(),
                         ));
-                        BotToast.showText(text: 'User is deleted');
+                        BotToast.showText(text: 'User is Signout');
                       } else {
                         log('No user is currently signed in.');
                       }

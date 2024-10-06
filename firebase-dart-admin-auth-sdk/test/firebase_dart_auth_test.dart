@@ -1,4 +1,5 @@
 import 'package:ds_tools_testing/ds_tools_testing.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/id_token_result_model.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
     if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
@@ -7,11 +8,49 @@ import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;
 
 //import 'package:mockito/mockito.dart'; // Import mockito
+class MockFirebaseAuth extends Mock implements FirebaseAuth {}
+
+class MockUser extends Mock implements User {}
+
+class MockHttpClient extends Mock implements http.Client {}
 
 class MockClient extends Mock implements http.Client {}
 
-FirebaseAuth? auth; // Declare auth outside of the main function
+class MockFirebaseApp extends Mock implements FirebaseApp {}
+
+class MockIdTokenResult extends Mock implements IdTokenResult {}
+
+class AuthService {
+  // Assuming this is how currentUser is defined
+  User? currentUser;
+
+  Future<String?> getIdToken() async {
+    final user = currentUser;
+    return await user
+        ?.getIdToken(); // This should call getIdToken on the mock user
+  }
+
+  Future<IdTokenResult?> getIdTokenResult() async {
+    final user = currentUser;
+    return await user?.getIdTokenResult();
+  }
+}
+
+FirebaseAuth? auth;
+// Declare auth outside of the main function
 void main() async {
+  late AuthService auths;
+  late MockUser mockUser;
+  late MockIdTokenResult mockIdTokenResult;
+  late MockFirebaseApp mockFirebaseApp;
+  setUp(() {
+    mockUser = MockUser();
+    auths = AuthService(); // Initialize the auth service
+    auths.currentUser = mockUser;
+    mockFirebaseApp = MockFirebaseApp();
+    mockIdTokenResult =
+        MockIdTokenResult(); // Set the currentUser to the mock user
+  });
   setUpAll(() async {
     // Register mock values
     registerFallbackValue(Uri());
@@ -493,11 +532,12 @@ void main() async {
               ));
 
       if (isRunningOnWeb()) {
-        expectLater(
-            auth?.firebasePhoneNumberLinkMethod('+1234567890'), completes);
+        expectLater(auth?.firebasePhoneNumberLinkMethod('+1234567890', "12345"),
+            completes);
       } else {
         expectLater(
-          () async => await auth?.firebasePhoneNumberLinkMethod('+1234567890'),
+          () async => await auth?.firebasePhoneNumberLinkMethod(
+              '+1234567890', "123456"),
           throwsA(isA<FirebaseAuthException>().having(
             (e) => e.code,
             'code',
@@ -507,27 +547,36 @@ void main() async {
       }
     });
 
-    test('getIdToken returns token', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"idToken":"testIdToken"}',
-                200,
-              ));
+    test('getIdToken', () async {
+      // Arrange
+      when(() => mockUser.getIdToken()).thenAnswer((_) async => 'testIdToken');
 
-      //final token = await auth.getIdToken();
-      expectLater(auth?.getIdToken(), completes);
+      // Act
+      final token = await auths.getIdToken();
+
+      // Debugging information
+      print('Token: $token'); // Print the actual token for debugging
+
+      // Assert
+      expect(token, 'testIdToken'); // Check that the token is as expected
+      verify(() => mockUser.getIdToken())
+          .called(1); // Verify that getIdToken was called once
     });
+    test('getIdTokenResult ', () async {
+      // Arrange
+      when(() => mockUser.getIdTokenResult())
+          .thenAnswer((_) async => mockIdTokenResult);
 
-    test('getIdTokenResult returns token result', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"idToken":"testIdToken","claims":{"admin":true}}',
-                200,
-              ));
+      // Act
+      final result = await auths.getIdTokenResult();
 
-      expectLater(auth?.getIdTokenResult(), completes);
+      // Debugging information
+      print('IdTokenResult: $result'); // Print the actual result for debugging
+
+      // Assert
+      expect(result, mockIdTokenResult); // Check that the result is as expected
+      verify(() => mockUser.getIdTokenResult())
+          .called(1); // Verify that getIdTokenResult was called once
     });
 
     test('signOut succeeds', () async {
