@@ -248,7 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => StorageExample(),
+                      builder: (context) => const StorageExample(),
                     ),
                   ),
                   title: "Storage",

@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
@@ -6,6 +5,8 @@ import 'package:file_picker/file_picker.dart';
 // Your Firebase SDK
 
 class StorageExample extends StatefulWidget {
+  const StorageExample({super.key});
+
   @override
   _StorageExampleState createState() => _StorageExampleState();
 }
@@ -55,7 +56,7 @@ class _StorageExampleState extends State<StorageExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firebase Storage Example'),
+        title: const Text('Firebase Storage Example'),
       ),
       body: Center(
         child: Column(
@@ -63,14 +64,14 @@ class _StorageExampleState extends State<StorageExample> {
           children: [
             ElevatedButton(
               onPressed: pickFile,
-              child: Text('Pick a File'),
+              child: const Text('Pick a File'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (fileName != null) Text('Picked File: $fileName'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: uploadFile,
-              child: Text('Upload File to Firebase Storage'),
+              child: const Text('Upload File to Firebase Storage'),
             ),
           ],
         ),
@@ -80,7 +81,7 @@ class _StorageExampleState extends State<StorageExample> {
 }
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     home: StorageExample(),
   ));
 }

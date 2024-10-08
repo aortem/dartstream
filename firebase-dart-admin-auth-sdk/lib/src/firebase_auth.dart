@@ -484,7 +484,7 @@ class FirebaseAuth {
     //  log("access token is$accesToken");
     try {
       await firebaseDeleteUser.deleteUser(
-          currentUser!.idToken!, currentUser!.uid!);
+          currentUser!.idToken!, currentUser!.uid);
       FirebaseApp.instance.setCurrentUser(null);
       log('User Deleted ');
       return;
