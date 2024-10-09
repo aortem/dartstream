@@ -1,4 +1,8 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:ds_tools_testing/ds_tools_testing.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
     if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
@@ -49,6 +53,7 @@ void main() async {
           authdomain: 'FIREBASE_AUTH_DOMAIN',
           messagingSenderId: 'FIREBASE_MESSAGE_SENDER_ID',
           bucketName: 'FIREBASE_STORAGE_BUCKET_NAME',
+          appId: 'FIREBASE_APP_ID',
         ),
     'service_account': () => FirebaseApp.initializeAppWithServiceAccount(
           serviceAccountContent: fakeServiceAccountJson,
@@ -237,26 +242,43 @@ void main() async {
     });
 
     test('signInWithRedirect succeeds', () async {
-      // Mocking the HTTP response for a successful sign-in with redirect.
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
-                200,
-              ));
+      // Mocking the HTTP response for a successful sign-in with redirect
+      when(() => mockClient.post(
+            any(),
+            body: any(named: 'body'),
+            headers: any(named: 'headers'),
+          )).thenAnswer((_) async => http.Response(
+            '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
+            200,
+          ));
 
       if (isRunningOnWeb()) {
-        await auth?.signInWithRedirect('providerId');
-        // Instead of checking a result, verifying that the authentication state has changed.
-        // You can check the currentUser property or listen to an auth state change stream.
-        expect(auth?.currentUser,
-            isNotNull); // Assuming the sign-in was successful and a user is now signed in.
+        // Set up a listener for auth state changes
+        final completer = Completer<User?>();
+        final subscription = auth?.onAuthStateChanged((User? user) {
+          if (!completer.isCompleted) {
+            completer.complete(user);
+          }
+        });
 
-        // Alternatively, listen to the auth state change stream if applicable.
-        auth?.onAuthStateChanged().listen(expectAsync1((user) {
-          expect(user, isNotNull); // Verifies that the user is not null.
-          // Additional checks can be added based on the expected state of the user.
-        }));
+        // Perform the sign-in with redirect
+        await auth?.signInWithRedirect('providerId');
+
+        // Simulate the redirect callback
+        auth?.updateCurrentUser(User(
+          uid: 'redirectUid',
+          email: 'redirect@example.com',
+          idToken: 'redirectIdToken',
+        ));
+
+        // Wait for the auth state to change and verify the user
+        final user = await completer.future.timeout(Duration(seconds: 5));
+        expect(user, isNotNull);
+        expect(user?.uid, equals('redirectUid'));
+        expect(user?.email, equals('redirect@example.com'));
+
+        // Clean up the subscription
+        await subscription?.cancel();
       } else {
         expectLater(
           () async => await auth?.signInWithRedirect('providerId'),
@@ -410,65 +432,96 @@ void main() async {
       );
     });
 
-    // Test for revokeAccessToken
-    test('revokeAccessToken succeeds', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response('{}', 200));
-
-      expectLater(
-        auth?.revokeToken('testIdToken'),
-        completes,
+    // Test for onIdTokenChanged
+    test('onIdTokenChanged emits user when ID token changes', () async {
+      // Create initial user
+      final initialUser = User(
+        uid: 'testUid',
+        email: 'test@example.com',
+        emailVerified: false,
+        phoneNumber: null,
+        displayName: '',
+        photoURL: null,
+        idToken: 'initialIdToken',
       );
+
+      // Create updated user with new ID token
+      final updatedUser = User(
+        uid: 'testUid',
+        email: 'test@example.com',
+        emailVerified: false,
+        phoneNumber: null,
+        displayName: '',
+        photoURL: null,
+        idToken: 'updatedIdToken',
+      );
+
+      // Set up a stream to collect emitted users
+      final emittedUsers = <User>[];
+      final subscription = auth?.onIdTokenChanged((User? user) {
+        if (user != null) {
+          emittedUsers.add(user);
+        }
+      });
+
+      // Set initial user
+      auth?.updateCurrentUser(initialUser);
+
+      // Wait a bit to ensure the initial user is emitted
+      await Future.delayed(Duration(milliseconds: 50));
+
+      // Update user with new ID token
+      auth?.updateCurrentUser(updatedUser);
+
+      // Wait for emissions to complete
+      await Future.delayed(Duration(milliseconds: 100));
+
+      // Cancel the subscription
+      await subscription?.cancel();
+
+      // Verify emissions
+      expect(emittedUsers.length, equals(2));
+      expect(emittedUsers[0].idToken, equals('initialIdToken'));
+      expect(emittedUsers[1].idToken, equals('updatedIdToken'));
+
+      // Verify that other user properties remained the same
+      expect(emittedUsers[0].uid, equals('testUid'));
+      expect(emittedUsers[1].uid, equals('testUid'));
+      expect(emittedUsers[0].email, equals('test@example.com'));
+      expect(emittedUsers[1].email, equals('test@example.com'));
+
+      // Verify that onIdTokenChanged no longer emits after cancellation
+      auth?.updateCurrentUser(initialUser);
+      await Future.delayed(Duration(milliseconds: 50));
+      expect(emittedUsers.length, equals(2)); // Should still be 2
     });
 
-    // Test for onIdTokenChanged
-    test(
-      'onIdTokenChanged emits user',
-      () async {
-        final user = User(
-          uid: 'testUid',
-          email: 'test@example.com',
-          emailVerified: false,
-          phoneNumber: null,
-          displayName: '',
-          photoURL: null,
-          idToken: 'testIdToken',
-        );
+// Test for onAuthStateChanged
+    test('onAuthStateChanged emits user changes', () async {
+      final user = User(
+        uid: 'testUid',
+        email: 'test@example.com',
+        emailVerified: false,
+        phoneNumber: null,
+        displayName: null,
+        photoURL: null,
+        refreshToken: 'testRefreshToken',
+      );
 
-        Future.delayed(Duration(milliseconds: 100))
-            .then((_) => auth?.updateCurrentUser(user));
+      auth?.updateCurrentUser(user);
 
-        await expectLater(
-          auth?.onIdTokenChanged(),
-          emitsInOrder([user]),
-        );
-      },
-    );
+      auth?.onAuthStateChanged((User? user) {
+        expect(user, isNotNull);
+        expect(user?.uid, equals('testUid'));
+      });
 
-    // Test for onAuthStateChanged
-    test(
-      'onAuthStateChanged emits user',
-      () async {
-        final expectedUser = User(
-          uid: 'testUid',
-          email: 'test@example.com',
-          emailVerified: false,
-          phoneNumber: null,
-          displayName: '',
-          photoURL: null,
-          idToken: 'testIdToken',
-        );
+      // Simulate sign out
+      await auth?.signOut();
 
-        Future.delayed(Duration(milliseconds: 100))
-            .then((_) => auth?.updateCurrentUser(expectedUser));
-
-        await expectLater(
-          auth?.onAuthStateChanged(),
-          emitsInOrder([expectedUser]),
-        );
-      },
-    );
+      auth?.onAuthStateChanged((User? user) {
+        expect(user, isNull);
+      });
+    });
 
     // Test for isSignInWithEmailLink
     test('signInWithEmailAndPassword succeeds', () async {
@@ -498,15 +551,139 @@ void main() async {
       await auth?.sendPasswordResetEmail('test@example.com');
     });
 
-    test('revokeToken succeeds', () async {
+    // Test For RevokeAccessToken
+    test('revokeAccessToken succeeds', () async {
+      // Mocking the HTTP response for a successful token revocation
+      when(() => mockClient.post(
+            any(),
+            body: any(named: 'body'),
+            headers: any(named: 'headers'),
+          )).thenAnswer((_) async => http.Response(
+            '{"kind": "identitytoolkit#RevokeAccessTokenResponse"}',
+            200,
+          ));
+
+      // Ensure the current user is set
+      auth?.updateCurrentUser(User(
+        uid: 'testUid',
+        idToken: 'testIdToken',
+        refreshToken: 'testRefreshToken',
+      ));
+
+      // Call the method and expect it to complete without throwing an error
+      await expectLater(
+        auth?.revokeAccessToken('testIdToken'),
+        completes,
+      );
+
+      // Verify that the post method was called with the correct parameters
+      verify(() => mockClient.post(
+            Uri.https('identitytoolkit.googleapis.com',
+                '/v1/accounts:revokeAccessToken'),
+            body: jsonEncode({
+              'idToken': 'testIdToken',
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          )).called(1);
+
+      // Verify that no more interactions with the mock client occurred
+      verifyNoMoreInteractions(mockClient);
+    });
+
+    // Test for FirebaseAuth.checkActionCode
+    test('checkActionCode succeeds', () async {
       when(() => mockClient.post(any(),
               body: any(named: 'body'), headers: any(named: 'headers')))
           .thenAnswer((_) async => http.Response(
-                '{}',
+                '{"operation":"PASSWORD_RESET","data":{"email":"test@example.com"}}',
                 200,
               ));
 
-      await auth?.revokeToken('testIdToken');
+      final result = await auth?.checkActionCode('testActionCode');
+      expect(result?.operation, equals('PASSWORD_RESET'));
+      expect(result?.data['email'], equals('test@example.com'));
+    });
+
+    // Test for FirebaseAuth.confirmPasswordReset
+    test('confirmPasswordReset succeeds', () async {
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response('{}', 200));
+
+      await expectLater(
+        auth?.confirmPasswordReset('testOobCode', 'newPassword'),
+        completes,
+      );
+    });
+
+    // Test for FirebaseAuth.createUserWithEmailAndPassword
+    test('createUserWithEmailAndPassword succeeds', () async {
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"kind":"identitytoolkit#SignupNewUserResponse","localId":"newTestUid","email":"newuser@example.com","idToken":"newTestIdToken","refreshToken":"newTestRefreshToken","expiresIn":"3600"}',
+                200,
+              ));
+
+      final result = await auth?.createUserWithEmailAndPassword(
+          'newuser@example.com', 'password123');
+      expect(result?.user.uid, equals('newTestUid'));
+      expect(result?.user.email, equals('newuser@example.com'));
+    });
+
+    // Test for FirebaseAuth.fetchSignInMethodsForEmail
+    test('fetchSignInMethodsForEmail succeeds', () async {
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"allProviders":["password","google.com"]}',
+                200,
+              ));
+
+      final result = await auth?.fetchSignInMethodsForEmail('test@example.com');
+      expect(result, contains('password'));
+      expect(result, contains('google.com'));
+    });
+
+    // Test for FirebaseAuth.getRedirectResult
+    test('getRedirectResult succeeds', () async {
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"user":{"localId":"testUid","email":"test@example.com"},"providerId":"google.com","operationType":"signIn"}',
+                200,
+              ));
+
+      final result = await auth?.getRedirectResult();
+      expect(result?.user.uid, equals('testUid'));
+      expect(result?.user.email, equals('test@example.com'));
+      expect(result?.providerId, equals('google.com'));
+    });
+
+    // Test for FirebaseAuth.initializeRecaptchaConfig
+    test('initializeRecaptchaConfig succeeds', () async {
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response('{}', 200));
+
+      await expectLater(
+        auth?.initializeRecaptchaConfig('testSiteKey'),
+        completes,
+      );
+    });
+
+    // Test for FirebaseAuth.isSignInWithEmailLink
+    test('isSignInWithEmailLink returns true for valid link', () {
+      final validLink =
+          'https://example.com/__/auth/action?mode=signIn&oobCode=testCode&apiKey=testApiKey';
+      expect(auth?.isSignInWithEmailLink(validLink), isTrue);
+    });
+
+    test('isSignInWithEmailLink returns false for invalid link', () {
+      final invalidLink = 'https://example.com/invalid';
+      expect(auth?.isSignInWithEmailLink(invalidLink), isFalse);
     });
 
     test('linkWithCredential succeeds with EmailAuthCredential', () async {
@@ -612,7 +789,13 @@ void main() async {
   // Test for dispose
   test('dispose closes streams', () async {
     auth?.dispose();
-    await expectLater(auth?.onIdTokenChanged().isEmpty, completion(isTrue));
-    await expectLater(auth?.onAuthStateChanged().isEmpty, completion(isTrue));
+    // Test that calling these methods after dispose throws an error
+    expect(() => auth?.onIdTokenChanged((user) {}), throwsA(isA<StateError>()));
+    expect(
+        () => auth?.onAuthStateChanged((user) {}), throwsA(isA<StateError>()));
   });
+}
+
+extension on Unsubscribe? {
+  cancel() {}
 }

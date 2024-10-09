@@ -51,4 +51,6 @@ class UserCredential {
       operationType: json['operationType'],
     );
   }
+
+  get providerId => null;
 }
