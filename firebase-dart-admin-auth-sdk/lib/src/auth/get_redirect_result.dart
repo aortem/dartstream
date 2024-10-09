@@ -1,61 +1,79 @@
 import 'dart:convert';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 
 class GetRedirectResultService {
-  final FirebaseAuth auth;
+  final FirebaseAuth _auth;
 
-  GetRedirectResultService({required this.auth});
+  GetRedirectResultService({required FirebaseAuth auth}) : _auth = auth;
 
   Future<UserCredential?> getRedirectResult() async {
     try {
       final url = Uri.https(
         'identitytoolkit.googleapis.com',
         '/v1/accounts:signInWithIdp',
-        {'key': auth.apiKey},
+        {'key': _auth.apiKey},
       );
 
-      final response = await auth.httpClient.post(
+      final response = await _auth.httpClient.post(
         url,
         body: json.encode({
-          'returnSecureToken': true,
+          'requestUri':
+              'http://localhost', // This should be dynamically set in a real-world scenario
           'returnIdpCredential': true,
+          'returnSecureToken': true,
         }),
+        headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode != 200) {
-        final error = json.decode(response.body)['error'];
         throw FirebaseAuthException(
-          code: error['message'],
-          message: error['message'],
+          code: 'get-redirect-result-error',
+          message: 'Failed to get redirect result: ${response.body}',
         );
       }
 
       final data = json.decode(response.body);
 
-      if (!data.containsKey('localId')) {
+      if (data['idToken'] == null) {
+        // No redirect result available
         return null;
       }
 
-      final user = User.fromJson(data);
-
-      final additionalUserInfo = AdditionalUserInfo(
-        isNewUser: data['isNewUser'] ?? false,
-        providerId: data['providerId'] ?? '',
-        profile: data['profile'],
+      final user = User(
+        uid: data['localId'],
+        email: data['email'],
+        displayName: data['displayName'],
+        photoURL: data['photoUrl'],
+        phoneNumber: data['phoneNumber'],
+        refreshToken: data['refreshToken'],
+        tenantId: data['tenantId'],
+        idToken: data['idToken'],
       );
 
       final credential = OAuthCredential(
         providerId: data['providerId'] ?? '',
+        signInMethod: 'redirect',
         accessToken: data['oauthAccessToken'],
         idToken: data['oauthIdToken'],
       );
 
-      return UserCredential(
+      final userCredential = UserCredential(
         user: user,
-        additionalUserInfo: additionalUserInfo,
         credential: credential,
+        additionalUserInfo: AdditionalUserInfo(
+          isNewUser: data['isNewUser'] ?? false,
+          providerId: data['providerId'],
+          profile: data['profile'],
+        ),
+        operationType: 'signIn',
       );
+
+      // Update the current user in FirebaseAuth
+      _auth.updateCurrentUser(user);
+
+      return userCredential;
     } catch (e) {
       throw FirebaseAuthException(
         code: 'get-redirect-result-error',

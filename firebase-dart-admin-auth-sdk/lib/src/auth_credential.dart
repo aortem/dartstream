@@ -23,7 +23,12 @@ class PhoneAuthCredential extends AuthCredential {
 class OAuthCredential extends AuthCredential {
   final String? accessToken;
   final String? idToken;
+  final String? signInMethod;
 
-  OAuthCredential({required String providerId, this.accessToken, this.idToken})
-      : super(providerId);
+  OAuthCredential({
+    required String providerId,
+    this.accessToken,
+    this.idToken,
+    this.signInMethod,
+  }) : super(providerId);
 }

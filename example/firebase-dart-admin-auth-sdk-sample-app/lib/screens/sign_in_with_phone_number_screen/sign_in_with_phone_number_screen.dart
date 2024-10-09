@@ -1,151 +1,98 @@
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
+import 'sign_in_with_phone_number_view_model.dart';
 
 class SignInWithPhoneNumberScreen extends StatefulWidget {
   const SignInWithPhoneNumberScreen({super.key});
 
   @override
-  _SignInWithPhoneNumberScreenState createState() =>
+  State<SignInWithPhoneNumberScreen> createState() =>
       _SignInWithPhoneNumberScreenState();
 }
 
 class _SignInWithPhoneNumberScreenState
     extends State<SignInWithPhoneNumberScreen> {
-  final TextEditingController _phoneNumberController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _smsCodeController = TextEditingController();
-  final TextEditingController _recaptchaSiteKeyController =
-      TextEditingController();
 
-  ConfirmationResult? _confirmationResult;
-  bool _codeSent = false;
-  bool _isLoading = false;
-  bool _recaptchaInitialized = false;
+  @override
+  void dispose() {
+    _phoneController.dispose();
+    _smsCodeController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final FirebaseAuth auth = Provider.of<FirebaseAuth>(context, listen: false);
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In with Phone Number'),
-      ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Padding(
-              padding: const EdgeInsets.all(16.0),
+    return ChangeNotifierProvider(
+      create: (context) => SignInWithPhoneNumberViewModel(),
+      child: Consumer<SignInWithPhoneNumberViewModel>(
+        builder: (context, model, child) => Scaffold(
+          appBar: AppBar(title: const Text('Sign In with Phone Number')),
+          body: Center(
+            child: SingleChildScrollView(
+              padding: 20.horizontal,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TextField(
-                    controller: _recaptchaSiteKeyController,
-                    decoration: const InputDecoration(
-                      labelText: 'reCAPTCHA Site Key',
-                      hintText: 'Enter your reCAPTCHA site key',
+                  InputField(
+                    controller: _phoneController,
+                    hint: '+16505550101',
+                    label: 'Phone Number',
+                    textInputType: TextInputType.phone,
+                  ),
+                  20.vSpace,
+                  Button(
+                    onTap: model.loading || model.codeSent
+                        ? () {}
+                        : () =>
+                            model.sendVerificationCode(_phoneController.text),
+                    title: 'Send Verification Code',
+                    loading: model.loading && !model.codeSent,
+                  ),
+                  if (model.codeSent) ...[
+                    20.vSpace,
+                    InputField(
+                      controller: _smsCodeController,
+                      hint: '123456',
+                      label: 'SMS Code',
+                      textInputType: TextInputType.number,
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => _initializeRecaptchaConfig(auth),
-                    child: const Text('Initialize reCAPTCHA Config'),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _phoneNumberController,
-                    decoration: const InputDecoration(
-                      labelText: 'Phone Number',
-                      hintText: '+1234567890',
+                    20.vSpace,
+                    Button(
+                      onTap: model.loading
+                          ? () {}
+                          : () => model.verifyCode(
+                                _smsCodeController.text,
+                                () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomeScreen()),
+                                  );
+                                },
+                              ),
+                      title: 'Verify Code',
+                      loading: model.loading && model.codeSent,
                     ),
-                    keyboardType: TextInputType.phone,
-                    enabled: _recaptchaInitialized,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _recaptchaInitialized
-                        ? () => _sendVerificationCode(auth)
-                        : null,
-                    child: const Text('Send Verification Code'),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _smsCodeController,
-                    decoration:
-                        const InputDecoration(labelText: 'Verification Code'),
-                    keyboardType: TextInputType.number,
-                    enabled: _codeSent,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: _codeSent ? () => _verifyCode(auth) : null,
-                    child: const Text('Verify Code'),
+                  ],
+                  20.vSpace,
+                  const Text(
+                    'Use Firebase test phone numbers like +16505550101',
+                    style: TextStyle(color: Colors.blue),
+                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
-    );
-  }
-
-  Future<void> _initializeRecaptchaConfig(FirebaseAuth auth) async {
-    setState(() => _isLoading = true);
-    try {
-      final siteKey = _recaptchaSiteKeyController.text.trim();
-      if (siteKey.isEmpty) {
-        throw Exception('reCAPTCHA site key cannot be empty');
-      }
-      await auth.initializeRecaptchaConfig(siteKey);
-      setState(() => _recaptchaInitialized = true);
-      _showSnackBar('reCAPTCHA config initialized successfully');
-    } catch (e) {
-      _showSnackBar('Failed to initialize reCAPTCHA config: $e');
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _sendVerificationCode(FirebaseAuth auth) async {
-    setState(() => _isLoading = true);
-    try {
-      final phoneNumber = _phoneNumberController.text.trim();
-      final recaptchaVerifier =
-          RecaptchaVerifier(_recaptchaSiteKeyController.text.trim());
-
-      _confirmationResult = await auth.signInWithPhoneNumber(
-        phoneNumber,
-        recaptchaVerifier,
-      );
-
-      setState(() {
-        _codeSent = true;
-      });
-      _showSnackBar('Verification code sent');
-    } catch (e) {
-      _showSnackBar('Error: ${e.toString()}');
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  Future<void> _verifyCode(FirebaseAuth auth) async {
-    setState(() => _isLoading = true);
-    try {
-      final smsCode = _smsCodeController.text.trim();
-      if (_confirmationResult == null) {
-        throw Exception('No confirmation result available');
-      }
-
-      final userCredential = await _confirmationResult!.confirm(smsCode);
-      _showSnackBar('Signed in successfully: ${userCredential.user.uid}');
-      Navigator.of(context).pop(); // Return to previous screen
-    } catch (e) {
-      _showSnackBar('Error: ${e.toString()}');
-    } finally {
-      setState(() => _isLoading = false);
-    }
-  }
-
-  void _showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+          ),
+        ),
+      ),
     );
   }
 }

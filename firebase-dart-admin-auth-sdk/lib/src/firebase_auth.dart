@@ -85,6 +85,7 @@ class FirebaseAuth {
   final String? projectId;
   final String? authDomain;
   final String? messagingSenderId;
+  final String? appId;
 
   late http.Client httpClient;
   final String? bucketName;
@@ -154,6 +155,7 @@ class FirebaseAuth {
     this.messagingSenderId,
     http.Client? httpClient, // Add this parameter
     this.bucketName,
+    this.appId,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
@@ -268,7 +270,7 @@ class FirebaseAuth {
       return signInWithPhoneNumber(
           credential.verificationId, credential.smsCode as ApplicationVerifier);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(credential.providerId as AuthProvider);
+      return signInWithPopup(credential.providerId as AuthProvider, clientId);
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
@@ -277,18 +279,42 @@ class FirebaseAuth {
     }
   }
 
+  String clientId = ''; // Add this line to store the clientId
+
+  // Add a method to set the clientId
+  void setClientId(String id) {
+    clientId = id;
+  }
+
   Future<UserCredential> signInWithPopup(
-    AuthProvider provider, {
-    PopupRedirectResolver? resolver,
-  }) {
-    return oauth.signInWithPopup(provider, resolver: resolver);
+    AuthProvider provider,
+    String clientId,
+  ) async {
+    try {
+      final userCredential = await oauth.signInWithPopup(provider, clientId);
+      updateCurrentUser(userCredential.user);
+      return userCredential;
+    } catch (e) {
+      print('Detailed signInWithPopup error: $e');
+      throw FirebaseAuthException(
+        code: 'popup-sign-in-error',
+        message: 'Failed to sign in with popup: ${e.toString()}',
+      );
+    }
   }
 
   Future<ConfirmationResult> signInWithPhoneNumber(
     String phoneNumber,
     ApplicationVerifier appVerifier,
-  ) {
-    return phone.signInWithPhoneNumber(phoneNumber, appVerifier);
+  ) async {
+    try {
+      return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'phone-auth-error',
+        message: 'Failed to sign in with phone number: ${e.toString()}',
+      );
+    }
   }
 
   // Future<ConfirmationResult> signInWithPhoneNumber(
@@ -531,8 +557,10 @@ class FirebaseAuth {
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {
       // Sign in with OAuth and link
-      final authResult =
-          await signInWithPopup(credential.providerId as AuthProvider);
+      final authResult = await signInWithPopup(
+        credential.providerId as AuthProvider,
+        clientId,
+      );
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else {

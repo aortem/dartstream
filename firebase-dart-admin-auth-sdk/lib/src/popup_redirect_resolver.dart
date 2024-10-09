@@ -1,39 +1,31 @@
 import 'dart:async';
 import 'dart:html' as html;
+import 'dart:convert';
 
 class PopupRedirectResolver {
-  static const int POPUP_WIDTH = 500;
-  static const int POPUP_HEIGHT = 600;
-
   Future<Map<String, dynamic>?> resolvePopup(String authUrl) async {
-    final popup = _openPopup(authUrl);
-    return await _waitForPopupResult(popup);
-  }
-
-  html.WindowBase _openPopup(String url) {
-    final left = (html.window.screen!.available.width! - POPUP_WIDTH) ~/ 2;
-    final top = (html.window.screen!.available.height! - POPUP_HEIGHT) ~/ 2;
-
-    return html.window.open(
-      url,
-      'authPopup',
-      'width=$POPUP_WIDTH,height=$POPUP_HEIGHT,left=$left,top=$top,resizable=yes,scrollbars=yes',
-    );
-  }
-
-  Future<Map<String, dynamic>?> _waitForPopupResult(html.WindowBase popup) {
+    print('Opening popup with URL: $authUrl');
     final completer = Completer<Map<String, dynamic>?>();
+    final popup = html.window.open(
+      authUrl,
+      'Firebase Auth Popup',
+      'width=500,height=600,resizable,scrollbars=yes,status=1',
+    );
 
     void listener(html.Event event) {
       if (event is html.MessageEvent) {
-        final data = event.data;
-        if (data is Map<String, dynamic> && data['type'] == 'auth_result') {
-          html.window.removeEventListener('message', listener);
-          completer.complete({
-            'idToken': data['idToken'],
-            'accessToken': data['accessToken'],
-            'redirectUrl': data['redirectUrl'] ?? 'http://localhost/callback',
-          });
+        print('Received message event: ${event.data}');
+        try {
+          final data = event.data;
+          if (data is Map<String, dynamic> &&
+              data['type'] == 'authorization_response') {
+            html.window.removeEventListener('message', listener);
+            completer.complete(data['response']);
+          } else {
+            print('Invalid message format: $data');
+          }
+        } catch (e) {
+          print('Error parsing message data: $e');
         }
       }
     }
@@ -41,10 +33,13 @@ class PopupRedirectResolver {
     html.window.addEventListener('message', listener);
 
     Timer.periodic(Duration(milliseconds: 500), (timer) {
-      if (popup.closed ?? false) {
+      if (popup?.closed == true) {
+        print('Popup closed');
         timer.cancel();
         html.window.removeEventListener('message', listener);
-        completer.complete(null);
+        if (!completer.isCompleted) {
+          completer.complete(null);
+        }
       }
     });
 

@@ -24,6 +24,7 @@ class User {
   DateTime? createdAt;
   Map<String, dynamic>? customAttributes;
   final bool mfaEnabled;
+  String? tenantId;
 
   User({
     required this.uid,
@@ -42,6 +43,7 @@ class User {
     this.validSince,
     this.mfaEnabled = false,
     this.idToken,
+    this.tenantId,
   });
 
   bool get isAnonymous => email == null && phoneNumber == null;
@@ -88,6 +90,7 @@ class User {
       idToken: json['idToken'],
       //   idTokenExpiration: json['expiresIn'],
       refreshToken: json['refreshToken'],
+      tenantId: json['tenantId'],
       createdAt: json['createdAt'] == null
           ? null
           : DateTime?.fromMillisecondsSinceEpoch(
@@ -187,4 +190,6 @@ class User {
         idToken.hashCode ^
         _idTokenExpiration.hashCode;
   }
+
+  get providerData => null;
 }

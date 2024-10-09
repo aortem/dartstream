@@ -19,6 +19,7 @@ void main() async {
       projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
       messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
       bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+      appId: 'YOUR_APP_ID', // 'YOUR_APP_ID'
     );
   } else {
     //  When working with mobile

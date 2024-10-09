@@ -12,6 +12,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_in_with_red
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 
 import '../screens/home_screen/home_screen.dart';
 import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
@@ -100,6 +101,16 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 ),
                 title: "Sign In With Email Link",
               ),
+              // 20.vSpace,
+              // ActionTile(
+              //   onTap: () => Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => const GetRedirectResultScreen(),
+              //     ),
+              //   ),
+              //   title: "Get Redirect Result Screen",
+              // ),
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(

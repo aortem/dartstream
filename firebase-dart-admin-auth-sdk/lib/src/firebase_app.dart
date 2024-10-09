@@ -17,11 +17,12 @@ class FirebaseApp {
   //The messagingSenderId of the project
   final String _messagingSenderId;
   final String? _bucketName;
+  final String? _appId;
   static FirebaseAuth? firebaseAuth;
 
   static FirebaseStorage? firebaseStorage;
   FirebaseApp._(this._apiKey, this._projectId, this._authdomain,
-      this._messagingSenderId, this._bucketName);
+      this._messagingSenderId, this._bucketName, this._appId);
   User? _currentUser;
 
   // method to set the current user
@@ -50,6 +51,7 @@ class FirebaseApp {
     required String authdomain,
     required String messagingSenderId,
     required String bucketName,
+    required String appId,
   }) async {
     // Asserts that the API key, Project ID, and Bucket Name are not empty
     assert(apiKey.isNotEmpty, "API Key cannot be empty");
@@ -57,10 +59,11 @@ class FirebaseApp {
     assert(bucketName.isNotEmpty, "Bucket Name cannot be empty");
     assert(authdomain.isNotEmpty, "Auth Domain cannot be empty");
     assert(messagingSenderId.isNotEmpty, "Messaging Sender ID cannot be empty");
+    assert(appId.isNotEmpty, "App ID cannot be empty");
 
     // Returns an instance of FirebaseApp if it exists or create a new instance based on the parameters passed
     return _instance ??= FirebaseApp._(
-        apiKey, projectId, authdomain, messagingSenderId, bucketName);
+        apiKey, projectId, authdomain, messagingSenderId, bucketName, appId);
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
@@ -76,6 +79,7 @@ class FirebaseApp {
       serviceAccount[
           'messaging_sender_id'], // Update with the actual messaging sender
       serviceAccount['bucket_name'], // Update with the actual bucket name field
+      serviceAccount['app_id'], // Update with the actual app ID field
     );
   }
 
@@ -96,6 +100,7 @@ class FirebaseApp {
       'your_auth_domain',
       'your_messaging_sender_id',
       'your_bucket_name', // Replace with your bucket name
+      'your_app_id', // Replace with your app ID
     );
   }
 
@@ -113,6 +118,7 @@ class FirebaseApp {
       authDomain: _authdomain,
       messagingSenderId: _messagingSenderId,
       bucketName: _bucketName,
+      appId: _appId,
     );
   }
 

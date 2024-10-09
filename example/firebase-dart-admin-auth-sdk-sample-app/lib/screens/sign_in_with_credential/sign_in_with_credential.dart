@@ -74,28 +74,6 @@ class SignInWithCredential extends StatelessWidget {
                     title: 'Sign In With Google',
                   ),
                 SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () =>
-                      viewModel.sendPasswordResetEmail('user@example.com'),
-                  child: Text('Send Password Reset Email'),
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    final settings = acs.ActionCodeSettings(
-                      url:
-                          'https://your-app-domain.com/finishSignIn?cartId=1234',
-                      handleCodeInApp: true,
-                      // iOSBundleId: 'com.example.ios',
-                      // androidPackageName: 'com.example.android',
-                      // androidInstallApp: true,
-                      // androidMinimumVersion: '12',
-                    );
-                    viewModel.sendSignInLinkToEmail(
-                        'user@example.com', settings);
-                  },
-                  child: Text('Send Sign-In Link to Email'),
-                ),
               ],
             ),
           ),
