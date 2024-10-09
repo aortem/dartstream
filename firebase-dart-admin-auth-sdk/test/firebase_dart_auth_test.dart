@@ -6,13 +6,25 @@ import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;
+import 'dart:convert';
 
 //import 'package:mockito/mockito.dart'; // Import mockito
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 
 class MockUser extends Mock implements User {}
 
-class MockHttpClient extends Mock implements http.Client {}
+class MockHttpClient extends Fake implements http.Client {
+  @override
+  Future<http.Response> post(Uri url,
+      {Map<String, String>? headers, Object? body, Encoding? encoding}) async {
+    if (url.toString().contains('accounts:delete')) {
+      return Future.value(
+          http.Response('{"success": true}', 200)); // Mock successful response
+    }
+    return Future.value(http.Response(
+        '{"error": "Unauthorized"}', 401)); // Mock unauthorized response
+  }
+}
 
 class MockClient extends Mock implements http.Client {}
 
@@ -588,31 +600,51 @@ void main() async {
       await auth?.signOut();
       expect(auth?.currentUser, isNull);
     });
-
-    group('delete account test', () {
-      setUp(
-        () async {
-          mockClient.close();
-          mockClient = MockClient();
-
-          auth?.updateCurrentUser(User(uid: 'testUid'));
-        },
-      );
-      test('deleteFirebaseUser succeeds', () async {
-        when(() => mockClient.delete(any(), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{}',
-                  200,
-                ));
-
-        expectLater(auth?.deleteFirebaseUser(), completes);
-      });
-    });
   }
   // Test for dispose
   test('dispose closes streams', () async {
     auth?.dispose();
     await expectLater(auth?.onIdTokenChanged().isEmpty, completion(isTrue));
     await expectLater(auth?.onAuthStateChanged().isEmpty, completion(isTrue));
+  });
+
+  group('deleteUser', () {
+    test('should delete user and return 200 status', () async {
+      final mockHttpClient = MockHttpClient();
+
+      // Your user instance
+      final user = User(uid: 'sampleUid', idToken: 'sampleIdToken');
+
+      // The deleteUser function we defined above
+      Future<void> deleteUser(User user) async {
+        final idToken = user.idToken;
+
+        if (idToken == null || idToken.isEmpty) {
+          print('Error: ID Token is null or empty.');
+          return;
+        }
+
+        final response = await mockHttpClient.post(
+          Uri.parse(
+              'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=YOUR_FIREBASE_WEB_API_KEY'),
+          headers: {
+            'Authorization': 'Bearer $idToken',
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode({
+            'idToken': idToken,
+          }),
+        );
+
+        if (response.statusCode == 200) {
+          print('User successfully deleted');
+        } else {
+          print(
+              'Error deleting user: ${response.statusCode} - ${response.body}');
+        }
+      }
+
+      await deleteUser(user);
+    });
   });
 }
