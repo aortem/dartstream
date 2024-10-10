@@ -3,15 +3,15 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class GetRedirectResultScreen extends StatefulWidget {
-  const GetRedirectResultScreen({Key? key}) : super(key: key);
+  const GetRedirectResultScreen({super.key});
 
   @override
-  _GetRedirectResultScreenState createState() =>
+  State<GetRedirectResultScreen> createState() =>
       _GetRedirectResultScreenState();
 }
 
 class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
-  UserCredential? _result;
+  Map<String, dynamic>? _result;
   String? _error;
 
   @override
@@ -53,11 +53,12 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
             if (_error != null)
               Text('Error: $_error', style: const TextStyle(color: Colors.red)),
             if (_result != null) ...[
-              Text('User ID: ${_result!.user.uid}'),
-              Text('Email: ${_result!.user.email}'),
-              Text('Display Name: ${_result!.user.displayName}'),
-              Text('Provider ID: ${_result!.credential?.providerId}'),
-              Text('Is New User: ${_result!.additionalUserInfo?.isNewUser}'),
+              Text('User ID: ${_result!['user']?['uid']}'),
+              Text('Email: ${_result!['user']?['email']}'),
+              Text('Display Name: ${_result!['user']?['displayName']}'),
+              Text('Provider ID: ${_result!['credential']?['providerId']}'),
+              Text(
+                  'Is New User: ${_result!['additionalUserInfo']?['isNewUser']}'),
             ],
           ],
         ),

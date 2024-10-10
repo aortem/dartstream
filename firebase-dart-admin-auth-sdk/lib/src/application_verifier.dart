@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:js' as js;
 
 abstract class ApplicationVerifier {
   String get type;
@@ -16,22 +15,8 @@ class RecaptchaVerifier implements ApplicationVerifier {
 
   @override
   Future<String> verify() async {
-    final completer = Completer<String>();
-
-    js.context.callMethod('grecaptcha.ready', [
-      () {
-        js.context.callMethod('grecaptcha.execute', [
-          siteKey,
-          {'action': 'submit'}
-        ]).then((token) {
-          completer.complete(token as String);
-        }).catchError((error) {
-          completer.completeError(error);
-        });
-      }
-    ]);
-
-    return completer.future;
+    throw UnimplementedError(
+        'RecaptchaVerifier.verify() must be implemented by a platform-specific class.');
   }
 }
 

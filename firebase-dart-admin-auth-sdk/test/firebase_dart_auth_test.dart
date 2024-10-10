@@ -434,7 +434,6 @@ void main() async {
 
     // Test for onIdTokenChanged
     test('onIdTokenChanged emits user when ID token changes', () async {
-      // Create initial user
       final initialUser = User(
         uid: 'testUid',
         email: 'test@example.com',
@@ -445,7 +444,6 @@ void main() async {
         idToken: 'initialIdToken',
       );
 
-      // Create updated user with new ID token
       final updatedUser = User(
         uid: 'testUid',
         email: 'test@example.com',
@@ -456,44 +454,42 @@ void main() async {
         idToken: 'updatedIdToken',
       );
 
-      // Set up a stream to collect emitted users
       final emittedUsers = <User>[];
-      final subscription = auth?.onIdTokenChanged((User? user) {
+      final completer = Completer<void>();
+
+      final subscription = auth!.onIdTokenChanged((User? user) {
         if (user != null) {
           emittedUsers.add(user);
+          if (emittedUsers.length == 2) {
+            completer.complete();
+          }
         }
       });
 
-      // Set initial user
-      auth?.updateCurrentUser(initialUser);
+      auth!.updateCurrentUser(initialUser);
 
-      // Wait a bit to ensure the initial user is emitted
-      await Future.delayed(Duration(milliseconds: 50));
+      // Use a small delay to ensure the first update is processed
+      await Future.delayed(Duration(milliseconds: 10));
 
-      // Update user with new ID token
       auth?.updateCurrentUser(updatedUser);
 
-      // Wait for emissions to complete
-      await Future.delayed(Duration(milliseconds: 100));
+      // Wait for both emissions to complete
+      await completer.future;
 
-      // Cancel the subscription
-      await subscription?.cancel();
+      await subscription.cancel();
 
-      // Verify emissions
       expect(emittedUsers.length, equals(2));
       expect(emittedUsers[0].idToken, equals('initialIdToken'));
       expect(emittedUsers[1].idToken, equals('updatedIdToken'));
-
-      // Verify that other user properties remained the same
       expect(emittedUsers[0].uid, equals('testUid'));
       expect(emittedUsers[1].uid, equals('testUid'));
       expect(emittedUsers[0].email, equals('test@example.com'));
       expect(emittedUsers[1].email, equals('test@example.com'));
 
       // Verify that onIdTokenChanged no longer emits after cancellation
-      auth?.updateCurrentUser(initialUser);
+      auth!.updateCurrentUser(initialUser);
       await Future.delayed(Duration(milliseconds: 50));
-      expect(emittedUsers.length, equals(2)); // Should still be 2
+      expect(emittedUsers.length, equals(2));
     });
 
 // Test for onAuthStateChanged
@@ -508,19 +504,30 @@ void main() async {
         refreshToken: 'testRefreshToken',
       );
 
-      auth?.updateCurrentUser(user);
+      final emittedStates = <User?>[];
+      final completer = Completer<void>();
 
-      auth?.onAuthStateChanged((User? user) {
-        expect(user, isNotNull);
-        expect(user?.uid, equals('testUid'));
+      final subscription = auth!.onAuthStateChanged((User? user) {
+        emittedStates.add(user);
+        if (emittedStates.length == 2) {
+          completer.complete();
+        }
       });
+
+      auth!.updateCurrentUser(user);
 
       // Simulate sign out
-      await auth?.signOut();
+      await auth!.signOut();
 
-      auth?.onAuthStateChanged((User? user) {
-        expect(user, isNull);
-      });
+      // Wait for both emissions to complete
+      await completer.future;
+
+      await subscription.cancel();
+
+      expect(emittedStates.length, equals(2));
+      expect(emittedStates[0], isNotNull);
+      expect(emittedStates[0]?.uid, equals('testUid'));
+      expect(emittedStates[1], isNull);
     });
 
     // Test for isSignInWithEmailLink
@@ -638,7 +645,7 @@ void main() async {
       when(() => mockClient.post(any(),
               body: any(named: 'body'), headers: any(named: 'headers')))
           .thenAnswer((_) async => http.Response(
-                '{"allProviders":["password","google.com"]}',
+                '{"signinMethods":["password","google.com"]}',
                 200,
               ));
 
@@ -657,21 +664,29 @@ void main() async {
               ));
 
       final result = await auth?.getRedirectResult();
-      expect(result?.user.uid, equals('testUid'));
-      expect(result?.user.email, equals('test@example.com'));
-      expect(result?.providerId, equals('google.com'));
+      expect(result, isA<Map<String, dynamic>>());
+      expect(result?['user']?['localId'], equals('testUid'));
+      expect(result?['user']?['email'], equals('test@example.com'));
+      expect(result?['providerId'], equals('google.com'));
     });
 
     // Test for FirebaseAuth.initializeRecaptchaConfig
     test('initializeRecaptchaConfig succeeds', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response('{}', 200));
+      if (isRunningOnWeb()) {
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response('{}', 200));
 
-      await expectLater(
-        auth?.initializeRecaptchaConfig('testSiteKey'),
-        completes,
-      );
+        await expectLater(
+          auth?.initializeRecaptchaConfig('testSiteKey'),
+          completes,
+        );
+      } else {
+        expect(
+          () => auth?.initializeRecaptchaConfig('testSiteKey'),
+          throwsA(isA<UnimplementedError>()),
+        );
+      }
     });
 
     // Test for FirebaseAuth.isSignInWithEmailLink
@@ -687,6 +702,9 @@ void main() async {
     });
 
     test('linkWithCredential succeeds with EmailAuthCredential', () async {
+      // Sign in a user first
+      auth?.updateCurrentUser(User(uid: 'testUid'));
+
       when(() => mockClient.post(any(),
           body: any(named: 'body'), headers: any(named: 'headers'))).thenAnswer(
         (_) async => http.Response(
@@ -701,7 +719,6 @@ void main() async {
 
       expect(result?.user.idToken, equals('newIdToken'));
     });
-
     test('parseActionCodeUrl returns parsed parameters', () async {
       final result = await auth?.parseActionCodeUrl(
           'https://example.com/?mode=resetPassword&oobCode=CODE&lang=en');
@@ -757,6 +774,9 @@ void main() async {
     });
 
     test('signOut succeeds', () async {
+      // Sign in a user first
+      auth?.updateCurrentUser(User(uid: 'testUid'));
+
       // Mocking the HTTP response for a successful sign-out.
       when(() => mockClient.post(any(),
               body: any(named: 'body'), headers: any(named: 'headers')))

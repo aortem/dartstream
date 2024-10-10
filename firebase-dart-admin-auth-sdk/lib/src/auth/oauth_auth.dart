@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
-import '../popup_redirect_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
 
 class OAuthAuth {
   final FirebaseAuth _auth;
@@ -14,7 +14,7 @@ class OAuthAuth {
   ) async {
     try {
       final authUrl = _getAuthUrl(provider, clientId);
-      final popupResolver = PopupRedirectResolver();
+      final popupResolver = createPopupRedirectResolver();
       final result = await popupResolver.resolvePopup(authUrl);
 
       if (result == null) {
@@ -56,6 +56,7 @@ class OAuthAuth {
 
   String _getAuthUrl(AuthProvider provider, String clientId) {
     final redirectUri = 'http://localhost:5000';
+    // This is still Google-specific. You might need to adjust this for other providers.
     final authUri = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
       'client_id': clientId,
       'redirect_uri': redirectUri,

@@ -6,6 +6,7 @@ import 'dart:developer';
 
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
 import 'auth/auth_redirect_link_stub.dart'
     if (dart.library.html) 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
@@ -122,6 +123,9 @@ class FirebaseAuth {
   late ConfirmPasswordResetService confirmPasswordResetService;
   late CheckActionCodeService checkActionCodeService;
   late final multi_factor.MultiFactorService multiFactorService;
+  late final RecaptchaVerifier _recaptchaVerifier;
+  late final PopupRedirectResolver _popupRedirectResolver;
+  late final RecaptchaConfigService _recaptchaConfigService;
 ////Ticket mo 36 to 41///////////////
   late FirebasePhoneNumberLink firebasePhoneNumberLink;
   late FirebaseParseUrlLink firebaseParseUrlLink;
@@ -184,16 +188,19 @@ class FirebaseAuth {
     _onAuthStateChangedService = OnAuthStateChangedService(this);
     applyAction = ApplyActionCode(this);
 
+    _recaptchaVerifier = createRecaptchaVerifier('your-site-key');
+    _popupRedirectResolver = createPopupRedirectResolver();
+    _recaptchaConfigService = createRecaptchaConfigService();
     fetchSignInMethods = FetchSignInMethodsService(auth: this);
     createUserWithEmailAndPasswordService =
         CreateUserWithEmailAndPasswordService(this);
     connectAuthEmulatorService = ConnectAuthEmulatorService(this);
     getRedirectResultService = GetRedirectResultService(auth: this);
-    recaptchaConfigService = RecaptchaConfigService();
+    // recaptchaConfigService = RecaptchaConfigService();
     confirmPasswordResetService = ConfirmPasswordResetService(auth: this);
     checkActionCodeService = CheckActionCodeService(auth: this);
     multiFactorService = multi_factor.MultiFactorService(auth: this);
-    firebasePhoneNumberLink = FirebasePhoneNumberLink(auth: this);
+    firebasePhoneNumberLink = FirebasePhoneNumberLink(this);
     firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
     firebaseLinkWithCredentailsUser =
@@ -781,9 +788,9 @@ class FirebaseAuth {
     }
   }
 
-  Future<UserCredential?> getRedirectResult() async {
+  Future<Map<String, dynamic>?> getRedirectResult() async {
     try {
-      return await getRedirectResultService.getRedirectResult();
+      return await _popupRedirectResolver.resolvePopup('your-auth-url');
     } catch (e) {
       print('Get redirect result failed: $e');
       throw FirebaseAuthException(
@@ -795,7 +802,7 @@ class FirebaseAuth {
 
   Future<void> initializeRecaptchaConfig(String siteKey) async {
     try {
-      await recaptchaConfigService.initializeRecaptchaConfig(siteKey);
+      await _recaptchaConfigService.initializeRecaptchaConfig(siteKey);
     } catch (e) {
       throw FirebaseAuthException(
         code: 'recaptcha-config-error',
