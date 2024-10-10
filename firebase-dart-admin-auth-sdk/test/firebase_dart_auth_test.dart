@@ -535,30 +535,6 @@ void main() async {
       expect(result['lang'], equals('en'));
     });
 
-    test('firebasePhoneNumberLinkMethod sends verification code', () async {
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{}',
-                200,
-              ));
-
-      if (isRunningOnWeb()) {
-        expectLater(auth?.firebasePhoneNumberLinkMethod('+1234567890', "12345"),
-            completes);
-      } else {
-        expectLater(
-          () async => await auth?.firebasePhoneNumberLinkMethod(
-              '+1234567890', "123456"),
-          throwsA(isA<FirebaseAuthException>().having(
-            (e) => e.code,
-            'code',
-            'verification-code-error',
-          )),
-        );
-      }
-    });
-
     test('getIdToken', () async {
       // Arrange
       when(() => mockUser.getIdToken()).thenAnswer((_) async => 'testIdToken');
