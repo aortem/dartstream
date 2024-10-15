@@ -15,6 +15,7 @@ dependencies:
 
   ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
   build_web_compilers: ^4.0.11
+  jwt_generator: ^0.0.3
 #  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
 #  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
   
