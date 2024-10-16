@@ -12,9 +12,9 @@ void main() async {
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-        apiKey: 'Your Api Key',
-        projectId: 'Your Project Id ',
-        bucketName: 'Your Bucket Name');
+        apiKey: 'AIzaSyBli2c-dmD4w2kLHmZU3UtewETvuruVAN4',
+        projectId: 'fire-base-dart-admin-auth-sdk',
+        bucketName: 'fire-base-dart-admin-auth-sdk.appspot.com');
   } else {
     //  When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {

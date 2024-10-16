@@ -54,12 +54,12 @@ void main() async {
   late AuthService auths;
   late MockUser mockUser;
   late MockIdTokenResult mockIdTokenResult;
-  late MockFirebaseApp mockFirebaseApp;
+
   setUp(() {
     mockUser = MockUser();
     auths = AuthService(); // Initialize the auth service
     auths.currentUser = mockUser;
-    mockFirebaseApp = MockFirebaseApp();
+
     mockIdTokenResult =
         MockIdTokenResult(); // Set the currentUser to the mock user
   });

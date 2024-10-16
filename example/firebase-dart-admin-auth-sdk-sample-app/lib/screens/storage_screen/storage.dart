@@ -8,7 +8,7 @@ class StorageExample extends StatefulWidget {
   const StorageExample({super.key});
 
   @override
-  _StorageExampleState createState() => _StorageExampleState();
+  State<StorageExample> createState() => _StorageExampleState();
 }
 
 class _StorageExampleState extends State<StorageExample> {
@@ -28,10 +28,14 @@ class _StorageExampleState extends State<StorageExample> {
         fileName = result.files.single.name;
         setState(() {});
       } else {
-        print('No file selected');
+        if (kDebugMode) {
+          print('No file selected');
+        }
       }
     } catch (e) {
-      print('Error picking file: $e');
+      if (kDebugMode) {
+        print('Error picking file: $e');
+      }
     }
   }
 
@@ -43,12 +47,18 @@ class _StorageExampleState extends State<StorageExample> {
           fileBytes!,
           //Set appropriate MIME type based on file
         );
-        print("File uploaded successfully");
+        if (kDebugMode) {
+          print("File uploaded successfully");
+        }
       } catch (e) {
-        print("Failed to upload file: $e");
+        if (kDebugMode) {
+          print("Failed to upload file: $e");
+        }
       }
     } else {
-      print('No file selected or file data is empty');
+      if (kDebugMode) {
+        print('No file selected or file data is empty');
+      }
     }
   }
 
@@ -78,10 +88,4 @@ class _StorageExampleState extends State<StorageExample> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(const MaterialApp(
-    home: StorageExample(),
-  ));
 }

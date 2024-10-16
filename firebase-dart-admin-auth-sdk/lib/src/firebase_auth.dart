@@ -44,7 +44,7 @@ import 'auth/auth_link_with_phone_number.dart';
 
 import 'firebase_user/delete_user.dart';
 
-import 'auth/parseActionCodeURL .dart';
+import 'auth/parse_action_code_url.dart';
 import 'firebase_user/link_with_credentails.dart';
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
@@ -408,17 +408,20 @@ class FirebaseAuth {
       // Re-authenticate the user with email and password before linking
       final authResult = await signInWithEmailAndPassword(
           credential.email, credential.password);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is PhoneAuthCredential) {
       // Verify the phone number and link
       final authResult = await signInWithPhoneNumber(
           credential.verificationId, credential.smsCode);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {
       // Sign in with OAuth and link
       final authResult = await signInWithPopup(credential.providerId);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else {

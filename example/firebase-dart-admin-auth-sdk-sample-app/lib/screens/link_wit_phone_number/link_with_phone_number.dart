@@ -1,5 +1,7 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../shared/button.dart';
@@ -44,8 +46,17 @@ class _LinkPhoneNumberScreenState extends State<LinkPhoneNumberScreen> {
               ),
               Button(
                 onTap: () async {
-                  await FirebaseApp.firebaseAuth?.firebasePhoneNumberLinkMethod(
-                      phoneLinkController.text, codeController.text);
+                  if (phoneLinkController.text.length < 11) {
+                    if (kDebugMode) {
+                      print('Please enter atleast 11 digit number');
+                    }
+                    BotToast.showText(
+                        text: 'Please enter atleast 11 digit number');
+                  } else {
+                    await FirebaseApp.firebaseAuth
+                        ?.firebasePhoneNumberLinkMethod(
+                            phoneLinkController.text, codeController.text);
+                  }
                 },
                 title: 'Send',
               ),
