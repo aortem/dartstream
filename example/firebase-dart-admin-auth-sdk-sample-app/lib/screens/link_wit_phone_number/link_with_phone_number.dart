@@ -46,7 +46,7 @@ class _LinkPhoneNumberScreenState extends State<LinkPhoneNumberScreen> {
               ),
               Button(
                 onTap: () async {
-                  if (phoneLinkController.text.length < 11) {
+                  if (phoneLinkController.text.length >= 11) {
                     if (kDebugMode) {
                       print('Please enter atleast 11 digit number');
                     }
