@@ -9,7 +9,6 @@ environment:
 # Add regular dependencies here.
 
 dependencies:
-  firebase_dart: ^1.1.5  # Replace with the actual Dart SDK package for Firebase
 #------------------ STANDARD FEATURES---------------------------------
 ## There are three standard libraries.  Each one can be used with a different xxx 
 

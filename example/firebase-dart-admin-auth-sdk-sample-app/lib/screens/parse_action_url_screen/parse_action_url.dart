@@ -1,24 +1,27 @@
-import 'dart:developer';
-
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import '../../shared/button.dart';
 import '../../shared/input_field.dart';
 
-class ParseActionUrl extends StatelessWidget {
-  ParseActionUrl({super.key});
+class ParseActionUrl extends StatefulWidget {
+  const ParseActionUrl({super.key});
+
+  @override
+  State<ParseActionUrl> createState() => _ParseActionUrlState();
+}
+
+class _ParseActionUrlState extends State<ParseActionUrl> {
   final TextEditingController parseActionUrlController =
       TextEditingController();
+  Map<String, String>? parseUrlResult;
 
-  dynamic parseUrlresult;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          padding: 20.horizontal,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -28,72 +31,74 @@ class ParseActionUrl extends StatelessWidget {
                 label: 'Parse Link',
                 hint: '',
               ),
-              20.vSpace,
+              const SizedBox(height: 20),
               Button(
                 onTap: () async {
-                  String actionCodeUrl = "https://example.com/finishSignUp?mode=resetPassword&oobCode=abc123&continueUrl=https://example.com/home&lang=en";
+                  String actionCodeUrl = parseActionUrlController.text;
 
-                  Map<String, String>? parsedData =  await FirebaseApp.firebaseAuth?.parseActionCodeUrl(actionCodeUrl);
+                  parseUrlResult = await FirebaseApp.firebaseAuth
+                      ?.parseActionCodeUrl(actionCodeUrl);
 
-                  if (parsedData != null) {
-                    print("Mode: ${parsedData['mode']}");
-                    print("OobCode: ${parsedData['oobCode']}");
-                    print("ContinueUrl: ${parsedData['continueUrl']}");
-                    print("Lang: ${parsedData['lang']}");
+                  if (parseUrlResult != null) {
+                    if (kDebugMode) {
+                      print(" Mode: ${parseUrlResult!['mode']}");
+                      print("OobCode: ${parseUrlResult!['oobCode']}");
+                      print("  ContinueUrl: ${parseUrlResult!['continueUrl']}");
+                      print(" Lang: ${parseUrlResult!['lang']}");
+                    }
                   } else {
-                    print("Invalid action code URL.");
+                    if (kDebugMode) {
+                      print("  Invalid action code URL.");
+                    }
                   }
-                  var parseUrlresult = await FirebaseApp.firebaseAuth
-                      ?.parseActionCodeUrl(parseActionUrlController.text);
 
-                  log("Parse Action Code Url   $parseUrlresult");
-              //    log("Parse Action Code Url   ${parseUrlresult?['code']}");
+                  setState(() {}); // Refresh the UI
                 },
                 title: 'Submit',
               ),
-              20.vSpace,
-              parseUrlresult == null
+              const SizedBox(height: 20),
+              parseUrlResult == null
                   ? const SizedBox()
                   : Column(
                       children: [
                         Row(
                           children: [
-                            const Text('code'),
-                            Text(parseUrlresult['code'])
+                            const Text('code: '),
+                            Text(parseUrlResult!['code'] ?? 'N/A'),
                           ],
                         ),
                         Row(
                           children: [
-                            const Text('apiKey'),
-                            Text(parseUrlresult['apiKey'])
+                            const Text('apiKey: '),
+                            Text(parseUrlResult!['apiKey'] ?? 'N/A'),
                           ],
                         ),
                         Row(
                           children: [
-                            const Text('mode'),
-                            Text(parseUrlresult['mode'])
+                            const Text('mode: '),
+                            Text(parseUrlResult!['mode'] ?? 'N/A'),
                           ],
                         ),
                         Row(
                           children: [
-                            const Text('continueUrl'),
-                            Text(parseUrlresult['continueUrl'])
+                            const Text('continueUrl: '),
+                            Text(parseUrlResult!['continueUrl'] ?? 'N/A'),
                           ],
                         ),
                         Row(
                           children: [
-                            const Text('languageCode'),
-                            Text(parseUrlresult['languageCode'])
+                            const Text('languageCode: '),
+                            Text(parseUrlResult!['languageCode'] ?? 'N/A'),
                           ],
                         ),
                         Row(
                           children: [
-                            const Text('clientId'),
-                            Text(parseUrlresult['clientId'])
+                            const Text('clientId: '),
+                            Text(parseUrlResult!['clientId'] ?? 'N/A'),
                           ],
                         ),
                       ],
-                    )
+                    ),
             ],
           ),
         ),

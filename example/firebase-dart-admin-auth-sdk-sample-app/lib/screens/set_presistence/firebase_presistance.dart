@@ -1,5 +1,5 @@
 class FirebasePersistence {
-  static const String LOCAL = 'local';
-  static const String SESSION = 'session';
-  static const String NONE = 'none';
+  static const String local = 'local';
+  static const String session = 'session';
+  static const String none = 'none';
 }
