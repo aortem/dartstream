@@ -1,40 +1,33 @@
 import 'dart:developer';
 
-import '../firebase_app.dart';
-import '../firebase_auth.dart';
-import '../user.dart';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
+import 'dart:convert';
+
 
 class FirebaseDeleteUser {
   final FirebaseAuth auth;
-
   FirebaseDeleteUser({required this.auth});
+  Future<void> deleteUser(String idToken, String uid) async {
+    final url = Uri.parse(
+        'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${auth.apiKey}');
+    log("iid is $uid");
+    log("idToken is $idToken");
+    final response = await http.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'idToken': idToken,
+        'localId': uid,
+      }),
+    );
 
-  Future<void> deleteUser(User user) async {
-    try {
-      final idToken = user.idToken; // Force token refresh
-      log("response code ${user.idToken}");
-      log("uid${user.uid}");
-      if (idToken == null || idToken.isEmpty) {
-        log('Error: ID Token is null or empty.');
-        return;
-      }
-      //
-      final response = await auth.performRequest('delete', {
-        // 'idToken': idToken,
-        "targetProjectId": FirebaseApp.firebaseAuth?.projectId,
-        'localId': user.uid
-      });
-      log("response code $response");
-
-      // Handle response
-      if (response.statusCode == 200) {
-        FirebaseApp.instance.setCurrentUser(null);
-        log('User successfully deleted.');
-      } else {
-        log('Error deleting user: ${response.statusCode} - ${response.body}');
-      }
-    } catch (e) {
-      log('Exception occurred: $e');
+    if (response.statusCode == 200) {
+      print('Successfully deleted user with UID: $uid');
+      FirebaseApp.instance.setCurrentUser(null);
+    } else {
+      print('Failed to delete user: ${response.body}');
     }
   }
 }

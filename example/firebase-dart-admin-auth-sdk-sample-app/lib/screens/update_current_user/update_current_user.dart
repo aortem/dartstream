@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 
 class UpdateUserScreen extends StatefulWidget {
   const UpdateUserScreen({super.key});
-
   @override
-  UpdateUserScreenState createState() => UpdateUserScreenState();
+  State<UpdateUserScreen> createState() => UpdateUserScreenState();
 }
 
 class UpdateUserScreenState extends State<UpdateUserScreen> {
