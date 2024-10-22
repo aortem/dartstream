@@ -1,4 +1,3 @@
-import 'dart:typed_data';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
@@ -6,8 +5,10 @@ import 'package:file_picker/file_picker.dart';
 // Your Firebase SDK
 
 class StorageExample extends StatefulWidget {
+  const StorageExample({super.key});
+
   @override
-  _StorageExampleState createState() => _StorageExampleState();
+  State<StorageExample> createState() => _StorageExampleState();
 }
 
 class _StorageExampleState extends State<StorageExample> {
@@ -27,10 +28,14 @@ class _StorageExampleState extends State<StorageExample> {
         fileName = result.files.single.name;
         setState(() {});
       } else {
-        print('No file selected');
+        if (kDebugMode) {
+          print('No file selected');
+        }
       }
     } catch (e) {
-      print('Error picking file: $e');
+      if (kDebugMode) {
+        print('Error picking file: $e');
+      }
     }
   }
 
@@ -42,12 +47,18 @@ class _StorageExampleState extends State<StorageExample> {
           fileBytes!,
           //Set appropriate MIME type based on file
         );
-        print("File uploaded successfully");
+        if (kDebugMode) {
+          print("File uploaded successfully");
+        }
       } catch (e) {
-        print("Failed to upload file: $e");
+        if (kDebugMode) {
+          print("Failed to upload file: $e");
+        }
       }
     } else {
-      print('No file selected or file data is empty');
+      if (kDebugMode) {
+        print('No file selected or file data is empty');
+      }
     }
   }
 
@@ -55,7 +66,7 @@ class _StorageExampleState extends State<StorageExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firebase Storage Example'),
+        title: const Text('Firebase Storage Example'),
       ),
       body: Center(
         child: Column(
@@ -63,24 +74,18 @@ class _StorageExampleState extends State<StorageExample> {
           children: [
             ElevatedButton(
               onPressed: pickFile,
-              child: Text('Pick a File'),
+              child: const Text('Pick a File'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (fileName != null) Text('Picked File: $fileName'),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: uploadFile,
-              child: Text('Upload File to Firebase Storage'),
+              child: const Text('Upload File to Firebase Storage'),
             ),
           ],
         ),
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: StorageExample(),
-  ));
 }

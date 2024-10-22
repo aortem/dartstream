@@ -11,7 +11,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen/home_screen.dart';
-import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
+import '../screens/sign_in_with_redirect/sign_in_with_redirect.dart';
 
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(
@@ -25,6 +25,14 @@ class SignInMethodsBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void homeScreenNaviaget() {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ));
+    }
+
     return Container(
       padding: 20.all,
       child: Column(
@@ -88,11 +96,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 BotToast.showText(text: '${user?.user.email} just signed in');
                 log("message$user");
                 if (user != null) {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ));
+                  homeScreenNaviaget();
                 }
               } catch (e) {
                 BotToast.showText(text: e.toString());

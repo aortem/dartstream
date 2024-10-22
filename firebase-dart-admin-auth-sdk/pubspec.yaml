@@ -9,13 +9,12 @@ environment:
 # Add regular dependencies here.
 
 dependencies:
-  firebase_dart: ^1.1.5  # Replace with the actual Dart SDK package for Firebase
-  mockito: ^5.3.2
 #------------------ STANDARD FEATURES---------------------------------
 ## There are three standard libraries.  Each one can be used with a different xxx 
 
   ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
   build_web_compilers: ^4.0.11
+  jwt_generator: ^0.0.3
 #  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
 #  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
   
@@ -24,9 +23,5 @@ dependencies:
 
 dev_dependencies:
   ds_tools_testing: ^0.0.1-pre+2 #Standard Dart Team Testing Tools
-  build_test: ^2.1.4
-  build_runner: ^2.3.3
-  test: ^1.19.5
   test_reporter: any #required to generate JUnit report 
-  coverage: ^1.0.3  #required to generate JUnit report 
   http: any

@@ -9,7 +9,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/set_language_code.dart';
@@ -36,15 +36,15 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
 import 'auth/before_auth_state_change.dart';
 
+import 'auth/phone_auth.dart';
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/get_language_code.dart';
-//import 'auth/auth_link_with_phone_number.dart';
-import 'auth/auth_link_with_phone_number_stub.dart'
-    if (dart.library.html) 'auth/auth_link_with_phone_number.dart';
+import 'auth/auth_link_with_phone_number.dart';
+
 import 'firebase_user/delete_user.dart';
 
-import 'auth/parseActionCodeURL .dart';
+import 'auth/parse_action_code_url.dart';
 import 'firebase_user/link_with_credentails.dart';
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
@@ -132,7 +132,7 @@ class FirebaseAuth {
     authStateChanged = AuthStateChangedService(auth: this);
     applyAction = ApplyActionCode(this);
 
-    firebasePhoneNumberLink = FirebasePhoneNumberLink(auth: this);
+    firebasePhoneNumberLink = FirebasePhoneNumberLink(this);
     firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
     firebaseLinkWithCredentailsUser =
@@ -408,17 +408,20 @@ class FirebaseAuth {
       // Re-authenticate the user with email and password before linking
       final authResult = await signInWithEmailAndPassword(
           credential.email, credential.password);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is PhoneAuthCredential) {
       // Verify the phone number and link
       final authResult = await signInWithPhoneNumber(
           credential.verificationId, credential.smsCode);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {
       // Sign in with OAuth and link
       final authResult = await signInWithPopup(credential.providerId);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else {
@@ -457,9 +460,11 @@ class FirebaseAuth {
   }
 
   ///////////FirebaseUser phone number link
-  Future<void> firebasePhoneNumberLinkMethod(String phone) async {
+  Future<void> firebasePhoneNumberLinkMethod(
+      String phone, String verificationCode) async {
     try {
-      await firebasePhoneNumberLink.sendVerificationCode(phone);
+      await firebasePhoneNumberLink.linkPhoneNumber(
+          currentUser!.idToken!, phone, verificationCode);
     } catch (e) {
       log("error is $e");
       throw FirebaseAuthException(
@@ -478,9 +483,11 @@ class FirebaseAuth {
         message: 'No user is currently signed in.',
       );
     }
-
+    // var accesToken = FirebaseAppInitialize.instance.getAccessToken();
+    //  log("access token is$accesToken");
     try {
-      await firebaseDeleteUser.deleteUser(currentUser!);
+      await firebaseDeleteUser.deleteUser(
+          currentUser!.idToken!, currentUser!.uid);
       FirebaseApp.instance.setCurrentUser(null);
       log('User Deleted ');
       return;
