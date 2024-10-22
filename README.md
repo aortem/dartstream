@@ -12,7 +12,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseStorage.getStorage                   | ✅        |
 | FirebaseAuth.applyActionCode                 | ❌       |
 | FirebaseAuth.beforeAuthStateChanged          | ✅        |
-| FirebaseAuth.checkActionCode                 | ❌        |
+| FirebaseAuth.checkActionCode                 | ✅        |
 | FirebaseAuth.confirmPasswordReset            | ✅        |
 | FirebaseAuth.connectAuthEmulator             | ✅        |
 | FirebaseAuth.createUserWithEmailAndPassword  | ✅        |
@@ -20,7 +20,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.getMultiFactorResolver          | ✅        |
 | FirebaseAuth.getRedirectResult               | ❌        |
 | FirebaseAuth.initializeRecaptchaConfig       | ✅        |
-| FirebaseAuth.isSignInWithEmailLink           | ❌        |
+| FirebaseAuth.isSignInWithEmailLink           | ✅        |
 | FirebaseAuth.onAuthStateChanged              | ✅        |
 | FirebaseAuth.onIdTokenChanged                | ✅        |
 | FirebaseAuth.revokeAccessToken               | ✅        |
