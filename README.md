@@ -9,7 +9,7 @@ This implementation does not yet support all functionalities of the firebase aut
 |--------------------------------------------- |-----------|
 | FirebaseApp.getAuth                          | ❌        |
 | FirebaseApp.initializeAuth                   | ❌        |
-| FirebaseStorage.getStorage                   | ❌        |
+| FirebaseStorage.getStorage                   | ✅        |
 | FirebaseAuth.applyActionCode                 | ❌       |
 | FirebaseAuth.beforeAuthStateChanged          | ✅        |
 | FirebaseAuth.checkActionCode                 | ❌        |
@@ -32,7 +32,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.signInWithCredential            | ✅        |
 | FirebaseAuth.signInWithCustomToken           | ❌        |
 | FirebaseAuth.signInWithEmailAndPassword      | ✅        |
-| FirebaseAuth.signInWithEmailLink             | ❌        |
+| FirebaseAuth.signInWithEmailLink             | ✅        |
 | FirebaseAuth.signInWithPhoneNumber           | ❌        |
 | FirebaseAuth.signInWithPopup                 | ❌        |
 | FirebaseAuth.signInWithRedirect              | ❌        |
