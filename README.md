@@ -21,9 +21,9 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.getRedirectResult               | ❌        |
 | FirebaseAuth.initializeRecaptchaConfig       | ✅        |
 | FirebaseAuth.isSignInWithEmailLink           | ❌        |
-| FirebaseAuth.onAuthStateChanged              | ❌        |
-| FirebaseAuth.onIdTokenChanged                | ❌        |
-| FirebaseAuth.revokeAccessToken               | ❌        |
+| FirebaseAuth.onAuthStateChanged              | ✅        |
+| FirebaseAuth.onIdTokenChanged                | ✅        |
+| FirebaseAuth.revokeAccessToken               | ✅        |
 | FirebaseAuth.sendPasswordResetEmail          | ✅        |
 | FirebaseAuth.sendSignInLinkToEmail           | ❌        |
 | FirebaseAuth.setLanguageCode                 | ✅        |
@@ -36,12 +36,12 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.signInWithPhoneNumber           | ❌        |
 | FirebaseAuth.signInWithPopup                 | ❌        |
 | FirebaseAuth.signInWithRedirect              | ❌        |
-| FirebaseAuth.signOut                         | ❌        |
+| FirebaseAuth.signOut                         | ✅        |
 | FirebaseAuth.updateCurrentUser               | ✅        |
 | FirebaseAuth.useDeviceLanguage               | ✅        |
 | FirebaseAuth.verifyPasswordResetCode         | ❌        |
 | FirebaseLink.parseActionCodeURL              | ❌        |
-| FirebaseUser.deleteUser                      | ❌        |
+| FirebaseUser.deleteUser                      | ✅        |
 | FirebaseUser.getIdToken                      | ✅        |
 | FirebaseUser.getIdTokenResult                | ✅        |
 | FirebaseUser.linkWithCredential              | ❌        |
