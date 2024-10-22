@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:developer';
 
 import 'package:bot_toast/bot_toast.dart';
@@ -65,6 +67,22 @@ class SignInMethodsBottomSheet extends StatelessWidget {
               ),
             ),
             title: "Sign In With Email Link",
+          ),
+          20.vSpace,
+          ActionTile(
+            onTap: () async {
+              await FirebaseApp.firebaseAuth?.signInWithCustomToken(null).then(
+                (value) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomeScreen(),
+                    ),
+                  );
+                },
+              );
+            },
+            title: "Sign In Custom Token",
           ),
           20.vSpace,
           ActionTile(
