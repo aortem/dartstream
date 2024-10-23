@@ -1,27 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_web_auth/flutter_web_auth.dart';
-
-import 'dart:convert';
-import 'dart:developer';
-import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class OAuthSelectionScreen extends StatelessWidget {
+  const OAuthSelectionScreen({super.key});
+
   void _selectProvider(BuildContext context, String providerUrl) async {
-    final auth = FirebaseApp.firebaseAuth;
-    await auth?.signInWithRedirect(providerUrl);
-    try {
-      final userInfo = await auth?.signInWithRedirectResult(providerUrl);
-      print('User info: $userInfo');
-    } catch (e) {
-      print('Error: $e');
-    }
+    //final auth = FirebaseApp.firebaseAuth;
+    // await auth?.signInWithRedirect(providerUrl);
+    // try {
+    //   final userInfo = await auth?.signInWithRedirectResult(providerUrl);
+    //   print('User info: $userInfo');
+    // } catch (e) {
+    //   print('Error: $e');
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Select OAuth Provider')),
+      appBar: AppBar(title: const Text('Select OAuth Provider')),
       body: Center(
         child: ElevatedButton(
           onPressed: () {
@@ -29,12 +25,12 @@ class OAuthSelectionScreen extends StatelessWidget {
               context: context,
               builder: (context) {
                 return AlertDialog(
-                  title: Text('Select OAuth Provider'),
+                  title: const Text('Select OAuth Provider'),
                   content: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       ListTile(
-                        title: Text('Google'),
+                        title: const Text('Google'),
                         onTap: () {
                           Navigator.of(context).pop();
                           _selectProvider(context,
@@ -42,7 +38,7 @@ class OAuthSelectionScreen extends StatelessWidget {
                         },
                       ),
                       ListTile(
-                        title: Text('Facebook'),
+                        title: const Text('Facebook'),
                         onTap: () {
                           Navigator.of(context).pop();
                           _selectProvider(context,
@@ -50,7 +46,7 @@ class OAuthSelectionScreen extends StatelessWidget {
                         },
                       ),
                       ListTile(
-                        title: Text('Provider X'),
+                        title: const Text('Provider X'),
                         onTap: () {
                           Navigator.of(context).pop();
                           _selectProvider(
@@ -63,7 +59,7 @@ class OAuthSelectionScreen extends StatelessWidget {
               },
             );
           },
-          child: Text('Sign In'),
+          child: const Text('Sign In'),
         ),
       ),
     );

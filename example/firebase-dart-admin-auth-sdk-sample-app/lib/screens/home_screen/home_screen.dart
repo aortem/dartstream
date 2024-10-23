@@ -7,14 +7,17 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/parse_action_url_screen/parse_action_url.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/set_language_code_screen/set_language_code_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/sign_up_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/storage_screen/storage.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -25,7 +28,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var UserIdToken;
+  dynamic userIdToken;
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -80,7 +83,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Send Password Reset Email",
                 ),
                 10.vSpace,
-
                 ActionTile(
                   loading: value.loading,
                   onTap: () => value.reloadUser(),
@@ -96,9 +98,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Set Language Code",
                 ),
                 ActionTile(
-                  onTap: () async {
+                  onTap: () {
                     try {
-                      await FirebaseApp.firebaseAuth?.signOut();
+                      FirebaseApp.firebaseAuth?.signOut();
                       final firebaseApp = FirebaseApp.instance;
                       final currentUser = firebaseApp.getCurrentUser();
 
@@ -106,7 +108,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const SignUpScreen(),
                         ));
-                        BotToast.showText(text: 'User is deleted');
+                        BotToast.showText(text: 'User is Signout');
                       } else {
                         log('No user is currently signed in.');
                       }
@@ -122,7 +124,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => LinkPhoneNumberScreen(),
+                        builder: (context) => const LinkPhoneNumberScreen(),
                       ),
                     );
                   },
@@ -130,8 +132,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () async {
-                    await FirebaseApp.firebaseAuth?.deleteFirebaseUser();
+                  onTap: () {
+                    FirebaseApp.firebaseAuth?.deleteFirebaseUser();
                     final firebaseApp = FirebaseApp.instance;
                     final currentUser = firebaseApp.getCurrentUser();
 
@@ -139,21 +141,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const SignUpScreen(),
                       ));
-                      BotToast.showText(text: 'User is signout');
+                      BotToast.showText(text: 'User is deleted');
                     } else {
                       log('No user is currently signed in.');
                     }
                   },
-                  title: "delete user",
+                  title: "Delete User",
                 ),
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
                     var tokenId = await FirebaseApp.firebaseAuth?.getIdToken();
                     setState(() {
-                      UserIdToken = tokenId;
+                      userIdToken = tokenId!;
                     });
-                    log("token is $tokenId");
+                    if (kDebugMode) {
+                      print("token result  $tokenId");
+                    }
                   },
                   title: "Get id  token ",
                 ),
@@ -163,7 +167,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     var tokenId =
                         await FirebaseApp.firebaseAuth?.getIdTokenResult();
 
-                    log("token result  $tokenId");
+                    if (kDebugMode) {
+                      print("token result  $tokenId");
+                    }
                   },
                   title: "Get id  token result ",
                 ),
@@ -180,7 +186,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => ParseActionUrl(),
+                      builder: (context) => const ParseActionUrl(),
                     ));
                   },
                   title: "Parse Action Code Url ",
@@ -191,11 +197,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => UpdateUserScreen(),
+                        builder: (context) => const UpdateUserScreen(),
                       ),
                     );
-
-
                   },
                   title: "Update Current User",
                 ),
@@ -203,13 +207,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     // var tokenId=
-                    FirebaseApp.firebaseAuth?.deviceLanguage('en');
+                    FirebaseApp.firebaseAuth?.setLanguageCodeMethod(
+                        'en', 'firebasdartadminauthsdk');
 
                     // log("token result  $tokenId");
                   },
-                  title: "device Language",
+                  title: "setdevice Language",
                 ),
                 10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth
+                        ?.getLanguageCodeMethod('firebasdartadminauthsdk');
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "get device Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    // var tokenId=
+                    FirebaseApp.firebaseAuth?.getAuthBeforeChange();
+
+                    // log("token result  $tokenId");
+                  },
+                  title: "before auth state change",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            const PersistenceSelectorDropdown(),
+                      ),
+                    );
+                  },
+                  title: " Set Presistance",
+                ),
+                10.vSpace,
+                10.vSpace,
+                ActionTile(
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const StorageExample(),
+                    ),
+                  ),
+                  title: "Storage",
+                ),
               ],
             ),
           ),

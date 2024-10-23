@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'auth/auth_redirect_link_stub.dart'
     if (dart.library.html) 'auth/auth_redirect_link.dart';
@@ -8,7 +9,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/set_language_code.dart';
@@ -33,20 +34,26 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
 
-//import 'auth/auth_link_with_phone_number.dart';
-import 'auth/auth_link_with_phone_number_stub.dart'
-    if (dart.library.html) 'auth/auth_link_with_phone_number.dart';
+import 'auth/before_auth_state_change.dart';
+
+import 'auth/phone_auth.dart';
+import 'auth/set_persistence.dart';
+import 'auth/sign_in_anonymously.dart';
+import 'firebase_user/get_language_code.dart';
+import 'auth/auth_link_with_phone_number.dart';
+
 import 'firebase_user/delete_user.dart';
 
-import 'auth/parseActionCodeURL .dart';
+import 'auth/parse_action_code_url.dart';
 import 'firebase_user/link_with_credentails.dart';
+import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
 
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
   late http.Client httpClient;
-
+  final String? bucketName;
   late EmailPasswordAuth emailPassword;
   late CustomTokenAuth customToken;
   late EmailLinkAuth emailLink;
@@ -77,6 +84,13 @@ class FirebaseAuth {
   late FirebaseDeleteUser firebaseDeleteUser;
   late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
 
+////Ticketr 5,7,23,24,61
+  late FirebaseSignInAnonymously signInAnonymously;
+  late PersistenceService setPresistence;
+  late LanguageService setLanguageService;
+  late LanguagGetService getLanguageService;
+  late FirebaseBeforeAuthStateChangeService
+      firebaseBeforeAuthStateChangeService;
   User? currentUser;
 
   /// StreamControllers for managing auth state and ID token change events
@@ -89,6 +103,7 @@ class FirebaseAuth {
     this.apiKey,
     this.projectId,
     http.Client? httpClient, // Add this parameter
+    this.bucketName,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
@@ -117,11 +132,18 @@ class FirebaseAuth {
     authStateChanged = AuthStateChangedService(auth: this);
     applyAction = ApplyActionCode(this);
 
-    firebasePhoneNumberLink = FirebasePhoneNumberLink(auth: this);
+    firebasePhoneNumberLink = FirebasePhoneNumberLink(this);
     firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
     firebaseLinkWithCredentailsUser =
         FirebaseLinkWithCredentailsUser(auth: this);
+
+    signInAnonymously = FirebaseSignInAnonymously(this);
+    setPresistence = PersistenceService(auth: this);
+    setLanguageService = LanguageService(auth: this);
+    getLanguageService = LanguagGetService(auth: this);
+    firebaseBeforeAuthStateChangeService =
+        FirebaseBeforeAuthStateChangeService(this);
   }
 
   Future<HttpResponse> performRequest(
@@ -139,6 +161,7 @@ class FirebaseAuth {
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
+      log("error is $error ");
       throw FirebaseAuthException(
         code: error['message'],
         message: error['message'],
@@ -237,18 +260,18 @@ class FirebaseAuth {
     }
   }
 
-  Future<Map<String, dynamic>> signInWithRedirectResult(
-      String providerId) async {
-    try {
-      return await signInRedirect.handleRedirectResult();
-    } catch (e) {
-      print('Sign-in with redirect failed: $e');
-      throw FirebaseAuthException(
-        code: 'sign-in-redirect-error',
-        message: 'Failed to sign in with redirect.',
-      );
-    }
-  }
+  // Future<Map<String, dynamic>> signInWithRedirectResult(
+  //     String providerId) async {
+  //   try {
+  //     return await signInRedirect.handleRedirectResult();
+  //   } catch (e) {
+  //     print('Sign-in with redirect failed: $e');
+  //     throw FirebaseAuthException(
+  //       code: 'sign-in-redirect-error',
+  //       message: 'Failed to sign in with redirect.',
+  //     );
+  //   }
+  // }
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {
@@ -385,17 +408,20 @@ class FirebaseAuth {
       // Re-authenticate the user with email and password before linking
       final authResult = await signInWithEmailAndPassword(
           credential.email, credential.password);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is PhoneAuthCredential) {
       // Verify the phone number and link
       final authResult = await signInWithPhoneNumber(
           credential.verificationId, credential.smsCode);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else if (credential is OAuthCredential) {
       // Sign in with OAuth and link
       final authResult = await signInWithPopup(credential.providerId);
+      print("aiht result $authResult");
       return firebaseLinkWithCredentailsUser.linkCredential(
           currentUser, currentUser.idToken);
     } else {
@@ -434,9 +460,11 @@ class FirebaseAuth {
   }
 
   ///////////FirebaseUser phone number link
-  Future<void> firebasePhoneNumberLinkMethod(String phone) async {
+  Future<void> firebasePhoneNumberLinkMethod(
+      String phone, String verificationCode) async {
     try {
-      await firebasePhoneNumberLink.sendVerificationCode(phone);
+      await firebasePhoneNumberLink.linkPhoneNumber(
+          currentUser!.idToken!, phone, verificationCode);
     } catch (e) {
       log("error is $e");
       throw FirebaseAuthException(
@@ -455,9 +483,11 @@ class FirebaseAuth {
         message: 'No user is currently signed in.',
       );
     }
-
+    // var accesToken = FirebaseAppInitialize.instance.getAccessToken();
+    //  log("access token is$accesToken");
     try {
-      await firebaseDeleteUser.deleteUser(currentUser!);
+      await firebaseDeleteUser.deleteUser(
+          currentUser!.idToken!, currentUser!.uid);
       FirebaseApp.instance.setCurrentUser(null);
       log('User Deleted ');
       return;
@@ -480,6 +510,80 @@ class FirebaseAuth {
   Future<IdTokenResult?> getIdTokenResult() async {
     final user = currentUser;
     return await user?.getIdTokenResult();
+  }
+
+/////////////////Firebase SignIn Anonymously /////////////////////////
+
+  Future<UserCredential?> signInAnonymouslyMethod() async {
+    try {
+      return await signInAnonymously.signInAnonymously();
+    } catch (e) {
+      print('Sign-in with anonymously failed: $e');
+      throw FirebaseAuthException(
+        code: 'sign-in-anonymously-error',
+        message: 'Failed to sign in with anonymously.',
+      );
+    }
+  }
+
+///////////////////////////////
+  ///////////////////////////////
+  Future<void> setPresistanceMethod(
+      String presistanceType, String databaseName) {
+    try {
+      return setPresistence.setPersistence(currentUser!.uid,
+          currentUser!.idToken!, presistanceType, databaseName);
+    } catch (e) {
+      print('Failed Set Persistence: $e');
+      throw FirebaseAuthException(
+        code: 'set-persistence-error',
+        message: 'Failed to Set Persistence.',
+      );
+    }
+  }
+
+/////////////////
+  Future<void> setLanguageCodeMethod(String languageCode, String dataBaseName) {
+    try {
+      return setLanguageService.setLanguagePreference(
+          currentUser!.uid, currentUser!.idToken!, languageCode, dataBaseName);
+    } catch (e) {
+      print('Failed Set Language: $e');
+      throw FirebaseAuthException(
+        code: 'set-language-error',
+        message: 'Failed to set language.',
+      );
+    }
+  }
+
+  ///////////////////
+  Future<void> getLanguageCodeMethod(String databaseName) {
+    try {
+      return getLanguageService.getLanguagePreference(
+          currentUser!.uid, currentUser!.idToken!, databaseName);
+    } catch (e) {
+      // print('Failed to Get Set Language: $e');
+      throw FirebaseAuthException(
+        code: 'get-language-error',
+        message: 'No language is set ',
+      );
+    }
+  }
+
+  ////////
+  Future<void> getAuthBeforeChange() {
+    try {
+      return firebaseBeforeAuthStateChangeService.beforeAuthStateChange(
+        currentUser!.idToken!,
+        currentUser!.refreshToken!,
+      );
+    } catch (e) {
+      print('Failed Before Auth State Changed: $e');
+      throw FirebaseAuthException(
+        code: 'before-auth-state-changed-error',
+        message: 'Failed to Before Auth State Changed.',
+      );
+    }
   }
 
   /// Disposes of the FirebaseAuth instance and releases resources.

@@ -8,6 +8,7 @@ void main() async {
     // Sign up a new user
     final newUser = await auth.createUserWithEmailAndPassword(
         'newuser@example.com', 'password123');
+    print('User created: ${newUser?.user.displayName}');
     print('User created: ${newUser?.user.email}');
 
     // Sign in with the new user

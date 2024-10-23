@@ -1,9 +1,10 @@
 import 'dart:io';
+
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/splash_screen/splash_screen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
@@ -11,20 +12,20 @@ void main() async {
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'Add your own project API Key',
-      projectId: 'Add your project Id',
-    );
+        apiKey: 'Your Api Key',
+        projectId: 'Your Project Id',
+        bucketName: 'Your Bucket Name');
   } else {
-    //When working with mobile
+    //  When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
-      //To initialize with service account put the path to the json file in the function below
+      //  To initialize with service account put the path to the json file in the function below
       String serviceAccountContent = await rootBundle.loadString(
           'assets/service_account.json'); //Add your own JSON service account
 
       // Initialize Firebase with the service account content
       await FirebaseApp.initializeAppWithServiceAccount(
         serviceAccountContent: serviceAccountContent,
-        serviceAccountKeyFilePath: '',
+        serviceAccountKeyFilePath: '', // file path
       );
 
       //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
