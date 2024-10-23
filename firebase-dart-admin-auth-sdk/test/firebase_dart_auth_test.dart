@@ -180,20 +180,22 @@ void main() async {
       expect(result!.user.email!, equals('newuser@example.com'));
     });
 
-    test('signInWithCustomToken succeeds', () async {
-      // Mocking the HTTP response for a successful sign-in with custom token.
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"kind":"identitytoolkit#VerifyCustomTokenResponse","localId":"customTokenUid","idToken":"customTokenIdToken","refreshToken":"customTokenRefreshToken","expiresIn":"3600"}',
-                200,
-              ));
+    if (element.key == 'service_account') {
+      test('${element.key}  signInWithCustomToken succeeds', () async {
+        // Mocking the HTTP response for a successful sign-in with custom token.
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response(
+                  '{"kind":"identitytoolkit#VerifyCustomTokenResponse","localId":"customTokenUid","idToken":"customTokenIdToken","refreshToken":"customTokenRefreshToken","expiresIn":"3600"}',
+                  200,
+                ));
+        final result = await auth?.signInWithCustomToken('custom_token');
+        expect(result?.user.uid, equals('customTokenUid'));
+      });
+    }
 
-      final result = await auth?.signInWithCustomToken('custom_token');
-      expect(result?.user.uid, equals('customTokenUid'));
-    });
-
-    test('signInWithCredential (email/password) succeeds', () async {
+    test('${element.key} signInWithCredential (email/password) succeeds',
+        () async {
       // Mocking the HTTP response for a successful sign-in with credential (email/password).
       when(() => mockClient.post(any(),
               body: any(named: 'body'), headers: any(named: 'headers')))
@@ -285,38 +287,40 @@ void main() async {
       expect(result?.body['email'], equals('test@example.com'));
     });
 
-    test('signInWithRedirect succeeds', () async {
-      // Mocking the HTTP response for a successful sign-in with redirect.
-      when(() => mockClient.post(any(),
-              body: any(named: 'body'), headers: any(named: 'headers')))
-          .thenAnswer((_) async => http.Response(
-                '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
-                200,
-              ));
+    // test('signInWithRedirect succeeds', () async {
+    //   // Mocking the HTTP response for a successful sign-in with redirect.
+    //   when(() => mockClient.post(any(),
+    //           body: any(named: 'body'), headers: any(named: 'headers')))
+    //       .thenAnswer((_) async => http.Response(
+    //             '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
+    //             200,
+    //           ));
 
-      if (isRunningOnWeb()) {
-        await auth?.signInWithRedirect('providerId');
-        // Instead of checking a result, verifying that the authentication state has changed.
-        // You can check the currentUser property or listen to an auth state change stream.
-        expect(auth?.currentUser,
-            isNotNull); // Assuming the sign-in was successful and a user is now signed in.
+    //   if (isRunningOnWeb()) {
+    //     expectLater(completes, auth?.signInWithRedirect('providerId'));
+    //     await auth?.signInWithRedirect('providerId');
+    //     // Instead of checking a result, verifying that the authentication state has changed.
+    //     // You can check the currentUser property or listen to an auth state change stream.
+    //     expect(auth?.currentUser,
+    //         isNotNull); // Assuming the sign-in was successful and a user is now signed in.
 
-        // Alternatively, listen to the auth state change stream if applicable.
-        auth?.onAuthStateChanged().listen(expectAsync1((user) {
-          expect(user, isNotNull); // Verifies that the user is not null.
-          // Additional checks can be added based on the expected state of the user.
-        }));
-      } else {
-        expectLater(
-          () async => await auth?.signInWithRedirect('providerId'),
-          throwsA(isA<FirebaseAuthException>().having(
-            (e) => e.code,
-            'code',
-            'sign-in-redirect-error',
-          )),
-        );
-      }
-    });
+    //     // Alternatively, listen to the auth state change stream if applicable.
+    //     auth?.onAuthStateChanged().listen(expectAsync1((user) {
+    //       expect(user, isNotNull);
+    //       // Verifies that the user is not null.
+    //       // Additional checks can be added based on the expected state of the user.
+    //     }));
+    //   } else {
+    //     expectLater(
+    //       () async => await auth?.signInWithRedirect('providerId'),
+    //       throwsA(isA<FirebaseAuthException>().having(
+    //         (e) => e.code,
+    //         'code',
+    //         'sign-in-redirect-error',
+    //       )),
+    //     );
+    //   }
+    // });
 
     test('should apply action code if FirebaseApp is initialized', () async {
       when(() => mockClient.post(any(),

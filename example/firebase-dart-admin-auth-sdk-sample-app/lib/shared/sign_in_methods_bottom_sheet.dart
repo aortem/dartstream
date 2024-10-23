@@ -37,94 +37,99 @@ class SignInMethodsBottomSheet extends StatelessWidget {
 
     return Container(
       padding: 20.all,
-      child: Column(
-        children: [
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithEmailAndPasswordScreen(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            ActionTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      const SignInWithEmailAndPasswordScreen(),
+                ),
               ),
+              title: "Sign In With Email&Password",
             ),
-            title: "Sign In With Email&Password",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithPhoneNumberScreen(),
+            20.vSpace,
+            ActionTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignInWithPhoneNumberScreen(),
+                ),
               ),
+              title: "Sign In With Phone Number",
             ),
-            title: "Sign In With Phone Number",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SendSignInWithEmailLinkScreen(),
+            20.vSpace,
+            ActionTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SendSignInWithEmailLinkScreen(),
+                ),
               ),
+              title: "Sign In With Email Link",
             ),
-            title: "Sign In With Email Link",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () async {
-              await FirebaseApp.firebaseAuth?.signInWithCustomToken(null).then(
-                (value) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomeScreen(),
-                    ),
-                  );
-                },
-              );
-            },
-            title: "Sign In Custom Token",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const SignInWithCredential(),
+            20.vSpace,
+            ActionTile(
+              onTap: () async {
+                await FirebaseApp.firebaseAuth
+                    ?.signInWithCustomToken(null)
+                    .then(
+                  (value) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
+                  },
+                );
+              },
+              title: "Sign In Custom Token",
+            ),
+            20.vSpace,
+            ActionTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const SignInWithCredential(),
+                ),
               ),
+              title: "Sign In With Credential",
             ),
-            title: "Sign In With Credential",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const OAuthSelectionScreen(),
+            20.vSpace,
+            ActionTile(
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const OAuthSelectionScreen(),
+                ),
               ),
+              title: "Sign In With Redirect",
             ),
-            title: "Sign In With Redirect",
-          ),
-          20.vSpace,
-          ActionTile(
-            onTap: () async {
-              try {
-                var user =
-                    await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod();
+            20.vSpace,
+            ActionTile(
+              onTap: () async {
+                try {
+                  var user =
+                      await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod();
 
-                BotToast.showText(text: '${user?.user.email} just signed in');
-                log("message$user");
-                if (user != null) {
-                  homeScreenNaviaget();
-                }
-              } catch (e) {
-                BotToast.showText(text: e.toString());
-              } finally {}
-            },
-            //  await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod(),
-            title: "Sign In Anonymously ",
-          ),
-          20.vSpace,
-        ],
+                  BotToast.showText(text: '${user?.user.email} just signed in');
+                  log("message$user");
+                  if (user != null) {
+                    homeScreenNaviaget();
+                  }
+                } catch (e) {
+                  BotToast.showText(text: e.toString());
+                } finally {}
+              },
+              //  await FirebaseApp.firebaseAuth?.signInAnonymouslyMethod(),
+              title: "Sign In Anonymously ",
+            ),
+            20.vSpace,
+          ],
+        ),
       ),
     );
   }

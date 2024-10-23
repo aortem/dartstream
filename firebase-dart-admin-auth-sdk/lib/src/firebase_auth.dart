@@ -178,7 +178,7 @@ class FirebaseAuth {
 
     final response =
         await httpClient.post(url, body: json.encode(body), headers: {
-      'Authorization': 'Bearer $accessToken',
+      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
       'Content-Type': 'application/json',
     });
 
