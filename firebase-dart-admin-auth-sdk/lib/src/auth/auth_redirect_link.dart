@@ -50,6 +50,7 @@ class SignInWithRedirectService {
     } catch (error) {
       log('Error occurred during sign in: $error');
     }
+    return null;
 
   }
 }

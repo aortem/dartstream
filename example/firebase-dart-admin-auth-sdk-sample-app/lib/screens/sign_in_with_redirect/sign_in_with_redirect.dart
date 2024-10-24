@@ -1,17 +1,15 @@
 import 'dart:developer';
 
 
-import 'dart:html' as html;
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-import '../../main.dart';
 import '../home_screen/home_screen.dart';
 
 class OAuthSelectionScreen extends StatefulWidget {
-   OAuthSelectionScreen({super.key});
+   const OAuthSelectionScreen({super.key});
 
   @override
   State<OAuthSelectionScreen> createState() => _OAuthSelectionScreenState();
@@ -61,13 +59,14 @@ class _OAuthSelectionScreenState extends State<OAuthSelectionScreen> {
     catch (error) {
       print('Error during Google sign-in: $error');
     }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Select OAuth Provider')),
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width*1,height:100,
         child: Center(
 
@@ -97,9 +96,9 @@ class _OAuthSelectionScreenState extends State<OAuthSelectionScreen> {
                 },
               );
             },
-            child: Column(
+            child: const Column(
               children: [
-               const Text('Sign In'),
+               Text('Sign In'),
 
               ],
             ),
