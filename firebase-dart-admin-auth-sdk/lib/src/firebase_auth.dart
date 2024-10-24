@@ -191,7 +191,7 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<Future<UserCredential?>> signInWithCredential(
+  Future<UserCredential?> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
@@ -199,7 +199,9 @@ class FirebaseAuth {
       return signInWithPhoneNumber(
           credential.verificationId, credential.smsCode);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(credential.providerId);
+      return signInWithPopup(
+        credential.providerId,
+      );
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
@@ -247,9 +249,14 @@ class FirebaseAuth {
     }
   }
 
-   Future<UserCredential?> signInWithRedirect(String redirectUri,String idToken ,String providerId) async {
+  Future<UserCredential?> signInWithRedirect(
+      String redirectUri, String idToken, String providerId) async {
     try {
-      return  await signInRedirect.signInWithRedirect(redirectUri,idToken, providerId,);
+      return await signInRedirect.signInWithRedirect(
+        redirectUri,
+        idToken,
+        providerId,
+      );
     } catch (e) {
       print('Sign-in with redirect failed: $e');
       throw FirebaseAuthException(
@@ -257,19 +264,7 @@ class FirebaseAuth {
         message: 'Failed to sign in with redirect.',
       );
     }
-
-  // Future<Map<String, dynamic>> signInWithRedirectResult(
-  //     String providerId) async {
-  //   try {
-  //     return await signInRedirect.handleRedirectResult();
-  //   } catch (e) {
-  //     print('Sign-in with redirect failed: $e');
-  //     throw FirebaseAuthException(
-  //       code: 'sign-in-redirect-error',
-  //       message: 'Failed to sign in with redirect.',
-  //     );
-  //   }
-  // }
+  }
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {

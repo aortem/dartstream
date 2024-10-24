@@ -81,7 +81,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
             onTap: () => Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const OAuthSelectionScreen(),
+                builder: (context) => OAuthSelectionScreen(),
               ),
             ),
             title: "Sign In With Redirect",

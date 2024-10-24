@@ -228,7 +228,7 @@ packages:
       path: "../../firebase-dart-admin-auth-sdk"
       relative: true
     source: path
-    version: "0.0.1-pre+4"
+    version: "0.0.1-pre+5"
   fixnum:
     dependency: transitive
     description:
@@ -263,14 +263,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_web_auth:
-    dependency: "direct main"
-    description:
-      name: flutter_web_auth
-      sha256: a69fa8f43b9e4d86ac72176bf747b735e7b977dd7cf215076d95b87cb05affdd
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.0"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -325,7 +317,7 @@ packages:
     source: hosted
     version: "2.4.5"
   google_sign_in_web:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: google_sign_in_web
       sha256: "042805a21127a85b0dc46bba98a37926f17d2439720e8a459d27045d8ef68055"
