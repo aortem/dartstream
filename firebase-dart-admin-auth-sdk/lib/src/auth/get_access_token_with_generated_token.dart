@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
-abstract class GetAccessTokenWithGeneratedToken {
-  static Future<String> getAccessTokenWithGeneratedToken(String jwt) async {
+class GetAccessTokenWithGeneratedTokenImplementation
+    extends GetAccessTokenWithGeneratedToken {
+  @override
+  Future<String> getAccessTokenWithGeneratedToken(String jwt) async {
     try {
       http.Client client = http.Client();
       final response = await client.post(
@@ -29,4 +31,8 @@ abstract class GetAccessTokenWithGeneratedToken {
       );
     }
   }
+}
+
+abstract class GetAccessTokenWithGeneratedToken {
+  Future<String> getAccessTokenWithGeneratedToken(String jwt);
 }

@@ -59,6 +59,7 @@ class FirebaseAuth {
   final String? projectId;
   final String? accessToken;
   final ServiceAccount? serviceAccount;
+  final GenerateCustomToken? generateCustomToken;
 
   late http.Client httpClient;
   final String? bucketName;
@@ -119,6 +120,7 @@ class FirebaseAuth {
     this.bucketName,
     this.accessToken,
     this.serviceAccount,
+    this.generateCustomToken,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
@@ -213,9 +215,10 @@ class FirebaseAuth {
 
   Future<UserCredential> signInWithCustomToken(String? uid) async {
     assert(serviceAccount != null, 'Service Account cannot be null');
+    assert(generateCustomToken != null, 'Custom token cannot be null');
 
     String token =
-        await GenerateCustomToken.generateSignInJwt(serviceAccount!, uid: uid);
+        await generateCustomToken!.generateSignInJwt(serviceAccount!, uid: uid);
     return customToken.signInWithCustomToken(token);
   }
 

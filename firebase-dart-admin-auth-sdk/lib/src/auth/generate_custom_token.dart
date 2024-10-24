@@ -2,11 +2,10 @@ import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 import 'package:jwt_generator/jwt_generator.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
-abstract class GenerateCustomToken {
-  static Future<String> generateCustomToken(
-    FcmTokenDto fcmToken,
-    String privateKey,
-  ) async {
+class GenerateCustomTokenImplementation extends GenerateCustomToken {
+  @override
+  Future<String> generateCustomToken(
+      FcmTokenDto fcmToken, String privateKey) async {
     // Creating an encoded and signed token
 
     // RsaKeyParser extracts private key from a pem string
@@ -23,7 +22,8 @@ abstract class GenerateCustomToken {
     return jwtToken;
   }
 
-  static Future<String> generateServiceAccountJwt(
+  @override
+  Future<String> generateServiceAccountJwt(
       ServiceAccount serviceAccount) async {
     final String? iss = serviceAccount.clientEmail;
     final String scope =
@@ -40,11 +40,9 @@ abstract class GenerateCustomToken {
     );
   }
 
-  static Future<String> generateSignInJwt(
-    ServiceAccount serviceAccount, {
-    String? uid,
-    Map<String, dynamic>? additionalClaims,
-  }) async {
+  @override
+  Future<String> generateSignInJwt(ServiceAccount serviceAccount,
+      {String? uid, Map<String, dynamic>? additionalClaims}) async {
     final String? iss = serviceAccount.clientEmail;
     final String scope =
         'https://www.googleapis.com/auth/firebase.database https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/identitytoolkit';
@@ -65,4 +63,19 @@ abstract class GenerateCustomToken {
       serviceAccount.privateKey!,
     );
   }
+}
+
+abstract class GenerateCustomToken {
+  Future<String> generateCustomToken(
+    FcmTokenDto fcmToken,
+    String privateKey,
+  );
+
+  Future<String> generateServiceAccountJwt(ServiceAccount serviceAccount);
+
+  Future<String> generateSignInJwt(
+    ServiceAccount serviceAccount, {
+    String? uid,
+    Map<String, dynamic>? additionalClaims,
+  });
 }

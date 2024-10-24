@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_storage.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
-
 import 'auth/generate_custom_token.dart';
 import 'auth/get_access_token_with_generated_token.dart';
 
@@ -20,7 +18,8 @@ class FirebaseApp {
   final ServiceAccount? _serviceAccount;
   final String? _accessToken;
   static FirebaseAuth? firebaseAuth;
-
+  static GetAccessTokenWithGeneratedToken? _accesstokenGen;
+  static GenerateCustomToken? _tokenGen;
   static FirebaseStorage? firebaseStorage;
   FirebaseApp._(
     this._apiKey,
@@ -75,6 +74,9 @@ class FirebaseApp {
     required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
+    final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
     // Parse the JSON content
     final Map<String, dynamic> serviceAccount =
         json.decode(serviceAccountContent);
@@ -82,11 +84,10 @@ class FirebaseApp {
     final ServiceAccount serviceAccountModel =
         ServiceAccount.fromJson(serviceAccount);
 
-    final jwt = await GenerateCustomToken.generateServiceAccountJwt(
-        serviceAccountModel);
+    final jwt = await tokenGen.generateServiceAccountJwt(serviceAccountModel);
+
     final accessToken =
-        await GetAccessTokenWithGeneratedToken.getAccessTokenWithGeneratedToken(
-            jwt);
+        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
     return _instance ??= FirebaseApp._(
       null, // Update with the actual key field
@@ -96,6 +97,14 @@ class FirebaseApp {
       serviceAccountModel,
       accessToken,
     );
+  }
+
+  static void overrideInstanceForTesting(
+    GetAccessTokenWithGeneratedToken tokenGen,
+    GenerateCustomToken generateCustomToken,
+  ) {
+    _accesstokenGen = tokenGen;
+    _tokenGen = generateCustomToken;
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
@@ -127,11 +136,13 @@ class FirebaseApp {
       throw ("FirebaseApp is not initialized. Please call initializeApp() first.");
     }
     return firebaseAuth ??= FirebaseAuth(
-        apiKey: _apiKey,
-        projectId: _projectId,
-        bucketName: _bucketName,
-        accessToken: _accessToken,
-        serviceAccount: _serviceAccount);
+      apiKey: _apiKey,
+      projectId: _projectId,
+      bucketName: _bucketName,
+      accessToken: _accessToken,
+      serviceAccount: _serviceAccount,
+      generateCustomToken: _tokenGen,
+    );
   }
 
   FirebaseStorage getStorage() {
