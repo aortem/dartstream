@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
+import 'auth/auth_redirect_link.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'auth/auth_redirect_link_stub.dart'
-    if (dart.library.html) 'auth/auth_redirect_link.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -248,9 +247,9 @@ class FirebaseAuth {
     }
   }
 
-  Future<void> signInWithRedirect(String providerId) async {
+   Future<UserCredential?> signInWithRedirect(String redirectUri,String idToken ,String providerId) async {
     try {
-      await signInRedirect.signInWithRedirect(providerId);
+      return  await signInRedirect.signInWithRedirect(redirectUri,idToken, providerId,);
     } catch (e) {
       print('Sign-in with redirect failed: $e');
       throw FirebaseAuthException(
@@ -258,7 +257,6 @@ class FirebaseAuth {
         message: 'Failed to sign in with redirect.',
       );
     }
-  }
 
   // Future<Map<String, dynamic>> signInWithRedirectResult(
   //     String providerId) async {
