@@ -1,3 +1,12 @@
+## 0.0.1-pre+5
+
+- FirebaseStorage.getStorage added to Sample App
+- FirebaseAuth.setPersistence added to Sample App
+- FirebaseAuth.initializeRecaptchaConfig Method implemented in Sample App
+- FirebaseAuth.confirmPasswordReset Method implemented in Sample App
+- FirebaseAuth.isSignInWithEmailLink Method implemented in Sample App
+- FirebaseAuth.checkActionCode added to Sample App
+
 ## 0.0.1-pre+4
 
 - Sample App Package Name Fix
