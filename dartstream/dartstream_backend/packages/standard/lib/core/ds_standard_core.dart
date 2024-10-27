@@ -1,8 +1,3 @@
-// Primary backend code and foundational classes
-
-// ds_standard_core.dart
-
-// Core setup, factories, and configuration handling.
 // ds_standard_core.dart
 
 import 'package:ds_standard_features/utilities/ds_di_container.dart';
@@ -32,8 +27,9 @@ class ProjectConfig {
     this.tools = const [],
   });
 
+  /// Saves the current configuration to a local storage or file.
   void saveConfig() {
-    // Logic to save the configuration locally or in a file
+    // Logic to save the configuration locally or in a file.
   }
 
   Map<String, dynamic> toJson() => {
@@ -61,37 +57,45 @@ class DartstreamCore {
     required this.services,
   });
 
+  /// Initializes core setup for Dartstream, including project configuration and services.
   Future<void> initializeCore() async {
     print('Initializing Dartstream Core with project: ${config.projectName}');
-    // Additional setup logic
+    // Additional setup logic (e.g., load dependencies, prepare services)
   }
 
+  /// Configures the core settings and persists them.
   void configureCore(Map<String, dynamic> settings) {
-    // Configure settings across core and registered components
     config.saveConfig();
+    print("Configuration saved.");
   }
 
-  /// Registers selected middleware based on user choice
+  /// Registers selected middleware based on user choice.
   void registerMiddleware(String middlewareType) {
-    MiddlewareLoader loader = MiddlewareLoader();
-    DartstreamMiddleware middleware = loader.load(middlewareType);
+    var loader = MiddlewareLoader();
+    var middleware = loader.load(middlewareType);
     middleware.setup();
+    print("Middleware '$middlewareType' registered.");
   }
 
-  /// Sets up CI/CD tools based on user choice
+  /// Sets up CI/CD tools based on user choice.
   void setupCiCdTool(String tool) {
-    CiCdConfigurator().setupCiCd(tool);
+    var ciCdConfigurator = CiCdConfigurator();
+    ciCdConfigurator.setupCiCd(tool);
+    print("CI/CD tool '$tool' setup complete.");
   }
 
-  /// Loads tools selected by the user (Security, Performance, etc.)
+  /// Loads user-selected tools such as Security, Performance, etc.
   void loadTools() {
-    ToolCustomizer().loadTools(config.tools);
+    var toolCustomizer = ToolCustomizer();
+    toolCustomizer.loadTools(config.tools);
+    print("Selected tools loaded: ${config.tools.join(', ')}");
   }
 
-  /// Shows a preview of the user's selections and confirms setup
+  /// Shows a preview of the user's configuration and confirms the setup.
   bool confirmSetup() {
-    SetupPreview().display(config);
-    return SetupPreview().confirm();
+    var preview = SetupPreview();
+    preview.display(config);
+    return preview.confirm();
   }
 }
 
@@ -111,7 +115,7 @@ class CloudProviderFactory {
   }
 }
 
-/// Factory for selecting authentication SDK.
+/// Factory for selecting an authentication SDK.
 class AuthProviderFactory {
   AuthProvider getAuthProvider(String provider) {
     switch (provider) {
@@ -136,7 +140,7 @@ class MiddlewareLoader {
       case 'Shelf Middleware':
         return ShelfMiddleware();
       case 'Custom Middleware':
-        // Load custom middleware, potentially from an extensions folder
+        // Load custom middleware, potentially from an extensions folder.
         return CustomMiddleware();
       default:
         throw Exception('Unsupported middleware type');
@@ -149,13 +153,13 @@ class CiCdConfigurator {
   void setupCiCd(String tool) {
     switch (tool) {
       case 'GitHub Actions':
-        // Configure GitHub Actions workflows
+        print("Setting up GitHub Actions workflows...");
         break;
       case 'GitLab CI':
-        // Configure GitLab CI workflows
+        print("Setting up GitLab CI workflows...");
         break;
       case 'Custom Script':
-        // Set up a custom CI/CD script
+        print("Setting up a custom CI/CD script...");
         break;
       default:
         throw Exception('Unsupported CI/CD tool');
@@ -167,12 +171,14 @@ class CiCdConfigurator {
 class ToolCustomizer {
   void loadTools(List<String> selectedTools) {
     if (selectedTools.contains('Security Tools')) {
-      // Load security tools like Sentry
+      print("Loading security tools...");
+      // Implement security tool loading logic (e.g., Sentry)
     }
     if (selectedTools.contains('Performance Tools')) {
-      // Load performance monitoring tools
+      print("Loading performance monitoring tools...");
+      // Implement performance monitoring logic
     }
-    // Additional tools...
+    // Add more tools as needed
   }
 }
 
@@ -190,9 +196,10 @@ class SetupPreview {
     print('- Custom Tools: ${config.tools.join(', ')}');
   }
 
+  /// Confirms the setup, awaiting user input.
   bool confirm() {
     print('Confirm setup? (y/n)');
-    // Collect user input and return true or false based on response
+    // Capture user input and return true or false based on response.
     return true;
   }
 }
