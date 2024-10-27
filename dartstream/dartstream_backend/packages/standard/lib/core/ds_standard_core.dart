@@ -1,7 +1,6 @@
 // ds_standard_core.dart
 
-import 'package:ds_standard_features/utilities/ds_di_container.dart';
-import 'package:ds_standard_features/utilities/ds_services.dart';
+import 'package:ds_standard_features/ds_standard_features.dart';
 
 /// Core project configuration class that stores user choices.
 class ProjectConfig {
