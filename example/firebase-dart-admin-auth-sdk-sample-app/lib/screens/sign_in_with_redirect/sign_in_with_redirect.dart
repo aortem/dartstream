@@ -1,65 +1,109 @@
+import 'dart:developer';
+
+
+import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
-class OAuthSelectionScreen extends StatelessWidget {
-  const OAuthSelectionScreen({super.key});
+import '../home_screen/home_screen.dart';
 
-  void _selectProvider(BuildContext context, String providerUrl) async {
-    //final auth = FirebaseApp.firebaseAuth;
-    // await auth?.signInWithRedirect(providerUrl);
-    // try {
-    //   final userInfo = await auth?.signInWithRedirectResult(providerUrl);
-    //   print('User info: $userInfo');
-    // } catch (e) {
-    //   print('Error: $e');
-    // }
+class OAuthSelectionScreen extends StatefulWidget {
+   const OAuthSelectionScreen({super.key});
+
+  @override
+  State<OAuthSelectionScreen> createState() => _OAuthSelectionScreenState();
+}
+
+class _OAuthSelectionScreenState extends State<OAuthSelectionScreen> {
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'profile',
+      'openid',
+    ],
+  );
+
+  Future<User?> signInWithGoogle() async {
+    try {
+
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) {
+        print('User cancelled the sign-in');
+        return null;
+      }
+
+      // Retrieve the authentication tokens (idToken and accessToken)
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+      log('Access Token: ${googleAuth.accessToken}');
+      log('ID Token: ${googleAuth.idToken}');
+      try {
+        var user =
+        await FirebaseApp.firebaseAuth?.signInWithRedirect('http://localhost',googleAuth.accessToken??"",'google.com');
+
+
+        BotToast.showText(text: '${user?.user.email} just signed in');
+        log("message$user");
+        if (user != null) {      Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomeScreen(),
+            ));
+        }
+      } catch (e) {
+        BotToast.showText(text: e.toString());
+      }
+       //
+     }
+    catch (error) {
+      print('Error during Google sign-in: $error');
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Select OAuth Provider')),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                return AlertDialog(
-                  title: const Text('Select OAuth Provider'),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListTile(
-                        title: const Text('Google'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _selectProvider(context,
-                              'https://accounts.google.com/o/oauth2/auth');
-                        },
-                      ),
-                      ListTile(
-                        title: const Text('Facebook'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _selectProvider(context,
-                              'https://www.facebook.com/v10.0/dialog/oauth');
-                        },
-                      ),
-                      ListTile(
-                        title: const Text('Provider X'),
-                        onTap: () {
-                          Navigator.of(context).pop();
-                          _selectProvider(
-                              context, 'https://providerx.com/oauth2/auth');
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              },
-            );
-          },
-          child: const Text('Sign In'),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width*1,height:100,
+        child: Center(
+
+          child: ElevatedButton(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    title: const Text('Select OAuth Provider'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ListTile(
+                          title: const Text('Google'),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            signInWithGoogle();
+                          },
+                        ),
+
+
+
+                      ],
+                    ),
+                  );
+                },
+              );
+            },
+            child: const Column(
+              children: [
+               Text('Sign In'),
+
+              ],
+            ),
+
+          ),
         ),
       ),
     );

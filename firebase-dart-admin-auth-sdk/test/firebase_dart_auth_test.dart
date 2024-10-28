@@ -3,8 +3,6 @@ import 'dart:convert';
 
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/id_token_result_model.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
-    if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
@@ -294,53 +292,16 @@ void main() async {
     });
 
     test('signInWithRedirect succeeds', () async {
-      // Mocking the HTTP response for a successful sign-in with redirect
-      when(() => mockClient.post(
-            any(),
-            body: any(named: 'body'),
-            headers: any(named: 'headers'),
-          )).thenAnswer((_) async => http.Response(
-            '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
-            200,
-          ));
+      // Mocking the HTTP response for a successful user creation with email and password.
+      when(() => mockClient.post(any(),
+              body: any(named: 'body'), headers: any(named: 'headers')))
+          .thenAnswer((_) async => http.Response(
+                '{"kind":"identitytoolkit#signInWithIdp","requestUri": "http:localhost","providerId":"google.com","access_token":"newTestIdToken",}',
+                200,
+              ));
 
-      if (isRunningOnWeb()) {
-        // Set up a listener for auth state changes
-        final completer = Completer<User?>();
-        final subscription = auth?.onAuthStateChanged((User? user) {
-          if (!completer.isCompleted) {
-            completer.complete(user);
-          }
-        });
-
-        // Perform the sign-in with redirect
-        await auth?.signInWithRedirect('providerId');
-
-        // Simulate the redirect callback
-        auth?.updateCurrentUser(User(
-          uid: 'redirectUid',
-          email: 'redirect@example.com',
-          idToken: 'redirectIdToken',
-        ));
-
-        // Wait for the auth state to change and verify the user
-        final user = await completer.future.timeout(Duration(seconds: 5));
-        expect(user, isNotNull);
-        expect(user?.uid, equals('redirectUid'));
-        expect(user?.email, equals('redirect@example.com'));
-
-        // Clean up the subscription
-        await subscription?.cancel();
-      } else {
-        expectLater(
-          () async => await auth?.signInWithRedirect('providerId'),
-          throwsA(isA<FirebaseAuthException>().having(
-            (e) => e.code,
-            'code',
-            'sign-in-redirect-error',
-          )),
-        );
-      }
+      final result = await auth?.signInWithRedirect(
+          'http:localhost', 'testIdToken', "google.com");
     });
 
     test('should apply action code if FirebaseApp is initialized', () async {

@@ -3,12 +3,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
+import 'auth/auth_redirect_link.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
-import 'auth/auth_redirect_link_stub.dart'
-    if (dart.library.html) 'auth/auth_redirect_link.dart';
+
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -267,7 +266,7 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<Future<Object?>> signInWithCredential(
+  Future<UserCredential?> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
@@ -275,7 +274,9 @@ class FirebaseAuth {
       return signInWithPhoneNumber(
           credential.verificationId, credential.smsCode as ApplicationVerifier);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(credential.providerId as AuthProvider, clientId);
+      return signInWithPopup(
+        credential.providerId,
+      );
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
@@ -365,9 +366,14 @@ class FirebaseAuth {
     }
   }
 
-  Future<void> signInWithRedirect(String providerId) async {
+  Future<UserCredential?> signInWithRedirect(
+      String redirectUri, String idToken, String providerId) async {
     try {
-      await signInRedirect.signInWithRedirect(providerId);
+      return await signInRedirect.signInWithRedirect(
+        redirectUri,
+        idToken,
+        providerId,
+      );
     } catch (e) {
       print('Sign-in with redirect failed: $e');
       throw FirebaseAuthException(
@@ -376,19 +382,6 @@ class FirebaseAuth {
       );
     }
   }
-
-  // Future<Map<String, dynamic>> signInWithRedirectResult(
-  //     String providerId) async {
-  //   try {
-  //     return await signInRedirect.handleRedirectResult();
-  //   } catch (e) {
-  //     print('Sign-in with redirect failed: $e');
-  //     throw FirebaseAuthException(
-  //       code: 'sign-in-redirect-error',
-  //       message: 'Failed to sign in with redirect.',
-  //     );
-  //   }
-  // }
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {
