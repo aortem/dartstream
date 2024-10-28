@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 
 import '../screens/home_screen/home_screen.dart';
-import '../screens/sign_in_with_redirect/Sign_in_with_redirect.dart';
+import '../screens/sign_in_with_redirect/sign_in_with_redirect.dart';
 
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(

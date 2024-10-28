@@ -9,7 +9,7 @@ class PersistenceSelectorDropdown extends StatefulWidget {
   const PersistenceSelectorDropdown({super.key});
 
   @override
-  _PersistenceSelectorDropdownState createState() =>
+  State<PersistenceSelectorDropdown> createState() =>
       _PersistenceSelectorDropdownState();
 }
 
@@ -31,9 +31,8 @@ class _PersistenceSelectorDropdownState
           if (newValue != null) {
             if (_selectedPersistence != null) {
               try {
-                final response = await FirebaseApp.firebaseAuth
-                    ?.setPresistanceMethod(
-                        _selectedPersistence!, 'firebasdartadminauthsdk');
+                await FirebaseApp.firebaseAuth?.setPresistanceMethod(
+                    _selectedPersistence!, 'firebasdartadminauthsdk');
                 //  log("response of pressitance $response");
               } catch (e) {
                 log("response of pressitance $e");
@@ -43,15 +42,15 @@ class _PersistenceSelectorDropdownState
         },
         items: const [
           DropdownMenuItem(
-            value: FirebasePersistence.LOCAL,
+            value: FirebasePersistence.local,
             child: Text('Local'),
           ),
           DropdownMenuItem(
-            value: FirebasePersistence.SESSION,
+            value: FirebasePersistence.session,
             child: Text('Session'),
           ),
           DropdownMenuItem(
-            value: FirebasePersistence.NONE,
+            value: FirebasePersistence.none,
             child: Text('None'),
           ),
         ],

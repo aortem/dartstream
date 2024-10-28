@@ -14,6 +14,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_profile_s
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_before_email_update_screen/verify_before_email_update_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
@@ -44,13 +45,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  dynamic userIdToken;
   User? _currentUser;
   String? _currentIdToken;
   bool _isConnectedToEmulator = false;
   late auth_state.Unsubscribe _authStateUnsubscribe;
   late id_token.Unsubscribe _idTokenUnsubscribe;
 
-  var UserIdToken;
+  dynamic UserIdToken;
 
   @override
   void initState() {
@@ -263,9 +265,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Set Language Code",
                 ),
                 ActionTile(
-                  onTap: () async {
+                  onTap: () {
                     try {
-                      await FirebaseApp.firebaseAuth?.signOut();
+                      FirebaseApp.firebaseAuth?.signOut();
                       final firebaseApp = FirebaseApp.instance;
                       final currentUser = firebaseApp.getCurrentUser();
 
@@ -273,7 +275,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => const SignUpScreen(),
                         ));
-                        BotToast.showText(text: 'User is deleted');
+                        BotToast.showText(text: 'User is Signout');
                       } else {
                         log('No user is currently signed in.');
                       }
@@ -297,8 +299,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () async {
-                    await FirebaseApp.firebaseAuth?.deleteFirebaseUser();
+                  onTap: () {
+                    FirebaseApp.firebaseAuth?.deleteFirebaseUser();
                     final firebaseApp = FirebaseApp.instance;
                     final currentUser = firebaseApp.getCurrentUser();
 
@@ -306,21 +308,23 @@ class _HomeScreenState extends State<HomeScreen> {
                       Navigator.of(context).push(MaterialPageRoute(
                         builder: (context) => const SignUpScreen(),
                       ));
-                      BotToast.showText(text: 'User is signout');
+                      BotToast.showText(text: 'User is deleted');
                     } else {
                       log('No user is currently signed in.');
                     }
                   },
-                  title: "Delete user",
+                  title: "Delete User",
                 ),
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
                     var tokenId = await FirebaseApp.firebaseAuth?.getIdToken();
                     setState(() {
-                      UserIdToken = tokenId;
+                      userIdToken = tokenId!;
                     });
-                    log("token is $tokenId");
+                    if (kDebugMode) {
+                      print("token result  $tokenId");
+                    }
                   },
                   title: "Get id token",
                 ),
@@ -329,7 +333,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   onTap: () async {
                     var tokenId =
                         await FirebaseApp.firebaseAuth?.getIdTokenResult();
-                    log("token result  $tokenId");
+
+                    if (kDebugMode) {
+                      print("token result  $tokenId");
+                    }
                   },
                   title: "Get id token result",
                 ),
@@ -531,7 +538,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => StorageExample(),
+                      builder: (context) => const StorageExample(),
                     ),
                   ),
                   title: "Storage",
