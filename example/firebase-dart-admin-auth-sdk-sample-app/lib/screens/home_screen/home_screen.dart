@@ -17,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../link_with_credientials/link_with_credientials';
 import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 
@@ -148,6 +149,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   title: "Delete User",
                 ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LinkWithCredentials(),
+                    ));
+                  },
+                  title: "Link with credientials",
+                ),
+                //LinkWIthCredientials
                 10.vSpace,
                 ActionTile(
                   onTap: () async {

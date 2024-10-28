@@ -1,31 +1,51 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
-class FirebaseLinkWithCredentailsUser {
+class LinkWithCredientialClass {
   final FirebaseAuth auth;
-  Future<UserCredential> linkCredential(User user, String? idToken) async {
-    if (idToken == null) {
-      throw FirebaseAuthException(
-        code: 'no-id-token',
-        message: 'Failed to obtain an ID token for the credential.',
-      );
-    }
 
-    final response = await auth.performRequest('linkWithCredential', {
-      'idToken': idToken,
-    });
+  LinkWithCredientialClass({required this.auth});
 
-    if (response.statusCode == 200) {
-      final userCredential = UserCredential.fromJson(response.body);
-      auth.updateCurrentUser(userCredential.user);
-      FirebaseApp.instance.setCurrentUser(userCredential.user);
-      return userCredential;
-    } else {
-      throw FirebaseAuthException(
-        code: 'linking-failed',
-        message: 'Failed to link credential: ${response.body}',
+  Future<UserCredential?> linkWithCrediential(
+      String redirectUri, String idToken, String providerId) async {
+    try {
+      log("ID Token: $idToken");
+      log("Provider ID: $providerId");
+
+      final url =
+          'https://identitytoolkit.googleapis.com/v1/accounts:update?key=${auth.apiKey}';
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'postBody': 'access_token=$idToken&providerId=$providerId',
+          'requestUri': redirectUri,
+          'returnSecureToken': true,
+        }),
       );
+      log('responseData: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final userCredential = UserCredential.fromJson(responseData);
+        auth.updateCurrentUser(userCredential.user);
+        log("current user data ${userCredential.user.idToken}");
+        FirebaseApp.instance.setCurrentUser(userCredential.user);
+        log('Access Token: ${responseData['idToken']}');
+        return userCredential;
+      } else {
+        log('Failed to sign in: ${response.statusCode}');
+        log('Response: ${response.body}');
+        return null;
+      }
+    } catch (error) {
+      log('Error occurred during sign in: $error');
     }
+    return null;
   }
-
-  FirebaseLinkWithCredentailsUser({required this.auth});
 }

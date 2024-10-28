@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/link_with_credentails.dart';
+
 import 'auth/auth_redirect_link.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 
@@ -44,7 +46,7 @@ import 'auth/auth_link_with_phone_number.dart';
 import 'firebase_user/delete_user.dart';
 
 import 'auth/parse_action_code_url.dart';
-import 'firebase_user/link_with_credentails.dart';
+
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
 
@@ -81,7 +83,7 @@ class FirebaseAuth {
   late FirebasePhoneNumberLink firebasePhoneNumberLink;
   late FirebaseParseUrlLink firebaseParseUrlLink;
   late FirebaseDeleteUser firebaseDeleteUser;
-  late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
+  late LinkWithCredientialClass linkWithCredientialClass;
 
 ////Ticketr 5,7,23,24,61
   late FirebaseSignInAnonymously signInAnonymously;
@@ -134,8 +136,7 @@ class FirebaseAuth {
     firebasePhoneNumberLink = FirebasePhoneNumberLink(this);
     firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
-    firebaseLinkWithCredentailsUser =
-        FirebaseLinkWithCredentailsUser(auth: this);
+    linkWithCredientialClass = LinkWithCredientialClass(auth: this);
 
     signInAnonymously = FirebaseSignInAnonymously(this);
     setPresistence = PersistenceService(auth: this);
@@ -387,40 +388,19 @@ class FirebaseAuth {
     return emailLink.sendSignInLinkToEmail(email, settings);
   }
 
-  Future<UserCredential?> linkWithCredential(AuthCredential credential) async {
-    final currentUser = FirebaseApp.instance.getCurrentUser();
-
-    if (currentUser == null) {
-      throw FirebaseAuthException(
-        code: 'no-current-user',
-        message: 'No user is currently signed in.',
+  Future<UserCredential?> linkAccountWithCredientials(
+      String redirectUri, String idToken, String providerId) async {
+    try {
+      return await linkWithCredientialClass.linkWithCrediential(
+        redirectUri,
+        idToken,
+        providerId,
       );
-    }
-
-    if (credential is EmailAuthCredential) {
-      // Re-authenticate the user with email and password before linking
-      final authResult = await signInWithEmailAndPassword(
-          credential.email, credential.password);
-      print("aiht result $authResult");
-      return firebaseLinkWithCredentailsUser.linkCredential(
-          currentUser, currentUser.idToken);
-    } else if (credential is PhoneAuthCredential) {
-      // Verify the phone number and link
-      final authResult = await signInWithPhoneNumber(
-          credential.verificationId, credential.smsCode);
-      print("aiht result $authResult");
-      return firebaseLinkWithCredentailsUser.linkCredential(
-          currentUser, currentUser.idToken);
-    } else if (credential is OAuthCredential) {
-      // Sign in with OAuth and link
-      final authResult = await signInWithPopup(credential.providerId);
-      print("aiht result $authResult");
-      return firebaseLinkWithCredentailsUser.linkCredential(
-          currentUser, currentUser.idToken);
-    } else {
+    } catch (e) {
+      print('Sign-in with redirect failed: $e');
       throw FirebaseAuthException(
-        code: 'unsupported-credential',
-        message: 'Unsupported credential type',
+        code: 'sign-in-redirect-error',
+        message: 'Failed to sign in with redirect.',
       );
     }
   }

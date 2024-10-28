@@ -1,9 +1,7 @@
-
 import 'dart:developer';
 
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'dart:convert';
-
 
 import '../../firebase_dart_admin_auth_sdk.dart';
 
@@ -12,14 +10,14 @@ class SignInWithRedirectService {
 
   SignInWithRedirectService({required this.auth});
 
-  Future<UserCredential?> signInWithRedirect(String redirectUri, String idToken,
-      String providerId) async {
+  Future<UserCredential?> signInWithRedirect(
+      String redirectUri, String idToken, String providerId) async {
     try {
       log("ID Token: $idToken");
       log("Provider ID: $providerId");
 
-      final url = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${auth
-          .apiKey}';
+      final url =
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${auth.apiKey}';
 
       final response = await http.post(
         Uri.parse(url),
@@ -31,7 +29,8 @@ class SignInWithRedirectService {
           'requestUri': redirectUri,
           'returnSecureToken': true,
         }),
-      );  log('responseData: ${response.statusCode}');
+      );
+      log('responseData: ${response.statusCode}');
 
       if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
@@ -41,7 +40,6 @@ class SignInWithRedirectService {
         FirebaseApp.instance.setCurrentUser(userCredential.user);
 
         return userCredential;
-        log('Access Token: ${responseData['idToken']}');
       } else {
         log('Failed to sign in: ${response.statusCode}');
         log('Response: ${response.body}');
@@ -51,6 +49,5 @@ class SignInWithRedirectService {
       log('Error occurred during sign in: $error');
     }
     return null;
-
   }
 }
