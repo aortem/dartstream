@@ -1,13 +1,12 @@
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 
 class LinkProviderToUser {
   final FirebaseAuth auth;
 
   LinkProviderToUser({required this.auth});
 
-  Future<User> linkProviderToUser(
+  Future<bool> linkProviderToUser(
     String? idToken,
     String providerId,
     String providerIdToken,
@@ -16,7 +15,7 @@ class LinkProviderToUser {
       assert(idToken != null, 'Id token cannot be null');
       assert(providerId.isNotEmpty, 'Provide Id cannot be empty');
       assert(providerIdToken.isNotEmpty, 'Provide Id Token cannot be empty');
-      final response = await auth.performRequest(
+      await auth.performRequest(
         'update',
         {
           "idToken": idToken,
@@ -25,9 +24,7 @@ class LinkProviderToUser {
           "returnSecureToken": true,
         },
       );
-      User user = User.fromJson((response.body['users'] as List)[0]);
-      auth.updateCurrentUser(user);
-      return user;
+      return true;
     } catch (e) {
       print('Link additional provider to user failed: $e');
       throw FirebaseAuthException(

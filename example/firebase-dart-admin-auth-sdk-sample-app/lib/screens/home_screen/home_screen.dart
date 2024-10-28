@@ -264,6 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   title: "Set Language Code",
                 ),
+                10.vSpace,
                 ActionTile(
                   onTap: () {
                     try {
@@ -379,6 +380,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     // log("token result  $tokenId");
                   },
                   title: "setdevice Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.getAdditionalUserInfo(),
+                  loading: value.getAdditionalInfoLoading,
+                  title: "Get Additional User Info",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.linkProvider(),
+                  loading: value.linkProviderLoading,
+                  title: "Link Provider to User",
                 ),
                 10.vSpace,
                 ActionTile(

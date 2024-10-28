@@ -3,7 +3,10 @@ import 'dart:convert';
 
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_storage.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
+import 'auth/generate_custom_token.dart';
+import 'auth/get_access_token_with_generated_token.dart';
 
 class FirebaseApp {
   ///Instance of the Firebase App
@@ -18,11 +21,21 @@ class FirebaseApp {
   final String _messagingSenderId;
   final String? _bucketName;
   final String? _appId;
+  final ServiceAccount? _serviceAccount;
+  final String? _accessToken;
   static FirebaseAuth? firebaseAuth;
-
+  static GetAccessTokenWithGeneratedToken? _accesstokenGen;
+  static GenerateCustomToken? _tokenGen;
   static FirebaseStorage? firebaseStorage;
-  FirebaseApp._(this._apiKey, this._projectId, this._authdomain,
-      this._messagingSenderId, this._bucketName, this._appId);
+  FirebaseApp._(
+      this._apiKey,
+      this._projectId,
+      this._authdomain,
+      this._messagingSenderId,
+      this._bucketName,
+      this._appId,
+      this._serviceAccount,
+      this._accessToken);
   User? _currentUser;
 
   // method to set the current user
@@ -63,23 +76,46 @@ class FirebaseApp {
 
     // Returns an instance of FirebaseApp if it exists or create a new instance based on the parameters passed
     return _instance ??= FirebaseApp._(
-        apiKey, projectId, authdomain, messagingSenderId, bucketName, appId);
+      apiKey,
+      projectId,
+      authdomain,
+      messagingSenderId,
+      bucketName,
+      appId,
+      null,
+      null,
+    );
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
     required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
+    final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
     // Parse the JSON content
-    final serviceAccount = json.decode(serviceAccountContent);
+    final Map<String, dynamic> serviceAccount =
+        json.decode(serviceAccountContent);
+
+    final ServiceAccount serviceAccountModel =
+        ServiceAccount.fromJson(serviceAccount);
+
+    final jwt = await tokenGen.generateServiceAccountJwt(serviceAccountModel);
+
+    final accessToken =
+        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
+
     return _instance ??= FirebaseApp._(
-      serviceAccount['private_key'], // Update with the actual key field
+      null, // Update with the actual key field
       serviceAccount['project_id'], // Update with the actual project ID field
+      serviceAccount['private_key'], // Update with the actual key field
       serviceAccount['auth_domain'], // Update with the actual auth domain field
       serviceAccount[
           'messaging_sender_id'], // Update with the actual messaging sender
       serviceAccount['bucket_name'], // Update with the actual bucket name field
       serviceAccount['app_id'], // Update with the actual app ID field
+      serviceAccount['bucket_name'], // Update with the actual bucket name field
     );
   }
 
@@ -100,6 +136,8 @@ class FirebaseApp {
       'your_auth_domain',
       'your_messaging_sender_id',
       'your_bucket_name', // Replace with your bucket name
+      null,
+      null,
       'your_app_id', // Replace with your app ID
     );
   }
@@ -107,7 +145,7 @@ class FirebaseApp {
   ///Returns a Firebase Auth instance associated with the Project
   ///Throws not initialized if Firebase app is not intialized
   FirebaseAuth getAuth() {
-    assert(_apiKey != null, 'API Key is null');
+    if (_accessToken == null) assert(_apiKey != null, 'API Key is null');
     assert(_projectId != null, 'Project ID is null');
     if (_instance == null) {
       throw ("FirebaseApp is not initialized. Please call initializeApp() first.");
@@ -118,6 +156,9 @@ class FirebaseApp {
       authDomain: _authdomain,
       messagingSenderId: _messagingSenderId,
       bucketName: _bucketName,
+      accessToken: _accessToken,
+      serviceAccount: _serviceAccount,
+      generateCustomToken: _tokenGen,
       appId: _appId,
     );
   }

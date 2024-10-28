@@ -32,7 +32,6 @@ class HomeScreenViewModel extends ChangeNotifier {
   late final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: scopes,
     signInOption: SignInOption.standard,
-    clientId: '',
   );
   final FirebaseAuth? _firebaseSdk = FirebaseApp.firebaseAuth;
 
@@ -123,6 +122,7 @@ class HomeScreenViewModel extends ChangeNotifier {
         signInAuth!.idToken!,
       );
 
+      BotToast.showText(text: 'Linking Successful');
       refreshUser();
     } catch (e) {
       BotToast.showText(text: e.toString());

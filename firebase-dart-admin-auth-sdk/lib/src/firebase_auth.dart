@@ -5,13 +5,20 @@ import 'dart:convert';
 import 'dart:developer';
 import 'auth/auth_redirect_link.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
+import 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
-
+import 'auth/auth_redirect_link_stub.dart'
+    if (dart.library.html) 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_additional_user_info.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/link_provider_to_user.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
@@ -64,8 +71,6 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
 import 'auth/auth_link_with_phone_number.dart';
 
 import 'auth/before_auth_state_change.dart';
-
-import 'auth/phone_auth.dart';
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/get_language_code.dart';
@@ -84,6 +89,10 @@ class FirebaseAuth {
   final String? authDomain;
   final String? messagingSenderId;
   final String? appId;
+
+  final String? accessToken;
+  final ServiceAccount? serviceAccount;
+  final GenerateCustomToken? generateCustomToken;
 
   late http.Client httpClient;
   final String? bucketName;
@@ -157,6 +166,9 @@ class FirebaseAuth {
     http.Client? httpClient, // Add this parameter
     this.bucketName,
     this.appId,
+    this.accessToken,
+    this.serviceAccount,
+    this.generateCustomToken,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
@@ -203,17 +215,16 @@ class FirebaseAuth {
     firebaseLinkWithCredentailsUser =
         FirebaseLinkWithCredentailsUser(auth: this);
 
+    _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
+    _linkProviderToUser = LinkProviderToUser(auth: this);
+    _updateProfile = UpdateProfile(this);
+    _verifyBeforeEmailUpdate = VerifyBeforeEmailUpdate(this);
     signInAnonymously = FirebaseSignInAnonymously(this);
     setPresistence = PersistenceService(auth: this);
     setLanguageService = LanguageService(auth: this);
     getLanguageService = LanguagGetService(auth: this);
     firebaseBeforeAuthStateChangeService =
         FirebaseBeforeAuthStateChangeService(this);
-
-    _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
-    _linkProviderToUser = LinkProviderToUser(auth: this);
-    _updateProfile = UpdateProfile(this);
-    _verifyBeforeEmailUpdate = VerifyBeforeEmailUpdate(this);
   }
 
   Future<HttpResponse> performRequest(
@@ -227,7 +238,11 @@ class FirebaseAuth {
       },
     );
 
-    final response = await httpClient.post(url, body: json.encode(body));
+    final response =
+        await httpClient.post(url, body: json.encode(body), headers: {
+      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    });
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
@@ -262,7 +277,12 @@ class FirebaseAuth {
   //   return emailPassword.signUp(email, password);
   // }
 
-  Future<UserCredential> signInWithCustomToken(String token) {
+  Future<UserCredential> signInWithCustomToken(String? uid) async {
+    assert(serviceAccount != null, 'Service Account cannot be null');
+    assert(generateCustomToken != null, 'Custom token cannot be null');
+
+    String token =
+        await generateCustomToken!.generateSignInJwt(serviceAccount!, uid: uid);
     return customToken.signInWithCustomToken(token);
   }
 
@@ -577,7 +597,7 @@ class FirebaseAuth {
     );
   }
 
-  Future<User> linkProviderToUser(
+  Future<bool> linkProviderToUser(
     String providerId,
     String providerIdToken,
   ) async {

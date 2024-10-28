@@ -230,6 +230,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.0.1-pre+11"
+<<<<<<< HEAD
   expressions:
     dependency: transitive
     description:
@@ -238,6 +239,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.5+2"
+=======
+>>>>>>> origin/issue-34-42-48-49-50-61
   fake_async:
     dependency: transitive
     description:
@@ -270,6 +273,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "8.1.2"
+<<<<<<< HEAD
   firebase_dart:
     dependency: transitive
     description:
@@ -278,6 +282,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+=======
+>>>>>>> origin/issue-34-42-48-49-50-61
   firebase_dart_admin_auth_sdk:
     dependency: "direct main"
     description:
@@ -400,6 +406,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.2"
+<<<<<<< HEAD
   hive:
     dependency: transitive
     description:
@@ -408,6 +415,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.3"
+=======
+>>>>>>> origin/issue-34-42-48-49-50-61
   http:
     dependency: transitive
     description:
@@ -448,6 +457,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.0"
+<<<<<<< HEAD
   jose:
     dependency: transitive
     description:
@@ -456,6 +466,8 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.3.4"
+=======
+>>>>>>> origin/issue-34-42-48-49-50-61
   js:
     dependency: transitive
     description:
