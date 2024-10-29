@@ -23,6 +23,8 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
     as id_token;
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
+import '../link_with_credientials/link_with_credientials';
+import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
@@ -316,6 +318,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                   title: "Delete User",
                 ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LinkWithCredentials(),
+                    ));
+                  },
+                  title: "Link with credientials",
+                ),
+                //LinkWIthCredientials
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
