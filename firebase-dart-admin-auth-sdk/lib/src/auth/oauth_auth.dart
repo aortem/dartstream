@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'dart:developer';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
+import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
 
 class OAuthAuth {
   final FirebaseAuth _auth;
@@ -10,60 +11,53 @@ class OAuthAuth {
 
   Future<UserCredential> signInWithPopup(
     AuthProvider provider,
-    String clientId,
+    String accessToken,
   ) async {
     try {
-      final authUrl = _getAuthUrl(provider, clientId);
-      final popupResolver = createPopupRedirectResolver();
-      final result = await popupResolver.resolvePopup(authUrl);
+      log("Access Token: $accessToken");
+      log("Provider ID: ${provider.providerId}");
 
-      if (result == null) {
-        throw FirebaseAuthException(
-          code: 'popup-closed-by-user',
-          message: 'Popup was closed by user before finalizing the operation.',
-        );
-      }
+      final url =
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${_auth.apiKey}';
 
-      final HttpResponse response = await _auth.performRequest(
-        'signInWithIdp',
-        {
-          'providerId': provider.providerId,
-          'requestUri': 'http://localhost:5000',
-          'postBody':
-              'id_token=${result['idToken']}&providerId=${provider.providerId}',
-          'returnSecureToken': true,
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
         },
+        body: jsonEncode(<String, dynamic>{
+          'postBody':
+              'access_token=$accessToken&providerId=${provider.providerId}',
+          'requestUri': 'http://localhost:5000',
+          'returnSecureToken': true,
+        }),
       );
 
-      if (response.body is String &&
-          (response.body as String).startsWith('<!DOCTYPE')) {
+      log('Popup sign-in response: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final userCredential = UserCredential.fromJson(responseData);
+
+        _auth.updateCurrentUser(userCredential.user);
+        FirebaseApp.instance.setCurrentUser(userCredential.user);
+
+        log("Signed in user: ${userCredential.user.email}");
+        return userCredential;
+      } else {
+        log('Failed to sign in with popup: ${response.statusCode}');
+        log('Error response: ${response.body}');
         throw FirebaseAuthException(
-          code: 'invalid-response',
-          message:
-              'Received HTML instead of JSON. Server might be returning an error page.',
+          code: 'popup-sign-in-error',
+          message: 'Failed to sign in with popup: ${response.body}',
         );
       }
-
-      return UserCredential.fromJson(response.body);
-    } catch (e) {
-      print('Detailed signInWithPopup error: $e');
+    } catch (error) {
+      log('Error during popup sign in: $error');
       throw FirebaseAuthException(
         code: 'popup-sign-in-error',
-        message: 'Failed to sign in with popup: ${e.toString()}',
+        message: error.toString(),
       );
     }
-  }
-
-  String _getAuthUrl(AuthProvider provider, String clientId) {
-    final redirectUri = 'http://localhost:5000';
-    // This is still Google-specific. You might need to adjust this for other providers.
-    final authUri = Uri.https('accounts.google.com', '/o/oauth2/v2/auth', {
-      'client_id': clientId,
-      'redirect_uri': redirectUri,
-      'response_type': 'token id_token',
-      'scope': 'email profile',
-      'nonce': DateTime.now().millisecondsSinceEpoch.toString(),
-    });
-    return authUri.toString();
   }
 }
