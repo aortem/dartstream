@@ -783,9 +783,10 @@ class FirebaseAuth {
 
   Future<Map<String, dynamic>?> getRedirectResult() async {
     try {
-      return await _popupRedirectResolver.resolvePopup('your-auth-url');
+      // Use the GetRedirectResultService instead of popup resolver
+      return await getRedirectResultService.getRedirectResult();
     } catch (e) {
-      print('Get redirect result failed: $e');
+      log('Get redirect result failed: $e');
       throw FirebaseAuthException(
         code: 'get-redirect-result-error',
         message: 'Failed to get redirect result.',
