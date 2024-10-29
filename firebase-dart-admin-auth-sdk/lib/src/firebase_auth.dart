@@ -287,7 +287,7 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<UserCredential?> signInWithCredential(
+  Future<Future<Object?>> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
@@ -295,9 +295,7 @@ class FirebaseAuth {
       return signInWithPhoneNumber(
           credential.verificationId, credential.smsCode as ApplicationVerifier);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(
-        credential.providerId,
-      );
+      return signInWithPopup(credential.providerId as AuthProvider, clientId);
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
