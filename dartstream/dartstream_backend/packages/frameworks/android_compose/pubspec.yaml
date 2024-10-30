@@ -1,7 +1,7 @@
 #This pubspec file imports is used for any dependencies for standard Dartstream features.
 
-name: ds_vue_framework_base
-description: Packages for our vue framework - maintained by the Aortem and Dart team.
+name: ds_android_compose_framework_base
+description: Packages for our android_compose framework - maintained by the Aortem and Dart team.
 version: 0.0.1-pre+1
 repository: https://github.com/dartstream
 
