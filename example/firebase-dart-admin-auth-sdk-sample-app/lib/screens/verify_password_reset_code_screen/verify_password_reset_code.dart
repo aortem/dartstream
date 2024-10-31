@@ -41,7 +41,7 @@ class VerifyPasswordResetCode extends StatelessWidget {
                     if (email != null) {
                       BotToast.showText(
                           text: "Password reset code verified. Email: $email");
-                      print("Password reset code verified. Email: $email");
+
                       log("Password reset code verified. Email: $email");
                       // Proceed with your logic, e.g., redirecting to reset password screen
                     }
