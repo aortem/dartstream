@@ -1,14 +1,12 @@
 import 'dart:developer';
 
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
 
 class VerifyPasswordResetCodeService {
   final FirebaseAuth auth;
 
   VerifyPasswordResetCodeService({required this.auth});
-
-  Future<HttpResponse> verifyPasswordResetCode(String code) async {
+  Future<String?> verifyPasswordResetCode(String code) async {
     try {
       final url = 'resetPassword';
       final body = {
@@ -16,10 +14,24 @@ class VerifyPasswordResetCodeService {
       };
 
       final response = await auth.performRequest(url, body);
+
       if (response.statusCode == 200) {
-        log("paswword reset$response");
+        final Map<String, dynamic> responseBody = response.body;
+
+        if (responseBody.containsKey('email')) {
+          final email = responseBody['email'];
+          log("Password reset email: $email");
+          return email; // Return the email if present
+        } else {
+          log("No email found in response.");
+          return null; // Email not found in response
+        }
+      } else {
+        throw FirebaseAuthException(
+          code: 'invalid-reset-code',
+          message: 'Invalid password reset code.',
+        );
       }
-      return response;
     } catch (e) {
       print('Verify password reset code failed: $e');
       throw FirebaseAuthException(

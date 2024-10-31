@@ -10,6 +10,7 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/s
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/storage_screen/storage.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_password_reset_code_screen/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/foundation.dart';
@@ -159,6 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Link with credientials",
                 ),
                 //LinkWIthCredientials
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerifyPasswordResetCode(),
+                      ),
+                    );
+                  },
+                  title: "Verify Password Reset Code",
+                ),
                 10.vSpace,
                 ActionTile(
                   onTap: () async {

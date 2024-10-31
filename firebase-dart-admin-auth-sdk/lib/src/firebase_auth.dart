@@ -293,7 +293,7 @@ class FirebaseAuth {
     }
   }
 
-  Future<HttpResponse> verifyPasswordResetCode(String code) async {
+  Future<String?> verifyPasswordResetCode(String code) async {
     try {
       return await verifyPasswordReset.verifyPasswordResetCode(code);
     } catch (e) {
