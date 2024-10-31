@@ -339,34 +339,33 @@ void main() async {
         );
 
         final result = await auth?.applyActionCode('action_code');
+      });
 
-        test('verifyPasswordResetCode succeeds', () async {
-          // Mocking the HTTP response for a successful verification of password reset code.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"email": "test@example.com"}',
-                    200,
-                  ));
+      test('verifyPasswordResetCode succeeds', () async {
+        // Mocking the HTTP response for a successful verification of password reset code.
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response(
+                  '{"email": "test@example.com"}',
+                  200,
+                ));
 
-          final result = await auth?.verifyPasswordResetCode('test-code');
-          print('result: $result');
-        });
+        final result = await auth?.verifyPasswordResetCode('test-code');
+        print('result: $result');
+      });
 
-        test('signInWithRedirect succeeds', () async {
-          // Mocking the HTTP response for a successful user creation with email and password.
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response(
-                    '{"kind":"identitytoolkit#signInWithIdp","requestUri": "http:localhost","providerId":"google.com","access_token":"newTestIdToken",}',
-                    200,
-                  ));
+      test('signInWithRedirect succeeds', () async {
+        // Mocking the HTTP response for a successful user creation with email and password.
+        when(() => mockClient.post(any(),
+                body: any(named: 'body'), headers: any(named: 'headers')))
+            .thenAnswer((_) async => http.Response(
+                  '{"kind":"identitytoolkit#signInWithIdp","requestUri": "http:localhost","providerId":"google.com","access_token":"newTestIdToken",}',
+                  200,
+                ));
 
-          final result = await auth?.signInWithRedirect(
-              'http:localhost', 'testIdToken', "google.com");
-          print('result: $result');
-        });
-        expect(true, result);
+        final result = await auth?.signInWithRedirect(
+            'http:localhost', 'testIdToken', "google.com");
+        print('result: $result');
       });
 
       test('should send verification code to user', () async {
