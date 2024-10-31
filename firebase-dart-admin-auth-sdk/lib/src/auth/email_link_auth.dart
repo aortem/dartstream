@@ -1,18 +1,18 @@
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
 class EmailLinkAuth {
   final FirebaseAuth auth;
 
   EmailLinkAuth(this.auth);
 
-  Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) async {
+  Future<void> sendSignInLinkToEmail(String email,
+      {ActionCodeSettings? actionCode}) async {
     await auth.performRequest('sendOobCode', {
       'requestType': 'EMAIL_SIGNIN',
       'email': email,
-      ...settings.toMap(),
+      if (actionCode != null) ...actionCode.toMap(),
     });
   }
 

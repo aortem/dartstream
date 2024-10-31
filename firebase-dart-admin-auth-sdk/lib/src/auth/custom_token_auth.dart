@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 
@@ -11,7 +13,7 @@ class CustomTokenAuth {
       'token': token,
       'returnSecureToken': true,
     });
-
+    log(response.body.toString());
     final userCredential = UserCredential.fromJson(response.body);
     auth.updateCurrentUser(userCredential.user);
     return userCredential;

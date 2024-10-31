@@ -2,30 +2,35 @@ import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 
-class ReloadUser {
+class UpdateProfile {
   final FirebaseAuth auth;
 
-  ReloadUser({required this.auth});
+  UpdateProfile(this.auth);
 
-  Future<User> reloadUser(String? idToken) async {
+  Future<User> updateProfile(
+    String displayName,
+    String displayImage,
+    String? idToken,
+  ) async {
     try {
       assert(idToken != null, 'Id token cannot be null');
       final response = await auth.performRequest(
-        'lookup',
+        'update',
         {
           "idToken": idToken,
+          "displayName": displayName,
+          "photoUrl": displayImage,
+          "returnSecureToken": true,
         },
       );
-
-      User user = User.fromJson((response.body['users'] as List)[0]);
-
+      User user = User.fromJson(response.body);
       auth.updateCurrentUser(user);
       return user;
     } catch (e) {
-      print('Reload user action failed: $e');
+      print('Update profile failed: $e');
       throw FirebaseAuthException(
-        code: 'reload-user',
-        message: 'Failed to set reload user',
+        code: 'update-profile',
+        message: 'Failed to update user.',
       );
     }
   }

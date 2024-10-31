@@ -1,14 +1,19 @@
+// ignore_for_file: unused_local_variable
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'auth/auth_redirect_link_stub.dart'
-    if (dart.library.html) 'auth/auth_redirect_link.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
+import 'auth/auth_redirect_link.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_additional_user_info.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/link_provider_to_user.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
 
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
@@ -18,7 +23,9 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/unlink_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_before_email_update.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
@@ -26,17 +33,15 @@ import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
 
 // New imports for Sprint 2 #16 to #21
 import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
 import 'auth/before_auth_state_change.dart';
-
-import 'auth/phone_auth.dart';
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/get_language_code.dart';
@@ -52,6 +57,10 @@ import 'id_token_result_model.dart';
 class FirebaseAuth {
   final String? apiKey;
   final String? projectId;
+  final String? accessToken;
+  final ServiceAccount? serviceAccount;
+  final GenerateCustomToken? generateCustomToken;
+
   late http.Client httpClient;
   final String? bucketName;
   late EmailPasswordAuth emailPassword;
@@ -84,6 +93,11 @@ class FirebaseAuth {
   late FirebaseDeleteUser firebaseDeleteUser;
   late FirebaseLinkWithCredentailsUser firebaseLinkWithCredentailsUser;
 
+  late GetAdditionalUserInfo _getAdditionalUserInfo;
+  late LinkProviderToUser _linkProviderToUser;
+  late UpdateProfile _updateProfile;
+  late VerifyBeforeEmailUpdate _verifyBeforeEmailUpdate;
+
 ////Ticketr 5,7,23,24,61
   late FirebaseSignInAnonymously signInAnonymously;
   late PersistenceService setPresistence;
@@ -104,6 +118,9 @@ class FirebaseAuth {
     this.projectId,
     http.Client? httpClient, // Add this parameter
     this.bucketName,
+    this.accessToken,
+    this.serviceAccount,
+    this.generateCustomToken,
   }) {
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
@@ -138,6 +155,10 @@ class FirebaseAuth {
     firebaseLinkWithCredentailsUser =
         FirebaseLinkWithCredentailsUser(auth: this);
 
+    _getAdditionalUserInfo = GetAdditionalUserInfo(auth: this);
+    _linkProviderToUser = LinkProviderToUser(auth: this);
+    _updateProfile = UpdateProfile(this);
+    _verifyBeforeEmailUpdate = VerifyBeforeEmailUpdate(this);
     signInAnonymously = FirebaseSignInAnonymously(this);
     setPresistence = PersistenceService(auth: this);
     setLanguageService = LanguageService(auth: this);
@@ -157,7 +178,11 @@ class FirebaseAuth {
       },
     );
 
-    final response = await httpClient.post(url, body: json.encode(body));
+    final response =
+        await httpClient.post(url, body: json.encode(body), headers: {
+      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    });
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
@@ -188,11 +213,16 @@ class FirebaseAuth {
     return emailPassword.signUp(email, password);
   }
 
-  Future<UserCredential> signInWithCustomToken(String token) {
+  Future<UserCredential> signInWithCustomToken(String? uid) async {
+    assert(serviceAccount != null, 'Service Account cannot be null');
+    assert(generateCustomToken != null, 'Custom token cannot be null');
+
+    String token =
+        await generateCustomToken!.generateSignInJwt(serviceAccount!, uid: uid);
     return customToken.signInWithCustomToken(token);
   }
 
-  Future<Future<UserCredential?>> signInWithCredential(
+  Future<UserCredential?> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
@@ -389,9 +419,12 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  Future<void> sendSignInLinkToEmail(
-      String email, ActionCodeSettings settings) {
-    return emailLink.sendSignInLinkToEmail(email, settings);
+  Future<void> sendSignInLinkToEmail(String email,
+      {ActionCodeSettings? actionCode}) {
+    return emailLink.sendSignInLinkToEmail(
+      email,
+      actionCode: actionCode,
+    );
   }
 
   Future<UserCredential?> linkWithCredential(AuthCredential credential) async {
@@ -430,6 +463,45 @@ class FirebaseAuth {
         message: 'Unsupported credential type',
       );
     }
+  }
+
+  Future<User> getAdditionalUserInfo() async {
+    return await _getAdditionalUserInfo.getAdditionalUserInfo(
+      currentUser?.idToken,
+    );
+  }
+
+  Future<bool> linkProviderToUser(
+    String providerId,
+    String providerIdToken,
+  ) async {
+    return _linkProviderToUser.linkProviderToUser(
+      currentUser?.idToken,
+      providerId,
+      providerIdToken,
+    );
+  }
+
+  Future<User> updateProfile(
+    String displayName,
+    String displayImage,
+  ) async {
+    return await _updateProfile.updateProfile(
+      displayName,
+      displayImage,
+      currentUser?.idToken,
+    );
+  }
+
+  Future<bool> verifyBeforeEmailUpdate(
+    String newEmail, {
+    ActionCodeSettings? action,
+  }) async {
+    return await _verifyBeforeEmailUpdate.verifyBeforeEmailUpdate(
+      currentUser?.idToken,
+      newEmail,
+      action: action,
+    );
   }
 
   ///////////a Firebase action code URL

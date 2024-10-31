@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
@@ -19,7 +17,6 @@ class SetLanguageCode {
           "languageCode": languageCode,
         },
       );
-      log("response is ${response.body} ");
       User user = User.fromJson(response.body);
       auth.updateCurrentUser(user);
       return user;
