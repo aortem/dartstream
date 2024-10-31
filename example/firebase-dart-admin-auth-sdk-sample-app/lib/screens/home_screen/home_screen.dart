@@ -1,5 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:developer';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/apply_action_code_screen/apply_action_code_screen.dart';
@@ -10,12 +10,13 @@ import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/s
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/storage_screen/storage.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_password_screen/update_password_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/update_profile_screen/update_profile_screen.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_before_email_update_screen/verify_before_email_update_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../link_wit_phone_number/link_with_phone_number.dart';
 import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
@@ -36,9 +37,19 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Consumer<HomeScreenViewModel>(
         builder: (context, value, child) => Scaffold(
           appBar: AppBar(
+            leading: Text(value.displayName),
             title: const Text(
               'Test App',
             ),
+            actions: [
+              if (value.displayImage != null && value.displayImage!.isNotEmpty)
+                Text(
+                  value.displayImage.toString(),
+                ),
+              Text(
+                "No of linked providers ${value.numberOfLinkedProviders}",
+              )
+            ],
           ),
           body: SingleChildScrollView(
             padding: 20.horizontal,
@@ -46,12 +57,24 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 ActionTile(
-                  onTap: () {},
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const VerifyBeforeEmailUpdate(),
+                      )),
                   title: "Verify Before Update Email",
                 ),
                 10.vSpace,
                 ActionTile(
-                  onTap: () {},
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const UpdateProfileScreen(),
+                      ),
+                    );
+                    value.setLoading(false);
+                  },
                   title: "Update Profile",
                 ),
                 10.vSpace,
@@ -97,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   title: "Set Language Code",
                 ),
+                10.vSpace,
                 ActionTile(
                   onTap: () {
                     try {
@@ -213,6 +237,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     // log("token result  $tokenId");
                   },
                   title: "setdevice Language",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.getAdditionalUserInfo(),
+                  loading: value.getAdditionalInfoLoading,
+                  title: "Get Additional User Info",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () async => value.linkProvider(),
+                  loading: value.linkProviderLoading,
+                  title: "Link Provider to User",
                 ),
                 10.vSpace,
                 ActionTile(

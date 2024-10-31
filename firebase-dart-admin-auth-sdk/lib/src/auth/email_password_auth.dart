@@ -1,8 +1,6 @@
 import 'dart:developer';
-
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-
 import '../firebase_app.dart';
 
 class EmailPasswordAuth {
@@ -16,6 +14,7 @@ class EmailPasswordAuth {
       'password': password,
       'returnSecureToken': true,
     });
+    print(response.body.toString());
     if (response.statusCode == 200) {
       final userCredential = UserCredential.fromJson(response.body);
       auth.updateCurrentUser(userCredential.user);
