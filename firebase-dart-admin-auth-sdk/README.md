@@ -14,19 +14,13 @@ The Firebase Dart Admin Auth SDK offers a robust and flexible set of tools to pe
 
 ## Getting Started
 
-If you want to use the Firebase Dart Admin Auth SDK for implementing a Firebase authentication in your Dart or Flutter projects follow the instructions on how to set up the auth SDK.
+If you want to use the Firebase Dart Admin Auth SDK for implementing a Firebase authentication in your Flutter projects follow the instructions on how to set up the auth SDK.
 
 - Ensure you have a Flutter or Dart (3.4.x) SDK installed in your system.
 - Set up a Firebase project and service account.
-- Set up a Dart or Flutter project.
+- Set up a Flutter project.
 
 ## Installation
-
-For Dart use:
-
-```bash
-dart pub add firebase_dart_admin_auth_sdk
-```
 
 For Flutter use:
 
@@ -38,10 +32,10 @@ You can manually edit your `pubspec.yaml `file this:
 
 ```yaml
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.1-pre
+  firebase_dart_admin_auth_sdk: ^0.0.1-pre+4
 ```
 
-You can run a `dart pub get` or `flutter pub get` for Dart and Flutter respectively to complete installation.
+You can run a `flutter pub get` for Flutter respectively to complete installation.
 
 **NB:** SDK version might vary.
 
@@ -50,29 +44,38 @@ You can run a `dart pub get` or `flutter pub get` for Dart and Flutter respectiv
 **Example:**
 
 ```
-   import 'dart:async';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-
-   Future<void> main(List<String> arguments) async {
-     // Replace 'path/to/serviceAccountKey.json' with your actual path
-     final serviceAccountKeyFilePath = 'path/to/serviceAccountKey.json';
-
-     // Initialize FirebaseAuth using service account with keys
-     final auth = FirebaseAuth.fromServiceAccountWithKeys(
-       serviceAccountKeyFilePath: serviceAccountKeyFilePath,
-     );
+   import 'package:flutter/services.dart' show rootBundle;
+   
+   
+   void main() async {
+      //To initialize with service account put the path to the json file in the function below
+      String serviceAccountContent = await rootBundle.loadString(
+          'assets/service_account.json'); //Add your own JSON service account
+     
+     // Initialize Firebase with the service account content
+      await FirebaseApp.initializeAppWithServiceAccount(
+        serviceAccountContent: serviceAccountContent,
+        serviceAccountKeyFilePath: '',
+      );
+      
+      // Get Firebase auth instance for this project
+      FirebaseApp.instance.getAuth();
 
      // Example: Sign in with email and password
      try {
-       final userCredential = await auth.signInWithEmailAndPassword(
-         'user@example.com',
-         'password',
-       );
-       print('Signed in as ${userCredential.user?.email}');
+       final user = await FirebaseApp.firebaseAuth
+        ?.createUserWithEmailAndPassword('user005@gmail.com', 'password');
+        
+       final await userCredential = await FirebaseApp.firebaseAuth
+       ?.signInWithEmailAndPassword('user005@gmail.com', 'password'); 
+       
+       print('Signed in as ${userCredential?.user.email}');
      } catch (e) {
        print('Sign-in error: $e');
      }
    }
+
 ```
 
 - Import the package into your Dart or Flutter project:
@@ -81,15 +84,11 @@ You can run a `dart pub get` or `flutter pub get` for Dart and Flutter respectiv
   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
   ```
 
-  \
-
 - Save `serviceAccountKey.json` file path in a variable `serviceAccountKeyFilePath`.
 
   ```
   final serviceAccountKeyFilePath = 'path/to/serviceAccountKey.json';
   ```
-
-  \
 
 - Initialize FirebaseAuth using service account with keys:
 
@@ -97,12 +96,11 @@ You can run a `dart pub get` or `flutter pub get` for Dart and Flutter respectiv
   final auth = FirebaseAuth.fromServiceAccountWithKeys(serviceAccountKeyFilePath: serviceAccountKeyFilePath);
   ```
 
-  \
-
-- Use the `auth.signInWithEmailAndPassword()` to sign in an existing user or new user.
+- Use the `FirebaseApp.firebaseAuth?.signInWithEmailAndPassword()` to sign in an existing user or new user.
 
   ```
-  final userCredential = await auth.signInWithEmailAndPassword('newuser@example.com', 'password123');
+  final await userCredential = await FirebaseApp.firebaseAuth
+      ?.signInWithEmailAndPassword('user005@gmail.com', 'password');
   ```
 
 ## Documentation

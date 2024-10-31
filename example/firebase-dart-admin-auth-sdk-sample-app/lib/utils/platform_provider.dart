@@ -7,5 +7,5 @@ String getPlatformId() {
   if (Platform.isIOS) {
     return 'apple.com';
   }
-  return '';
+  return 'google.com';
 }

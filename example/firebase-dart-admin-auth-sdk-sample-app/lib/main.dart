@@ -8,19 +8,22 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   //If you are on web, initialize with enviroment variables
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-        apiKey: 'Your Api Key',
-        projectId: 'Your Project Id',
-        bucketName: 'Your Bucket Name');
+      apiKey: 'Your Api Key',
+      projectId: 'Your Project Id',
+      bucketName: 'Your Bucket Name',
+    );
   } else {
     //  When working with mobile
     if (Platform.isAndroid || Platform.isIOS) {
       //  To initialize with service account put the path to the json file in the function below
       String serviceAccountContent = await rootBundle.loadString(
-          'assets/service_account.json'); //Add your own JSON service account
+        'assets/service_account.json',
+      ); //Add your own JSON service account
 
       // Initialize Firebase with the service account content
       await FirebaseApp.initializeAppWithServiceAccount(
