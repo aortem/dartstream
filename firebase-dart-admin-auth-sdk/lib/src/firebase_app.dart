@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_storage.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
+import 'auth/generate_custom_token.dart';
+import 'auth/get_access_token_with_generated_token.dart';
 
 class FirebaseApp {
   ///Instance of the Firebase App
@@ -13,10 +15,19 @@ class FirebaseApp {
   //The ID of the project
   final String? _projectId;
   final String? _bucketName;
+  final ServiceAccount? _serviceAccount;
+  final String? _accessToken;
   static FirebaseAuth? firebaseAuth;
-
+  static GetAccessTokenWithGeneratedToken? _accesstokenGen;
+  static GenerateCustomToken? _tokenGen;
   static FirebaseStorage? firebaseStorage;
-  FirebaseApp._(this._apiKey, this._projectId, this._bucketName);
+  FirebaseApp._(
+    this._apiKey,
+    this._projectId,
+    this._bucketName,
+    this._serviceAccount,
+    this._accessToken,
+  );
   User? _currentUser;
 
   // method to set the current user
@@ -50,23 +61,50 @@ class FirebaseApp {
     assert(bucketName.isNotEmpty, "Bucket Name cannot be empty");
 
     // Returns an instance of FirebaseApp if it exists or create a new instance based on the parameters passed
-    return _instance ??= FirebaseApp._(apiKey, projectId, bucketName);
+    return _instance ??= FirebaseApp._(
+      apiKey,
+      projectId,
+      bucketName,
+      null,
+      null,
+    );
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccount({
     required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
+    final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
     // Parse the JSON content
-    final serviceAccount = json.decode(serviceAccountContent);
+    final Map<String, dynamic> serviceAccount =
+        json.decode(serviceAccountContent);
 
-    // TODO: Implement API to get access token
+    final ServiceAccount serviceAccountModel =
+        ServiceAccount.fromJson(serviceAccount);
+
+    final jwt = await tokenGen.generateServiceAccountJwt(serviceAccountModel);
+
+    final accessToken =
+        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
     return _instance ??= FirebaseApp._(
-      serviceAccount['private_key'], // Update with the actual key field
+      null, // Update with the actual key field
       serviceAccount['project_id'], // Update with the actual project ID field
-      serviceAccount['bucket_name'], // Update with the actual bucket name field
+      serviceAccount[
+          'bucket_name'], // Update with the actual bucket name field,
+      serviceAccountModel,
+      accessToken,
     );
+  }
+
+  static void overrideInstanceForTesting(
+    GetAccessTokenWithGeneratedToken tokenGen,
+    GenerateCustomToken generateCustomToken,
+  ) {
+    _accesstokenGen = tokenGen;
+    _tokenGen = generateCustomToken;
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
@@ -84,13 +122,15 @@ class FirebaseApp {
       'your_api_key',
       'your_project_id',
       'your_bucket_name', // Replace with your bucket name
+      null,
+      null,
     );
   }
 
   ///Returns a Firebase Auth instance associated with the Project
   ///Throws not initialized if Firebase app is not intialized
   FirebaseAuth getAuth() {
-    assert(_apiKey != null, 'API Key is null');
+    if (_accessToken == null) assert(_apiKey != null, 'API Key is null');
     assert(_projectId != null, 'Project ID is null');
     if (_instance == null) {
       throw ("FirebaseApp is not initialized. Please call initializeApp() first.");
@@ -99,6 +139,9 @@ class FirebaseApp {
       apiKey: _apiKey,
       projectId: _projectId,
       bucketName: _bucketName,
+      accessToken: _accessToken,
+      serviceAccount: _serviceAccount,
+      generateCustomToken: _tokenGen,
     );
   }
 

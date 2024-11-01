@@ -14,10 +14,11 @@ class IdTokenResult {
     required this.userId,
     required this.authTime,
   });
- @override
+  @override
   String toString() {
     return 'IdTokenResult{token: $token, expirationTime: $expirationTime, issuedAtTime: $issuedAtTime, signInProvider: $signInProvider, userId: $userId, authTime: $authTime}';
   }
+
   factory IdTokenResult.fromJson(Map<String, dynamic> json) {
     return IdTokenResult(
       token: json['token'],

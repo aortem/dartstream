@@ -1,3 +1,5 @@
+import 'dart:math';
+
 String? validateEmail(String email) {
   final emailRegExp = RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+');
   if (!emailRegExp.hasMatch(email)) {
@@ -44,4 +46,22 @@ class ActionCodeSettings {
       if (dynamicLinkDomain != null) 'dynamicLinkDomain': dynamicLinkDomain,
     };
   }
+}
+
+String generateUid() {
+  final random = Random.secure();
+
+  String generateRandomHex(int length) {
+    const hexDigits = '0123456789abcdef';
+    return List.generate(length, (_) => hexDigits[random.nextInt(16)]).join();
+  }
+
+  // Set the version (UUIDv4)
+  String uuid = '${generateRandomHex(8)}-'
+      '${generateRandomHex(4)}-'
+      '4${generateRandomHex(3)}-' // UUID version 4
+      '${(random.nextInt(16) & 0x3 | 0x8).toRadixString(16)}${generateRandomHex(3)}-' // Variant
+      '${generateRandomHex(12)}';
+
+  return uuid;
 }
