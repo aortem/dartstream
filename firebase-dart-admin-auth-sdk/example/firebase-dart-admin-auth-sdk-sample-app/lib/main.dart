@@ -13,8 +13,8 @@ void main() async {
   if (kIsWeb) {
     //Pass the enviroment variables into the function below, I.E API key and project ID
     FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'AIzaSyBli2c-dmD4w2kLHmZU3UtewETvuruVAN4',
-      projectId: 'fire-base-dart-admin-auth-sdk',
+      apiKey: 'YOUR-API-KEY',
+      projectId: 'YOUR-PROJECT-ID',
       bucketName: 'Your Bucket Name',
     );
   } else {
