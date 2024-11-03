@@ -223,7 +223,7 @@ packages:
       path: "../.."
       relative: true
     source: path
-    version: "0.0.1-pre+5"
+    version: "0.0.1-pre+7"
   fixnum:
     dependency: transitive
     description:
