@@ -4,6 +4,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/apply_action_code_screen/apply_action_code_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen_view_model.dart';
+import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/link_with_credientials/link_with_credientials.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/parse_action_url_screen/parse_action_url.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/set_language_code_screen/set_language_code_screen.dart';
 import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/sign_up_screen/sign_up_screen.dart';
@@ -19,7 +20,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../link_wit_phone_number/link_with_phone_number.dart';
-import '../link_with_credientials/link_with_credientials';
 import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 
