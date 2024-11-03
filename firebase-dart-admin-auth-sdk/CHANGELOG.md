@@ -1,3 +1,7 @@
+## 0.0.1-pre+7
+
+- Added README.md for example folder naming conventions.
+
 ## 0.0.1-pre+6
 
 - Updated pub.dev README and feature check list for -pre+6 release
