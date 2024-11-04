@@ -1,5 +1,12 @@
 # Changelog
 
+
+## 0.0.1-pre+1 - 2024-08-12
+
+### Deprecated
+- This package has been deprecated and is no longer maintained.
+- Users are encouraged to switch to [`ds_standard_features`](https://pub.dev/packages/ds_standard_features) as the alternative.
+
 ## 0.0.1-pre+1 - 2024-08-12
 
 - update web package to stable version 1.0.0.
