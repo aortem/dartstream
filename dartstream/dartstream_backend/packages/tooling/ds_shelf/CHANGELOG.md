@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.1-pre+4
+
+- update shelf based dependencies
+- added shelf packages handler in pubspec
+
 ## 0.0.1-pre+3
 
 - update formatting of pubspec.yaml
