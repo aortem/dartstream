@@ -1,0 +1,4 @@
+# melos_managed_dependency_overrides: ds_shelf
+dependency_overrides:
+  ds_shelf:
+    path: ../../../tooling/ds_shelf
