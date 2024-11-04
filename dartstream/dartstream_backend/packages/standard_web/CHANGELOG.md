@@ -1,7 +1,7 @@
 # Changelog
 
 
-## 0.0.1-pre+1 - 2024-08-12
+## 0.0.1-pre+2 - 2024-11-04
 
 ### Deprecated
 - This package has been deprecated and is no longer maintained.
