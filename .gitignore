@@ -1,0 +1,17 @@
+# Ignore all IDE settings
+.idea/*
+!.idea/workspace.xml
+!.idea/modules.xml
+!.idea/vcs.xml
+!.idea/runConfigurations/
+
+# Ignore Flutter plugin files in example project
+firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins
+firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins-dependencies
+
+# Ignore macOS generated files in example project
+firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/macos/Flutter/GeneratedPluginRegistrant.swift
+
+# Optional: Ignore pubspec.lock in the library root (if this is a library, not an application)
+# Uncomment the line below if firebase-dart-admin-auth-sdk is a package:
+# pubspec.lock
