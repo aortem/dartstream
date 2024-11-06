@@ -3,8 +3,13 @@ import 'dart:convert';
 class HttpResponse {
   final int statusCode;
   final Map<String, dynamic> body;
+  final Map<String, String> headers;
 
-  HttpResponse({required this.statusCode, required this.body});
+  HttpResponse({
+    required this.statusCode,
+    required this.body,
+    this.headers = const {},
+  });
 
   Map<String, dynamic> toMap() {
     return {

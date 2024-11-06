@@ -6,12 +6,14 @@ class UserCredential {
   final AdditionalUserInfo? additionalUserInfo;
   final AuthCredential? credential;
   final String? operationType;
+  final String? providerId;
 
   UserCredential({
     required this.user,
     this.additionalUserInfo,
     this.credential,
     this.operationType,
+    this.providerId,
   });
 
   factory UserCredential.fromJson(Map<String, dynamic> json) {
@@ -52,5 +54,5 @@ class UserCredential {
     );
   }
 
-  get providerId => null;
+  //get providerId => null;
 }

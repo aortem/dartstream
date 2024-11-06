@@ -254,7 +254,10 @@ class FirebaseAuth {
       );
     }
     return HttpResponse(
-        statusCode: response.statusCode, body: json.decode(response.body));
+      statusCode: response.statusCode,
+      body: json.decode(response.body),
+      headers: response.headers,
+    );
   }
 
   // updateCurrentUser method to automatically trigger the streams

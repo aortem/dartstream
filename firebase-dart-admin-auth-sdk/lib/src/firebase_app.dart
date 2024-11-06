@@ -27,6 +27,7 @@ class FirebaseApp {
   static GetAccessTokenWithGeneratedToken? _accesstokenGen;
   static GenerateCustomToken? _tokenGen;
   static FirebaseStorage? firebaseStorage;
+
   FirebaseApp._(
       this._apiKey,
       this._projectId,
@@ -36,6 +37,7 @@ class FirebaseApp {
       this._appId,
       this._serviceAccount,
       this._accessToken);
+
   User? _currentUser;
 
   // method to set the current user
@@ -60,8 +62,8 @@ class FirebaseApp {
   ///[projectId] is the ID of the project
   static Future<FirebaseApp> initializeAppWithEnvironmentVariables({
     required String apiKey,
-    required String projectId,
     required String authdomain,
+    required String projectId,
     required String messagingSenderId,
     required String bucketName,
     required String appId,
@@ -91,32 +93,51 @@ class FirebaseApp {
     required String serviceAccountContent,
     required String serviceAccountKeyFilePath,
   }) async {
+    // Initialize token generators
     final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
     final accesTokenGen =
         _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
-    // Parse the JSON content
-    final Map<String, dynamic> serviceAccount =
-        json.decode(serviceAccountContent);
 
-    final ServiceAccount serviceAccountModel =
-        ServiceAccount.fromJson(serviceAccount);
+    try {
+      // Parse the JSON content
+      final Map<String, dynamic> serviceAccount =
+          json.decode(serviceAccountContent);
 
-    final jwt = await tokenGen.generateServiceAccountJwt(serviceAccountModel);
+      // Create ServiceAccount model from JSON
+      final ServiceAccount serviceAccountModel =
+          ServiceAccount.fromJson(serviceAccount);
 
-    final accessToken =
-        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
+      // Generate JWT and access token
+      final jwt = await tokenGen.generateServiceAccountJwt(serviceAccountModel);
+      final accessToken =
+          await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
-    return _instance ??= FirebaseApp._(
-      null, // Update with the actual key field
-      serviceAccount['project_id'], // Update with the actual project ID field
-      serviceAccount['private_key'], // Update with the actual key field
-      serviceAccount['auth_domain'], // Update with the actual auth domain field
-      serviceAccount[
-          'messaging_sender_id'], // Update with the actual messaging sender
-      serviceAccount['bucket_name'], // Update with the actual bucket name field
-      serviceAccount['app_id'], // Update with the actual app ID field
-      serviceAccount['bucket_name'], // Update with the actual bucket name field
-    );
+      // Extract values with defaults for optional fields
+      final projectId = serviceAccount['project_id'];
+      final authDomain = serviceAccount['auth_domain'] ?? '';
+      final messagingSenderId = serviceAccount['messaging_sender_id'] ?? '';
+      final bucketName = serviceAccount['bucket_name'];
+      final appId = serviceAccount['app_id'];
+
+      // Validate required fields
+      if (projectId == null) {
+        throw FormatException('Missing project_id in service account JSON');
+      }
+
+      // Create and return Firebase instance
+      return _instance ??= FirebaseApp._(
+        null,
+        projectId,
+        authDomain,
+        messagingSenderId,
+        bucketName,
+        appId,
+        serviceAccountModel,
+        accessToken,
+      );
+    } catch (e) {
+      throw Exception('Failed to initialize Firebase with service account: $e');
+    }
   }
 
   static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
@@ -135,10 +156,10 @@ class FirebaseApp {
       'your_project_id',
       'your_auth_domain',
       'your_messaging_sender_id',
-      'your_bucket_name', // Replace with your bucket name
+      'your_bucket_name',
+      'your_app_id',
       null,
       null,
-      'your_app_id', // Replace with your app ID
     );
   }
 
