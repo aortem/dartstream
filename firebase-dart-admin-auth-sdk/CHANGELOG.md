@@ -1,3 +1,19 @@
+## 0.0.1-pre+7
+
+- Added README.md for example folder naming conventions.
+
+## 0.0.1-pre+6
+
+- Updated pub.dev README and feature check list for -pre+6 release
+- FirebaseUser.linkWithPopup implemented in Sample App
+- FirebaseUser.linkWithCredential implemented in Sample App
+- FirebaseAuth.signInWithPhoneNumber implemented in Sample App
+- FirebaseAuth.getRedirectResult implemented in Sample App
+- FirebaseAuth.signInWithRedirect implemented in Sample App
+- FirebaseApp.getAuth implemented in Sample App
+- FirebaseApp.initializeAuth implemented in Sample App
+- Moved example folder for the sample app to proper location for dart conventions.
+
 ## 0.0.1-pre+5
 
 - FirebaseStorage.getStorage added to Sample App
