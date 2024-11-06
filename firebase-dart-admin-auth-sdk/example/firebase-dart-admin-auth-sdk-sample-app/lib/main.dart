@@ -26,13 +26,15 @@ void main() async {
       ); //Add your own JSON service account
 
       // Initialize Firebase with the service account content
-      await FirebaseApp.initializeAppWithServiceAccount(
-        serviceAccountContent: serviceAccountContent,
-        serviceAccountKeyFilePath: '', // file path
-      );
+      // await FirebaseApp.initializeAppWithServiceAccount(
+      //   serviceAccountContent: serviceAccountContent,
+      // );
 
       //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
+      await FirebaseApp.initializeAppWithServiceAccountImpersonation(
+        impersonatedEmail: 'impersonatedEmail',
+        serviceAccountContent: serviceAccountContent,
+      );
     }
   }
 
