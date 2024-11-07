@@ -140,6 +140,14 @@ class FirebaseApp {
     }
   }
 
+  static void overrideInstanceForTesting(
+    GetAccessTokenWithGeneratedToken tokenGen,
+    GenerateCustomToken generateCustomToken,
+  ) {
+    _accesstokenGen = tokenGen;
+    _tokenGen = generateCustomToken;
+  }
+
   static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
     required String serviceAccountEmail,
     required String userEmail,
