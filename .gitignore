@@ -1,9 +1,5 @@
 # Ignore all IDE settings
-.idea/*
-!.idea/workspace.xml
-!.idea/modules.xml
-!.idea/vcs.xml
-!.idea/runConfigurations/
+.idea/
 
 # Ignore Flutter plugin files in example project
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins
