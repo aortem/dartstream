@@ -8,6 +8,9 @@ firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.fl
 # Ignore macOS generated files in example project
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/macos/Flutter/GeneratedPluginRegistrant.swift
 
+Ignore Release Key
+firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/firebase-dart-admin-auth-sdk-release-key.jks
+
 # Optional: Ignore pubspec.lock in the library root (if this is a library, not an application)
 # Uncomment the line below if firebase-dart-admin-auth-sdk is a package:
 # pubspec.lock
