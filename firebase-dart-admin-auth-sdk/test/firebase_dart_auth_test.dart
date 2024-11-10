@@ -558,7 +558,7 @@ void main() async {
                   200,
                 ));
 
-        final result = await auth?.linkAccountWithCredentials(
+        final result = await auth?.linkAccountWithCredientials(
             'http:localhost', 'testIdToken', "google.com");
         print('result: $result'); // Print the actual result for debugging
       });

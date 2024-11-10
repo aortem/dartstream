@@ -1,4 +1,3 @@
-
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
@@ -8,12 +7,14 @@ import 'dart:convert';
 class FirebaseDeleteUser {
   /// The FirebaseAuth instance used for interacting with Firebase Authentication.
   final FirebaseAuth auth;
+
   /// Constructor to initialize the [FirebaseDeleteUser] with a [FirebaseAuth] instance.
   ///
   /// This constructor requires a [FirebaseAuth] instance to interact with Firebase Authentication
   /// and perform actions like user deletion.
 
   FirebaseDeleteUser({required this.auth});
+
   /// Deletes a user from Firebase Authentication.
   ///
   /// This method sends a request to the Firebase Authentication API to delete a user based on their
@@ -32,16 +33,19 @@ class FirebaseDeleteUser {
   Future<String?> deleteUser(String idToken, String uid) async {
     // Construct the URL for the Firebase Authentication API endpoint to delete a user
 
-    final url = Uri.parse('https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${auth.apiKey}');
+    final url = Uri.parse(
+        'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${auth.apiKey}');
 
     try {
       // Send an HTTP POST request to Firebase Authentication to delete the user
       final response = await http.post(
         url,
-        headers: {'Content-Type': 'application/json'},  // Set content type to JSON
+        headers: {
+          'Content-Type': 'application/json'
+        }, // Set content type to JSON
         body: jsonEncode({
-          'idToken': idToken,  // The Firebase ID token of the user
-          'localId': uid,      // The UID of the user to be deleted
+          'idToken': idToken, // The Firebase ID token of the user
+          'localId': uid, // The UID of the user to be deleted
         }),
       );
 
@@ -55,7 +59,6 @@ class FirebaseDeleteUser {
       } else {
         return response.body;
         // If the request failed, log the error message and response body
-        print('Failed to delete user: ${response.body}');
       }
     } catch (e) {
       // Catch and log any errors that occurred during the HTTP request

@@ -30,14 +30,14 @@ class VerifyPasswordResetCodeService {
   ///
   /// Throws:
   /// - [FirebaseAuthException] if an error occurs during the verification process.
-  Future<HttpResponse> verifyPasswordResetCode(String code) async {
+  Future<String?> verifyPasswordResetCode(String code) async {
     try {
       // The URL for Firebase Authentication API to verify the password reset code.
       final url = 'resetPassword';
 
       // The body of the request containing the password reset code to be verified.
       final body = {
-        'oobCode': code,  // The out-of-band (OOB) code received by the user.
+        'oobCode': code, // The out-of-band (OOB) code received by the user.
       };
 
       // Perform the request to Firebase Authentication service.
@@ -49,15 +49,17 @@ class VerifyPasswordResetCodeService {
       }
 
       // Return the response from the server.
-      return response;
+      return "Response is $response";
     } catch (e) {
       // Print the error message if an exception occurs during the verification process.
       print('Verify password reset code failed: $e');
 
       // Throw a FirebaseAuthException if the verification fails.
       throw FirebaseAuthException(
-        code: 'verify-password-reset-code-error',  // Error code for this operation.
-        message: 'Failed to verify password reset code.',  // Error message for the exception.
+        code:
+            'verify-password-reset-code-error', // Error code for this operation.
+        message:
+            'Failed to verify password reset code.', // Error message for the exception.
       );
     }
   }

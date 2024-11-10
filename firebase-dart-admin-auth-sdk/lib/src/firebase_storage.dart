@@ -1,7 +1,6 @@
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 
-
 /// A class that interacts with Firebase Storage for uploading files.
 /// This class handles uploading files to Firebase Storage using Firebase credentials
 /// like the project ID, API key, and storage bucket name.
@@ -32,9 +31,9 @@ class FirebaseStorage {
   /// Returns a [FirebaseStorage] instance associated with the provided Firebase app.
 
   static FirebaseStorage getStorage({
-    required String apiKey,       // API key required to initialize storage
-    required String projectId,    // Project ID required for Firebase storage
-    required String bucketName,   // The storage bucket's name
+    required String apiKey, // API key required to initialize storage
+    required String projectId, // Project ID required for Firebase storage
+    required String bucketName, // The storage bucket's name
   }) {
     // Ensure that FirebaseApp is properly initialized
     final firebaseApp = FirebaseApp.instance;
@@ -47,6 +46,7 @@ class FirebaseStorage {
     // Return a new instance of FirebaseStorage using the private constructor
     return FirebaseStorage._(projectId!, apiKey!, bucketName!);
   }
+
   /// Uploads a file to Firebase Storage.
   ///
   /// This method handles sending a POST request to Firebase Storage to upload a file
@@ -63,12 +63,15 @@ class FirebaseStorage {
     final encodedPath = Uri.encodeComponent(path);
     // Construct the Firebase Storage URL to upload the file to the specified bucket
 
-    final url = 'https://firebasestorage.googleapis.com/v0/b/$bucketName/o/$encodedPath?uploadType=media';
+    final url =
+        'https://firebasestorage.googleapis.com/v0/b/$bucketName/o/$encodedPath?uploadType=media';
     // Prepare the request headers, including the authorization token and content type
 
     final headers = {
-      'Authorization': 'Bearer ${await _getAccessToken()}',  // Bearer token for authentication
-      'Content-Type': 'application/octet-stream',  // Content type for binary file data
+      'Authorization':
+          'Bearer ${await _getAccessToken()}', // Bearer token for authentication
+      'Content-Type':
+          'application/octet-stream', // Content type for binary file data
     };
 
     try {
@@ -76,7 +79,7 @@ class FirebaseStorage {
       final response = await http.post(
         Uri.parse(url),
         headers: headers,
-        body: fileData,     // The actual binary data of the file being uploaded
+        body: fileData, // The actual binary data of the file being uploaded
       );
       // Check if the file upload was successful (HTTP status 200)
       if (response.statusCode == 200) {
@@ -92,6 +95,7 @@ class FirebaseStorage {
       rethrow;
     }
   }
+
   /// Retrieves an access token for authentication with Firebase services.
   ///
   /// This method is a placeholder for obtaining an authentication token. It is currently
@@ -102,7 +106,7 @@ class FirebaseStorage {
 
   // Placeholder method to get an access token for authorization
   Future<String> _getAccessToken() async {
-    // TODO: Implement actual logic to retrieve a valid access token
+    //  Implement actual logic to retrieve a valid access token
     // This could involve using Firebase Authentication or OAuth2, etc.
     // This is a placeholder method and needs to be replaced with actual token retrieval.
     return 'your_actual_token_here';

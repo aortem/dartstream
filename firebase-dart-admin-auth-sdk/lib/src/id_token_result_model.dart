@@ -6,17 +6,24 @@
 /// and token metadata in Firebase Authentication.
 ///
 /// **Fields**:
-/// - [token]: The ID token as a string. This token is used for authentication.
-/// - [expirationTime]: The expiration time of the token, represented as a Unix timestamp (milliseconds).
-/// - [issuedAtTime]: The time when the token was issued, represented as a Unix timestamp (milliseconds).
-/// - [signInProvider]: The provider used to sign in (e.g., "password", "google", etc.).
-/// - [userId]: The unique identifier for the authenticated user.
+
 class IdTokenResult {
+  /// - token: The ID token as a string. This token is used for authentication.
   final String token;
+
+  /// - [expirationTime]: The expiration time of the token, represented as a Unix timestamp (milliseconds).
   final int expirationTime;
+
+  /// - [issuedAtTime]: The time when the token was issued, represented as a Unix timestamp (milliseconds).
   final int issuedAtTime;
+
+  /// - [signInProvider]: The provider used to sign in (e.g., "password", "google", etc.).
   final String signInProvider;
+
+  /// - [userId]: The unique identifier for the authenticated user.
   final String userId;
+
+  /// - [authTime]: The time at which the user do authentication.
   final String authTime;
 
   /// Constructs an instance of [IdTokenResult] with the given parameters.

@@ -6,6 +6,8 @@ import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 
 /// A class to handle phone number linking and verification using Firebase Authentication.
 class FirebasePhoneNumberLink {
+  /// The FirebaseAuth instance used for interacting with Firebase Authentication.
+
   final FirebaseAuth auth;
 
   /// Constructor that initializes the `FirebasePhoneNumberLink` with the provided [auth] instance.
@@ -28,7 +30,7 @@ class FirebasePhoneNumberLink {
       body: json.encode({
         'phoneNumber': phoneNumber,
         'recaptchaToken':
-        '[RECAPTCHA_TOKEN]', // You need to handle reCAPTCHA verification
+            '[RECAPTCHA_TOKEN]', // You need to handle reCAPTCHA verification
       }),
     );
 

@@ -48,7 +48,7 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
       log('Access Token: ${googleAuth.accessToken}');
       log('ID Token: ${googleAuth.idToken}');
       try {
-        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredentials(
+        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
             'http://localhost', googleAuth.accessToken ?? "", 'google.com');
 
         BotToast.showText(text: 'Account linked ');
@@ -73,7 +73,7 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
 
       log('Facebook Access Token: ${accessToken.tokenString}');
       try {
-        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredentials(
+        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
             'http://localhost', accessToken.tokenString ?? "", 'facebook.com');
 
         BotToast.showText(text: '${user?.user.email} just linked in');
