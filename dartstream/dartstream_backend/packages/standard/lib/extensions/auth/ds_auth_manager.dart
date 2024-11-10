@@ -2,13 +2,13 @@
 
 // extensions/auth/ds_auth_manager.dart
 
-import 'auth_provider.dart';
-import 'firebase_auth_provider.dart';
-import 'cognito_auth_provider.dart';
-import 'active_directory_auth_provider.dart';
+import 'ds_auth_provider.dart';
+import 'ds_firebase_auth_provider.dart';
+import 'ds_cognito_auth_provider.dart';
+import 'ds_azure_ad_b2c_auth_provider.dart';
 
 class AuthManager {
-  final AuthProvider _provider;
+  final DSAuthProvider _provider;
 
   AuthManager._(this._provider);
 
