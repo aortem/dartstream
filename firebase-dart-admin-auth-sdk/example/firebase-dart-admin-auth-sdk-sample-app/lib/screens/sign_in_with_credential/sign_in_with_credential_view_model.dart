@@ -96,7 +96,7 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
 
   Future<void> revokeToken(String idToken) async {
     try {
-      await FirebaseApp.firebaseAuth?.revokeAccessToken(idToken);
+      await FirebaseApp.firebaseAuth?.revokeToken(idToken);
       BotToast.showText(text: "Token revoked successfully");
     } catch (e) {
       BotToast.showText(text: "Failed to revoke token: ${e.toString()}");

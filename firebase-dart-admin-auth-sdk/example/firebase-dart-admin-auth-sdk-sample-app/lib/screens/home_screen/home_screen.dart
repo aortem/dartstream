@@ -149,7 +149,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     try {
       final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      await auth.revokeAccessToken(_currentIdToken!);
+      await auth.revokeToken(_currentIdToken!);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Token revoked successfully')),
       );

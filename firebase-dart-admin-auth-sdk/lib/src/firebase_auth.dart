@@ -494,7 +494,7 @@ class FirebaseAuth {
   }
 
   /// Revokes the specified access token.
-  Future<void> revokeAccessToken(String idToken) async {
+  Future<void> revokeToken(String idToken) async {
     try {
       await revokeAccessTokenService.revokeAccessToken();
     } catch (e) {

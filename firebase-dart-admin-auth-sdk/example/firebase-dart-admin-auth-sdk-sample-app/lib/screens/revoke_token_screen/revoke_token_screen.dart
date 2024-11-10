@@ -20,7 +20,7 @@ class _RevokeAccessTokenScreenState extends State<RevokeAccessTokenScreen> {
       final auth = Provider.of<FirebaseAuth>(context, listen: false);
 
       // Revoke the token
-      await auth.revokeAccessToken('');
+      await auth.revokeToken('');
 
       setState(() {
         _result =

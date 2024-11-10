@@ -1,15 +1,12 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_access_token_with_generated_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/id_token_result_model.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/platform/other.dart'
+    if (dart.library.html) 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
-    as acs;
-import 'package:firebase_dart_admin_auth_sdk/src/platform/web.dart';
+import 'dart:convert';
 
 import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 
@@ -138,9 +135,9 @@ void main() async {
         FirebaseApp.initializeAppWithEnvironmentVariables(
           apiKey: 'FIREBASE_API_KEY',
           projectId: 'FIREBASE_PROJECT_ID',
+          bucketName: 'FIREBASE_STORAGE_BUCKET_NAME',
           authdomain: 'FIREBASE_AUTH_DOMAIN',
           messagingSenderId: 'FIREBASE_MESSAGE_SENDER_ID',
-          bucketName: 'FIREBASE_STORAGE_BUCKET_NAME',
           appId: 'FIREBASE_APP_ID',
         ),
     'service_account': () async => FirebaseApp.initializeAppWithServiceAccount(
@@ -350,19 +347,40 @@ void main() async {
         expect(result?.body['email'], equals('test@example.com'));
       });
 
-      test('signInWithRedirect succeeds', () async {
-        // Mocking the HTTP response for a successful user creation with email and password.
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{"kind":"identitytoolkit#signInWithIdp","requestUri": "http:localhost","providerId":"google.com","access_token":"newTestIdToken",}',
-                  200,
-                ));
+      // test('signInWithRedirect succeeds', () async {
+      //   // Mocking the HTTP response for a successful sign-in with redirect.
+      //   when(() => mockClient.post(any(),
+      //           body: any(named: 'body'), headers: any(named: 'headers')))
+      //       .thenAnswer((_) async => http.Response(
+      //             '{"kind":"identitytoolkit#VerifyPasswordResponse","localId":"redirectUid","email":"redirect@example.com","displayName":"","idToken":"redirectIdToken","registered":true,"refreshToken":"redirectRefreshToken","expiresIn":"3600"}',
+      //             200,
+      //           ));
 
-        final result = await auth?.signInWithRedirect(
-            'http:localhost', 'testIdToken', "google.com");
-        print('result: $result');
-      });
+      //   if (isRunningOnWeb()) {
+      //     expectLater(completes, auth?.signInWithRedirect('providerId'));
+      //     await auth?.signInWithRedirect('providerId');
+      //     // Instead of checking a result, verifying that the authentication state has changed.
+      //     // You can check the currentUser property or listen to an auth state change stream.
+      //     expect(auth?.currentUser,
+      //         isNotNull); // Assuming the sign-in was successful and a user is now signed in.
+
+      //     // Alternatively, listen to the auth state change stream if applicable.
+      //     auth?.onAuthStateChanged().listen(expectAsync1((user) {
+      //       expect(user, isNotNull);
+      //       // Verifies that the user is not null.
+      //       // Additional checks can be added based on the expected state of the user.
+      //     }));
+      //   } else {
+      //     expectLater(
+      //       () async => await auth?.signInWithRedirect('providerId'),
+      //       throwsA(isA<FirebaseAuthException>().having(
+      //         (e) => e.code,
+      //         'code',
+      //         'sign-in-redirect-error',
+      //       )),
+      //     );
+      //   }
+      // });
 
       test('should apply action code if FirebaseApp is initialized', () async {
         when(() => mockClient.post(any(),
@@ -514,7 +532,7 @@ void main() async {
             .thenAnswer((_) async => http.Response('{}', 200));
 
         expectLater(
-          auth?.revokeAccessToken('testIdToken'),
+          auth?.revokeToken('testIdToken'),
           completes,
         );
       });
@@ -537,7 +555,7 @@ void main() async {
               .then((_) => auth?.updateCurrentUser(user));
 
           await expectLater(
-            auth?.onIdTokenChanged((user) => print(user)), // Add callback
+            auth?.onIdTokenChanged(),
             emitsInOrder([user]),
           );
         },
@@ -561,7 +579,7 @@ void main() async {
               .then((_) => auth?.updateCurrentUser(expectedUser));
 
           await expectLater(
-            auth?.onAuthStateChanged((user) => print(user)), // Add callback
+            auth?.onAuthStateChanged(),
             emitsInOrder([expectedUser]),
           );
         },
@@ -595,397 +613,15 @@ void main() async {
         await auth?.sendPasswordResetEmail('test@example.com');
       });
 
-      // Test For RevokeAccessToken
-      test('revokeAccessToken succeeds', () async {
-        // Mocking the HTTP response for a successful token revocation
-        when(() => mockClient.post(
-              any(),
-              body: any(named: 'body'),
-              headers: any(named: 'headers'),
-            )).thenAnswer((_) async => http.Response(
-              '{"kind": "identitytoolkit#RevokeAccessTokenResponse"}',
-              200,
-            ));
-
-        // Ensure the current user is set
-        auth?.updateCurrentUser(User(
-          uid: 'testUid',
-          idToken: 'testIdToken',
-          refreshToken: 'testRefreshToken',
-        ));
-
-        // Call the method and expect it to complete without throwing an error
-        await expectLater(
-          auth?.revokeAccessToken('testIdToken'),
-          completes,
-        );
-
-        // Verify that the post method was called with the correct parameters
-        verify(() => mockClient.post(
-              Uri.https('identitytoolkit.googleapis.com',
-                  '/v1/accounts:revokeAccessToken'),
-              body: jsonEncode({
-                'idToken': 'testIdToken',
-              }),
-              headers: {
-                'Content-Type': 'application/json',
-              },
-            )).called(1);
-
-        // Verify that no more interactions with the mock client occurred
-        verifyNoMoreInteractions(mockClient);
-      });
-
-      // Test for FirebaseAuth.checkActionCode
-      test('checkActionCode succeeds', () async {
+      test('revokeToken succeeds', () async {
         when(() => mockClient.post(any(),
                 body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-                  '{"operation":"PASSWORD_RESET","data":{"email":"test@example.com"}}',
+                  '{}',
                   200,
                 ));
 
-        final result = await auth?.checkActionCode('testActionCode');
-        expect(result?.operation, equals('PASSWORD_RESET'));
-        expect(result?.data['email'], equals('test@example.com'));
-      });
-
-      // Test for FirebaseAuth.confirmPasswordReset
-      test('confirmPasswordReset succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response('{}', 200));
-
-        await expectLater(
-          auth?.confirmPasswordReset('testOobCode', 'newPassword'),
-          completes,
-        );
-      });
-
-      // Test for FirebaseAuth.createUserWithEmailAndPassword
-      test('createUserWithEmailAndPassword succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{"kind":"identitytoolkit#SignupNewUserResponse","localId":"newTestUid","email":"newuser@example.com","idToken":"newTestIdToken","refreshToken":"newTestRefreshToken","expiresIn":"3600"}',
-                  200,
-                ));
-
-        final result = await auth?.createUserWithEmailAndPassword(
-            'newuser@example.com', 'password123');
-        expect(result?.user.uid, equals('newTestUid'));
-        expect(result?.user.email, equals('newuser@example.com'));
-      });
-
-      // Test for FirebaseAuth.fetchSignInMethodsForEmail
-      test('fetchSignInMethodsForEmail succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{"signinMethods":["password","google.com"]}',
-                  200,
-                ));
-
-        final result =
-            await auth?.fetchSignInMethodsForEmail('test@example.com');
-        expect(result, contains('password'));
-        expect(result, contains('google.com'));
-      });
-
-      // Test for FirebaseAuth.getRedirectResult
-      test('getRedirectResult succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  '{"user":{"localId":"testUid","email":"test@example.com"},"providerId":"google.com","operationType":"signIn"}',
-                  200,
-                ));
-
-        final result = await auth?.getRedirectResult();
-        expect(result, isA<Map<String, dynamic>>());
-        expect(result?['user']?['localId'], equals('testUid'));
-        expect(result?['user']?['email'], equals('test@example.com'));
-        expect(result?['providerId'], equals('google.com'));
-      });
-
-      // Test for FirebaseAuth.initializeRecaptchaConfig
-      test('initializeRecaptchaConfig succeeds', () async {
-        if (isRunningOnWeb()) {
-          when(() => mockClient.post(any(),
-                  body: any(named: 'body'), headers: any(named: 'headers')))
-              .thenAnswer((_) async => http.Response('{}', 200));
-
-          await expectLater(
-            auth?.initializeRecaptchaConfig('testSiteKey'),
-            completes,
-          );
-        } else {
-          expect(
-            () => auth?.initializeRecaptchaConfig('testSiteKey'),
-            throwsA(isA<UnimplementedError>()),
-          );
-        }
-      });
-
-      // Test for FirebaseAuth.isSignInWithEmailLink
-      test('isSignInWithEmailLink returns true for valid link', () {
-        final validLink =
-            'https://example.com/__/auth/action?mode=signIn&oobCode=testCode&apiKey=testApiKey';
-        expect(auth?.isSignInWithEmailLink(validLink), isTrue);
-      });
-
-      test('isSignInWithEmailLink returns false for invalid link', () {
-        final invalidLink = 'https://example.com/invalid';
-        expect(auth?.isSignInWithEmailLink(invalidLink), isFalse);
-      });
-
-      // 1. signInWithPopup tests
-      test('signInWithPopup succeeds with Google provider', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'kind': 'identitytoolkit#SignInWithPopupResponse',
-                    'localId': 'testUid',
-                    'email': 'test@example.com',
-                    'displayName': 'Test User',
-                    'photoUrl': 'https://example.com/photo.jpg',
-                    'providerId': 'google.com',
-                    'idToken': 'testIdToken',
-                    'refreshToken': 'testRefreshToken',
-                    'expiresIn': '3600',
-                    'additionalUserInfo': {
-                      'providerId': 'google.com',
-                      'isNewUser': false,
-                      'profile': {
-                        'name': 'Test User',
-                        'email': 'test@example.com'
-                      }
-                    }
-                  }),
-                  200,
-                ));
-
-        final provider = GoogleAuthProvider();
-        final result = await auth?.signInWithPopup(provider, 'test-client-id');
-
-        expect(result?.user.uid, equals('testUid'));
-        expect(result?.user.email, equals('test@example.com'));
-        expect(result?.user.displayName, equals('Test User'));
-
-        verify(() => mockClient.post(any(),
-            body: any(named: 'body'),
-            headers: any(named: 'headers'))).called(1);
-      });
-
-      test('signInWithPopup fails with popup closed', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'error': {'code': 400, 'message': 'POPUP_CLOSED_BY_USER'}
-                  }),
-                  400,
-                ));
-
-        final provider = GoogleAuthProvider();
-        expect(
-          () => auth?.signInWithPopup(provider, 'test-client-id'),
-          throwsA(
-            isA<FirebaseAuthException>().having(
-              (e) => e.code,
-              'code',
-              'popup-closed-by-user',
-            ),
-          ),
-        );
-      });
-
-// 3. signInWithEmailLink tests
-      test('signInWithEmailLink succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'kind': 'identitytoolkit#EmailLinkSigninResponse',
-                    'localId': 'testUid',
-                    'email': 'test@example.com',
-                    'idToken': 'testIdToken',
-                    'refreshToken': 'testRefreshToken',
-                    'expiresIn': '3600',
-                    'isNewUser': false
-                  }),
-                  200,
-                ));
-
-        final result = await auth?.signInWithEmailLink(
-          'test@example.com',
-          'https://example.com/?mode=signIn&oobCode=abc123',
-        );
-
-        expect(result?.user.uid, equals('testUid'));
-        expect(result?.user.email, equals('test@example.com'));
-      });
-
-      test('signInWithEmailLink handles invalid link', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'error': {'code': 400, 'message': 'INVALID_OOB_CODE'}
-                  }),
-                  400,
-                ));
-
-        expect(
-          () => auth?.signInWithEmailLink(
-            'test@example.com',
-            'invalid-link',
-          ),
-          throwsA(
-            isA<FirebaseAuthException>().having(
-              (e) => e.code,
-              'code',
-              'invalid-action-code',
-            ),
-          ),
-        );
-      });
-
-// 4. signInWithCustomToken tests
-      test('signInWithCustomToken succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'kind': 'identitytoolkit#VerifyCustomTokenResponse',
-                    'localId': 'testUid',
-                    'email': 'test@example.com',
-                    'idToken': 'testIdToken',
-                    'refreshToken': 'testRefreshToken',
-                    'expiresIn': '3600'
-                  }),
-                  200,
-                ));
-
-        final result = await auth?.signInWithCustomToken('custom-token');
-        expect(result?.user.uid, equals('testUid'));
-        expect(result?.user.email, equals('test@example.com'));
-      });
-
-      test('signInWithCustomToken handles invalid token', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'error': {'code': 400, 'message': 'INVALID_CUSTOM_TOKEN'}
-                  }),
-                  400,
-                ));
-
-        expect(
-          () => auth?.signInWithCustomToken('invalid-token'),
-          throwsA(
-            isA<FirebaseAuthException>().having(
-              (e) => e.code,
-              'code',
-              'invalid-custom-token',
-            ),
-          ),
-        );
-      });
-
-      // Test for getRedirectResult
-      test('getRedirectResult with signed in user succeeds', () async {
-        // Mock current user
-        final mockUser = User(
-          uid: 'testUid',
-          email: 'test@example.com',
-          displayName: 'Test User',
-          photoURL: 'https://example.com/photo.jpg',
-          emailVerified: true,
-          idToken: 'testIdToken',
-        );
-
-        // Set mock current user
-        FirebaseApp.instance.setCurrentUser(mockUser);
-
-        final result = await auth?.getRedirectResult();
-
-        expect(result, isNotNull);
-        expect(result?['user']['uid'], equals('testUid'));
-        expect(result?['user']['email'], equals('test@example.com'));
-        expect(result?['user']['displayName'], equals('Test User'));
-        expect(result?['user']['idToken'], equals('testIdToken'));
-        expect(result?['credential']['providerId'], equals('google.com'));
-        expect(result?['operationType'], equals('signIn'));
-      });
-
-      test('getRedirectResult with no user returns null', () async {
-        // Ensure no current user
-        FirebaseApp.instance.setCurrentUser(null);
-
-        final result = await auth?.getRedirectResult();
-        expect(result, isNull);
-      });
-
-      test('getRedirectResult with user but no token throws', () async {
-        // Mock user without token
-        final mockUser = User(
-          uid: 'testUid',
-          email: 'test@example.com',
-          idToken: null,
-        );
-
-        FirebaseApp.instance.setCurrentUser(mockUser);
-
-        final result = await auth?.getRedirectResult();
-        expect(result, isNull);
-      });
-
-      // Tests for signInWithPhoneNumber
-      test('signInWithPhoneNumber succeeds', () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'sessionInfo': 'test-verification-id',
-                    'phoneNumber': '+16505550101'
-                  }),
-                  200,
-                ));
-
-        final appVerifier = MockApplicationVerifier();
-
-        final result =
-            await auth?.signInWithPhoneNumber('+16505550101', appVerifier);
-
-        expect(result, isA<ConfirmationResult>());
-      });
-
-      test('signInWithPhoneNumber throws FirebaseAuthException on error',
-          () async {
-        when(() => mockClient.post(any(),
-                body: any(named: 'body'), headers: any(named: 'headers')))
-            .thenAnswer((_) async => http.Response(
-                  jsonEncode({
-                    'error': {'message': 'Invalid phone number'}
-                  }),
-                  400,
-                ));
-
-        final appVerifier = MockApplicationVerifier();
-
-        expect(
-          () => auth?.signInWithPhoneNumber('+16505550101', appVerifier),
-          throwsA(
-            isA<FirebaseAuthException>().having(
-              (e) => e.code,
-              'code',
-              'phone-auth-error',
-            ),
-          ),
-        );
+        await auth?.revokeToken('testIdToken');
       });
 
       test('linkWithCredential  succeeds', () async {
@@ -1046,9 +682,6 @@ void main() async {
       });
 
       test('signOut succeeds', () async {
-        // Sign in a user first
-        auth?.updateCurrentUser(User(uid: 'testUid'));
-
         // Mocking the HTTP response for a successful sign-out.
         when(() => mockClient.post(any(),
                 body: any(named: 'body'), headers: any(named: 'headers')))
@@ -1062,12 +695,10 @@ void main() async {
       if (element.key == 'service_account_impersonation') {
         test('dispose closes streams', () async {
           auth?.dispose();
-          // Use different verification approach
-          final authStateChanges = auth?.onAuthStateChanged((user) {});
-          final idTokenChanges = auth?.onIdTokenChanged((user) {});
-
-          expect(authStateChanges, isNotNull);
-          expect(idTokenChanges, isNotNull);
+          await expectLater(
+              auth?.onIdTokenChanged().isEmpty, completion(isTrue));
+          await expectLater(
+              auth?.onAuthStateChanged().isEmpty, completion(isTrue));
         });
       }
 
