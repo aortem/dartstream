@@ -1,15 +1,10 @@
+import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
-    as acs;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
-    as auth_state;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
-    as id_token;
 
 class SignInWithCredentialViewModel extends ChangeNotifier {
   List<String> scopes = <String>[
@@ -20,10 +15,13 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
   late final GoogleSignIn _googleSignIn = GoogleSignIn(
     scopes: scopes,
     clientId:
-        '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Add your web client ID here
+        '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com',
   );
 
   bool loading = false;
+  StreamSubscription<User?>? _idTokenSubscription;
+  StreamSubscription<User?>? _authStateSubscription;
+
   void setLoading(bool load) {
     loading = load;
     notifyListeners();
@@ -84,6 +82,28 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     );
   }
 
+  void setupAuthListeners(FirebaseAuth auth) {
+    _idTokenSubscription = auth.onIdTokenChanged().listen(
+      (User? user) {
+        // Handle ID token changes
+        notifyListeners();
+      },
+      onError: (error) {
+        print('ID Token change error: $error');
+      },
+    );
+
+    _authStateSubscription = auth.onAuthStateChanged().listen(
+      (User? user) {
+        // Handle auth state changes
+        notifyListeners();
+      },
+      onError: (error) {
+        print('Auth State change error: $error');
+      },
+    );
+  }
+
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       await FirebaseApp.firebaseAuth?.sendPasswordResetEmail(email);
@@ -103,43 +123,13 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     }
   }
 
-  auth_state.Unsubscribe onIdTokenChanged(
-    auth_state.NextOrObserver<User?> nextOrObserver, {
-    auth_state.ErrorFn? error,
-    auth_state.CompleteFn? completed,
-  }) {
-    return FirebaseApp.firebaseAuth?.onIdTokenChanged(
-          nextOrObserver,
-          error: error,
-          completed: completed,
-        ) ??
-        () {};
-  }
-
-  auth_state.Unsubscribe onAuthStateChanged(
-    auth_state.NextOrObserver<User?> nextOrObserver, {
-    auth_state.ErrorFn? error,
-    auth_state.CompleteFn? completed,
-  }) {
-    return FirebaseApp.firebaseAuth?.onAuthStateChanged(
-          nextOrObserver,
-          error: error,
-          completed: completed,
-        ) ??
-        () {};
-  }
-
   bool isSignInWithEmailLink(String emailLink) {
     return FirebaseApp.firebaseAuth?.isSignInWithEmailLink(emailLink) ?? false;
   }
 
   Future<void> sendSignInLinkToEmail(
-      String email, acs.ActionCodeSettings settings) async {
+      String email, ActionCodeSettings settings) async {
     try {
-      // await FirebaseApp.firebaseAuth?.sendSignInLinkToEmail(email, settings);
-      // BotToast.showText(text: "Sign-in link sent to email");
-
-      // Store the email locally
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('emailForSignIn', email);
     } catch (e) {
@@ -163,7 +153,6 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
               await FirebaseApp.firebaseAuth?.signInWithEmailLink(email, link);
           if (userCredential != null) {
             BotToast.showText(text: "Successfully signed in with email link");
-            // Navigate to your home screen or perform any other action
           }
         } else {
           BotToast.showText(text: "Error: No email found for sign-in");
@@ -173,5 +162,12 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
             text: "Error signing in with email link: ${e.toString()}");
       }
     }
+  }
+
+  @override
+  void dispose() {
+    _idTokenSubscription?.cancel();
+    _authStateSubscription?.cancel();
+    super.dispose();
   }
 }

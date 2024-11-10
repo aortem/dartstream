@@ -13,7 +13,8 @@ class OnIdTokenChangedService {
       StreamController<User?>.broadcast();
 
   OnIdTokenChangedService(this._auth) {
-    _auth.idTokenChangedController.stream.listen(
+    // Listen to the simplified stream from FirebaseAuth
+    _auth.onIdTokenChanged().listen(
       (User? user) {
         _notifyListeners(user);
       },

@@ -12,7 +12,8 @@ class OnAuthStateChangedService {
       StreamController<User?>.broadcast();
 
   OnAuthStateChangedService(this._auth) {
-    _auth.authStateChangedController.stream.listen(
+    // Listen to the simplified stream from FirebaseAuth
+    _auth.onAuthStateChanged().listen(
       (User? user) {
         _notifyListeners(user);
       },

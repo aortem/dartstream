@@ -1,21 +1,21 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
-// Define Unsubscribe type if it's not imported from the SDK
-typedef Unsubscribe = void Function();
-
-class OnIdTokenChangedScreen extends StatefulWidget {
+class IdTokenChangedScreen extends StatefulWidget {
   final FirebaseAuth auth;
 
-  OnIdTokenChangedScreen({Key? key, required this.auth}) : super(key: key);
+  const IdTokenChangedScreen({Key? key, required this.auth}) : super(key: key);
 
   @override
-  _OnIdTokenChangedScreenState createState() => _OnIdTokenChangedScreenState();
+  _IdTokenChangedScreenState createState() => _IdTokenChangedScreenState();
 }
 
-class _OnIdTokenChangedScreenState extends State<OnIdTokenChangedScreen> {
-  String _lastIdTokenChange = 'No changes yet';
-  late Unsubscribe _unsubscribe;
+class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
+  String _tokenStatus = 'Monitoring ID token...';
+  late StreamSubscription<User?> _subscription;
+  DateTime? _lastTokenUpdate;
 
   @override
   void initState() {
@@ -24,51 +24,46 @@ class _OnIdTokenChangedScreenState extends State<OnIdTokenChangedScreen> {
   }
 
   void _setupIdTokenListener() {
-    _unsubscribe = widget.auth.onIdTokenChanged(
+    _subscription = widget.auth.onIdTokenChanged().listen(
       (User? user) {
         setState(() {
-          if (user != null) {
-            _lastIdTokenChange = 'ID token changed for user: ${user.uid}';
-          } else {
-            _lastIdTokenChange = 'User signed out';
-          }
+          _lastTokenUpdate = DateTime.now();
+          _tokenStatus = user != null
+              ? 'Token updated for user: ${user.email ?? user.uid}'
+              : 'No active token';
         });
       },
-      error: (FirebaseAuthException error, StackTrace? stackTrace) {
+      onError: (error) {
         setState(() {
-          _lastIdTokenChange = 'Error: ${error.message}';
+          _tokenStatus = 'Error: $error';
         });
       },
     );
   }
 
-  Future<void> _refreshIdToken() async {
-    setState(() {
-      _lastIdTokenChange = 'Refreshing ID token...';
-    });
-
-    try {
-      final user = widget.auth.currentUser;
-      if (user != null) {
-        final token = await user.getIdToken(true);
-        setState(() {
-          _lastIdTokenChange = 'Token refreshed: ${token.substring(0, 10)}...';
-        });
-      } else {
-        setState(() {
-          _lastIdTokenChange = 'No user signed in to refresh token';
-        });
+  Future<void> _refreshToken() async {
+    final user = widget.auth.currentUser;
+    if (user != null) {
+      try {
+        await user.getIdToken(true);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Token refresh requested')),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Token refresh failed: $e')),
+        );
       }
-    } catch (e) {
-      setState(() {
-        _lastIdTokenChange = 'Error refreshing token: $e';
-      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No user signed in')),
+      );
     }
   }
 
   @override
   void dispose() {
-    _unsubscribe();
+    _subscription.cancel();
     super.dispose();
   }
 
@@ -76,22 +71,27 @@ class _OnIdTokenChangedScreenState extends State<OnIdTokenChangedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('onIdTokenChanged Test'),
+        title: Text('ID Token Monitor'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-                'Current User ID: ${widget.auth.currentUser?.uid ?? 'Not signed in'}'),
-            SizedBox(height: 20),
-            Text('Last ID Token Change:'),
-            Text(_lastIdTokenChange,
-                style: TextStyle(fontWeight: FontWeight.bold)),
+              'Token Status:',
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+            SizedBox(height: 8),
+            Text(_tokenStatus),
+            if (_lastTokenUpdate != null) ...[
+              SizedBox(height: 8),
+              Text('Last Updated: ${_lastTokenUpdate!.toString()}'),
+            ],
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _refreshIdToken,
-              child: Text('Refresh ID Token'),
+              onPressed: _refreshToken,
+              child: Text('Refresh Token'),
             ),
           ],
         ),

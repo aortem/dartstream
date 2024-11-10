@@ -1,4 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:async';
 import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -68,7 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
   void _setupAuthListeners() {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
 
-    _idTokenUnsubscribe = auth.onIdTokenChanged(
+    // Subscribe to ID token changes
+    StreamSubscription<User?>? idTokenSubscription;
+    idTokenSubscription = auth.onIdTokenChanged().listen(
       (User? user) async {
         final idToken = user != null ? await user.getIdToken() : null;
         setState(() {
@@ -77,33 +80,33 @@ class _HomeScreenState extends State<HomeScreen> {
         });
         print('ID Token changed: $idToken');
       },
-      error: (FirebaseAuthException error, StackTrace? stackTrace) {
-        print('ID Token change error: ${error.message}');
-        if (stackTrace != null) {
-          print('Stack trace: $stackTrace');
-        }
-      },
-      completed: () {
-        print('ID Token change stream completed');
+      onError: (error) {
+        print('ID Token change error: $error');
       },
     );
-    _authStateUnsubscribe = auth.onAuthStateChanged(
+
+    // Subscribe to auth state changes
+    StreamSubscription<User?>? authStateSubscription;
+    authStateSubscription = auth.onAuthStateChanged().listen(
       (User? user) {
         setState(() {
           _currentUser = user;
         });
         print('Auth State changed: ${user?.uid}');
       },
-      error: (Object error, StackTrace? stackTrace) {
+      onError: (error) {
         print('Auth State change error: $error');
-        if (stackTrace != null) {
-          print('Stack trace: $stackTrace');
-        }
-      },
-      completed: () {
-        print('Auth State change stream completed');
       },
     );
+
+    // Store subscriptions for cleanup
+    _authStateUnsubscribe = () {
+      authStateSubscription?.cancel();
+    };
+
+    _idTokenUnsubscribe = () {
+      idTokenSubscription?.cancel();
+    };
   }
 
   @override
@@ -507,7 +510,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => OnIdTokenChangedScreen(auth: auth),
+                      builder: (context) => IdTokenChangedScreen(auth: auth),
                     ),
                   ),
                   title: "On id token changed",

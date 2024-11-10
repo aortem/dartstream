@@ -506,37 +506,13 @@ class FirebaseAuth {
   }
 
   /// Returns a stream of User objects when the ID token changes.
-  // Stream<User?> onIdTokenChanged() {
-  //   return idTokenChangedController.stream;
-  // }
-
-  auth_state.Unsubscribe onAuthStateChanged(
-    auth_state.NextOrObserver<User?> nextOrObserver, {
-    auth_state.ErrorFn? error,
-    auth_state.CompleteFn? completed,
-  }) {
-    return _onAuthStateChangedService.onAuthStateChanged(
-      nextOrObserver,
-      error: error,
-      completed: completed,
-    );
+  Stream<User?> onIdTokenChanged() {
+    return idTokenChangedController.stream;
   }
 
   /// Returns a stream of User objects when the auth state changes.
-  // Stream<User?> onAuthStateChanged() {
-  //   return authStateChangedController.stream;
-  // }
-
-  id_token.Unsubscribe onIdTokenChanged(
-    id_token.NextOrObserver<User?> nextOrObserver, {
-    id_token.ErrorFn? error,
-    id_token.CompleteFn? completed,
-  }) {
-    return _onIdTokenChangedService.onIdTokenChanged(
-      nextOrObserver,
-      error: error,
-      completed: completed,
-    );
+  Stream<User?> onAuthStateChanged() {
+    return authStateChangedController.stream;
   }
 
   /// Checks if the provided URL is a valid sign-in link for email authentication.

@@ -1,12 +1,12 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
-    as auth_state;
 
 class AuthStateTestScreen extends StatefulWidget {
   final FirebaseAuth auth;
 
-  AuthStateTestScreen({Key? key, required this.auth}) : super(key: key);
+  const AuthStateTestScreen({Key? key, required this.auth}) : super(key: key);
 
   @override
   _AuthStateTestScreenState createState() => _AuthStateTestScreenState();
@@ -14,46 +14,38 @@ class AuthStateTestScreen extends StatefulWidget {
 
 class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   User? _currentUser;
-  late auth_state.Unsubscribe _unsubscribe;
+  String _authStateStatus = 'Monitoring auth state...';
+  late StreamSubscription<User?> _subscription;
 
   @override
   void initState() {
     super.initState();
     _currentUser = widget.auth.currentUser;
-    _unsubscribe = widget.auth.onAuthStateChanged(
-      (User? user) {
-        print("Auth state changed. User: ${user?.email ?? 'null'}");
-        setState(() {
-          _currentUser = user;
-        });
-      },
-      error: (Object error, StackTrace? stackTrace) {
-        print('Auth state change error: $error');
-        if (stackTrace != null) {
-          print('Stack trace: $stackTrace');
-        }
-      },
-      completed: () {
-        print('Auth state change stream completed');
-      },
-    );
+    _setupAuthStateListener();
   }
 
-  @override
-  void dispose() {
-    _unsubscribe();
-    super.dispose();
+  void _setupAuthStateListener() {
+    _subscription = widget.auth.onAuthStateChanged().listen(
+      (User? user) {
+        setState(() {
+          _currentUser = user;
+          _authStateStatus = user != null
+              ? 'User signed in: ${user.email ?? user.uid}'
+              : 'No user signed in';
+        });
+      },
+      onError: (error) {
+        setState(() {
+          _authStateStatus = 'Error: $error';
+        });
+      },
+    );
   }
 
   Future<void> _signOut() async {
     try {
       await widget.auth.signOut();
-      print('User signed out successfully');
-      setState(() {
-        _currentUser = null;
-      });
     } catch (e) {
-      print('Sign out failed: $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Sign out failed: $e')),
       );
@@ -61,27 +53,44 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   }
 
   @override
+  void dispose() {
+    _subscription.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Auth State Test'),
+        title: Text('Auth State Monitor'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              _currentUser == null
-                  ? 'No user is currently signed in.'
-                  : 'This user: ${_currentUser!.email} is signed in',
-              style: TextStyle(fontSize: 18),
+              'Current Status:',
+              style: Theme.of(context).textTheme.titleLarge,
             ),
+            SizedBox(height: 8),
+            Text(_authStateStatus),
             SizedBox(height: 20),
-            if (_currentUser != null)
+            if (_currentUser != null) ...[
+              Text(
+                'User Details:',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              SizedBox(height: 8),
+              Text('UID: ${_currentUser!.uid}'),
+              if (_currentUser!.email != null)
+                Text('Email: ${_currentUser!.email}'),
+              SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signOut,
                 child: Text('Sign Out'),
               ),
+            ],
           ],
         ),
       ),
