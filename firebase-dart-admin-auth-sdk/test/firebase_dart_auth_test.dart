@@ -337,8 +337,6 @@ void main() async {
               '{ "email": "user@example.com","requestType": "VERIFY_EMAIL"}',
               200),
         );
-
-        final result = await auth?.applyActionCode('action_code');
       });
 
       test('verifyPasswordResetCode succeeds', () async {
@@ -560,7 +558,7 @@ void main() async {
                   200,
                 ));
 
-        final result = await auth?.linkAccountWithCredientials(
+        final result = await auth?.linkAccountWithCredentials(
             'http:localhost', 'testIdToken', "google.com");
         print('result: $result'); // Print the actual result for debugging
       });

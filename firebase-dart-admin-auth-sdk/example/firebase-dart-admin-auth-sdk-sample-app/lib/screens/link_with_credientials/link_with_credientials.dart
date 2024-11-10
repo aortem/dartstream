@@ -11,10 +11,8 @@ import '../home_screen/home_screen.dart';
 class LinkWithCredentials extends StatefulWidget {
   const LinkWithCredentials({super.key});
 
-
   @override
   State<LinkWithCredentials> createState() => _LinkWithCredentialsState();
-
 }
 
 class _LinkWithCredentialsState extends State<LinkWithCredentials> {
@@ -25,19 +23,18 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
       'openid',
     ],
   );
-  static const clientId = 'YOUR_MICROSOFT_CLIENT_ID';
-  // The redirect URI registered in Azure
-  static const redirectUri = 'http://localhost';
-  static const microsoftAuthUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
+  // static const clientId = 'YOUR_MICROSOFT_CLIENT_ID';
+  // // The redirect URI registered in Azure
+  // static const redirectUri = 'http://localhost';
+  // static const microsoftAuthUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/authorize';
 
   // The endpoint for exchanging authorization code for access token
-  static const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
+  // static const tokenUrl = 'https://login.microsoftonline.com/common/oauth2/v2.0/token';
 
   // Scope for Microsoft OAuth
-  static const scope = 'openid profile User.Read';
+  //static const scope = 'openid profile User.Read';
   Future<User?> signInWithGoogle() async {
     try {
-
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
       if (googleUser == null) {
         log('User cancelled the sign-in');
@@ -45,68 +42,68 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
       }
 
       // Retrieve the authentication tokens (idToken and accessToken)
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       log('Access Token: ${googleAuth.accessToken}');
       log('ID Token: ${googleAuth.idToken}');
       try {
-        var user =
-        await FirebaseApp.firebaseAuth?.linkAccountWithCredentials('http://localhost',googleAuth.accessToken??"",'google.com');
-
+        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredentials(
+            'http://localhost', googleAuth.accessToken ?? "", 'google.com');
 
         BotToast.showText(text: 'Account linked ');
         log("message$user");
-        if (user != null) {      
-        }
+        if (user != null) {}
       } catch (e) {
         BotToast.showText(text: e.toString());
       }
       //
-    }
-    catch (error) {
+    } catch (error) {
       log('Error during Google sign-in: $error');
     }
     return null;
   }
+
   Future<void> loginWithFacebook() async {
-    final LoginResult result = await FacebookAuth.instance.login(); // Trigger the sign-in flow
+    final LoginResult result =
+        await FacebookAuth.instance.login(); // Trigger the sign-in flow
 
     if (result.status == LoginStatus.success) {
       final AccessToken accessToken = result.accessToken!;
-      print('Facebook Access Token: ${accessToken.tokenString}');
+
       log('Facebook Access Token: ${accessToken.tokenString}');
       try {
-        var user =
-        await FirebaseApp.firebaseAuth?.linkAccountWithCredentials('http://localhost',accessToken.tokenString??"",'facebook.com');
-
+        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredentials(
+            'http://localhost', accessToken.tokenString ?? "", 'facebook.com');
 
         BotToast.showText(text: '${user?.user.email} just linked in');
-        log("message$user");
-        if (user != null) {      Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const HomeScreen(),
-            ));
+
+        if (user != null) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomeScreen(),
+              ));
         }
       } catch (e) {
         BotToast.showText(text: e.toString());
       }
       // Use this token to authenticate with your backend or Firebase
-
     } else if (result.status == LoginStatus.cancelled) {
-      print('Login cancelled');
+      log('Login cancelled');
     } else {
-      print('Facebook login failed: ${result.message}');
+      log('Facebook login failed: ${result.message}');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Select OAuth Provider')),
       body: SizedBox(
-        width: MediaQuery.of(context).size.width*1,height:100,
+        width: MediaQuery.of(context).size.width * 1,
+        height: 100,
         child: Center(
-
           child: ElevatedButton(
             onPressed: () {
               showDialog(
@@ -124,7 +121,6 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
                             signInWithGoogle();
                           },
                         ),
-
                         ListTile(
                           title: const Text('Facebook'),
                           onTap: () {
@@ -132,18 +128,13 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
                             loginWithFacebook();
                           },
                         ),
-
                       ],
                     ),
                   );
                 },
               );
             },
-            child: 
-                Text('Link Account'),
-
-             
-
+            child: const Text('Link Account'),
           ),
         ),
       ),
