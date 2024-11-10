@@ -640,6 +640,49 @@ void main() async {
         await auth?.revokeToken('testIdToken');
       });
 
+// Update redirect result test
+      test('${element.key} getRedirectResult complete flow', () async {
+        final mockUser = User(
+          uid: 'test_uid',
+          email: 'test@example.com',
+          idToken: 'test_id_token',
+          displayName: 'Test User',
+        );
+
+        FirebaseApp.instance.setCurrentUser(mockUser);
+
+        final result = await auth?.getRedirectResult();
+
+        expect(result, isNotNull);
+        expect(result?['user']['uid'], equals('test_uid'));
+        expect(result?['credential']['providerId'], equals('google.com'));
+      });
+
+// Update check action code test
+      test('${element.key} checkActionCode verification flow', () async {
+        when(() => mockClient.post(
+              any(),
+              body: any(named: 'body'),
+              headers: any(named: 'headers'),
+            )).thenAnswer((_) async => http.Response(
+              json.encode({
+                'requestType': 'PASSWORD_RESET',
+                'email': 'test@example.com',
+              }),
+              200,
+            ));
+
+        final info = await auth?.checkActionCode('valid_code');
+        expect(info?.operation, equals('PASSWORD_RESET'));
+        expect(info?.data['email'], equals('test@example.com'));
+
+        verify(() => mockClient.post(
+              any(),
+              headers: any(named: 'headers'),
+              body: contains('valid_code'),
+            )).called(1);
+      });
+
       test('linkWithCredential  succeeds', () async {
         // Mocking the HTTP response for a successful user creation with email and password.
         when(() => mockClient.post(any(),
