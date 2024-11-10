@@ -2,8 +2,8 @@ import 'dart:developer';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 import '../firebase_app.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
 class EmailPasswordAuth {
   final FirebaseAuth auth;
@@ -17,32 +17,30 @@ class EmailPasswordAuth {
         'password': password,
         'returnSecureToken': true,
       });
+      print(response.body.toString());
 
       if (response.statusCode == 200) {
-        final userData = response.body;
-        final user = User.fromJson(userData);
-        final additionalUserInfo = AdditionalUserInfo(
-          isNewUser: false,
-          providerId: 'password',
-        );
-
-        final userCredential = UserCredential(
-          user: user,
-          additionalUserInfo: additionalUserInfo,
-          operationType: 'signIn',
-        );
-
+        final userCredential = UserCredential.fromJson(response.body);
         auth.updateCurrentUser(userCredential.user);
+        log("current user 123 ${userCredential.user.idToken}");
         FirebaseApp.instance.setCurrentUser(userCredential.user);
 
         return userCredential;
       } else {
-        log('Error signing in: ${response.body}');
-        return null;
+        final error = response.body['error'];
+        throw FirebaseAuthException(
+          code: error['message'] ?? 'unknown-error',
+          message: error['message'] ?? 'An unknown error occurred',
+        );
       }
     } catch (e) {
-      log('Exception during sign in: $e');
-      return null;
+      if (e is FirebaseAuthException) {
+        rethrow;
+      }
+      throw FirebaseAuthException(
+        code: 'auth-error',
+        message: e.toString(),
+      );
     }
   }
 

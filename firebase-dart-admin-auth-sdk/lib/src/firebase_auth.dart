@@ -51,7 +51,6 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart'
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
 
 import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
@@ -62,21 +61,12 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/confirm_password_reset.dar
 import 'package:firebase_dart_admin_auth_sdk/src/auth/check_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor.dart'
     as multi_factor;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart'
-    as phone_auth;
-import 'package:firebase_dart_admin_auth_sdk/src/confirmation_result.dart'
-    as confirmation_result;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart'
-    as auth_state;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
-    as id_token;
 import 'auth/auth_link_with_phone_number.dart';
 
 import 'auth/before_auth_state_change.dart';
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/get_language_code.dart';
-import 'auth/auth_link_with_phone_number.dart';
 
 import 'firebase_user/delete_user.dart';
 
@@ -344,20 +334,6 @@ class FirebaseAuth {
       );
     }
   }
-
-  // Future<ConfirmationResult> signInWithPhoneNumber(
-  //   String phoneNumber,
-  //   ApplicationVerifier appVerifier,
-  // ) async {
-  //   try {
-  //     return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
-  //   } catch (e) {
-  //     throw FirebaseAuthException(
-  //       code: 'phone-auth-error',
-  //       message: 'Failed to sign in with phone number: ${e.toString()}',
-  //     );
-  //   }
-  // }
 
   Future<UserCredential> signInWithEmailLink(String email, String emailLink) {
     return this.emailLink.signInWithEmailLink(email, emailLink);

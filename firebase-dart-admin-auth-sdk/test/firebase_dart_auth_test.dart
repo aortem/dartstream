@@ -210,16 +210,22 @@ void main() async {
       );
 
       test('signInWithEmailAndPassword fails', () async {
-        // Mocking the HTTP response for a failed sign-in with email and password.
         when(() => mockClient.post(any(),
                 body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-                  '{"error":{"code":400,"message":"INVALID_PASSWORD","errors":[{"message":"INVALID_PASSWORD","domain":"global","reason":"invalid"}]}}',
+                  json.encode({
+                    "error": {
+                      "message": "INVALID_PASSWORD",
+                      "errors": [
+                        {"message": "INVALID_PASSWORD"}
+                      ]
+                    }
+                  }),
                   400,
                 ));
 
         expect(
-          () => auth?.signInWithEmailAndPassword(
+          () async => await auth?.signInWithEmailAndPassword(
               'test@example.com', 'wrongpassword'),
           throwsA(isA<FirebaseAuthException>()),
         );
@@ -293,20 +299,30 @@ void main() async {
       });
 
       test('signInWithEmailLink succeeds', () async {
-        // Mocking the HTTP response for a successful sign-in with email link.
+        // Set up a valid email link format
+        final validEmailLink =
+            'https://example.com?mode=signIn&oobCode=abc123&apiKey=test';
+
         when(() => mockClient.post(any(),
                 body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response(
-                  '{"kind":"identitytoolkit#EmailLinkSigninResponse","localId":"emailLinkUid","email":"emaillink@example.com","idToken":"emailLinkIdToken","refreshToken":"emailLinkRefreshToken","expiresIn":"3600"}',
+                  json.encode({
+                    "kind": "identitytoolkit#EmailLinkSigninResponse",
+                    "email": "test@example.com",
+                    "idToken": "validIdToken",
+                    "refreshToken": "validRefreshToken",
+                    "expiresIn": "3600",
+                    "localId": "testUid"
+                  }),
                   200,
                 ));
 
         final result = await auth?.signInWithEmailLink(
-          'emaillink@example.com',
-          'https://example.com?oobCode=abc123',
+          'test@example.com',
+          validEmailLink,
         );
-        expect(result?.user.uid, equals('emailLinkUid'));
-        expect(result?.user.email, equals('emaillink@example.com'));
+        expect(result?.user.uid, equals('testUid'));
+        expect(result?.user.email, equals('test@example.com'));
       });
 
       test('updateCurrentUser succeeds', () async {
@@ -682,13 +698,22 @@ void main() async {
       });
 
       test('signOut succeeds', () async {
-        // Mocking the HTTP response for a successful sign-out.
+        // Set up a mock current user first
+        final mockUser = User(
+          uid: 'testUid',
+          email: 'test@example.com',
+          idToken: 'testToken',
+        );
+        FirebaseApp.instance.setCurrentUser(mockUser);
+        auth?.currentUser = mockUser;
+
         when(() => mockClient.post(any(),
                 body: any(named: 'body'), headers: any(named: 'headers')))
             .thenAnswer((_) async => http.Response('{}', 200));
 
         await auth?.signOut();
         expect(auth?.currentUser, isNull);
+        expect(FirebaseApp.instance.getCurrentUser(), isNull);
       });
 
       // Test for dispose on the last GCP method
