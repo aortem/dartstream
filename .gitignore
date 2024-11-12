@@ -15,7 +15,7 @@ firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/fir
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/assets/service_account.json
 
 #Ignore Gradle Proeprties
-firebase-dart-admin-auth-sdk\firebase-dart-admin-auth-sdk\example\firebase-dart-admin-auth-sdk-sample-app\android\gradle.properties
+#firebase-dart-admin-auth-sdk\firebase-dart-admin-auth-sdk\example\firebase-dart-admin-auth-sdk-sample-app\android\gradle.properties
 
 # Optional: Ignore pubspec.lock in the library root (if this is a library, not an application)
 # Uncomment the line below if firebase-dart-admin-auth-sdk is a package:
