@@ -1,4 +1,4 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 
 class ActionTile extends StatelessWidget {
