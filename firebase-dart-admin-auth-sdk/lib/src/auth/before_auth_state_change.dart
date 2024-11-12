@@ -72,6 +72,8 @@ class FirebaseBeforeAuthStateChangeService {
   /// Parameters:
   /// - [authToken]: The current authentication token.
   Future<void> _performBeforeAuthAction(String authToken) async {
+    // Custom logic before changing the auth state
+    // For aortem, invalidate the session, log out the user, etc.
     print("Performing action before auth state change...");
     // Simulating a delay for the custom action (this can be replaced with actual business logic)
     await Future.delayed(Duration(seconds: 2));
