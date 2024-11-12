@@ -1,7 +1,7 @@
 import 'dart:math';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/screens/home_screen/home_screen.dart';
+import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'sign_in_with_custom_token_view_model.dart';

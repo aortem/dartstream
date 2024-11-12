@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/home_screen/home_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
+import 'package:firebase/screens/home_screen/home_screen.dart';
+import 'package:firebase/shared/shared.dart';
 import 'sign_in_with_credential_view_model.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
     as acs;

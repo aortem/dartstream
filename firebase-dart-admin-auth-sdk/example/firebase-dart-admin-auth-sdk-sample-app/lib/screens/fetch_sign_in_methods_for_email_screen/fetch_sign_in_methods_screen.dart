@@ -1,8 +1,8 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_view_model.dart';
+import 'package:firebase/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/utils/extensions.dart';
 
 class FetchSignInMethodsScreen extends StatefulWidget {
   const FetchSignInMethodsScreen({Key? key}) : super(key: key);

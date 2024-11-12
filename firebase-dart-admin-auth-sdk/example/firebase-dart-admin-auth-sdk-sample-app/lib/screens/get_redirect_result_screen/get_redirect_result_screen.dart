@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'get_redirect_result_view_model.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/utils/extensions.dart';
 
 class GetRedirectResultScreen extends StatefulWidget {
   const GetRedirectResultScreen({super.key});

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
+import 'package:firebase/shared/shared.dart';
 import 'package:provider/provider.dart';
 
 class CreateUserScreen extends StatefulWidget {
