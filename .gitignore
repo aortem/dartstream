@@ -12,7 +12,7 @@ firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/mac
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/firebase-dart-admin-auth-sdk-release-key.jks
 
 #Ignore Service Account JSON Key
-#firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/assets/service_account.json
+firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/assets/service_account.json
 
 #Ignore Gradle Properties
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle.properties
