@@ -1,7 +1,7 @@
 //This is a default no-operation implementation to use if no provider is selected.
 
 // extensions/feature_flags/noop_feature_flag_manager.dart
-import 'feature_flag_manager.dart';
+import 'ds_feature_flag_manager.dart';
 
 class NoOpFeatureFlagManager implements FeatureFlagManager {
   @override
