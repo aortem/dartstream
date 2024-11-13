@@ -15,10 +15,10 @@ firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/fir
 firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/assets/service_account.json
 
 #Ignore Gradle Properties
-firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle.properties
+#firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle.properties
 
 #Ignore Gradle Wrapper Properties
-firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle/wrapper/gradle-wrapper.properties
+#firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle/wrapper/gradle-wrapper.properties
 
 
 # Optional: Ignore pubspec.lock in the library root (if this is a library, not an application)
