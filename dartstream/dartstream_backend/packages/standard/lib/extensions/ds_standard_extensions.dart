@@ -1,4 +1,4 @@
-//Additional extensions and shared logic for extensions.
+// Additional extensions and shared logic for extensions.
 // ds_standard_extensions.dart
 
 import 'package:ds_standard_features/extensions/ds_feature_extension.dart';
@@ -17,8 +17,7 @@ class DartstreamExtensionSystem {
   // Storage for different extension levels
   final Map<String, DartstreamFeatureExtension> _coreExtensions = {};
   final Map<String, DartstreamFeatureExtension> _customFeatures = {};
-  final Map<String, Map<String, DartstreamFeatureExtension>>
-      _frameworkExtensions = {};
+  final Map<String, Map<String, DartstreamFeatureExtension>> _frameworkExtensions = {};
 
   DartstreamExtensionSystem({
     required DartstreamDIContainer container,
@@ -28,11 +27,11 @@ class DartstreamExtensionSystem {
         _services = services,
         _logger = logger;
 
-  /// Level 1: Register a core extension
+  /// Level 1: Register a core extension that affects core functionality
   Future<void> registerCoreExtension(
-    DartstreamFeatureExtension extension, {
-    bool initialize = true,
-  }) async {
+      DartstreamFeatureExtension extension, {
+        bool initialize = true,
+      }) async {
     try {
       _logger.log('Registering core extension: ${extension.name}');
 
@@ -44,14 +43,7 @@ class DartstreamExtensionSystem {
       _coreExtensions[extension.name] = extension;
 
       // Configure and initialize
-      extension.configure({'level': 'core'});
-      extension.registerServices(_services);
-      extension.injectDependencies(_container);
-
-      if (initialize) {
-        await extension.initialize();
-        extension.onStart();
-      }
+      await _configureAndInitializeExtension(extension, 'core');
 
       _logger.log('Successfully registered core extension: ${extension.name}');
     } catch (e) {
@@ -61,12 +53,12 @@ class DartstreamExtensionSystem {
     }
   }
 
-  /// Level 2: Register a custom feature
+  /// Level 2: Register a custom feature that extends a core extension
   Future<void> registerCustomFeature(
-    DartstreamFeatureExtension extension,
-    String extendedFeature, {
-    bool initialize = true,
-  }) async {
+      DartstreamFeatureExtension extension,
+      String extendedFeature, {
+        bool initialize = true,
+      }) async {
     try {
       _logger.log('Registering custom feature: ${extension.name}');
 
@@ -86,17 +78,7 @@ class DartstreamExtensionSystem {
       _customFeatures[extension.name] = extension;
 
       // Configure and initialize
-      extension.configure({
-        'level': 'custom',
-        'extends': extendedFeature,
-      });
-      extension.registerServices(_services);
-      extension.injectDependencies(_container);
-
-      if (initialize) {
-        await extension.initialize();
-        extension.onStart();
-      }
+      await _configureAndInitializeExtension(extension, 'custom', extendedFeature);
 
       _logger.log('Successfully registered custom feature: ${extension.name}');
     } catch (e) {
@@ -106,16 +88,15 @@ class DartstreamExtensionSystem {
     }
   }
 
-  /// Level 3: Register a framework extension
+  /// Level 3: Register a framework extension that integrates with third-party packages
   Future<void> registerFrameworkExtension(
-    DartstreamFeatureExtension extension,
-    String framework,
-    String coreExtension, {
-    bool initialize = true,
-  }) async {
+      DartstreamFeatureExtension extension,
+      String framework,
+      String coreExtension, {
+        bool initialize = true,
+      }) async {
     try {
-      _logger.log(
-          'Registering framework extension: ${extension.name} for $framework');
+      _logger.log('Registering framework extension: ${extension.name} for $framework');
 
       // Validate extension
       _validateExtension(extension);
@@ -135,25 +116,34 @@ class DartstreamExtensionSystem {
       _frameworkExtensions[framework]![extension.name] = extension;
 
       // Configure and initialize
-      extension.configure({
-        'level': 'framework',
-        'framework': framework,
-        'extends': coreExtension,
-      });
-      extension.registerServices(_services);
-      extension.injectDependencies(_container);
+      await _configureAndInitializeExtension(extension, 'framework', coreExtension, framework);
 
-      if (initialize) {
-        await extension.initialize();
-        extension.onStart();
-      }
-
-      _logger.log(
-          'Successfully registered framework extension: ${extension.name}');
+      _logger.log('Successfully registered framework extension: ${extension.name}');
     } catch (e) {
       throw DartstreamExtensionException(
         'Failed to register framework extension ${extension.name}: $e',
       );
+    }
+  }
+
+  /// Shared logic to configure and initialize extensions based on their type and level
+  Future<void> _configureAndInitializeExtension(
+      DartstreamFeatureExtension extension,
+      String level, [
+        String? extendedFeature,
+        String? framework,
+      ]) async {
+    extension.configure({
+      'level': level,
+      if (extendedFeature != null) 'extends': extendedFeature,
+      if (framework != null) 'framework': framework,
+    });
+    extension.registerServices(_services);
+    extension.injectDependencies(_container);
+
+    if (extension.initialize) {
+      await extension.initialize();
+      extension.onStart();
     }
   }
 
@@ -168,14 +158,12 @@ class DartstreamExtensionSystem {
     }
 
     if (extension.compatibleVersion.isEmpty) {
-      throw DartstreamExtensionException(
-          'Compatible version must be specified');
+      throw DartstreamExtensionException('Compatible version must be specified');
     }
   }
 
   /// Validate extension dependencies
-  Future<void> _validateDependencies(
-      DartstreamFeatureExtension extension) async {
+  Future<void> _validateDependencies(DartstreamFeatureExtension extension) async {
     for (final dependency in extension.requiredExtensions) {
       if (!_coreExtensions.containsKey(dependency) &&
           !_customFeatures.containsKey(dependency)) {
@@ -186,34 +174,36 @@ class DartstreamExtensionSystem {
     }
   }
 
-  /// Get a registered core extension
+  /// Retrieve registered core extension
   DartstreamFeatureExtension? getCoreExtension(String name) =>
       _coreExtensions[name];
 
-  /// Get a registered custom feature
+  /// Retrieve registered custom feature
   DartstreamFeatureExtension? getCustomFeature(String name) =>
       _customFeatures[name];
 
-  /// Get a registered framework extension
+  /// Retrieve registered framework extension
   DartstreamFeatureExtension? getFrameworkExtension(
-          String framework, String name) =>
+      String framework, String name) =>
       _frameworkExtensions[framework]?[name];
 
   /// Initialize all registered extensions in proper order
   Future<void> initializeAll() async {
-    // Initialize core extensions first
-    for (final extension in _coreExtensions.values) {
+    await _initializeExtensions(_coreExtensions.values);
+    await _initializeExtensions(_customFeatures.values);
+    await _initializeFrameworkExtensions();
+  }
+
+  /// Initialize extensions for a given level
+  Future<void> _initializeExtensions(Iterable<DartstreamFeatureExtension> extensions) async {
+    for (final extension in extensions) {
       await extension.initialize();
       extension.onStart();
     }
+  }
 
-    // Then initialize custom features
-    for (final feature in _customFeatures.values) {
-      await feature.initialize();
-      feature.onStart();
-    }
-
-    // Finally initialize framework extensions
+  /// Initialize framework extensions in order
+  Future<void> _initializeFrameworkExtensions() async {
     for (final frameworkMap in _frameworkExtensions.values) {
       for (final extension in frameworkMap.values) {
         await extension.initialize();
@@ -222,22 +212,16 @@ class DartstreamExtensionSystem {
     }
   }
 
-  /// Cleanup and dispose of all extensions in reverse order
+  /// Cleanup and dispose of all extensions
   Future<void> disposeAll() async {
-    // Dispose framework extensions first
-    for (final frameworkMap in _frameworkExtensions.values) {
-      for (final extension in frameworkMap.values) {
-        await extension.dispose();
-      }
-    }
+    await _disposeExtensions(_frameworkExtensions.values);
+    await _disposeExtensions(_customFeatures.values);
+    await _disposeExtensions(_coreExtensions.values);
+  }
 
-    // Then dispose custom features
-    for (final feature in _customFeatures.values) {
-      await feature.dispose();
-    }
-
-    // Finally dispose core extensions
-    for (final extension in _coreExtensions.values) {
+  /// Dispose extensions for a given level
+  Future<void> _disposeExtensions(Iterable<DartstreamFeatureExtension> extensions) async {
+    for (final extension in extensions) {
       await extension.dispose();
     }
   }
