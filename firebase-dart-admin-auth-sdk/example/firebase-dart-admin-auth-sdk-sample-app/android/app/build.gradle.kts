@@ -22,10 +22,10 @@ val flutterVersionCode = localProperties.getProperty("flutter.versionCode")?.toI
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 
 // Retrieve compileSdk, ndkVersion, minSdk, and targetSdk with default values in case they are not defined
-val compileSdkVersion = (project.findProperty("flutter.compileSdkVersion") as? String)?.toIntOrNull() ?: 33 // Default SDK version
+val compileSdkVersion = (project.findProperty("flutter.compileSdkVersion") as? String)?.toIntOrNull() ?: 35 // Default SDK version
 val ndkVersion = project.findProperty("flutter.ndkVersion") as? String ?: "21.1.6352462" // Default NDK version
-val minSdkVersion = (project.findProperty("flutter.minSdkVersion") as? String)?.toIntOrNull() ?: 25
-val targetSdkVersion = (project.findProperty("flutter.targetSdkVersion") as? String)?.toIntOrNull() ?: 33
+val minSdkVersion = (project.findProperty("flutter.minSdkVersion") as? String)?.toIntOrNull() ?: 33
+val targetSdkVersion = (project.findProperty("flutter.targetSdkVersion") as? String)?.toIntOrNull() ?: 35
 
 android {
     namespace = "com.aortem.firebase.dart.admin.auth.sample.app"

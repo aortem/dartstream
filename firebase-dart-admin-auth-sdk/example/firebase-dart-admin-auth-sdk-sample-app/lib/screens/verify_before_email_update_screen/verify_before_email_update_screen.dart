@@ -1,7 +1,7 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/apply_action_code_screen/apply_action_code_screen.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/verify_before_email_update_screen/verify_before_email_update_view_model.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/screens/apply_action_code_screen/apply_action_code_screen.dart';
+import 'package:firebase/screens/verify_before_email_update_screen/verify_before_email_update_view_model.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
