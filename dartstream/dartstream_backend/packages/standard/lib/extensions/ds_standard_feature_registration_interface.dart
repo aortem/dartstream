@@ -1,4 +1,4 @@
-import 'package:ds_standard_features/extensions/ds_lifecycle_hooks.dart';
+import 'package:ds_standard_features/extensions/lifecycle/ds_lifecycle_hooks.dart';
 import 'package:ds_standard_features/utilities/ds_di_container.dart';
 import 'package:ds_standard_features/utilities/ds_services.dart';
 
