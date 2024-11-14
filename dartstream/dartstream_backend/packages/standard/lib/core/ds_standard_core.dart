@@ -1,7 +1,7 @@
 import 'package:ds_standard_features/ds_standard_features.dart';
 
 /// Core project configuration class that stores user choices.
-class ds_ProjectConfig {
+class DartstreamProjectConfig {
   String projectName;
   String projectType;
   String authProvider;
@@ -10,7 +10,7 @@ class ds_ProjectConfig {
   String database;
   List<String> tools;
 
-  ds_ProjectConfig({
+  DartstreamProjectConfig({
     required this.projectName,
     this.projectType = 'New Project',
     this.authProvider = '',
@@ -37,12 +37,12 @@ class ds_ProjectConfig {
 }
 
 /// Handles the core project setup based on CLI inputs.
-class ds_DartstreamCore {
-  final ds_ProjectConfig config;
+class DartstreamCore {
+  final DartstreamProjectConfig config;
   final ds_DartstreamDIContainer diContainer;
   final ds_DartstreamServices services;
 
-  ds_DartstreamCore({
+  DartstreamCore({
     required this.config,
     required this.diContainer,
     required this.services,
@@ -133,7 +133,7 @@ class ds_ToolCustomizer {
 
 /// Displays and confirms the setup choices.
 class ds_SetupPreview {
-  void display(ds_ProjectConfig config) {
+  void display(DartstreamProjectConfig config) {
     print('Review your selections:');
     print('- Project Name: ${config.projectName}');
     print('- Authentication SDK: ${config.authProvider}');
