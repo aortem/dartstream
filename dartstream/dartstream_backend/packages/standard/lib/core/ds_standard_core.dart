@@ -1,28 +1,22 @@
-// ds_standard_core.dart
-
 import 'package:ds_standard_features/ds_standard_features.dart';
 
 /// Core project configuration class that stores user choices.
-class ProjectConfig {
+class ds_ProjectConfig {
   String projectName;
   String projectType;
-  String cloudVendor;
   String authProvider;
   String middleware;
   String framework;
   String database;
-  String ciCdTool;
   List<String> tools;
 
-  ProjectConfig({
+  ds_ProjectConfig({
     required this.projectName,
     this.projectType = 'New Project',
-    this.cloudVendor = 'Local',
     this.authProvider = '',
     this.middleware = 'Dartstream Middleware',
     this.framework = '',
     this.database = '',
-    this.ciCdTool = '',
     this.tools = const [],
   });
 
@@ -32,25 +26,23 @@ class ProjectConfig {
   }
 
   Map<String, dynamic> toJson() => {
-        'projectName': projectName,
-        'projectType': projectType,
-        'cloudVendor': cloudVendor,
-        'authProvider': authProvider,
-        'middleware': middleware,
-        'framework': framework,
-        'database': database,
-        'ciCdTool': ciCdTool,
-        'tools': tools,
-      };
+    'projectName': projectName,
+    'projectType': projectType,
+    'authProvider': authProvider,
+    'middleware': middleware,
+    'framework': framework,
+    'database': database,
+    'tools': tools,
+  };
 }
 
 /// Handles the core project setup based on CLI inputs.
-class DartstreamCore {
-  final ProjectConfig config;
-  final DartstreamDIContainer diContainer;
-  final DartstreamServices services;
+class ds_DartstreamCore {
+  final ds_ProjectConfig config;
+  final ds_DartstreamDIContainer diContainer;
+  final ds_DartstreamServices services;
 
-  DartstreamCore({
+  ds_DartstreamCore({
     required this.config,
     required this.diContainer,
     required this.services,
@@ -70,60 +62,37 @@ class DartstreamCore {
 
   /// Registers selected middleware based on user choice.
   void registerMiddleware(String middlewareType) {
-    var loader = MiddlewareLoader();
+    var loader = ds_MiddlewareLoader();
     var middleware = loader.load(middlewareType);
     middleware.setup();
     print("Middleware '$middlewareType' registered.");
   }
 
-  /// Sets up CI/CD tools based on user choice.
-  void setupCiCdTool(String tool) {
-    var ciCdConfigurator = CiCdConfigurator();
-    ciCdConfigurator.setupCiCd(tool);
-    print("CI/CD tool '$tool' setup complete.");
-  }
-
   /// Loads user-selected tools such as Security, Performance, etc.
   void loadTools() {
-    var toolCustomizer = ToolCustomizer();
+    var toolCustomizer = ds_ToolCustomizer();
     toolCustomizer.loadTools(config.tools);
     print("Selected tools loaded: ${config.tools.join(', ')}");
   }
 
   /// Shows a preview of the user's configuration and confirms the setup.
   bool confirmSetup() {
-    var preview = SetupPreview();
+    var preview = ds_SetupPreview();
     preview.display(config);
     return preview.confirm();
   }
 }
 
-/// Factory for cloud provider setup.
-class CloudProviderFactory {
-  CloudProvider getProvider(String vendor) {
-    switch (vendor) {
-      case 'Google Cloud':
-        return GoogleCloudProvider();
-      case 'AWS':
-        return AWSProvider();
-      case 'Azure':
-        return AzureProvider();
-      default:
-        throw Exception('Unknown cloud provider');
-    }
-  }
-}
-
 /// Factory for selecting an authentication SDK.
-class AuthProviderFactory {
-  AuthProvider getAuthProvider(String provider) {
+class ds_AuthProviderFactory {
+  ds_AuthProvider getAuthProvider(String provider) {
     switch (provider) {
       case 'Firebase Authentication':
-        return FirebaseAuthProvider();
+        return ds_FirebaseAuthProvider();
       case 'AWS Cognito':
-        return AWSCognitoProvider();
+        return ds_AWSCognitoProvider();
       case 'Azure Active Directory':
-        return AzureADProvider();
+        return ds_AzureADProvider();
       default:
         throw Exception('Unknown authentication provider');
     }
@@ -131,43 +100,24 @@ class AuthProviderFactory {
 }
 
 /// Middleware loader based on CLI choice.
-class MiddlewareLoader {
-  DartstreamMiddleware load(String middlewareType) {
+class ds_MiddlewareLoader {
+  ds_DartstreamMiddleware load(String middlewareType) {
     switch (middlewareType) {
       case 'Dartstream Middleware':
-        return DartstreamDefaultMiddleware();
+        return ds_DartstreamDefaultMiddleware();
       case 'Shelf Middleware':
-        return ShelfMiddleware();
+        return ds_ShelfMiddleware();
       case 'Custom Middleware':
-        // Load custom middleware, potentially from an extensions folder.
-        return CustomMiddleware();
+      // Load custom middleware, potentially from an extensions folder.
+        return ds_CustomMiddleware();
       default:
         throw Exception('Unsupported middleware type');
     }
   }
 }
 
-/// CI/CD configurator for user-selected tools.
-class CiCdConfigurator {
-  void setupCiCd(String tool) {
-    switch (tool) {
-      case 'GitHub Actions':
-        print("Setting up GitHub Actions workflows...");
-        break;
-      case 'GitLab CI':
-        print("Setting up GitLab CI workflows...");
-        break;
-      case 'Custom Script':
-        print("Setting up a custom CI/CD script...");
-        break;
-      default:
-        throw Exception('Unsupported CI/CD tool');
-    }
-  }
-}
-
 /// Tool customization for optional features like Security or Performance monitoring.
-class ToolCustomizer {
+class ds_ToolCustomizer {
   void loadTools(List<String> selectedTools) {
     if (selectedTools.contains('Security Tools')) {
       print("Loading security tools...");
@@ -182,16 +132,14 @@ class ToolCustomizer {
 }
 
 /// Displays and confirms the setup choices.
-class SetupPreview {
-  void display(ProjectConfig config) {
+class ds_SetupPreview {
+  void display(ds_ProjectConfig config) {
     print('Review your selections:');
     print('- Project Name: ${config.projectName}');
-    print('- Cloud Vendor: ${config.cloudVendor}');
     print('- Authentication SDK: ${config.authProvider}');
     print('- Middleware: ${config.middleware}');
     print('- Framework: ${config.framework}');
     print('- Database: ${config.database}');
-    print('- CI/CD: ${config.ciCdTool}');
     print('- Custom Tools: ${config.tools.join(', ')}');
   }
 
