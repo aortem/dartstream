@@ -1,7 +1,7 @@
 library ds_standard_extensions;
 
 // Export standard extensions module
-export 'ds_feature_extension.dart';
+export 'ds_standard_feature_registration_interface.dart';
 export 'events/ds_event_listeners.dart';
 export 'ds_lifecycle_hooks.dart';
 export 'ds_standard_extensions.dart';
