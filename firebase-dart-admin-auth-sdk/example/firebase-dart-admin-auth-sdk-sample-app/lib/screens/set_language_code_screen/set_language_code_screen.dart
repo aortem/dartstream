@@ -1,6 +1,6 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/set_language_code_screen/set_language_code_screen_view_model.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/screens/set_language_code_screen/set_language_code_screen_view_model.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

@@ -37,7 +37,7 @@ class PhoneAuth {
 
   Future<String> _getRecaptchaToken() async {
     // In a real implementation, you would integrate with reCAPTCHA here
-    // For this example, we'll just return a dummy token
+    // For this aortem, we'll just return a dummy token
     return 'dummy_recaptcha_token';
   }
 }

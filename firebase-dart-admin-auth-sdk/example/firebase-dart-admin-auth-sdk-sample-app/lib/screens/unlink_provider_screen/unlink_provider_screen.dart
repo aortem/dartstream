@@ -1,6 +1,6 @@
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/unlink_provider_screen/unlink_provider_screen_view_model.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/shared/shared.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/utils/extensions.dart';
+import 'package:firebase/screens/unlink_provider_screen/unlink_provider_screen_view_model.dart';
+import 'package:firebase/shared/shared.dart';
+import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

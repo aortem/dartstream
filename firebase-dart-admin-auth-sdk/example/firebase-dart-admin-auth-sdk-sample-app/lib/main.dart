@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_dart_admin_auth_sdk_sample_app/screens/splash_screen/splash_screen.dart';
+import 'package:firebase/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -26,13 +26,15 @@ void main() async {
       ); //Add your own JSON service account
 
       // Initialize Firebase with the service account content
-      await FirebaseApp.initializeAppWithServiceAccount(
-        serviceAccountContent: serviceAccountContent,
-        serviceAccountKeyFilePath: '', // file path
-      );
+      // await FirebaseApp.initializeAppWithServiceAccount(
+      //   serviceAccountContent: serviceAccountContent,
+      // );
 
       //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
+      await FirebaseApp.initializeAppWithServiceAccountImpersonation(
+        impersonatedEmail: 'impersonatedEmail',
+        serviceAccountContent: serviceAccountContent,
+      );
     }
   }
 
