@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_access_token_with_generated_token.dart';
@@ -42,8 +44,8 @@ class MockGenerateCustomToken extends GenerateCustomToken {
   }
 
   @override
-  Future<String> generateServiceAccountJwt(
-      ServiceAccount serviceAccount) async {
+  Future<String> generateServiceAccountJwt(ServiceAccount serviceAccount,
+      {String? impersonatedEmail}) async {
     return 'Service Account JWT';
   }
 
@@ -137,13 +139,12 @@ void main() async {
         ),
     'service_account': () async => FirebaseApp.initializeAppWithServiceAccount(
           serviceAccountContent: fakeServiceAccountJson,
-          serviceAccountKeyFilePath: '../test.json',
         ),
     'service_account_impersonation': () async =>
         FirebaseApp.initializeAppWithServiceAccountImpersonation(
-          serviceAccountEmail:
+          serviceAccountContent: fakeServiceAccountJson,
+          impersonatedEmail:
               'your-service-account-email@your-project-id.iam.gserviceaccount.com',
-          userEmail: 'your-user-email@aortem.com',
         ),
   };
 
@@ -156,7 +157,6 @@ void main() async {
       );
       final app = await FirebaseApp.initializeAppWithServiceAccount(
         serviceAccountContent: fakeServiceAccountJson,
-        serviceAccountKeyFilePath: '../test.json',
       );
       final auth = app.getAuth();
       expect(auth.accessToken, 'AccessToken');
@@ -172,6 +172,11 @@ void main() async {
       test('set up method', () async {
         final app = await element.value();
         auth = app.getAuth();
+
+        // auth?.authStateChangedController =
+        //     mockController.authStateChangedController!;
+        // auth?.idTokenChangedController =
+        //     mockController.idTokenChangedController!;
 
         auth?.httpClient = mockClient;
       });
@@ -577,6 +582,8 @@ void main() async {
             idToken: 'testIdToken',
           );
 
+          auth?.currentUser = user;
+
           Future.delayed(Duration(milliseconds: 100))
               .then((_) => auth?.updateCurrentUser(user));
 
@@ -600,6 +607,8 @@ void main() async {
             photoURL: null,
             idToken: 'testIdToken',
           );
+
+          auth?.currentUser = expectedUser;
 
           Future.delayed(Duration(milliseconds: 100))
               .then((_) => auth?.updateCurrentUser(expectedUser));
