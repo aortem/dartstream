@@ -1,32 +1,36 @@
-// Interface for all auth providers
-
-// extensions/auth/ds_auth_manager.dart
-
 import 'ds_auth_provider.dart';
-import 'ds_firebase_auth_provider.dart';
-import 'ds_cognito_auth_provider.dart';
-import 'ds_azure_ad_b2c_auth_provider.dart';
 
-class AuthManager {
-  final DSAuthProvider _provider;
+class DSAuthManager {
+  static final Map<String, DSAuthProvider> _registeredProviders = {};
 
-  AuthManager._(this._provider);
-
-  factory AuthManager({required String providerType}) {
-    switch (providerType) {
-      case 'firebase':
-        return AuthManager._(FirebaseAuthProvider(/* Firebase config */));
-      case 'cognito':
-        return AuthManager._(CognitoAuthProvider(/* Cognito config */));
-      default:
-        throw UnimplementedError(
-            'Unsupported authentication provider: $providerType');
-    }
+  // Register a provider dynamically
+  static void registerProvider(String name, DSAuthProvider provider) {
+    _registeredProviders[name] = provider;
   }
 
-  Future<void> signIn(String username, String password) =>
-      _provider.signIn(username, password);
-  Future<void> signOut() => _provider.signOut();
-  Future<User> getUser(String userId) => _provider.getUser(userId);
-  Future<bool> verifyToken(String token) => _provider.verifyToken(token);
+  late DSAuthProvider _provider;
+
+  // Initialize with a specific provider
+  DSAuthManager(String providerName) {
+    if (!_registeredProviders.containsKey(providerName)) {
+      throw UnsupportedError('Provider not registered: $providerName');
+    }
+    _provider = _registeredProviders[providerName]!;
+  }
+
+  Future<void> signIn(String username, String password) {
+    return _provider.signIn(username, password);
+  }
+
+  Future<void> signOut() {
+    return _provider.signOut();
+  }
+
+  Future<DSUser> getUser(String userId) {
+    return _provider.getUser(userId);
+  }
+
+  Future<bool> verifyToken(String token) {
+    return _provider.verifyToken(token);
+  }
 }

@@ -5,6 +5,9 @@ abstract class DSAuthProvider {
   Future<void> signOut();
   Future<DSUser> getUser(String userId);
   Future<bool> verifyToken(String token);
+  Future<String> login(String username, String password);
+  Future<void> logout();
+  Future<Map<String, dynamic>> getUserDetails(String token);
 }
 
 // Standardized User model to ensure consistent structure across providers
