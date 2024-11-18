@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:dartstream_backend/extensions/auth/ds_auth_manager.dart';
+import 'package:dartstream_backend/extensions/auth/lib/ds_auth_export.dart';
+import 'package:dartstream_auth/ds_auth_export.dart';
 import 'package:dartstream_backend/extensions/auth/ds_user.dart';
 
 /// AuthAdapter for Flutter Mobile framework

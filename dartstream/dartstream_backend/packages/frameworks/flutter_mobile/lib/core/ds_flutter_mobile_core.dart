@@ -4,7 +4,7 @@ It initializes the framework-specific features, sets up any necessary configurat
 and ensures that core functionality is correctly wired for Flutter Mobile. 
 This file acts as a centralized place to manage the framework lifecycle and expose key features. */
 
-import 'package:dartstream_backend/extensions/auth/ds_auth_manager.dart';
+import 'package:dartstream_backend/extensions/auth/base/lib/ds_auth_manager.dart';
 import 'package:dartstream_backend/extensions/auth/ds_auth_export.dart';
 import 'ds_flutter_mobile_auth_adapter.dart';
 
