@@ -1,4 +1,5 @@
 import '../../../base/lib/ds_auth_provider.dart';
+// import 'ds_auth_base' (the real package to be added in pubsec)
 
 class DSFirebaseAuthProvider implements DSAuthProvider {
   @override

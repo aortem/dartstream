@@ -1,4 +1,4 @@
-import 'ds_auth_provider.dart';
+import 'ds_middleware_provider.dart';
 
 class DSAuthManager {
   static final Map<String, DSAuthProvider> _registeredProviders = {};

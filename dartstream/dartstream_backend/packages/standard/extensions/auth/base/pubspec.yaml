@@ -11,4 +11,6 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
+firebase_dart_admin_auth_sdk: ^0.0.1-pre+10
+
 # STANDARD PACKAGES - Built By The Dart Team
