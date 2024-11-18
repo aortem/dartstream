@@ -124,7 +124,7 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
                         ListTile(
                           title: const Text('Facebook'),
                           onTap: () {
-                            Navigator.of(context).pop();
+                            // Navigator.of(context).pop();
                             loginWithFacebook();
                           },
                         ),

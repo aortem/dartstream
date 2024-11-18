@@ -96,7 +96,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                   builder: (context) => const SignInWithCredential(),
                 ),
               ),
-              title: "Sign In With Credential",
+              title: "Sign In With Credential (AdditionalProviders)",
             ),
             20.vSpace,
             ActionTile(

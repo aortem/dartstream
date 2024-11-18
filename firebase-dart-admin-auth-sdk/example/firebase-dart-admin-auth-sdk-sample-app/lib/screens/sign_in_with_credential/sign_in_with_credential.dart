@@ -15,28 +15,50 @@ class SignInWithCredential extends StatelessWidget {
       create: (context) => SignInWithCredentialViewModel(),
       child: Consumer<SignInWithCredentialViewModel>(
         builder: (context, value, child) => Scaffold(
-          body: Center(
-            child: Builder(
-              builder: (context) {
-                if (Platform.isIOS) {
-                  return Button(
-                    onTap: () {},
-                    title: 'Sign In With Apple',
-                  );
-                }
-                return Button(
-                  onTap: () => value.signInWithCredential(
-                    () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    value.signInWithCredential(
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
                       ),
-                    ),
-                  ),
-                  title: 'Sign In With Google',
-                );
-              },
-            ),
+                    );
+                  },
+                  child: Text("Sign In With Google")),
+              ElevatedButton(
+                  onPressed: () {
+                    value.loginWithFacebook(context);
+                  },
+                  child: Text("Sign In With Facebook"))
+            ],
+            // chil
+            //d: Builder(
+            //   builder: (context) {
+            //     if (Platform.isIOS) {
+            //       return Button(
+            //         onTap: () {},
+            //         title: 'Sign In With Apple',
+            //       );
+            //     }
+            //     return Button(
+            //       onTap: () => value.signInWithCredential(
+            //         () => Navigator.push(
+            //           context,
+            //           MaterialPageRoute(
+            //             builder: (context) => const HomeScreen(),
+            //           ),
+            //         ),
+            //       ),
+            //       title: 'Sign In With Google',
+            //     );
+            //   },
+            // ),
           ),
         ),
       ),
