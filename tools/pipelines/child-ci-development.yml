@@ -42,4 +42,36 @@ unit_tests:
 
 # Integration Tests
 integration_tests:
-  stage
+  stage: integration_tests
+  image: dart:stable
+  tags:
+    - dart
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+  script:
+    - echo "Running Integration Tests..."
+    - dart test test/integration/ --reporter expanded
+  artifacts:
+    paths:
+      - test-reports/integration/
+    expire_in: 1d
+  retry: 2
+
+# End-to-End Tests
+e2e_tests:
+  stage: e2e_tests
+  image: dart:stable
+  tags:
+    - dart
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+  script:
+    - echo "Running E2E Tests..."
+    - dart test test/e2e/ --reporter expanded
+  artifacts:
+    paths:
+      - test-reports/e2e/
+    expire_in: 1d
+  retry: 2
