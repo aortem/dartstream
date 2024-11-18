@@ -8,8 +8,8 @@ stages:
 setup:
   stage: setup
   image: dart:stable
-  tags:
-    - dart
+ # tags:
+ #   - dart
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
@@ -26,8 +26,8 @@ setup:
 unit_tests:
   stage: unit_tests
   image: dart:stable
-  tags:
-    - dart
+ # tags:
+ #   - dart
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
@@ -44,8 +44,8 @@ unit_tests:
 integration_tests:
   stage: integration_tests
   image: dart:stable
-  tags:
-    - dart
+#  tags:
+#    - dart
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
@@ -62,8 +62,8 @@ integration_tests:
 e2e_tests:
   stage: e2e_tests
   image: dart:stable
-  tags:
-    - dart
+#  tags:
+#    - dart
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
