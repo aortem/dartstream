@@ -150,7 +150,11 @@ class FirebaseAuth {
 
   /// Set language code
   late LanguageService setLanguageService;
+
+  /// Get firebase language code
   late LanguageGetService getLanguageService;
+
+  /// Firebase before auth change
   late FirebaseBeforeAuthStateChangeService
       firebaseBeforeAuthStateChangeService;
 
