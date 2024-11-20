@@ -1,43 +1,42 @@
 stages:
-  - setup_main
-  - setup_example
+  - setup
   - analyze
 
 # Setup Main Project
 setup_main:
-  stage: setup_main
-  image: dart:stable
+  stage: setup
+  image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Setting up the main project..."
     - cd firebase-dart-admin-auth-sdk
-    - dart pub get || echo "Getting depedencies from main project. Continuing pipeline."
+    - dart pub get || echo "Getting Dependencies. Continuing pipeline."
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/.dart_tool/
+      - firebase-dart-admin-auth-sdk/analysis_report.txt
     expire_in: 1h
 
 # Setup Example Project
 setup_example:
-  stage: setup_example
+  stage: setup
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Setting up the example project..."
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
-    - flutter pub get || echo "Getting depedencies from sample app. Continuing pipeline."
+    - flutter pub get || echo "Getting Dependencies. Continuing pipeline."
   dependencies:
     - setup_main
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/example/.dart_tool/
+      - firebase-dart-admin-auth-sdk/example/filtered_report.txt
     expire_in: 1h
 
-# Analyze Stage
+# Analyze Project
 analyze:
   stage: analyze
-  image: dart:stable
+  image: ghcr.io/cirruslabs/flutter:stable
   script:
-    - echo "Running Dart analysis for the entire project..."
-    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - echo "Analyzing the entire project..."
+    - cd firebase-dart-admin-auth-sdk
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
     # Filter analysis output
@@ -48,10 +47,8 @@ analyze:
     - echo "Checking for responsible developers..."
     - |
       while IFS= read -r line; do
-        # Extract file path from the filtered report
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
-          # Get the last commit hash for the file
           git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
           echo "File: $file - Last modified in commit: $git_log"
           echo "Issue found: $line"
@@ -62,10 +59,9 @@ analyze:
 
     - echo "Analysis complete. Please address the warnings above if applicable."
   dependencies:
-    - setup_example  # Ensure dependencies are installed before running analysis
+    - setup_example
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/analysis_report.txt
       - firebase-dart-admin-auth-sdk/filtered_report.txt
     expire_in: 1h
-  retry: 2
