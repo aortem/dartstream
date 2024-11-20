@@ -10,6 +10,7 @@ setup_main:
     - echo "Setting up the main project..."
     - cd firebase-dart-admin-auth-sdk
     - dart pub get || echo "Getting Dependencies. Continuing pipeline."
+    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/analysis_report.txt
@@ -23,6 +24,7 @@ setup_example:
     - echo "Setting up the example project..."
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
     - flutter pub get || echo "Getting Dependencies. Continuing pipeline."
+    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
   dependencies:
     - setup_main
   artifacts:
