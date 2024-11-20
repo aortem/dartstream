@@ -1,6 +1,7 @@
 stages:
   - setup_main
   - setup_example
+  - analyze
 
 # Setup Main Project
 setup_main:
