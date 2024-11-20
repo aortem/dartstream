@@ -1,26 +1,25 @@
 stages:
   - triggers
 
-# The pipeline covers a series of triggers to ensure full testing and coverage
-
-# Conditional Triggers
-
+# Trigger for non-development branches
 conditional_non_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa"
-    - when: always
+      when: always  # Ensure fallback behavior for non-development branches
 
+# Trigger for development branch
 conditional_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-development.yml
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
-    - when: always  # Ensure this job always runs as a fallback
-
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
+      when: on_success  # Trigger only for merge requests targeting development
+    - if: $CI_COMMIT_BRANCH == "development"
+      when: on_success  # Trigger only for direct commits to development
 
 #conditional_qa:
 #  stage: triggers
