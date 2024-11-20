@@ -19,7 +19,7 @@ setup_main:
 # Setup Example Project
 setup_example:
   stage: setup_example
-  image: cirrusci/flutter:stable
+  image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Setting up the example project..."
     - cd firebase-dart-admin-auth-sdk/example
