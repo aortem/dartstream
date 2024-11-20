@@ -8,8 +8,11 @@ analyze_main:
   script:
     - echo "Starting analysis for the main project..."
     - cd firebase-dart-admin-auth-sdk
+    - pwd
+    - echo "Listing contents of the current directory..."
+    - ls -la
 
-    # Install dependencies for the main project
+    # Install dependencies
     - echo "Installing dependencies for the main project using dart pub get..."
     - |
       if ! dart pub get; then
@@ -17,18 +20,17 @@ analyze_main:
         exit 1
       fi
 
-    # Analyze the lib/ directory
-    - echo "Running dart analyze on the lib/ folder for the main project..."
-    - dart analyze lib/ > analysis_report.txt
-    - echo "Analysis completed. Checking for critical issues in the main project..."
-
-    # Check if critical issues (errors) exist in the analysis report
+    # Run analysis with detailed error handling
+    - echo "Running dart analyze for the main project..."
     - |
-      if grep -qE "error|warning" analysis_report.txt; then
-        echo "Critical issues detected during analysis of the main project. Review the analysis report."
+      if ! dart analyze lib/ > analysis_report.txt 2> error_log.txt; then
+        echo "Analysis failed with errors. Details:"
+        cat error_log.txt
+        echo "Full analysis report:"
+        cat analysis_report.txt
         exit 1
       else
-        echo "No critical issues found during analysis of the main project."
+        echo "Analysis completed successfully. No critical errors found."
       fi
 
     # Filter analysis output
@@ -53,6 +55,7 @@ analyze_main:
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/error_log.txt
       - firebase-dart-admin-auth-sdk/filtered_report.txt
     expire_in: 1h
 
@@ -62,8 +65,6 @@ analyze_example:
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Starting analysis for the example project..."
-    
-    # Navigate to the example project directory
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
     - pwd
     - echo "Listing contents of the current directory..."
