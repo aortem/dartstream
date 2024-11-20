@@ -10,7 +10,7 @@ setup_main:
   script:
     - echo "Setting up the main project..."
     - cd firebase-dart-admin-auth-sdk
-    - dart pub get || echo "Error running dart pub get in main project. Continuing pipeline."
+    - dart pub get || echo "Getting depedencies from main project. Continuing pipeline."
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/.dart_tool/
@@ -22,8 +22,8 @@ setup_example:
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Setting up the example project..."
-    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk
-    - flutter pub get || echo "Error running flutter pub get in example project. Continuing pipeline."
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - flutter pub get || echo "Getting depedencies from sample app. Continuing pipeline."
   dependencies:
     - setup_main
   artifacts:
@@ -37,7 +37,7 @@ analyze:
   image: dart:stable
   script:
     - echo "Running Dart analysis for the entire project..."
-    - cd firebase-dart-admin-auth-sdk/example
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
     # Filter analysis output
