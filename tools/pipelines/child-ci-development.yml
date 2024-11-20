@@ -10,7 +10,7 @@ setup_main:
     - echo "Setting up the main project..."
     - cd firebase-dart-admin-auth-sdk
     - dart pub get || echo "Getting Dependencies. Continuing pipeline."
-    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
+    - dart analyze lib/ > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
      # Filter analysis output
     - echo "Filtering for documentation issues, warnings, and errors excluding test/unit files..."
     - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
