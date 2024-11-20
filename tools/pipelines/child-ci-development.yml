@@ -12,7 +12,7 @@ setup:
     - when: never
   script:
     - echo "Setting up environment..."
-    - cd firebase-dart-admin-auth-sdk
+    - cd firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk
 
     # Fetch dependencies and handle dependency warnings gracefully
     - dart pub get || echo "Dependency issues detected, continuing pipeline..."
