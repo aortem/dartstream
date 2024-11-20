@@ -1,110 +1,114 @@
 stages:
-  - setup
   - analyze
 
-# Setup Main Project
-setup_main:
-  stage: setup
-  image: ghcr.io/cirruslabs/flutter:stable
-  script:
-    - echo "Setting up the main project..."
-    - cd firebase-dart-admin-auth-sdk
-    - dart pub get || echo "Getting Dependencies. Continuing pipeline."
-    - dart analyze lib/ > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
-     # Filter analysis output
-    - echo "Filtering for documentation issues, warnings, and errors excluding test/unit files..."
-    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
-
-    # Check for responsible developers
-    - echo "Checking for responsible developers..."
-    - |
-      while IFS= read -r line; do
-        file=$(echo $line | awk -F ':' '{print $1}')
-        if [[ -n "$file" ]]; then
-          git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
-          echo "File: $file - Last modified in commit: $git_log"
-          echo "Issue found: $line"
-        else
-          echo "No file information could be extracted from: $line"
-        fi
-      done < filtered_report.txt
-
-    - echo "Analysis complete. Please address the warnings above if applicable."
-  artifacts:
-    paths:
-      - firebase-dart-admin-auth-sdk/analysis_report.txt
-    expire_in: 1h
-
-# Setup Example Project
-setup_example:
-  stage: setup
-  image: ghcr.io/cirruslabs/flutter:stable
-  script:
-    - echo "Setting up the example project..."
-    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
-    - flutter pub get || echo "Getting Dependencies. Continuing pipeline."
-    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
-
-     # Filter analysis output
-    - echo "Filtering for documentation issues, warnings, and errors excluding test/unit files..."
-    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
-
-    # Check for responsible developers
-    - echo "Checking for responsible developers..."
-    - |
-      while IFS= read -r line; do
-        file=$(echo $line | awk -F ':' '{print $1}')
-        if [[ -n "$file" ]]; then
-          git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
-          echo "File: $file - Last modified in commit: $git_log"
-          echo "Issue found: $line"
-        else
-          echo "No file information could be extracted from: $line"
-        fi
-      done < filtered_report.txt
-
-    - echo "Analysis complete. Please address the warnings above if applicable."
-
-  dependencies:
-    - setup_main
-  artifacts:
-    paths:
-      - firebase-dart-admin-auth-sdk/example/filtered_report.txt
-    expire_in: 1h
-
-# Analyze Project
-analyze:
+# Analyze Main Project
+analyze_main:
   stage: analyze
-  image: ghcr.io/cirruslabs/flutter:stable
+  image: dart:stable
   script:
-    - echo "Analyzing the entire project..."
-    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
-    - flutter pub get
-    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
+    - echo "Starting analysis for the main project..."
+    - cd firebase-dart-admin-auth-sdk
+
+    # Install dependencies for the main project
+    - echo "Installing dependencies for the main project using dart pub get..."
+    - |
+      if ! dart pub get; then
+        echo "Failed to install dependencies for the main project. Exiting..."
+        exit 1
+      fi
+
+    # Analyze the lib/ directory
+    - echo "Running dart analyze on the lib/ folder for the main project..."
+    - dart analyze lib/ > analysis_report.txt
+    - echo "Analysis completed. Checking for critical issues in the main project..."
+
+    # Check if critical issues (errors) exist in the analysis report
+    - |
+      if grep -qE "error|warning" analysis_report.txt; then
+        echo "Critical issues detected during analysis of the main project. Review the analysis report."
+        exit 1
+      else
+        echo "No critical issues found during analysis of the main project."
+      fi
 
     # Filter analysis output
-    - echo "Filtering for documentation issues, warnings, and errors excluding test/unit files..."
-    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
+    - echo "Filtering relevant analysis results (excluding test/unit files)..."
+    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the main project."
 
-    # Check for responsible developers
-    - echo "Checking for responsible developers..."
+    # Identify responsible developers for each file with issues
+    - echo "Identifying responsible developers for issues in the main project..."
     - |
       while IFS= read -r line; do
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
-          git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
-          echo "File: $file - Last modified in commit: $git_log"
-          echo "Issue found: $line"
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Issue: $line"
         else
-          echo "No file information could be extracted from: $line"
+          echo "No file information could be extracted for: $line"
         fi
       done < filtered_report.txt
 
-    - echo "Analysis complete. Please address the warnings above if applicable."
-  dependencies:
-    - setup_example
+    - echo "Main project analysis complete. Check filtered_report.txt for details."
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/analysis_report.txt
       - firebase-dart-admin-auth-sdk/filtered_report.txt
+    expire_in: 1h
+
+# Analyze Example Project
+analyze_example:
+  stage: analyze
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - echo "Starting analysis for the example project..."
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+
+    # Install dependencies for the example project
+    - echo "Installing dependencies for the example project using flutter pub get..."
+    - |
+      if ! flutter pub get; then
+        echo "Failed to install dependencies for the example project. Exiting..."
+        exit 1
+      fi
+
+    # Analyze the project
+    - echo "Running dart analyze for the example project..."
+    - dart analyze > analysis_report.txt
+    - echo "Analysis completed. Checking for critical issues in the example project..."
+
+    # Check if critical issues (errors) exist in the analysis report
+    - |
+      if grep -qE "error|warning" analysis_report.txt; then
+        echo "Critical issues detected during analysis of the example project. Review the analysis report."
+        exit 1
+      else
+        echo "No critical issues found during analysis of the example project."
+      fi
+
+    # Filter analysis output
+    - echo "Filtering relevant analysis results (excluding test/unit files)..."
+    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the example project."
+
+    # Identify responsible developers for each file with issues
+    - echo "Identifying responsible developers for issues in the example project..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Issue: $line"
+        else
+          echo "No file information could be extracted for: $line"
+        fi
+      done < filtered_report.txt
+
+    - echo "Example project analysis complete. Check filtered_report.txt for details."
+  dependencies:
+    - analyze_main
+  artifacts:
+    paths:
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/filtered_report.txt
     expire_in: 1h
