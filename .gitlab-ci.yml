@@ -11,7 +11,6 @@ conditional_non_development:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa"
-    - when: never
 
 conditional_development:
   stage: triggers
