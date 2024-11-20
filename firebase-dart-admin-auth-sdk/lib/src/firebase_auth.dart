@@ -1,5 +1,3 @@
-// ignore_for_file: unused_local_variable
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
@@ -56,25 +54,56 @@ import 'auth/parse_action_code_url.dart';
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
 
+///Base Firebase auth class that contains all the methods provided by the sdk
 class FirebaseAuth {
+  ///THe api key for firebase project
   final String? apiKey;
+
+  ///The project id for your firebase project
   final String? projectId;
+
+  ///The access token to the firebase project
   final String? accessToken;
+
+  /// The service account of your firebase project
   final ServiceAccount? serviceAccount;
+
+  /// The generated custom token
   final GenerateCustomToken? generateCustomToken;
 
+  /// Local httpClient
   late http.Client httpClient;
+
+  ///Projects bucket name
   final String? bucketName;
+
+  /// For performing email and password auth
   late EmailPasswordAuth emailPassword;
+
+  /// For generating customToken
   late CustomTokenAuth customToken;
+
+  /// For sending email Link
   late EmailLinkAuth emailLink;
+
+  /// For performing auth operations pertaing to phone
   late PhoneAuth phone;
+
+  /// For performing auth operations pertaining to external authenticators
   late OAuthAuth oauth;
-  late FirebaseSignOUt signOUt;
+  late FirebaseSignOut signOUt;
   late SignInWithRedirectService signInRedirect;
+
+  /// Update current User
   late UpdateCurrentUser updateUserService;
+
+  /// Use the language of the device
   late UseDeviceLanguageService useDeviceLanguage;
+
+  /// Verify password reset
   late VerifyPasswordResetCodeService verifyPasswordReset;
+
+  /// Apply Action code
   late ApplyActionCode applyAction;
 
   late ReloadUser _reloadUser;
@@ -84,14 +113,26 @@ class FirebaseAuth {
   late UpdatePassword _updatePassword;
 
   // New service declarations for Sprint 2 #16 to #21
+  /// Send Password reset email
   late PasswordResetEmailService passwordResetEmail;
+
+  /// Revoke an access token
   late RevokeAccessTokenService revokeAccessToken;
+
+  /// Listen to token Id change
   late IdTokenChangedService idTokenChanged;
+
+  /// Listen to auth state change
   late AuthStateChangedService authStateChanged;
 
-////Ticket mo 36 to 41///////////////
+  //Ticket mo 36 to 41///////////////
+  /// Link a phone number to the an account
   late FirebasePhoneNumberLink firebasePhoneNumberLink;
+
+  /// Parase firebase url link
   late FirebaseParseUrlLink firebaseParseUrlLink;
+
+  /// Delete User
   late FirebaseDeleteUser firebaseDeleteUser;
   late LinkWithCredientialClass linkWithCredientialClass;
 
@@ -100,21 +141,31 @@ class FirebaseAuth {
   late UpdateProfile _updateProfile;
   late VerifyBeforeEmailUpdate _verifyBeforeEmailUpdate;
 
-////Ticketr 5,7,23,24,61
+  //Ticketr 5,7,23,24,61
+  ///Sign in anonymously
   late FirebaseSignInAnonymously signInAnonymously;
+
+  /// Set persistence
   late PersistenceService setPresistence;
+
+  /// Set language code
   late LanguageService setLanguageService;
-  late LanguagGetService getLanguageService;
+  late LanguageGetService getLanguageService;
   late FirebaseBeforeAuthStateChangeService
       firebaseBeforeAuthStateChangeService;
+
+  /// Current firebase auth user
   User? currentUser;
 
-  /// StreamControllers for managing auth state and ID token change events
+  /// StreamControllers for managing auth state
   final StreamController<User?> authStateChangedController =
       StreamController<User?>.broadcast();
+
+  /// Stream Controller for manageing id token change events
   final StreamController<User?> idTokenChangedController =
       StreamController<User?>.broadcast();
 
+  /// Firebae Auth constructor class
   FirebaseAuth({
     this.apiKey,
     this.projectId,
@@ -131,7 +182,7 @@ class FirebaseAuth {
     emailLink = EmailLinkAuth(this);
     phone = PhoneAuth(this);
     oauth = OAuthAuth(this);
-    signOUt = FirebaseSignOUt();
+    signOUt = FirebaseSignOut();
     signInRedirect = SignInWithRedirectService(auth: this);
     updateUserService = UpdateCurrentUser(auth: this);
     useDeviceLanguage = UseDeviceLanguageService(auth: this);
@@ -163,11 +214,12 @@ class FirebaseAuth {
     signInAnonymously = FirebaseSignInAnonymously(this);
     setPresistence = PersistenceService(auth: this);
     setLanguageService = LanguageService(auth: this);
-    getLanguageService = LanguagGetService(auth: this);
+    getLanguageService = LanguageGetService(auth: this);
     firebaseBeforeAuthStateChangeService =
         FirebaseBeforeAuthStateChangeService(this);
   }
 
+  /// Base function for http calls
   Future<HttpResponse> performRequest(
       String endpoint, Map<String, dynamic> body) async {
     //log(apiKey.toString());
@@ -197,23 +249,26 @@ class FirebaseAuth {
         statusCode: response.statusCode, body: json.decode(response.body));
   }
 
-  // updateCurrentUser method to automatically trigger the streams
+  /// updateCurrentUser method to automatically trigger the streams
   void updateCurrentUser(User user) {
     currentUser = currentUser == null ? user : currentUser?.copyWith(user);
     authStateChangedController.add(currentUser);
     idTokenChangedController.add(currentUser);
   }
 
+  /// Sign in with email and password
   Future<UserCredential?> signInWithEmailAndPassword(
       String email, String password) {
     return emailPassword.signIn(email, password);
   }
 
+  /// Create user with email and password
   Future<UserCredential?> createUserWithEmailAndPassword(
       String email, String password) {
     return emailPassword.signUp(email, password);
   }
 
+  /// Sign in with custom token
   Future<UserCredential> signInWithCustomToken(String? uid) async {
     assert(serviceAccount != null, 'Service Account cannot be null');
     assert(generateCustomToken != null, 'Custom token cannot be null');
@@ -223,6 +278,7 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
+  ///Sign in with credentials
   Future<UserCredential?> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
@@ -242,20 +298,24 @@ class FirebaseAuth {
     }
   }
 
+  /// Sign in with pop up
   Future<UserCredential> signInWithPopup(String providerId) {
     return oauth.signInWithPopup(providerId);
   }
 
+  ///Sign in with phone number
   Future<UserCredential> signInWithPhoneNumber(
       String verificationId, String smsCode) {
     return phone.verifyPhoneNumber(verificationId, smsCode);
   }
 
+  /// Sign in with email link
   Future<UserCredential> signInWithEmailLink(
       String email, String emailLinkUrl) {
     return emailLink.signInWithEmailLink(email, emailLinkUrl);
   }
 
+  /// Sign out
   Future<void> signOut() async {
     log("hekko");
     log("hekko${FirebaseApp.instance.getCurrentUser()}");
@@ -311,6 +371,7 @@ class FirebaseAuth {
     }
   }
 
+  /// Set device language
   Future<void> deviceLanguage(String languageCode) async {
     try {
       await useDeviceLanguage.useDeviceLanguage(
@@ -336,21 +397,25 @@ class FirebaseAuth {
     }
   }
 
+  ///Apply action code
   Future<bool> applyActionCode(String actionCode) {
     return applyAction.applyActionCode(actionCode);
   }
 
+  ///Reload/Refresh user
   Future<User> reloadUser() {
     return _reloadUser.reloadUser(
       currentUser?.idToken,
     );
   }
 
+  ///Send verification code to user email
   Future<void> sendEmailVerificationCode() {
     return _sendEmailVerificationCode
         .sendEmailVerificationCode(currentUser?.idToken);
   }
 
+  ///Set language code
   Future<User> setLanguageCode(String languageCode) {
     return _setLanguageCode.setLanguageCode(
       currentUser?.idToken,
@@ -358,6 +423,7 @@ class FirebaseAuth {
     );
   }
 
+  /// Unlink a provider
   Future<User> unlinkProvider(String providerId) {
     return _unlinkProvider.unlinkProvider(
       currentUser?.idToken,
@@ -365,6 +431,7 @@ class FirebaseAuth {
     );
   }
 
+  /// Update password
   Future<User> updatePassword(String newPassowrd) {
     return _updatePassword.updatePassword(
       newPassowrd,
@@ -439,12 +506,14 @@ class FirebaseAuth {
     }
   }
 
+  /// Get additonal User info
   Future<User> getAdditionalUserInfo() async {
     return await _getAdditionalUserInfo.getAdditionalUserInfo(
       currentUser?.idToken,
     );
   }
 
+  ///Link provider to user
   Future<bool> linkProviderToUser(
     String providerId,
     String providerIdToken,
@@ -456,6 +525,7 @@ class FirebaseAuth {
     );
   }
 
+  ///Update profile
   Future<User> updateProfile(
     String displayName,
     String displayImage,
@@ -467,6 +537,7 @@ class FirebaseAuth {
     );
   }
 
+  ///Verify before email update
   Future<bool> verifyBeforeEmailUpdate(
     String newEmail, {
     ActionCodeSettings? action,
@@ -478,7 +549,7 @@ class FirebaseAuth {
     );
   }
 
-  ///////////a Firebase action code URL
+  ///Parse a Firebase action code URL
   Future<dynamic> parseActionCodeUrl(String url) async {
     Uri uri = Uri.parse(url);
 
@@ -505,7 +576,7 @@ class FirebaseAuth {
     };
   }
 
-  ///////////FirebaseUser phone number link
+  ///FirebaseUser phone number link
   Future<void> firebasePhoneNumberLinkMethod(
       String phone, String verificationCode) async {
     try {
@@ -521,7 +592,7 @@ class FirebaseAuth {
     }
   }
 
-  ////////////FirebaseUser.deleteUser
+  ///FirebaseUser.deleteUser
   Future<void> deleteFirebaseUser() async {
     if (FirebaseApp.instance.getCurrentUser() == null && currentUser == null) {
       throw FirebaseAuthException(

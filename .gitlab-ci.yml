@@ -1,33 +1,43 @@
-image: dart:stable
-
 stages:
-  - test
+  - triggers
 
-coverage_job:
-  stage: test
-  script:
-    - echo "Current directory:"
-    - pwd
-    - echo "Listing contents of the current directory:"
-    - ls -la
-    - echo "Navigating to the firebase-dart-admin-auth-sdk directory:"
-    - cd firebase-dart-admin-auth-sdk
-    - echo "Listing contents of firebase-dart-admin-auth-sdk:"
-    - ls -la
-    - echo "Checking if the test directory exists:"
-    - if [ -d "test" ]; then echo "Test directory exists"; else echo "Test directory does not exist"; fi
-    - echo "Running dart pub get:"
-    - dart pub get
-    - echo "Running dart tests with coverage:"
-    - dart test --coverage="coverage"
-    - echo "Converting coverage to lcov format:"
-    - dart run coverage:format_coverage --lcov --in=coverage --out=coverage/lcov.info --package=./ --report-on=lib
-    - echo "Listing contents of the coverage directory:"
-    - ls -la coverage
-  artifacts:
-    paths:
-      - coverage/lcov.info
-      - coverage/
-    expire_in: 1 week
-    when: always
-  coverage: '/^TOTAL.+?(\d+\%)$/'
+# The pipeline covers a series of triggers to ensure full testing and coverage
+
+# Conditional Triggers
+
+conditional_non_development:
+  stage: triggers
+  trigger:
+    include: tools/pipelines/child-ci-setup-pre-dev.yml
+  rules:
+    - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa"
+    - when: never
+
+conditional_development:
+  stage: triggers
+  trigger:
+    include: tools/pipelines/child-ci-development.yml
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+
+
+#conditional_qa:
+#  stage: triggers
+#  trigger:
+#    include: tools/pipelines/child-ci-qa.yml
+#  rules:
+#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "qa" || $CI_COMMIT_BRANCH == "qa"
+
+#conditional_preprod:
+#  stage: triggers
+#  trigger:
+#    include: tools/pipelines/child-ci-preprod.yml
+#  rules:
+#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "preprod" || $CI_COMMIT_BRANCH == "preprod"
+
+#conditional_production:
+#  stage: triggers
+#  trigger:
+#    include: tools/pipelines/child-ci-production.yml
+#  rules:
+#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "production" || $CI_COMMIT_BRANCH == "production"
