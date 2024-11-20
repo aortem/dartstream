@@ -8,8 +8,7 @@ setup:
   # tags:
   #   - dart
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
-    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
       when: always
     - when: never
   script:
