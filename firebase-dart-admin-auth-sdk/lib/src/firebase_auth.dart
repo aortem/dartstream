@@ -3,6 +3,8 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/apple_sign_in_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/gcp_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/link_with_credentails.dart';
 
 import 'auth/auth_redirect_link.dart';
@@ -111,6 +113,8 @@ class FirebaseAuth {
   late RevokeAccessTokenService revokeAccessTokenService;
   late OnIdTokenChangedService _onIdTokenChangedService;
   late OnAuthStateChangedService _onAuthStateChangedService;
+  late AppleSignInAuth _appleAuth;
+  late GCPAuth _gcpAuth;
 
   late FetchSignInMethodsService fetchSignInMethods;
   late CreateUserWithEmailAndPasswordService
@@ -188,6 +192,8 @@ class FirebaseAuth {
     _onIdTokenChangedService = OnIdTokenChangedService(this);
     _onAuthStateChangedService = OnAuthStateChangedService(this);
     applyAction = ApplyActionCode(this);
+    _appleAuth = AppleSignInAuth(this);
+    _gcpAuth = GCPAuth(this);
 
     _recaptchaVerifier = createRecaptchaVerifier('your-site-key');
     _popupRedirectResolver = createPopupRedirectResolver();
@@ -816,5 +822,19 @@ class FirebaseAuth {
         message: 'Failed to get multi-factor resolver: ${e.toString()}',
       );
     }
+  }
+
+  Future<UserCredential> signInWithApple(String idToken, {String? nonce}) {
+    return _appleAuth.signInWithApple(idToken, nonce: nonce);
+  }
+
+  Future<UserCredential> signInWithGCP({
+    required String clientId,
+    required String clientSecret,
+  }) {
+    return _gcpAuth.signInWithGCP(
+      clientId: clientId,
+      clientSecret: clientSecret,
+    );
   }
 }

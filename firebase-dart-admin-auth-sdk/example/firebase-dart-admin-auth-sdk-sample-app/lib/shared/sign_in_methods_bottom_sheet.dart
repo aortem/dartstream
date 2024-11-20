@@ -14,6 +14,8 @@ import 'package:firebase/shared/shared.dart';
 import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
+import 'package:firebase/screens/apple_sign_in_screen/apple_sign_in_screen.dart';
+import 'package:firebase/screens/gcp_sign_in_screen/gcp_sign_in_screen.dart';
 
 import '../screens/home_screen/home_screen.dart';
 import '../screens/sign_in_with_redirect/sign_in_with_redirect.dart';
@@ -101,6 +103,26 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                   ),
                 ),
                 title: "Sign In With Email Link",
+              ),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const GCPSignInScreen(),
+                  ),
+                ),
+                title: "Sign In With GCP",
+              ),
+              20.vSpace,
+              ActionTile(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const AppleSignInScreen(),
+                  ),
+                ),
+                title: "Sign In With Apple",
               ),
               // 20.vSpace,
               // ActionTile(
