@@ -62,7 +62,7 @@ analyze:
 
     - echo "Analysis complete. Please address the warnings above if applicable."
   dependencies:
-    - setup  # Ensure dependencies are installed before running analysis
+    - setup_example  # Ensure dependencies are installed before running analysis
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/analysis_report.txt
