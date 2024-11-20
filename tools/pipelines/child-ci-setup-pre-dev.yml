@@ -54,7 +54,7 @@ setup:
   retry: 2
 
 # Trigger Unit Test Pipeline On Success.
-trigger_unit_tests:
+unit_tests:
   stage: trigger_unit_tests
   trigger:
     include: child-ci-unit-tests-pre-dev.yml
