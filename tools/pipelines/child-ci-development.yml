@@ -1,5 +1,6 @@
 stages:
   - setup
+  - analyze
 
 # Setup Stage
 setup:
@@ -12,20 +13,50 @@ setup:
     - when: never
   script:
     - echo "Setting up environment..."
+
+    # Navigate to main project directory
     - cd firebase-dart-admin-auth-sdk/
     - echo "Current directory contents:"
     - ls
 
-    # Fetch dependencies and handle dependency warnings gracefully
-    - dart pub get || echo "Dependency issues detected, continuing pipeline..."
-    - dart pub outdated || echo "Outdated dependencies detected. Review above output for details."
+    # Install dependencies for main project
+    - echo "Installing dependencies for the main project..."
+    - if [ -f "pubspec.yaml" ]; then
+        dart pub get;
+      else
+        echo "Error: pubspec.yaml not found in main project. Exiting.";
+        exit 1;
+      fi
 
-    # Run Dart analysis
-    - echo "Running Dart analysis..."
+    # Navigate to example folder
+    - echo "Installing dependencies for the example project..."
+    - cd example
+    - echo "Current example directory contents:"
+    - ls
+    - if [ -f "pubspec.yaml" ]; then
+        dart pub get;
+      else
+        echo "Error: pubspec.yaml not found in example folder. Exiting.";
+        exit 1;
+      fi
+  artifacts:
+    paths:
+      - firebase-dart-admin-auth-sdk/.dart_tool/
+      - firebase-dart-admin-auth-sdk/example/.dart_tool/
+    expire_in: 1h
+  retry: 2
+
+# Analyze Stage
+analyze:
+  stage: analyze
+  image: dart:stable
+  script:
+    - echo "Running Dart analysis for the entire project..."
+    - cd firebase-dart-admin-auth-sdk
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
-    # Filter output for documentation issues, warnings, and errors, excluding test/unit files
-    - echo "Filtering for issues excluding test/unit files..."
+    # Filter analysis output
+    - echo "Filtering for documentation issues, warnings, and errors excluding test/unit files..."
     - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
 
     # Check for responsible developers
@@ -45,10 +76,11 @@ setup:
       done < filtered_report.txt
 
     - echo "Analysis complete. Please address the warnings above if applicable."
+  dependencies:
+    - setup  # Ensure dependencies are installed before running analysis
   artifacts:
     paths:
-      - .dart_tool/
-      - analysis_report.txt
-      - filtered_report.txt
+      - firebase-dart-admin-auth-sdk/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/filtered_report.txt
     expire_in: 1h
   retry: 2
