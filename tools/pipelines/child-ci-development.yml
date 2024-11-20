@@ -26,7 +26,7 @@ setup:
 
     # Navigate to example folder
     - echo "Installing dependencies for the example project..."
-    - cd example
+    - cd example/firebase-dart-admin0auth-sdk-sample-app
     - echo "Current example directory contents:"
     - ls
     - dart pub get || echo "Error running dart pub get in example project. Continuing pipeline."
