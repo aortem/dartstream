@@ -37,7 +37,7 @@ analyze:
   image: dart:stable
   script:
     - echo "Running Dart analysis for the entire project..."
-    - cd firebase-dart-admin-auth-sdk
+    - cd firebase-dart-admin-auth-sdk/example
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
     # Filter analysis output
