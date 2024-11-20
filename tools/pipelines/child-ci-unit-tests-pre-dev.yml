@@ -12,7 +12,7 @@ unit_tests:
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
   script:
     - echo "Running Unit Tests..."
-    - cd firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk/test/test/unit
+    - cd firebase-dart-admin-auth-sdk/test/test/unit
     - dart pub get
     - dart test test/unit/ --reporter expanded
   artifacts:

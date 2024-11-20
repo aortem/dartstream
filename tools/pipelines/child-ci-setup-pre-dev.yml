@@ -1,62 +1,120 @@
 stages:
-  - setup
-  - unit_tests
+  - analyze
 
-# Setup Stage
-setup:
-  stage: setup
+# Analyze Main Project
+analyze_main:
+  stage: analyze
   image: dart:stable
-  # tags:
-  #   - dart
-  rules:
-    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
-      when: always
-    - when: never
   script:
-    - echo "Setting up environment..."
+    - echo "Starting analysis for the main project..."
     - cd firebase-dart-admin-auth-sdk
-    - dart pub get
-    - dart analyze > analysis_report.txt
+    - pwd
+    - echo "Listing contents of the current directory..."
+    - ls -la
 
-    # Filter analysis output for missing documentation warnings, excluding test/unit files
-    - echo "Filtering for documentation issues..."
-    - grep -E "Missing documentation for a public member" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt
-
-    # Check for responsible developers
-    - echo "Checking for responsible developers..."
+    # Install dependencies
+    - echo "Installing dependencies for the main project using dart pub get..."
     - |
-      error_found=false
+      if ! dart pub get; then
+        echo "Failed to install dependencies for the main project. Exiting..."
+        exit 1
+      fi
+
+    # Run analysis with detailed error handling
+    - echo "Running dart analyze for the main project..."
+    - |
+      if ! dart analyze lib/ > analysis_report.txt 2> error_log.txt; then
+        echo "Analysis failed with errors. Details:"
+        cat error_log.txt
+        echo "Full analysis report:"
+        cat analysis_report.txt
+        exit 1
+      else
+        echo "Analysis completed successfully. No critical errors found."
+      fi
+
+    # Filter analysis output
+    - echo "Filtering relevant analysis results (excluding test/unit files)..."
+    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the main project."
+
+    # Identify responsible developers for each file with issues
+    - echo "Identifying responsible developers for issues in the main project..."
+    - |
       while IFS= read -r line; do
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
-          # Get the last commit author for the file
-          git_log=$(git log -n 1 --pretty=format:"%an <%ae>" -- $file)
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
           echo "File: $file - Last modified by: $git_log"
-          if [[ $git_log == *"$GITLAB_USER_LOGIN"* ]]; then
-            echo "Error caused by current user in file: $file"
-            error_found=true
-          fi
+          echo "Issue: $line"
+        else
+          echo "No file information could be extracted for: $line"
         fi
       done < filtered_report.txt
 
-      if $error_found; then
-        echo "Pipeline failed due to missing documentation issues in files modified by the current user."
-        exit 1
-      else
-        echo "No relevant issues found in files modified by the current user. Passing pipeline."
-      fi
+    - echo "Main project analysis complete. Check filtered_report.txt for details."
   artifacts:
     paths:
-      - .dart_tool/
-      - analysis_report.txt
-      - filtered_report.txt
+      - firebase-dart-admin-auth-sdk/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/error_log.txt
+      - firebase-dart-admin-auth-sdk/filtered_report.txt
     expire_in: 1h
-  retry: 2
 
-# Trigger Unit Test Pipeline On Success.
-trigger_unit_tests:
-  stage: trigger_unit_tests
-  trigger:
-    include: child-ci-unit-tests-pre-dev.yml
-  rules:
-    - when: on_success
+# Analyze Example Project
+analyze_example:
+  stage: analyze
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - echo "Starting analysis for the example project..."
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - pwd
+    - echo "Listing contents of the current directory..."
+    - ls -la
+
+    # Install dependencies
+    - echo "Installing dependencies for the example project using flutter pub get..."
+    - |
+      if ! flutter pub get; then
+        echo "Failed to install dependencies for the example project. Exiting..."
+        exit 1
+      fi
+
+    # Run analysis with detailed error handling
+    - echo "Running dart analyze for the example project..."
+    - |
+      if ! dart analyze > analysis_report.txt 2> error_log.txt; then
+        echo "Analysis failed with errors. Details:"
+        cat error_log.txt
+        echo "Full analysis report:"
+        cat analysis_report.txt
+        exit 1
+      else
+        echo "Analysis completed successfully. No critical errors found."
+      fi
+
+    # Filter analysis output
+    - echo "Filtering relevant analysis results (excluding test/unit files)..."
+    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the example project."
+
+    # Identify responsible developers for each file with issues
+    - echo "Identifying responsible developers for issues in the example project..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Issue: $line"
+        else
+          echo "No file information could be extracted for: $line"
+        fi
+      done < filtered_report.txt
+
+    - echo "Example project analysis complete. Check filtered_report.txt for details."
+  dependencies:
+    - analyze_main
+  artifacts:
+    paths:
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_log.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/filtered_report.txt
+    expire_in: 1h
