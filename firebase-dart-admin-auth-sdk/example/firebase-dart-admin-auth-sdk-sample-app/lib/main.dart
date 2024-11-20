@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -9,43 +8,58 @@ import 'package:flutter/services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //If you are on web, initialize with enviroment variables
-  if (kIsWeb) {
-    //Pass the enviroment variables into the function below, I.E API key and project ID
-    FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'YOUR-API-KEY',
-      projectId: 'YOUR-PROJECT-ID',
-      bucketName: 'Your Bucket Name',
-    );
-  } else {
-    //  When working with mobile
-    if (Platform.isAndroid || Platform.isIOS) {
-      //  To initialize with service account put the path to the json file in the function below
-      String serviceAccountContent = await rootBundle.loadString(
-        'assets/service_account.json',
-      ); //Add your own JSON service account
 
-      // Initialize Firebase with the service account content
-      // await FirebaseApp.initializeAppWithServiceAccount(
-      //   serviceAccountContent: serviceAccountContent,
-      // );
-
-      //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      await FirebaseApp.initializeAppWithServiceAccountImpersonation(
-        impersonatedEmail: 'impersonatedEmail',
-        serviceAccountContent: serviceAccountContent,
+  try {
+    if (kIsWeb) {
+      // Initialize for web
+      debugPrint('Initializing Firebase for Web...');
+      FirebaseApp.initializeAppWithEnvironmentVariables(
+        apiKey: 'YOUR-API-KEY',
+        projectId: 'YOUR-PROJECT-ID',
+        bucketName: 'Your Bucket Name',
       );
-    }
-  }
+      debugPrint('Firebase initialized for Web.');
+    } else {
+      if (Platform.isAndroid || Platform.isIOS) {
+        debugPrint('Initializing Firebase for Mobile...');
 
-  FirebaseApp.instance.getAuth();
-  runApp(const MyApp());
+        // Load the service account JSON
+        String serviceAccountContent = await rootBundle.loadString(
+          'assets/service_account.json',
+        );
+        debugPrint('Service account loaded.');
+
+        // Initialize Firebase with the service account content
+        await FirebaseApp.initializeAppWithServiceAccount(
+          serviceAccountContent: serviceAccountContent,
+        );
+        debugPrint('Firebase initialized for Mobile.');
+
+        // Uncomment to use service account impersonation if needed
+        /*
+        await FirebaseApp.initializeAppWithServiceAccountImpersonation(
+          impersonatedEmail: 'impersonatedEmail',
+          serviceAccountContent: serviceAccountContent,
+        );
+        debugPrint('Firebase initialized with service account impersonation.');
+        */
+      }
+    }
+
+    // Access Firebase Auth instance
+    final auth = FirebaseApp.instance.getAuth();
+    debugPrint('Firebase Auth instance obtained.');
+
+    runApp(const MyApp());
+  } catch (e, stackTrace) {
+    debugPrint('Error initializing Firebase: $e');
+    debugPrint('StackTrace: $stackTrace');
+  }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

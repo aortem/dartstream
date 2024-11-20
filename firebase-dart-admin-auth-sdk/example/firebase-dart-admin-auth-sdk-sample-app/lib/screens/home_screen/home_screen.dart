@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase/screens/link_with_credientials/link_with_credientials.dart';
+import 'package:firebase/screens/verify_password_reset_code_screen/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/screens/apply_action_code_screen/apply_action_code_screen.dart';
 import 'package:firebase/screens/home_screen/home_screen_view_model.dart';
@@ -171,6 +173,28 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                   title: "Delete User",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const LinkWithCredentials(),
+                    ));
+                  },
+                  title: "Link with credientials",
+                ),
+                //LinkWIthCredientials
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerifyPasswordResetCode(),
+                      ),
+                    );
+                  },
+                  title: "Verify Password Reset Code",
                 ),
                 10.vSpace,
                 ActionTile(

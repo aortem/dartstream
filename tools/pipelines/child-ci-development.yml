@@ -1,0 +1,51 @@
+stages:
+  - setup
+
+# Setup Stage
+setup:
+  stage: setup
+  image: dart:stable
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
+    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+      when: always
+    - when: never
+  script:
+    - echo "Setting up environment..."
+    - cd firebase-dart-admin-auth-sdk
+
+    # Fetch dependencies and handle dependency warnings gracefully
+    - dart pub get || echo "Dependency issues detected, continuing pipeline..."
+    - dart pub outdated || echo "Outdated dependencies detected. Review above output for details."
+
+    # Run Dart analysis
+    - echo "Running Dart analysis..."
+    - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
+
+    # Filter analysis output for documentation issues
+    - echo "Filtering for documentation issues..."
+    - grep -E "Missing documentation for a public member" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant documentation issues found."
+
+    # Check for responsible developers
+    - echo "Checking for responsible developers..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          # Get the last commit author for the file
+          git_log=$(git log -n 1 --pretty=format:"%an <%ae>" -- $file)
+          echo "File: $file - Last modified by: $git_log"
+          if [[ $git_log == *"$GITLAB_USER_LOGIN"* ]]; then
+            echo "Warning: Documentation issue in file modified by current user: $file"
+          fi
+        fi
+      done < filtered_report.txt
+
+    - echo "Analysis complete. Please address the warnings above if applicable."
+  artifacts:
+    paths:
+      - .dart_tool/
+      - analysis_report.txt
+      - filtered_report.txt
+    expire_in: 1h
+  retry: 2

@@ -4,39 +4,41 @@ import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 
 /// Service to set the language code for a Firebase user.
 ///
-/// This class handles the process of setting the language code for a user
-/// in Firebase Authentication, allowing the user to update their preferred
-/// language for communication.
+/// This class allows you to set or update the preferred language code
+/// for a user in Firebase Authentication. This language code is used
+/// by Firebase for communication and localization purposes.
 class SetLanguageCode {
-  /// [auth] The instance of FirebaseAuth used to perform authentication actions.
+  /// The instance of [FirebaseAuth] used to perform authentication actions.
   final FirebaseAuth auth;
 
   /// Constructor to initialize the [SetLanguageCode] service.
+  ///
+  /// Parameters:
+  /// - [auth]: The [FirebaseAuth] instance used for user authentication and operations.
   SetLanguageCode({required this.auth});
 
   /// Sets the language code for the user.
   ///
-  /// This method takes the user's [idToken] (obtained during sign-in)
-  /// and the [languageCode] (which corresponds to the preferred language)
-  /// and makes a request to Firebase to update the user's language code.
+  /// This method updates the preferred language code for the user in Firebase Authentication.
+  /// It takes the user's [idToken] (which proves their identity) and the [languageCode]
+  /// (representing the preferred language, e.g., 'en' for English, 'es' for Spanish).
   ///
   /// Parameters:
   /// - [idToken]: The Firebase ID token of the user. It is required to verify the user's identity.
-  /// - [languageCode]: The language code (such as 'en' for English, 'es' for Spanish).
+  /// - [languageCode]: A string representing the language code (e.g., 'en' for English, 'es' for Spanish).
   ///
   /// Returns:
-  /// - A [User] object that represents the updated user details after the change.
+  /// - A [User] object that represents the updated user details after setting the language code.
   ///
   /// Throws:
   /// - [FirebaseAuthException] if the request to set the language code fails.
   Future<User> setLanguageCode(String? idToken, String languageCode) async {
     try {
-      // Validate the parameters: make sure the idToken is not null
-      // and the languageCode is not empty.
+      // Step 1: Validate the parameters. Ensure the idToken is not null and languageCode is not empty.
       assert(idToken != null, 'Id token cannot be null');
       assert(languageCode.isNotEmpty, 'Language code cannot be empty');
 
-      // Perform the request to Firebase to update the language code for the user
+      // Step 2: Perform the request to Firebase to update the language code for the user
       final response = await auth.performRequest(
         'update', // Firebase endpoint for updating user details
         {
@@ -45,13 +47,13 @@ class SetLanguageCode {
         },
       );
 
-      // Parse the response to get the updated user object
+      // Step 3: Parse the response to get the updated user object
       User user = User.fromJson(response.body);
 
-      // Update the current user with the new language code setting
+      // Step 4: Update the current user with the new language code setting
       auth.updateCurrentUser(user);
 
-      // Return the updated user object
+      // Step 5: Return the updated user object
       return user;
     } catch (e) {
       // Handle any errors during the request
