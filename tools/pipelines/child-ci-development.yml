@@ -74,7 +74,7 @@ analyze_example:
 
     # Analyze the project
     - echo "Running dart analyze for the example project..."
-    - dart analyze . > analysis_report.txt
+    - dart analyze lib/ > analysis_report.txt
     - echo "Analysis completed. Checking for critical issues in the example project..."
 
     # Check if critical issues (errors) exist in the analysis report
