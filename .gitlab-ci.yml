@@ -8,17 +8,17 @@ stages:
 conditional_non_development:
   stage: triggers
   trigger:
-    include: tools/pipelines/child-ci-pre-dev.yml
+    include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa"
     - when: never
 
-conditional_development:
-  stage: triggers
-  trigger:
-    include: tools/pipelines/child-ci-development.yml
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+#conditional_development:
+#  stage: triggers
+#  trigger:
+#    include: tools/pipelines/child-ci-development.yml
+#  rules:
+#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
 
 
 #conditional_qa:

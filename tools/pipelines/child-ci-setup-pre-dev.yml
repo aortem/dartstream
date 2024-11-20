@@ -1,5 +1,6 @@
 stages:
   - setup
+  - unit_tests
 
 # Setup Stage
 setup:
@@ -51,3 +52,11 @@ setup:
       - filtered_report.txt
     expire_in: 1h
   retry: 2
+
+# Trigger Unit Test Pipeline On Success.
+trigger_unit_tests:
+  stage: trigger_unit_tests
+  trigger:
+    include: child-ci-unit-tests-pre-dev.yml
+  rules:
+    - when: on_success
