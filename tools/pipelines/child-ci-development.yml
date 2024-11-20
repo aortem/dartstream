@@ -22,22 +22,23 @@ setup:
     - echo "Running Dart analysis..."
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
-    # Filter analysis output for documentation issues
-    - echo "Filtering for documentation issues..."
-    - grep -E "Missing documentation for a public member" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant documentation issues found."
+    # Filter output for documentation issues, warnings, and errors, excluding test/unit files
+    - echo "Filtering for issues excluding test/unit files..."
+    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found."
 
     # Check for responsible developers
     - echo "Checking for responsible developers..."
     - |
       while IFS= read -r line; do
+        # Extract file path from the filtered report
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
           # Get the last commit hash for the file
           git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
           echo "File: $file - Last modified in commit: $git_log"
-          if [[ $git_log == *"$GITLAB_USER_LOGIN"* ]]; then
-            echo "Warning: Documentation issue in file modified by current user: $file"
-          fi
+          echo "Issue found: $line"
+        else
+          echo "No file information could be extracted from: $line"
         fi
       done < filtered_report.txt
 
@@ -49,4 +50,3 @@ setup:
       - filtered_report.txt
     expire_in: 1h
   retry: 2
-
