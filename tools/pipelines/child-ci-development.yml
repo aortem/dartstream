@@ -36,7 +36,7 @@ analyze:
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Analyzing the entire project..."
-    - cd firebase-dart-admin-auth-sdk/example/firbase-dart-admin-auth-sdk-sample-app
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
     - flutter pub get
     - dart analyze > analysis_report.txt || echo "Analysis completed with warnings/errors. Check analysis_report.txt."
 
