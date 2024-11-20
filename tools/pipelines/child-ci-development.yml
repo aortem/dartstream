@@ -1,42 +1,34 @@
 stages:
-  - setup
-  - analyze
+  - setup_main
+  - setup_example
 
-# Setup Stage
-setup:
-  stage: setup
+# Setup Main Project
+setup_main:
+  stage: setup_main
   image: dart:stable
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
-      when: always
-    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-      when: always
-    - when: never
   script:
-    - echo "Setting up environment..."
-
-    # Navigate to main project directory
-    - cd firebase-dart-admin-auth-sdk/
-    - echo "Current directory contents:"
-    - ls
-
-    # Install dependencies for main project
-    - echo "Installing dependencies for the main project..."
+    - echo "Setting up the main project..."
+    - cd firebase-dart-admin-auth-sdk
     - dart pub get || echo "Error running dart pub get in main project. Continuing pipeline."
-
-    # Navigate to example folder
-    - echo "Installing dependencies for the example project..."
-    - cd example/firebase-dart-admin-auth-sdk-sample-app
-    - echo "Current example directory contents:"
-    - ls
-    - dart pub get || echo "Error running dart pub get in example project. Continuing pipeline."
-    
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/.dart_tool/
+    expire_in: 1h
+
+# Setup Example Project
+setup_example:
+  stage: setup_example
+  image: cirrusci/flutter:stable
+  script:
+    - echo "Setting up the example project..."
+    - cd firebase-dart-admin-auth-sdk/example
+    - flutter pub get || echo "Error running flutter pub get in example project. Continuing pipeline."
+  dependencies:
+    - setup_main
+  artifacts:
+    paths:
       - firebase-dart-admin-auth-sdk/example/.dart_tool/
     expire_in: 1h
-  retry: 2
 
 # Analyze Stage
 analyze:
