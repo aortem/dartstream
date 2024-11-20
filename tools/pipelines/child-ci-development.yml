@@ -22,7 +22,7 @@ setup_example:
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Setting up the example project..."
-    - cd firebase-dart-admin-auth-sdk/example
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk
     - flutter pub get || echo "Error running flutter pub get in example project. Continuing pipeline."
   dependencies:
     - setup_main
