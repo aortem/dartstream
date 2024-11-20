@@ -14,7 +14,9 @@ setup:
     - when: never
   script:
     - echo "Setting up environment..."
-    - cd firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk
+    - cd firebase-dart-admin-auth-sdk
+    - echo "Current directory contents:"
+    - ls
     - dart pub get
     - dart analyze > analysis_report.txt
 
