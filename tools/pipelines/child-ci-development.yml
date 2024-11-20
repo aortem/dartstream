@@ -32,9 +32,9 @@ setup:
       while IFS= read -r line; do
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
-          # Get the last commit author for the file
-          git_log=$(git log -n 1 --pretty=format:"%an <%ae>" -- $file)
-          echo "File: $file - Last modified by: $git_log"
+          # Get the last commit hash for the file
+          git_log=$(git log -n 1 --pretty=format:"%h" -- $file)
+          echo "File: $file - Last modified in commit: $git_log"
           if [[ $git_log == *"$GITLAB_USER_LOGIN"* ]]; then
             echo "Warning: Documentation issue in file modified by current user: $file"
           fi
@@ -49,3 +49,4 @@ setup:
       - filtered_report.txt
     expire_in: 1h
   retry: 2
+
