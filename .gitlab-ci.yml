@@ -11,7 +11,7 @@ conditional_non_development:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa"
-    - when: never
+    - when: on_success
 
 conditional_development:
   stage: triggers
@@ -19,6 +19,7 @@ conditional_development:
     include: tools/pipelines/child-ci-development.yml
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+    - when: on_success  # Ensure this job always runs as a fallback
 
 
 #conditional_qa:
