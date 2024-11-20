@@ -62,9 +62,14 @@ analyze_example:
   image: ghcr.io/cirruslabs/flutter:stable
   script:
     - echo "Starting analysis for the example project..."
+    
+    # Navigate to the example project directory
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - pwd
+    - echo "Listing contents of the current directory..."
+    - ls -la
 
-    # Install dependencies for the example project
+    # Install dependencies
     - echo "Installing dependencies for the example project using flutter pub get..."
     - |
       if ! flutter pub get; then
@@ -72,18 +77,17 @@ analyze_example:
         exit 1
       fi
 
-    # Analyze the project
+    # Run analysis with detailed error handling
     - echo "Running dart analyze for the example project..."
-    - dart analyze lib/ > analysis_report.txt
-    - echo "Analysis completed. Checking for critical issues in the example project..."
-
-    # Check if critical issues (errors) exist in the analysis report
     - |
-      if grep -qE "error|warning" analysis_report.txt; then
-        echo "Critical issues detected during analysis of the example project. Review the analysis report."
+      if ! dart analyze > analysis_report.txt 2> error_log.txt; then
+        echo "Analysis failed with errors. Details:"
+        cat error_log.txt
+        echo "Full analysis report:"
+        cat analysis_report.txt
         exit 1
       else
-        echo "No critical issues found during analysis of the example project."
+        echo "Analysis completed successfully. No critical errors found."
       fi
 
     # Filter analysis output
@@ -103,9 +107,13 @@ analyze_example:
           echo "No file information could be extracted for: $line"
         fi
       done < filtered_report.txt
+
     - echo "Example project analysis complete. Check filtered_report.txt for details."
+  dependencies:
+    - analyze_main
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_log.txt
       - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/filtered_report.txt
     expire_in: 1h
