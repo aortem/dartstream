@@ -26,3 +26,4 @@ dev_dependencies:
   test_reporter: any #required to generate JUnit report 
   http: any
   mockito: any
+  test: any

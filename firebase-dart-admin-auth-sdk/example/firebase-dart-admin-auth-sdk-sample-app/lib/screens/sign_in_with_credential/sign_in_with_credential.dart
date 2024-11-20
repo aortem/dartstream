@@ -1,6 +1,4 @@
-import 'dart:io';
 import 'package:firebase/screens/home_screen/home_screen.dart';
-import 'package:firebase/shared/shared.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -30,12 +28,12 @@ class SignInWithCredential extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text("Sign In With Google")),
+                  child: const Text("Sign In With Google")),
               ElevatedButton(
                   onPressed: () {
                     value.loginWithFacebook(context);
                   },
-                  child: Text("Sign In With Facebook"))
+                  child: const Text("Sign In With Facebook"))
             ],
             // chil
             //d: Builder(
