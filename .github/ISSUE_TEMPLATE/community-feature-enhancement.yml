@@ -1,0 +1,76 @@
+name: Feature Enhancement
+description: Submit your feature or enhancement for review
+title: "[Enhancement]: "
+labels: ["community::enhancement"]
+assignees:
+  - maintainer-username
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for contributing to the Firebase Dart Admin SDK! Please fill out this template to help us review your submission effectively.
+        Be sure to include a link to your branch or forked repo where we can review your code.
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we have questions about your submission?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: input
+    id: fork-branch
+    attributes:
+      label: Fork/Branch Link
+      description: Link to your forked repo or branch containing your implementation.
+      placeholder: ex. https://github.com/your-username/repo-name/tree/branch-name
+    validations:
+      required: true
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Use Case
+      description: What problem or feature does your contribution address? Provide context for its purpose.
+      placeholder: Describe the issue or feature here.
+    validations:
+      required: true
+  - type: textarea
+    id: changes-made
+    attributes:
+      label: Changes Made
+      description: Summarize the changes made in your implementation (e.g., added/modified methods, updated files).
+      placeholder: Briefly explain your code changes here.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What was achieved with your contribution? Include any examples or relevant functionality.
+      placeholder: Describe the results here.
+    validations:
+      required: true
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing
+      description: Did you test your implementation? If so, provide details or results.
+      placeholder: Mention testing steps or outcomes here.
+    validations:
+      required: false
+  - type: textarea
+    id: docs-updates
+    attributes:
+      label: Documentation Updates
+      description: Provide any updates you made to the documentation or README files to support your contribution.
+      placeholder: Mention documentation changes here.
+    validations:
+      required: false
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

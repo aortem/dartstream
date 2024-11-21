@@ -1,51 +1,77 @@
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //If you are on web, initialize with enviroment variables
-  if (kIsWeb) {
-    //Pass the enviroment variables into the function below, I.E API key and project ID
-    FirebaseApp.initializeAppWithEnvironmentVariables(
-      apiKey: 'YOUR-API-KEY',
-      projectId: 'YOUR-PROJECT-ID',
-      bucketName: 'Your Bucket Name',
-    );
-  } else {
-    //  When working with mobile
-    if (Platform.isAndroid || Platform.isIOS) {
-      //  To initialize with service account put the path to the json file in the function below
-      String serviceAccountContent = await rootBundle.loadString(
-        'assets/service_account.json',
-      ); //Add your own JSON service account
 
-      // Initialize Firebase with the service account content
-      // await FirebaseApp.initializeAppWithServiceAccount(
-      //   serviceAccountContent: serviceAccountContent,
-      // );
+  try {
+    late FirebaseAuth auth; // Declare auth variable at top level
 
-      //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      await FirebaseApp.initializeAppWithServiceAccountImpersonation(
-        impersonatedEmail: 'impersonatedEmail',
-        serviceAccountContent: serviceAccountContent,
+    if (kIsWeb) {
+      // Initialize for web
+      debugPrint('Initializing Firebase for Web...');
+      await FirebaseApp.initializeAppWithEnvironmentVariables(
+        apiKey: 'YOUR_API_KEY', // 'YOUR_API_KEY'
+        authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
+        projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
+        messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
+        bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+        appId: 'YOUR_APP_ID', // 'YOUR_APP_ID'
       );
-    }
-  }
+      auth = FirebaseApp.instance.getAuth(); // Initialize auth for web
+      debugPrint('Firebase initialized for Web.');
+    } else {
+      if (Platform.isAndroid || Platform.isIOS) {
+        debugPrint('Initializing Firebase for Mobile...');
 
-  FirebaseApp.instance.getAuth();
-  runApp(const MyApp());
+        // Load the service account JSON
+        String serviceAccountContent = await rootBundle.loadString(
+          'assets/service_account.json',
+        );
+        debugPrint('Service account loaded.');
+
+        // Initialize Firebase with the service account content
+        await FirebaseApp.initializeAppWithServiceAccount(
+          serviceAccountContent: serviceAccountContent,
+        );
+        auth = FirebaseApp.instance.getAuth(); // Initialize auth for mobile
+        debugPrint('Firebase initialized for Mobile.');
+
+        // Uncomment to use service account impersonation if needed
+        /*
+        await FirebaseApp.initializeAppWithServiceAccountImpersonation(
+          impersonatedEmail: 'impersonatedEmail',
+          serviceAccountContent: serviceAccountContent,
+        );
+        debugPrint('Firebase initialized with service account impersonation.');
+        */
+      }
+    }
+
+    debugPrint('Firebase Auth instance obtained.');
+
+    // Wrap the app with Provider
+    runApp(
+      Provider<FirebaseAuth>.value(
+        value: auth,
+        child: const MyApp(),
+      ),
+    );
+  } catch (e, stackTrace) {
+    debugPrint('Error initializing Firebase: $e');
+    debugPrint('StackTrace: $stackTrace');
+  }
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -56,7 +82,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      // Wrap SplashScreen with Builder to ensure proper context
+      home: Builder(
+        builder: (context) => const SplashScreen(),
+      ),
     );
   }
 }
