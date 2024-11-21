@@ -1,6 +1,6 @@
 // ignore_for_file: depend_on_referenced_packages
 
-import 'package:test/test.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
