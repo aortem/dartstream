@@ -13,6 +13,7 @@ import '../exceptions.dart';
 /// is included in action link URLs sent by Firebase to the user. It communicates with
 /// Firebase backend to extract relevant information from the action code URL.
 class FirebaseParseUrlLink {
+  /// Firebase Authentication instance used for interacting with Firebase Authentication.
   final FirebaseAuth auth;
 
   /// Constructor for [FirebaseParseUrlLink] class.

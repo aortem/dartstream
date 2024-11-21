@@ -58,12 +58,19 @@ class OAuthCredential extends AuthCredential {
   /// An optional ID token for authentication (used in some OAuth flows).
   final String? idToken;
 
+  /// The sign-in method used for authentication (e.g., 'password', 'phone').
+  final String? signInMethod;
+
   /// Constructs an instance of [OAuthCredential].
   ///
   /// Parameters:
   /// - [providerId]: The provider's identifier (e.g., 'google.com', 'facebook.com').
   /// - [accessToken]: An optional access token for authentication.
   /// - [idToken]: An optional ID token for authentication.
-  OAuthCredential({required String providerId, this.accessToken, this.idToken})
-      : super(providerId);
+  OAuthCredential({
+    required String providerId,
+    this.accessToken,
+    this.idToken,
+    this.signInMethod,
+  }) : super(providerId);
 }

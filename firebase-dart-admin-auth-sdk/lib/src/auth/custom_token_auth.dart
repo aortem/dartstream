@@ -1,6 +1,8 @@
 import 'dart:developer';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
 /// Service for signing in using a custom token in Firebase Authentication.
 ///
@@ -28,20 +30,54 @@ class CustomTokenAuth {
   /// 2. Logs the response from the Firebase Authentication REST API.
   /// 3. Creates a [UserCredential] from the response and updates the current user.
   Future<UserCredential> signInWithCustomToken(String token) async {
-    final response = await auth.performRequest('signInWithCustomToken', {
-      'token': token,
-      'returnSecureToken': true,
-    });
+    try {
+      log('Signing in with custom token');
 
-    // Log the response body for debugging purposes.
-    log(response.body.toString());
+      final response = await auth.performRequest(
+        'signInWithCustomToken',
+        {
+          'token': token,
+          'returnSecureToken': true,
+        },
+      );
 
-    // Parse the response to obtain the user credential.
-    final userCredential = UserCredential.fromJson(response.body);
+      if (response.statusCode != 200) {
+        throw FirebaseAuthException(
+            code: 'invalid-custom-token',
+            message: 'The custom token format is incorrect or expired');
+      }
 
-    // Update the current user in the FirebaseAuth instance.
-    auth.updateCurrentUser(userCredential.user);
+      final userData = response.body;
 
-    return userCredential;
+      // Create user instance from response data
+      final user = User(
+        uid: userData['localId'] ?? '',
+        email: userData['email'],
+        emailVerified: userData['emailVerified'] ?? false,
+        displayName: userData['displayName'],
+        photoURL: userData['photoUrl'],
+        phoneNumber: userData['phoneNumber'],
+        disabled: userData['disabled'] ?? false,
+        idToken: userData['idToken'],
+        refreshToken: userData['refreshToken'],
+      );
+
+      // Create and return UserCredential
+      final userCredential = UserCredential(
+        user: user,
+        operationType: 'signIn',
+      );
+
+      // Update current auth state
+      auth.updateCurrentUser(user);
+
+      log('Successfully signed in with custom token');
+      return userCredential;
+    } catch (e) {
+      log('Custom token sign in error: $e');
+      throw FirebaseAuthException(
+          code: 'custom-token-error',
+          message: 'Failed to sign in with custom token: ${e.toString()}');
+    }
   }
 }

@@ -7,6 +7,11 @@
 ///
 /// **Fields**:
 library;
+<<<<<<< HEAD
+=======
+
+///id token results
+>>>>>>> e2ce3d1eb951f7d2f64ea007f4425e46b810cc68
 
 class IdTokenResult {
   /// - token: The ID token as a string. This token is used for authentication.
