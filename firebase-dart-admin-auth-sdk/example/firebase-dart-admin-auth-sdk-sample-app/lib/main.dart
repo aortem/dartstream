@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -14,6 +15,14 @@ void main() async {
     late FirebaseAuth auth; // Declare auth variable at top level
 
     if (kIsWeb) {
+      // initialize the facebook javascript SDK
+      await FacebookAuth.i.webAndDesktopInitialize(
+        appId: "893849532657430",
+        cookie: true,
+        xfbml: true,
+        version: "v15.0",
+      );
+
       // Initialize for web
       debugPrint('Initializing Firebase for Web...');
       await FirebaseApp.initializeAppWithEnvironmentVariables(
