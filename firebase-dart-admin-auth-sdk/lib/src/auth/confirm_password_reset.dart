@@ -3,6 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
 ///confirmpassword service
 class ConfirmPasswordResetService {
+  ///firebase auth instance
   final dynamic auth;
 
   ///confirmpassword service

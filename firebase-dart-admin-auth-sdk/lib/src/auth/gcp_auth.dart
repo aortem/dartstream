@@ -3,6 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 ///gcpAuth
 class GCPAuth {
+  ///gcpAuth
   final FirebaseAuth auth;
 
   ///gcpauth

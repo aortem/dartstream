@@ -57,6 +57,8 @@ class OAuthCredential extends AuthCredential {
 
   /// An optional ID token for authentication (used in some OAuth flows).
   final String? idToken;
+
+  /// The sign-in method used for authentication (e.g., 'password', 'phone').
   final String? signInMethod;
 
   /// Constructs an instance of [OAuthCredential].

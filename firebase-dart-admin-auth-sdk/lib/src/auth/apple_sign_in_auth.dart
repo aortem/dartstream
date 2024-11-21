@@ -3,6 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 ///apple auth
 class AppleSignInAuth {
+  ///auth
   final FirebaseAuth auth;
 
   ///apple auth

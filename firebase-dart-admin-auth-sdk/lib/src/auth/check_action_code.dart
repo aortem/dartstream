@@ -3,6 +3,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 ///checkaction class
 class CheckActionCodeService {
+  ///auth
   final FirebaseAuth auth;
 
   ///checkaction service
@@ -45,7 +46,10 @@ class CheckActionCodeService {
 
 ///actioncodeinfo
 class ActionCodeInfo {
+  ///actioncode
   final String operation;
+
+  ///data
   final Map<String, dynamic> data;
 
   ///actioncodeinfo

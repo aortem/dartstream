@@ -181,6 +181,8 @@ class FirebaseApp {
     final accessToken =
         await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
+    accessToken;
+
     return _instance ??= FirebaseApp._(
       'your_api_key',
       'your_project_id',

@@ -261,5 +261,7 @@ class User {
         _idTokenExpiration.hashCode;
   }
 
+  ///provider data
+
   get providerData => null;
 }

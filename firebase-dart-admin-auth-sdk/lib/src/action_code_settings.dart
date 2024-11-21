@@ -14,7 +14,11 @@ class ActionCodeSettings {
 
   /// Android-specific settings to be used with the action code.
   final String? androidPackageName;
+
+  /// Android-specific settings to be used with the action code
   final bool? androidInstallApp;
+
+  /// Android-specific settings to be used with the action code
   final String? androidMinimumVersion;
 
   /// Optional custom domain to use for the dynamic link, if applicable.

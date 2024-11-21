@@ -108,7 +108,11 @@ class FirebaseAuth {
 
   /// For performing auth operations pertaining to external authenticators
   late OAuthAuth oauth;
+
+  ///sign out
   late FirebaseSignOut signOUt;
+
+  ///redirect
   late SignInWithRedirectService signInRedirect;
 
   /// Update current User
@@ -174,6 +178,8 @@ class FirebaseAuth {
 
   /// Delete User
   late FirebaseDeleteUser firebaseDeleteUser;
+
+  ///link credential
   late LinkWithCredientialClass linkWithCredientialClass;
 
   late GetAdditionalUserInfo _getAdditionalUserInfo;
@@ -190,7 +196,11 @@ class FirebaseAuth {
 
   /// Set language code
   late LanguageService setLanguageService;
+
+  ///lnaguage
   late LanguageGetService getLanguageService;
+
+  ///before auth change
   late FirebaseBeforeAuthStateChangeService
       firebaseBeforeAuthStateChangeService;
 
@@ -362,7 +372,7 @@ class FirebaseAuth {
   ///client ID
   String clientId = ''; // Add this line to store the clientId
 
-  // Add a method to set the clientId
+  /// Add a method to set the clientId
   void setClientId(String id) {
     clientId = id;
   }
@@ -431,6 +441,7 @@ class FirebaseAuth {
     }
   }
 
+  ///sign in redirect
   Future<UserCredential?> signInWithRedirect(
       String redirectUri, String idToken, String providerId) async {
     try {
@@ -447,6 +458,8 @@ class FirebaseAuth {
       );
     }
   }
+
+  ///update user info
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {
@@ -474,6 +487,8 @@ class FirebaseAuth {
       );
     }
   }
+
+  ///verify passwird
 
   Future<String?> verifyPasswordResetCode(String code) async {
     try {
@@ -578,6 +593,8 @@ class FirebaseAuth {
       actionCode: actionCode,
     );
   }
+
+  ///link account credential
 
   Future<UserCredential?> linkAccountWithCredientials(
       String redirectUri, String idToken, String providerId) async {
@@ -840,6 +857,8 @@ class FirebaseAuth {
       );
     }
   }
+
+  ///create user email
 
   Future<UserCredential> createUserWithEmailAndPassword(
       String email, String password) {
