@@ -1,9 +1,9 @@
 stages:
-  - setup
+  - unit_tests
 
-# Setup Stage
-setup:
-  stage: setup
+# Unit Tests
+unit_tests:
+  stage: unit_tests
   image: dart:stable
  # tags:
  #   - dart
@@ -11,11 +11,12 @@ setup:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
     - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
   script:
-    - echo "Setting up environment..."
-    - cd firebase-dart-admin-auth-sdk
+    - echo "Running Unit Tests..."
+    - cd firebase-dart-admin-auth-sdk/test/test/unit
     - dart pub get
+    - dart test test/unit/ --reporter expanded
   artifacts:
     paths:
-      - .dart_tool/
-    expire_in: 1h
+      - test-reports/unit/
+    expire_in: 1d
   retry: 2
