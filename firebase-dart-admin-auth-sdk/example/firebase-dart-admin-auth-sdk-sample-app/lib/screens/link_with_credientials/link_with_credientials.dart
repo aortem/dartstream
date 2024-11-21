@@ -71,10 +71,10 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
     if (result.status == LoginStatus.success) {
       final AccessToken accessToken = result.accessToken!;
 
-      log('Facebook Access Token: ${accessToken.tokenString}');
+      log('Facebook Access Token: ${accessToken.token}');
       try {
         var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
-            'http://localhost', accessToken.tokenString ?? "", 'facebook.com');
+            'http://localhost', accessToken.token ?? "", 'facebook.com');
 
         BotToast.showText(text: '${user?.user.email} just linked in');
 
