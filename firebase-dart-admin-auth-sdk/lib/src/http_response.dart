@@ -7,6 +7,8 @@ class HttpResponse {
 
   /// The body of the HTTP response, typically a map containing data or a message.
   final Map<String, dynamic> body;
+
+  ///headers
   final Map<String, String> headers;
 
   /// Constructs a new instance of `HttpResponse`.

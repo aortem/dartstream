@@ -17,6 +17,8 @@ export 'popup_redirect_resolver_web.dart'
 export 'auth/recaptcha_config_web.dart'
     if (dart.library.io) 'auth/recaptcha_config_io.dart';
 
+///create recaptcha config
+
 RecaptchaVerifier createRecaptchaVerifier(String siteKey) {
   if (isWeb) {
     return RecaptchaVerifierWeb(siteKey);
@@ -24,6 +26,8 @@ RecaptchaVerifier createRecaptchaVerifier(String siteKey) {
     return RecaptchaVerifierIO(siteKey);
   }
 }
+
+///popup resolver
 
 PopupRedirectResolver createPopupRedirectResolver() {
   if (isWeb) {
@@ -33,6 +37,8 @@ PopupRedirectResolver createPopupRedirectResolver() {
   }
 }
 
+///application verifier
+
 RecaptchaConfigService createRecaptchaConfigService() {
   if (isWeb) {
     return RecaptchaConfigServiceWeb();
@@ -40,6 +46,8 @@ RecaptchaConfigService createRecaptchaConfigService() {
     return RecaptchaConfigServiceIO();
   }
 }
+
+///is web
 
 bool get isWeb {
   try {

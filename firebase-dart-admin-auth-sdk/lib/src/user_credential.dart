@@ -1,5 +1,4 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 
 /// Represents the credentials of a user, typically after successful authentication.
 ///
@@ -16,7 +15,11 @@ class UserCredential {
   /// The credential associated with the user, which can be a token or other
   /// credential type depending on the authentication method.
   final AuthCredential? credential;
+
+  /// The type of operation that was performed (e.g., "signIn", "signUp").
   final String? operationType;
+
+  ///provider id
   final String? providerId;
 
   /// Creates an instance of [UserCredential].

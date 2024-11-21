@@ -4,16 +4,27 @@ import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 
+///multi factor resolver
+
 class MultiFactorResolver {
+  ///session id
   final String sessionId;
+
+  ///hints
   final List<MultiFactorHint> hints;
+
+  ///auth
   final FirebaseAuth auth;
+
+  ///multi factor
 
   MultiFactorResolver({
     required this.sessionId,
     required this.hints,
     required this.auth,
   });
+
+  ///resolve sign in
 
   Future<UserCredential> resolveSignIn(AuthCredential credential) async {
     final url = Uri.https(
@@ -61,16 +72,30 @@ class MultiFactorResolver {
   }
 }
 
+///multi factor hint
+
 class MultiFactorHint {
+  ///factor id
   final String factorId;
+
+  ///display name
   final String displayName;
+
+  ///constructor
 
   MultiFactorHint({required this.factorId, required this.displayName});
 }
 
+///exeption
+
 class FirebaseAuthException implements Exception {
+  ///code
   final String code;
+
+  ///message
   final String message;
+
+  ///constructor
 
   FirebaseAuthException({required this.code, required this.message});
 

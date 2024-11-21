@@ -2,10 +2,12 @@ import 'dart:async';
 import 'stub_js.dart' if (dart.library.js) 'dart:js' as js;
 import 'application_verifier.dart';
 
+///recaptcha
 class RecaptchaVerifierWeb implements RecaptchaVerifier {
   @override
   final String siteKey;
 
+  ///recaptcha
   RecaptchaVerifierWeb(this.siteKey);
 
   @override

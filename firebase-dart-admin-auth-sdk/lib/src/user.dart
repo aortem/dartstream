@@ -56,7 +56,11 @@ class User {
 
   /// Custom attributes associated with the user.
   Map<String, dynamic>? customAttributes;
+
+  /// Whether the user is enrolled in multi-factor authentication (MFA).
   final bool mfaEnabled;
+
+  /// The tenant ID for the user.
   String? tenantId;
 
   /// Creates an instance of the [User] class with the given parameters.
@@ -102,6 +106,8 @@ class User {
     }
     return idToken!;
   }
+
+  /// Updates the user's ID token and refresh token.
 
   void updateIdToken(String newToken) {
     idToken = newToken;

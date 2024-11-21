@@ -2,6 +2,8 @@ import 'dart:async';
 import 'stub_html.dart' if (dart.library.html) 'dart:html' as html;
 import 'popup_redirect_resolver.dart';
 
+///popup_redirect_resolver
+
 class PopupRedirectResolverWeb implements PopupRedirectResolver {
   @override
   Future<Map<String, dynamic>?> resolvePopup(String authUrl) async {

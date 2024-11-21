@@ -1,9 +1,11 @@
 import 'application_verifier.dart';
 
+///recaptcha verifier
 class RecaptchaVerifierIO implements RecaptchaVerifier {
   @override
   final String siteKey;
 
+  ///recaptcha id
   RecaptchaVerifierIO(this.siteKey);
 
   @override

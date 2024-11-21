@@ -1,12 +1,20 @@
 import 'dart:async';
 
+///application verifier
 abstract class ApplicationVerifier {
+  ///type
   String get type;
+
+  ///verify
   Future<String> verify();
 }
 
+///recaptcha
 class RecaptchaVerifier implements ApplicationVerifier {
+  ///site key
   final String siteKey;
+
+  ///recaptcha
 
   RecaptchaVerifier(this.siteKey);
 
@@ -19,6 +27,8 @@ class RecaptchaVerifier implements ApplicationVerifier {
         'RecaptchaVerifier.verify() must be implemented by a platform-specific class.');
   }
 }
+
+///mock app verifyer
 
 class MockApplicationVerifier implements ApplicationVerifier {
   @override
