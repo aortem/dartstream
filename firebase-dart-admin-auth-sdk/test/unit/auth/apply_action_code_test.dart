@@ -1,9 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:test/test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
 class MockFirebaseAuth extends Mock implements FirebaseAuth {}
 

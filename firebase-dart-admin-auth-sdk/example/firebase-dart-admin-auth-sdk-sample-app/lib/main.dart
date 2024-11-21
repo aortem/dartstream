@@ -5,19 +5,26 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   try {
+    late FirebaseAuth auth; // Declare auth variable at top level
+
     if (kIsWeb) {
       // Initialize for web
       debugPrint('Initializing Firebase for Web...');
-      FirebaseApp.initializeAppWithEnvironmentVariables(
-        apiKey: 'YOUR-API-KEY',
-        projectId: 'YOUR-PROJECT-ID',
-        bucketName: 'Your Bucket Name',
+      await FirebaseApp.initializeAppWithEnvironmentVariables(
+        apiKey: 'YOUR_API_KEY', // 'YOUR_API_KEY'
+        authdomain: 'YOUR_AUTH_DOMAIN', // 'YOUR_AUTH_DOMAIN'
+        projectId: 'YOUR_PROJECT_ID', // 'YOUR_PROJECT_ID'
+        messagingSenderId: 'YOUR_SENDER_ID', // 'YOUR_SENDER_ID'
+        bucketName: 'YOUR_BUCKET_NAME', // 'YOUR_BUCKET_NAME'
+        appId: 'YOUR_APP_ID', // 'YOUR_APP_ID'
       );
+      auth = FirebaseApp.instance.getAuth(); // Initialize auth for web
       debugPrint('Firebase initialized for Web.');
     } else {
       if (Platform.isAndroid || Platform.isIOS) {
@@ -33,6 +40,7 @@ void main() async {
         await FirebaseApp.initializeAppWithServiceAccount(
           serviceAccountContent: serviceAccountContent,
         );
+        auth = FirebaseApp.instance.getAuth(); // Initialize auth for mobile
         debugPrint('Firebase initialized for Mobile.');
 
         // Uncomment to use service account impersonation if needed
@@ -46,11 +54,15 @@ void main() async {
       }
     }
 
-    // Access Firebase Auth instance
-    final auth = FirebaseApp.instance.getAuth();
     debugPrint('Firebase Auth instance obtained.');
 
-    runApp(const MyApp());
+    // Wrap the app with Provider
+    runApp(
+      Provider<FirebaseAuth>.value(
+        value: auth,
+        child: const MyApp(),
+      ),
+    );
   } catch (e, stackTrace) {
     debugPrint('Error initializing Firebase: $e');
     debugPrint('StackTrace: $stackTrace');
@@ -70,7 +82,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const SplashScreen(),
+      // Wrap SplashScreen with Builder to ensure proper context
+      home: Builder(
+        builder: (context) => const SplashScreen(),
+      ),
     );
   }
 }

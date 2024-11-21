@@ -1,12 +1,17 @@
+// ignore_for_file: unused_field
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/apple_sign_in_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/gcp_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/link_with_credentails.dart';
 
-import 'auth/auth_redirect_link.dart';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
@@ -27,25 +32,28 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_before_email_update.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_app.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/popup_redirect_resolver.dart';
 
 // New imports for Sprint 2 #16 to #21
 import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/revoke_access_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/auth_state_changed.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/utils.dart';
+
+import 'package:firebase_dart_admin_auth_sdk/src/auth/fetch_sign_in_methods.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/create_user_with_email_and_password.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/connect_auth_emulator.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_redirect_result.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/recaptcha_config.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/confirm_password_reset.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor.dart'
+    as multi_factor;
 
 import 'auth/before_auth_state_change.dart';
 import 'auth/set_persistence.dart';
 import 'auth/sign_in_anonymously.dart';
 import 'firebase_user/get_language_code.dart';
-import 'auth/auth_link_with_phone_number.dart';
 
 import 'firebase_user/delete_user.dart';
 
@@ -63,6 +71,15 @@ class FirebaseAuth {
   final String? projectId;
 
   ///The access token to the firebase project
+  final String? authDomain;
+
+  ///The access token to the firebase project
+  final String? messagingSenderId;
+
+  ///The access token to the firebase project
+  final String? appId;
+
+  /// The access token to the firebase project
   final String? accessToken;
 
   /// The service account of your firebase project
@@ -91,7 +108,11 @@ class FirebaseAuth {
 
   /// For performing auth operations pertaining to external authenticators
   late OAuthAuth oauth;
+
+  ///sign out
   late FirebaseSignOut signOUt;
+
+  ///redirect
   late SignInWithRedirectService signInRedirect;
 
   /// Update current User
@@ -116,17 +137,40 @@ class FirebaseAuth {
   /// Send Password reset email
   late PasswordResetEmailService passwordResetEmail;
 
-  /// Revoke an access token
-  late RevokeAccessTokenService revokeAccessToken;
+  /// revoke access token
+  late RevokeAccessTokenService revokeAccessTokenService;
+  late OnIdTokenChangedService _onIdTokenChangedService;
+  late OnAuthStateChangedService _onAuthStateChangedService;
+  late AppleSignInAuth _appleAuth;
+  late GCPAuth _gcpAuth;
 
-  /// Listen to token Id change
-  late IdTokenChangedService idTokenChanged;
+  /// fetch sign in methods
+  late FetchSignInMethodsService fetchSignInMethods;
 
-  /// Listen to auth state change
-  late AuthStateChangedService authStateChanged;
+  /// email password
+  late CreateUserWithEmailAndPasswordService
+      createUserWithEmailAndPasswordService;
 
-  //Ticket mo 36 to 41///////////////
-  /// Link a phone number to the an account
+  ///connect auth Emulator
+  late ConnectAuthEmulatorService connectAuthEmulatorService;
+
+  /// GetMultiFactor getMultiFactor;
+  late GetRedirectResultService getRedirectResultService;
+
+  /// FetchSignInMethodsService fetchSignInMethodsService;
+  late final RecaptchaConfigService recaptchaConfigService;
+  ////confirm password
+  late ConfirmPasswordResetService confirmPasswordResetService;
+
+  ///check action code
+  late CheckActionCodeService checkActionCodeService;
+
+  /// multi-factor
+  late final multi_factor.MultiFactorService multiFactorService;
+  late final RecaptchaVerifier _recaptchaVerifier;
+  late final PopupRedirectResolver _popupRedirectResolver;
+  late final RecaptchaConfigService _recaptchaConfigService;
+////Ticket mo 36 to 41///////////////
   late FirebasePhoneNumberLink firebasePhoneNumberLink;
 
   /// Parase firebase url link
@@ -134,6 +178,8 @@ class FirebaseAuth {
 
   /// Delete User
   late FirebaseDeleteUser firebaseDeleteUser;
+
+  ///link credential
   late LinkWithCredientialClass linkWithCredientialClass;
 
   late GetAdditionalUserInfo _getAdditionalUserInfo;
@@ -150,7 +196,11 @@ class FirebaseAuth {
 
   /// Set language code
   late LanguageService setLanguageService;
+
+  ///lnaguage
   late LanguageGetService getLanguageService;
+
+  ///before auth change
   late FirebaseBeforeAuthStateChangeService
       firebaseBeforeAuthStateChangeService;
 
@@ -169,8 +219,11 @@ class FirebaseAuth {
   FirebaseAuth({
     this.apiKey,
     this.projectId,
+    this.authDomain,
+    this.messagingSenderId,
     http.Client? httpClient, // Add this parameter
     this.bucketName,
+    this.appId,
     this.accessToken,
     this.serviceAccount,
     this.generateCustomToken,
@@ -197,11 +250,25 @@ class FirebaseAuth {
 
     // New service initializations for Sprint 2 #16 to #21
     passwordResetEmail = PasswordResetEmailService(auth: this);
-    revokeAccessToken = RevokeAccessTokenService(auth: this);
-    idTokenChanged = IdTokenChangedService(auth: this);
-    authStateChanged = AuthStateChangedService(auth: this);
+    revokeAccessTokenService = RevokeAccessTokenService(auth: this);
+    _onIdTokenChangedService = OnIdTokenChangedService(this);
+    _onAuthStateChangedService = OnAuthStateChangedService(this);
     applyAction = ApplyActionCode(this);
+    _appleAuth = AppleSignInAuth(this);
+    _gcpAuth = GCPAuth(this);
 
+    _recaptchaVerifier = createRecaptchaVerifier('your-site-key');
+    _popupRedirectResolver = createPopupRedirectResolver();
+    _recaptchaConfigService = createRecaptchaConfigService();
+    fetchSignInMethods = FetchSignInMethodsService(auth: this);
+    createUserWithEmailAndPasswordService =
+        CreateUserWithEmailAndPasswordService(this);
+    connectAuthEmulatorService = ConnectAuthEmulatorService(this);
+    getRedirectResultService = GetRedirectResultService(auth: this);
+    // recaptchaConfigService = RecaptchaConfigService();
+    confirmPasswordResetService = ConfirmPasswordResetService(auth: this);
+    checkActionCodeService = CheckActionCodeService(auth: this);
+    multiFactorService = multi_factor.MultiFactorService(auth: this);
     firebasePhoneNumberLink = FirebasePhoneNumberLink(this);
     firebaseParseUrlLink = FirebaseParseUrlLink(auth: this);
     firebaseDeleteUser = FirebaseDeleteUser(auth: this);
@@ -246,7 +313,10 @@ class FirebaseAuth {
       );
     }
     return HttpResponse(
-        statusCode: response.statusCode, body: json.decode(response.body));
+      statusCode: response.statusCode,
+      body: json.decode(response.body),
+      headers: response.headers,
+    );
   }
 
   /// updateCurrentUser method to automatically trigger the streams
@@ -262,11 +332,14 @@ class FirebaseAuth {
     return emailPassword.signIn(email, password);
   }
 
-  /// Create user with email and password
-  Future<UserCredential?> createUserWithEmailAndPassword(
-      String email, String password) {
-    return emailPassword.signUp(email, password);
-  }
+  // Future<UserCredential> createUserWithEmailAndPassword(
+  //     String email, String password) {
+  //   return emailPassword.signUp(email, password);
+  // } my assined ticket in issue #11 done down
+  // Future<UserCredential?> createUserWithEmailAndPassword(
+  //     String email, String password) {
+  //   return emailPassword.signUp(email, password);
+  // }
 
   /// Sign in with custom token
   Future<UserCredential> signInWithCustomToken(String? uid) async {
@@ -278,18 +351,16 @@ class FirebaseAuth {
     return customToken.signInWithCustomToken(token);
   }
 
-  ///Sign in with credentials
-  Future<UserCredential?> signInWithCredential(
+  ///sign in with credentials
+  Future<Future<Object?>> signInWithCredential(
       AuthCredential credential) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
     } else if (credential is PhoneAuthCredential) {
       return signInWithPhoneNumber(
-          credential.verificationId, credential.smsCode);
+          credential.verificationId, credential.smsCode as ApplicationVerifier);
     } else if (credential is OAuthCredential) {
-      return signInWithPopup(
-        credential.providerId,
-      );
+      return signInWithPopup(credential.providerId as AuthProvider, clientId);
     } else {
       throw FirebaseAuthException(
         code: 'unsupported-credential',
@@ -298,21 +369,50 @@ class FirebaseAuth {
     }
   }
 
-  /// Sign in with pop up
-  Future<UserCredential> signInWithPopup(String providerId) {
-    return oauth.signInWithPopup(providerId);
+  ///client ID
+  String clientId = ''; // Add this line to store the clientId
+
+  /// Add a method to set the clientId
+  void setClientId(String id) {
+    clientId = id;
   }
 
-  ///Sign in with phone number
-  Future<UserCredential> signInWithPhoneNumber(
-      String verificationId, String smsCode) {
-    return phone.verifyPhoneNumber(verificationId, smsCode);
+  /// Sign in with popup
+  Future<UserCredential> signInWithPopup(
+    AuthProvider provider,
+    String clientId,
+  ) async {
+    try {
+      final userCredential = await oauth.signInWithPopup(provider, clientId);
+      updateCurrentUser(userCredential.user);
+      return userCredential;
+    } catch (e) {
+      print('Detailed signInWithPopup error: $e');
+      throw FirebaseAuthException(
+        code: 'popup-sign-in-error',
+        message: 'Failed to sign in with popup: ${e.toString()}',
+      );
+    }
   }
 
-  /// Sign in with email link
-  Future<UserCredential> signInWithEmailLink(
-      String email, String emailLinkUrl) {
-    return emailLink.signInWithEmailLink(email, emailLinkUrl);
+  /// Sign in with phone number
+  Future<ConfirmationResult> signInWithPhoneNumber(
+    String phoneNumber,
+    ApplicationVerifier appVerifier,
+  ) async {
+    try {
+      return await phone.signInWithPhoneNumber(phoneNumber, appVerifier);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'phone-auth-error',
+        message: 'Failed to sign in with phone number: ${e.toString()}',
+      );
+    }
+  }
+
+  /// Sign in with emaillink
+  Future<UserCredential> signInWithEmailLink(String email, String emailLink) {
+    return this.emailLink.signInWithEmailLink(email, emailLink);
   }
 
   /// Sign out
@@ -341,6 +441,7 @@ class FirebaseAuth {
     }
   }
 
+  ///sign in redirect
   Future<UserCredential?> signInWithRedirect(
       String redirectUri, String idToken, String providerId) async {
     try {
@@ -357,6 +458,8 @@ class FirebaseAuth {
       );
     }
   }
+
+  ///update user info
 
   Future<void> updateUserInformation(
       String userId, String idToken, Map<String, dynamic> userData) async {
@@ -384,6 +487,8 @@ class FirebaseAuth {
       );
     }
   }
+
+  ///verify passwird
 
   Future<String?> verifyPasswordResetCode(String code) async {
     try {
@@ -456,10 +561,10 @@ class FirebaseAuth {
   /// Revokes the specified access token.
   Future<void> revokeToken(String idToken) async {
     try {
-      await revokeAccessToken.revokeToken(idToken);
+      await revokeAccessTokenService.revokeAccessToken();
     } catch (e) {
       throw FirebaseAuthException(
-        code: 'token-revocation-error',
+        code: 'revoke-access-token-error',
         message: 'Failed to revoke access token: ${e.toString()}',
       );
     }
@@ -488,6 +593,8 @@ class FirebaseAuth {
       actionCode: actionCode,
     );
   }
+
+  ///link account credential
 
   Future<UserCredential?> linkAccountWithCredientials(
       String redirectUri, String idToken, String providerId) async {
@@ -708,5 +815,127 @@ class FirebaseAuth {
     authStateChangedController.close();
     idTokenChangedController.close();
     httpClient.close();
+  }
+
+  ///fetch signin methods
+  Future<List<String>> fetchSignInMethodsForEmail(String email) async {
+    try {
+      List<String> methods =
+          await fetchSignInMethods.fetchSignInMethodsForEmail(email);
+      return methods;
+    } catch (e) {
+      print('Fetch sign-in methods failed: $e');
+      throw FirebaseAuthException(
+        code: 'fetch-sign-in-methods-error',
+        message: 'Failed to fetch sign-in methods for email.',
+      );
+    }
+  }
+
+  ///get redirect results
+  Future<Map<String, dynamic>?> getRedirectResult() async {
+    try {
+      // Use the GetRedirectResultService instead of popup resolver
+      return await getRedirectResultService.getRedirectResult();
+    } catch (e) {
+      log('Get redirect result failed: $e');
+      throw FirebaseAuthException(
+        code: 'get-redirect-result-error',
+        message: 'Failed to get redirect result.',
+      );
+    }
+  }
+
+  ///initialize recaptcha
+  Future<void> initializeRecaptchaConfig(String siteKey) async {
+    try {
+      await _recaptchaConfigService.initializeRecaptchaConfig(siteKey);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'recaptcha-config-error',
+        message: 'Failed to initialize reCAPTCHA config: ${e.toString()}',
+      );
+    }
+  }
+
+  ///create user email
+
+  Future<UserCredential> createUserWithEmailAndPassword(
+      String email, String password) {
+    return createUserWithEmailAndPasswordService.create(email, password);
+  }
+
+  ///connect auth Emulator
+  void connectAuthEmulator(String host, int port) {
+    connectAuthEmulatorService.connect(host, port);
+  }
+
+  ///emulator
+  void setEmulatorUrl(String url) {
+    // Implementation to set the emulator URL
+    print('Emulator URL set to: $url');
+  }
+
+  ///confirm password reset
+  Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
+    try {
+      await confirmPasswordResetService.confirmPasswordReset(
+          oobCode, newPassword);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'confirm-password-reset-error',
+        message: 'Failed to confirm password reset: ${e.toString()}',
+      );
+    }
+  }
+
+  ///check action code
+  Future<ActionCodeInfo> checkActionCode(String code) async {
+    try {
+      final result = await checkActionCodeService.checkActionCode(code);
+      if (result.operation == 'PASSWORD_RESET') {
+        // If it's a password reset, we'll handle it specially
+        return result;
+      } else {
+        throw FirebaseAuthException(
+          code: 'invalid-action',
+          message: 'The action code is not for password reset.',
+        );
+      }
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'check-action-code-error',
+        message: 'Failed to check action code: ${e.toString()}',
+      );
+    }
+  }
+
+  ///getmulti
+  Future<multi_factor.MultiFactorResolver> getMultiFactorResolver(
+      multi_factor.MultiFactorError error) async {
+    try {
+      return await multiFactorService.getMultiFactorResolver(error);
+    } catch (e) {
+      throw FirebaseAuthException(
+        code: 'multi-factor-resolver-error',
+        message: 'Failed to get multi-factor resolver: ${e.toString()}',
+      );
+    }
+  }
+
+  ///sign in with apple
+  Future<UserCredential> signInWithApple(String idToken, {String? nonce}) {
+    return _appleAuth.signInWithApple(idToken, nonce: nonce);
+  }
+
+  ///sign in with GCP
+  Future<UserCredential> signInWithGCP({
+    required String clientId,
+    required String clientSecret,
+  }) {
+    return _gcpAuth.signInWithGCP(
+      clientId: clientId,
+      clientSecret: clientSecret,
+    );
   }
 }

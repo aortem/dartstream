@@ -1,3 +1,11 @@
+## 0.0.1-pre+10
+
+- Add debug initialization in sample app for better testing
+- Add Sign In With Facebook To Sample App.
+- Add Remaining Signin Methods to the Sampel App
+- Pipeline Updates for unit and integration testing
+- Update remaining doc dart issues for code clarity 
+
 ## 0.0.1-pre+9
 
 - Update changelog format of previous release

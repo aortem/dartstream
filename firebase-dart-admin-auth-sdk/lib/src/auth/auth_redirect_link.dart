@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:developer';
 
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
