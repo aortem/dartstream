@@ -1,13 +1,9 @@
 <<<<<<< HEAD
 import 'package:firebase/screens/home_screen/home_screen.dart';
 =======
-import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
 >>>>>>> e2ce3d1eb951f7d2f64ea007f4425e46b810cc68
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase/screens/home_screen/home_screen.dart';
-import 'package:firebase/shared/shared.dart';
 import 'sign_in_with_credential_view_model.dart';
 
 class SignInWithCredential extends StatelessWidget {
