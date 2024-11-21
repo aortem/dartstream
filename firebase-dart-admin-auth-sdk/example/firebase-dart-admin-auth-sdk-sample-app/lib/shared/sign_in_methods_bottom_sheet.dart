@@ -78,16 +78,15 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 ),
                 title: "Sign In With Pop Up",
               ),
-<<<<<<< HEAD
-              title: "Sign In With Credential (AdditionalProviders)",
-            ),
-            20.vSpace,
-            ActionTile(
-              onTap: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const OAuthSelectionScreen(),
-=======
+
+              20.vSpace,
+              ActionTile(
+                  title: "Sign In With Credential (AdditionalProviders)",
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OAuthSelectionScreen(),
+                      ))),
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(
@@ -95,7 +94,6 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                   MaterialPageRoute(
                     builder: (context) => const OAuthSelectionScreen(),
                   ),
->>>>>>> e2ce3d1eb951f7d2f64ea007f4425e46b810cc68
                 ),
                 title: "Sign In With Redirect",
               ),

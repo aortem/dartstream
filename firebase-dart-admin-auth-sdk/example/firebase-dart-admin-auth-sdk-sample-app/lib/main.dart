@@ -5,11 +5,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
-<<<<<<< HEAD
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
-=======
 import 'package:provider/provider.dart';
->>>>>>> e2ce3d1eb951f7d2f64ea007f4425e46b810cc68
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
