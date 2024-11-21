@@ -1,10 +1,11 @@
-import 'dart:io';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase/screens/home_screen/home_screen.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase/screens/home_screen/home_screen.dart';
-import 'package:firebase/shared/shared.dart';
+
 import 'sign_in_with_credential_view_model.dart';
+
+final navigatorKey = GlobalKey<NavigatorState>();
 
 class SignInWithCredential extends StatelessWidget {
   const SignInWithCredential({super.key});
@@ -14,65 +15,60 @@ class SignInWithCredential extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => SignInWithCredentialViewModel(),
       child: Consumer<SignInWithCredentialViewModel>(
-        builder: (context, viewModel, child) => Scaffold(
-          body: Center(
+        builder: (context, value, child) => Scaffold(
+          body: SizedBox(
+            width: MediaQuery.of(context).size.width * 1,
+            height: MediaQuery.of(context).size.height * 1,
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                if (kIsWeb)
-                  Column(
-                    children: [
-                      Button(
-                        onTap: () => viewModel.signInWithCredential(
-                          'google.com',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
+                ElevatedButton(
+                    onPressed: () {
+                      value.signInWithCredential(
+                        () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
                           ),
                         ),
-                        title: 'Sign In With Google',
-                      ),
-                      const SizedBox(height: 20),
-                      Button(
-                        onTap: () => viewModel.signInWithCredential(
-                          'apple.com',
-                          () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const HomeScreen()),
-                          ),
-                        ),
-                        title: 'Sign In With Apple',
-                      ),
-                    ],
-                  )
-                else if (!kIsWeb && Platform.isIOS)
-                  Button(
-                    onTap: () => viewModel.signInWithCredential(
-                      'apple.com',
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                      ),
-                    ),
-                    title: 'Sign In With Apple',
-                  )
-                else
-                  Button(
-                    onTap: () => viewModel.signInWithCredential(
-                      'google.com',
-                      () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                      ),
-                    ),
-                    title: 'Sign In With Google',
-                  ),
-                const SizedBox(height: 20),
+                      );
+                    },
+                    child: const Text("Sign In With Google")),
+                const SizedBox(
+                  height: 20,
+                ),
+                ElevatedButton(
+                    onPressed: () {
+                      value.loginWithFacebook(context);
+                    },
+                    child: const Text("Sign In With Facebook")),
+                const SizedBox(
+                  height: 20,
+                ),
               ],
+              // chil
+              //d: Builder(
+              //   builder: (context) {
+              //     if (Platform.isIOS) {
+              //       return Button(
+              //         onTap: () {},
+              //         title: 'Sign In With Apple',
+              //       );
+              //     }
+              //     return Button(
+              //       onTap: () => value.signInWithCredential(
+              //         () => Navigator.push(
+              //           context,
+              //           MaterialPageRoute(
+              //             builder: (context) => const HomeScreen(),
+              //           ),
+              //         ),
+              //       ),
+              //       title: 'Sign In With Google',
+              //     );
+              //   },
+              // ),
             ),
           ),
         ),

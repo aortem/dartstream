@@ -78,6 +78,15 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 ),
                 title: "Sign In With Pop Up",
               ),
+
+              20.vSpace,
+              ActionTile(
+                  title: "Sign In With Credential (AdditionalProviders)",
+                  onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OAuthSelectionScreen(),
+                      ))),
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(
