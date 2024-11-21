@@ -1,9 +1,13 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/shared/shared.dart';
 import 'package:provider/provider.dart';
 
 class CreateUserScreen extends StatefulWidget {
+  const CreateUserScreen({super.key});
+
   @override
   _CreateUserScreenState createState() => _CreateUserScreenState();
 }
@@ -17,7 +21,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create User'),
+        title: const Text('Create User'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -29,7 +33,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
               hint: 'Enter email',
               label: 'Email',
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             InputField(
               controller: _passwordController,
               hint: 'Enter password',
@@ -37,7 +41,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
               obscureText:
                   true, // Make sure InputField widget supports this parameter
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Button(
               onTap: () async {
                 try {
@@ -50,7 +54,7 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
                   );
                   setState(() {
                     _result =
-                        'User created: ${credential?.user.uid}, Email: ${credential?.user.email}';
+                        'User created: ${credential.user.uid}, Email: ${credential.user.email}';
                   });
                 } catch (e) {
                   setState(() {
@@ -60,8 +64,8 @@ class _CreateUserScreenState extends State<CreateUserScreen> {
               },
               title: 'Create User',
             ),
-            SizedBox(height: 20),
-            Text(_result, style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
+            Text(_result, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),

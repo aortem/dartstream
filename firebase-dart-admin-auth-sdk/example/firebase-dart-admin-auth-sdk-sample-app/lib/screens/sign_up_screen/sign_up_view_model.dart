@@ -24,12 +24,8 @@ class SignUpViewModel extends ChangeNotifier {
       UserCredential? userCredential =
           await _auth.createUserWithEmailAndPassword(email, password);
 
-      if (userCredential != null && userCredential.user != null) {
-        BotToast.showText(text: '${userCredential.user!.email} just signed up');
-        onSuccess();
-      } else {
-        BotToast.showText(text: 'Failed to create user');
-      }
+      BotToast.showText(text: '${userCredential.user.email} just signed up');
+      onSuccess();
     } catch (e) {
       BotToast.showText(text: 'Sign up error: ${e.toString()}');
     } finally {

@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -6,7 +8,7 @@ import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 class AuthStateTestScreen extends StatefulWidget {
   final FirebaseAuth auth;
 
-  const AuthStateTestScreen({Key? key, required this.auth}) : super(key: key);
+  const AuthStateTestScreen({super.key, required this.auth});
 
   @override
   _AuthStateTestScreenState createState() => _AuthStateTestScreenState();
@@ -62,7 +64,7 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Auth State Monitor'),
+        title: const Text('Auth State Monitor'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -73,22 +75,22 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
               'Current Status:',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(_authStateStatus),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             if (_currentUser != null) ...[
               Text(
                 'User Details:',
                 style: Theme.of(context).textTheme.titleLarge,
               ),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('UID: ${_currentUser!.uid}'),
               if (_currentUser!.email != null)
                 Text('Email: ${_currentUser!.email}'),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: _signOut,
-                child: Text('Sign Out'),
+                child: const Text('Sign Out'),
               ),
             ],
           ],

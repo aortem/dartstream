@@ -1,12 +1,13 @@
-import 'dart:async';
+// ignore_for_file: library_private_types_in_public_api
 
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 class IdTokenChangedScreen extends StatefulWidget {
   final FirebaseAuth auth;
 
-  const IdTokenChangedScreen({Key? key, required this.auth}) : super(key: key);
+  const IdTokenChangedScreen({super.key, required this.auth});
 
   @override
   _IdTokenChangedScreenState createState() => _IdTokenChangedScreenState();
@@ -47,7 +48,7 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
       try {
         await user.getIdToken(true);
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Token refresh requested')),
+          const SnackBar(content: Text('Token refresh requested')),
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -56,7 +57,7 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No user signed in')),
+        const SnackBar(content: Text('No user signed in')),
       );
     }
   }
@@ -71,7 +72,7 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('ID Token Monitor'),
+        title: const Text('ID Token Monitor'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -82,16 +83,16 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
               'Token Status:',
               style: Theme.of(context).textTheme.titleLarge,
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             Text(_tokenStatus),
             if (_lastTokenUpdate != null) ...[
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               Text('Last Updated: ${_lastTokenUpdate!.toString()}'),
             ],
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _refreshToken,
-              child: Text('Refresh Token'),
+              child: const Text('Refresh Token'),
             ),
           ],
         ),

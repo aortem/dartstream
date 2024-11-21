@@ -1,8 +1,12 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class RevokeAccessTokenScreen extends StatefulWidget {
+  const RevokeAccessTokenScreen({super.key});
+
   @override
   _RevokeAccessTokenScreenState createState() =>
       _RevokeAccessTokenScreenState();
@@ -28,7 +32,7 @@ class _RevokeAccessTokenScreenState extends State<RevokeAccessTokenScreen> {
       });
 
       // Navigate back to the splash screen after a short delay
-      Future.delayed(Duration(seconds: 2), () {
+      Future.delayed(const Duration(seconds: 2), () {
         Navigator.of(context).pushReplacementNamed('/');
       });
     } catch (e) {
@@ -42,19 +46,19 @@ class _RevokeAccessTokenScreenState extends State<RevokeAccessTokenScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Revoke Access Token'),
+        title: const Text('Revoke Access Token'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ElevatedButton(
               onPressed: _revokeAccessToken,
-              child: Text('Revoke Access Token and Sign Out'),
+              child: const Text('Revoke Access Token and Sign Out'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Text(_result, textAlign: TextAlign.center),
           ],
         ),

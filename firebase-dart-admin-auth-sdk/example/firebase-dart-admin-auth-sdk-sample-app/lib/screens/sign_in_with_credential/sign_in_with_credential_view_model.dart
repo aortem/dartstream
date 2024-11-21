@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -88,7 +88,9 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
-        print('ID Token change error: $error');
+        if (kDebugMode) {
+          print('ID Token change error: $error');
+        }
       },
     );
 
@@ -98,7 +100,9 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
         notifyListeners();
       },
       onError: (error) {
-        print('Auth State change error: $error');
+        if (kDebugMode) {
+          print('Auth State change error: $error');
+        }
       },
     );
   }

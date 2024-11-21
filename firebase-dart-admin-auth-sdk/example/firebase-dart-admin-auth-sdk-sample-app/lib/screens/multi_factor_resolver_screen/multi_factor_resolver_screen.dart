@@ -1,3 +1,5 @@
+// ignore_for_file: implementation_imports
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/get_multi_factor.dart'
     as multi_factor;
 
 class MultiFactorResolverScreen extends StatefulWidget {
-  const MultiFactorResolverScreen({Key? key}) : super(key: key);
+  const MultiFactorResolverScreen({super.key});
 
   @override
   MultiFactorResolverScreenState createState() =>
@@ -55,23 +57,23 @@ class MultiFactorResolverScreenState extends State<MultiFactorResolverScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Multi-Factor Resolver')),
+      appBar: AppBar(title: const Text('Multi-Factor Resolver')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: getMultiFactorResolver,
-              child: Text('Get Multi-Factor Resolver'),
+              child: const Text('Get Multi-Factor Resolver'),
             ),
             if (resolver != null) ...[
-              SizedBox(height: 20),
-              Text('Resolver obtained. Hints:'),
+              const SizedBox(height: 20),
+              const Text('Resolver obtained. Hints:'),
               ...resolver!.hints.map((hint) => Text(hint.displayName)),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: resolveSignIn,
-                child: Text('Resolve Sign-In'),
+                child: const Text('Resolve Sign-In'),
               ),
             ],
           ],

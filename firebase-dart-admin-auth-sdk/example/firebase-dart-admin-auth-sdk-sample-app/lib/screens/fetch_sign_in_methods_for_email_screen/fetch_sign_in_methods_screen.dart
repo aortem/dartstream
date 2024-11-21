@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:firebase/screens/fetch_sign_in_methods_for_email_screen/fetch_sign_in_methods_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,7 @@ import 'package:firebase/shared/shared.dart';
 import 'package:firebase/utils/extensions.dart';
 
 class FetchSignInMethodsScreen extends StatefulWidget {
-  const FetchSignInMethodsScreen({Key? key}) : super(key: key);
+  const FetchSignInMethodsScreen({super.key});
 
   @override
   _FetchSignInMethodsScreenState createState() =>
@@ -50,7 +52,7 @@ class _FetchSignInMethodsScreenState extends State<FetchSignInMethodsScreen> {
                 if (viewModel.result != null) ...[
                   Text('Sign-In Methods: ${viewModel.result!.join(", ")}'),
                 ] else if (!viewModel.loading) ...[
-                  Text('No sign-in methods found or not fetched yet.'),
+                  const Text('No sign-in methods found or not fetched yet.'),
                 ],
               ],
             ),

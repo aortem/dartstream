@@ -1,9 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'dart:developer';
-
-import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/screens/sign_in_with_credential/sign_in_with_credential.dart';
 import 'package:firebase/screens/sign_in_with_email_and_password_screen/sign_in_with_email_and_password_screen.dart';
 import 'package:firebase/screens/sign_in_with_email_link_screen/send_sign_in_with_email_link_screen.dart';
@@ -13,11 +9,9 @@ import 'package:firebase/screens/sign_in_with_popup_screen/sign_in_with_popup_sc
 import 'package:firebase/shared/shared.dart';
 import 'package:firebase/utils/extensions.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase/screens/apple_sign_in_screen/apple_sign_in_screen.dart';
 import 'package:firebase/screens/gcp_sign_in_screen/gcp_sign_in_screen.dart';
 
-import '../screens/home_screen/home_screen.dart';
 import '../screens/sign_in_with_redirect/sign_in_with_redirect.dart';
 
 void showSignMethodsBottomSheet(BuildContext context) {
@@ -89,7 +83,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => OAuthSelectionScreen(),
+                    builder: (context) => const OAuthSelectionScreen(),
                   ),
                 ),
                 title: "Sign In With Redirect",

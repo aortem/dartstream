@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:firebase/screens/home_screen/home_screen.dart';
 import 'package:firebase/shared/shared.dart';
 import 'sign_in_with_credential_view_model.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart'
-    as acs;
 
 class SignInWithCredential extends StatelessWidget {
   const SignInWithCredential({super.key});
@@ -35,7 +33,7 @@ class SignInWithCredential extends StatelessWidget {
                         ),
                         title: 'Sign In With Google',
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       Button(
                         onTap: () => viewModel.signInWithCredential(
                           'apple.com',
@@ -73,7 +71,7 @@ class SignInWithCredential extends StatelessWidget {
                     ),
                     title: 'Sign In With Google',
                   ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             ),
           ),

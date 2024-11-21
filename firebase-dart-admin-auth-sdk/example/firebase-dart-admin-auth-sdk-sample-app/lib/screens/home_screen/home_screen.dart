@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously, non_constant_identifier_names
 import 'dart:async';
 import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
@@ -26,7 +26,6 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
     as id_token;
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
-import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 import 'package:firebase/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
 import 'package:firebase/screens/initialize_recaptcha_config_screen/initialize_recaptcha_config_screen.dart';
@@ -51,7 +50,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   dynamic userIdToken;
   User? _currentUser;
-  String? _currentIdToken;
   bool _isConnectedToEmulator = false;
   late auth_state.Unsubscribe _authStateUnsubscribe;
   late id_token.Unsubscribe _idTokenUnsubscribe;
@@ -77,12 +75,15 @@ class _HomeScreenState extends State<HomeScreen> {
         final idToken = user != null ? await user.getIdToken() : null;
         setState(() {
           _currentUser = user;
-          _currentIdToken = idToken;
         });
-        print('ID Token changed: $idToken');
+        if (kDebugMode) {
+          print('ID Token changed: $idToken');
+        }
       },
       onError: (error) {
-        print('ID Token change error: $error');
+        if (kDebugMode) {
+          print('ID Token change error: $error');
+        }
       },
     );
 
@@ -93,10 +94,14 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           _currentUser = user;
         });
-        print('Auth State changed: ${user?.uid}');
+        if (kDebugMode) {
+          print('Auth State changed: ${user?.uid}');
+        }
       },
       onError: (error) {
-        print('Auth State change error: $error');
+        if (kDebugMode) {
+          print('Auth State change error: $error');
+        }
       },
     );
 
@@ -124,16 +129,13 @@ class _HomeScreenState extends State<HomeScreen> {
       _currentUser = user;
       if (user != null) {
         user.getIdToken(true).then((idToken) {
-          setState(() {
-            _currentIdToken = idToken;
-          });
+          setState(() {});
         }).catchError((error) {
-          print("Error fetching token: $error");
-          _currentIdToken = null;
+          if (kDebugMode) {
+            print("Error fetching token: $error");
+          }
         });
-      } else {
-        _currentIdToken = null;
-      }
+      } else {}
     });
   }
 
@@ -143,29 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchCurrentIdToken();
   }
 
-  Future<void> _revokeToken() async {
-    if (_currentIdToken == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('No token available to revoke')),
-      );
-      return;
-    }
-
-    try {
-      final auth = Provider.of<FirebaseAuth>(context, listen: false);
-      await auth.revokeToken(_currentIdToken!);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Token revoked successfully')),
-      );
-      // Navigate to the splash screen or login screen after successful revocation
-      Navigator.of(context).pushReplacementNamed('/');
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to revoke token: $e')),
-      );
-    }
-  }
-
   void _connectToEmulator() {
     final auth = Provider.of<FirebaseAuth>(context, listen: false);
     auth.connectAuthEmulator('localhost', 9099);
@@ -173,7 +152,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _isConnectedToEmulator = true;
     });
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Connected to Auth Emulator')),
+      const SnackBar(content: Text('Connected to Auth Emulator')),
     );
   }
 
@@ -446,7 +425,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => FetchSignInMethodsScreen()),
+                          builder: (context) =>
+                              const FetchSignInMethodsScreen()),
                     );
                   },
                   title: "Fetch Sign-In Methods for Email",
@@ -466,7 +446,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CreateUserScreen()),
+                          builder: (context) => const CreateUserScreen()),
                     );
                   },
                   title: "Create User with Email and Password",
@@ -541,7 +521,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () => Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => PasswordResetScreen(),
+                      builder: (context) => const PasswordResetScreen(),
                     ),
                   ),
                   title: "Send Password Reset Email",

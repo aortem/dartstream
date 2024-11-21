@@ -44,7 +44,7 @@ class SendSignInWithEmailLinkScreenViewModel extends ChangeNotifier {
 
       if (userCredential != null) {
         BotToast.showText(
-            text: 'Signed in successfully: ${userCredential.user?.email}');
+            text: 'Signed in successfully: ${userCredential.user.email}');
         onSuccess();
       } else {
         BotToast.showText(text: 'Failed to sign in');

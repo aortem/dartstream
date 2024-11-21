@@ -1,9 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class ConfirmPasswordResetScreen extends StatefulWidget {
-  const ConfirmPasswordResetScreen({Key? key}) : super(key: key);
+  const ConfirmPasswordResetScreen({super.key});
 
   @override
   _ConfirmPasswordResetScreenState createState() =>
@@ -21,7 +23,7 @@ class _ConfirmPasswordResetScreenState
       String oobCode = _extractOobCode(_resetLinkController.text);
       await auth.confirmPasswordReset(oobCode, _newPasswordController.text);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Password reset confirmed successfully')),
+        const SnackBar(content: Text('Password reset confirmed successfully')),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -38,23 +40,23 @@ class _ConfirmPasswordResetScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Confirm Password Reset')),
+      appBar: AppBar(title: const Text('Confirm Password Reset')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _resetLinkController,
-              decoration: InputDecoration(labelText: 'Reset Link'),
+              decoration: const InputDecoration(labelText: 'Reset Link'),
             ),
             TextField(
               controller: _newPasswordController,
-              decoration: InputDecoration(labelText: 'New Password'),
+              decoration: const InputDecoration(labelText: 'New Password'),
               obscureText: true,
             ),
             ElevatedButton(
               onPressed: _confirmPasswordReset,
-              child: Text('Confirm Password Reset'),
+              child: const Text('Confirm Password Reset'),
             ),
           ],
         ),

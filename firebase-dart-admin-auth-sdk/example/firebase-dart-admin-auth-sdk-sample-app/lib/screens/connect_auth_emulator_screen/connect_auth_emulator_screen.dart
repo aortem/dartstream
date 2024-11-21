@@ -1,10 +1,12 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/shared/shared.dart';
 import 'package:provider/provider.dart';
 
 class ConnectAuthEmulatorScreen extends StatefulWidget {
-  const ConnectAuthEmulatorScreen({Key? key}) : super(key: key);
+  const ConnectAuthEmulatorScreen({super.key});
 
   @override
   _ConnectAuthEmulatorScreenState createState() =>
@@ -22,7 +24,7 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Connect to Auth Emulator'),
+        title: const Text('Connect to Auth Emulator'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -34,20 +36,20 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
               hint: 'Enter host',
               label: 'Host',
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             InputField(
               controller: _portController,
               hint: 'Enter port',
               label: 'Port',
               textInputType: TextInputType.number,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Button(
               onTap: _connectToEmulator,
               title: 'Connect to Emulator',
             ),
-            SizedBox(height: 20),
-            Text(_result, style: TextStyle(fontSize: 16)),
+            const SizedBox(height: 20),
+            Text(_result, style: const TextStyle(fontSize: 16)),
           ],
         ),
       ),

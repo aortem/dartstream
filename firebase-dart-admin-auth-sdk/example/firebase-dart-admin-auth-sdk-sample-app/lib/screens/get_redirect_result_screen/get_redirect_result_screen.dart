@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -173,8 +172,7 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                                         padding: const EdgeInsets.only(
                                             left: 8, top: 4),
                                         child: Text('${e.key}: ${e.value}'),
-                                      ))
-                                  .toList(),
+                                      )),
                             ],
                           ],
                         ),

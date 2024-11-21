@@ -1,9 +1,11 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:provider/provider.dart';
 
 class IsSignInWithEmailLinkScreen extends StatefulWidget {
-  const IsSignInWithEmailLinkScreen({Key? key}) : super(key: key);
+  const IsSignInWithEmailLinkScreen({super.key});
 
   @override
   _IsSignInWithEmailLinkScreenState createState() =>
@@ -25,21 +27,22 @@ class _IsSignInWithEmailLinkScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Check Email Sign-In Link')),
+      appBar: AppBar(title: const Text('Check Email Sign-In Link')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
             TextField(
               controller: _linkController,
-              decoration: InputDecoration(labelText: 'Email Sign-In Link'),
+              decoration:
+                  const InputDecoration(labelText: 'Email Sign-In Link'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _checkLink,
-              child: Text('Check Link'),
+              child: const Text('Check Link'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             if (_isValidLink != null)
               Text(
                 _isValidLink!
