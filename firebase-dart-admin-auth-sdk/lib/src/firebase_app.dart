@@ -8,6 +8,7 @@ import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
 import 'auth/generate_custom_token.dart';
 import 'auth/get_access_token_with_generated_token.dart';
 
+/// The base class to initialize the firebase dart admin sdk
 class FirebaseApp {
   ///Instance of the Firebase App
   static FirebaseApp? _instance;
@@ -23,9 +24,13 @@ class FirebaseApp {
   final String? _appId;
   final ServiceAccount? _serviceAccount;
   final String? _accessToken;
+
+  ///The class to interact with the various firebase auth methods
   static FirebaseAuth? firebaseAuth;
   static GetAccessTokenWithGeneratedToken? _accesstokenGen;
   static GenerateCustomToken? _tokenGen;
+
+  ///The class to interact with the various firebase storage methods
   static FirebaseStorage? firebaseStorage;
 
   FirebaseApp._(
@@ -40,16 +45,17 @@ class FirebaseApp {
 
   User? _currentUser;
 
-  // method to set the current user
+  /// Method to set the current user
   void setCurrentUser(User? user) {
     _currentUser = user;
   }
 
+  /// Method to get the current User
   User? getCurrentUser() {
     return _currentUser;
   }
 
-  //Exposes the singleton
+  ///Exposed the firebase app singleton
   static FirebaseApp get instance {
     if (_instance == null) {
       throw ("FirebaseApp is not initialized. Please call initializeApp() first.");
@@ -57,7 +63,7 @@ class FirebaseApp {
     return _instance!;
   }
 
-  ///Used to initialize the project
+  ///Used to initialize the project with enviroment variables
   ///[apiKey] is the API Key associated with the project
   ///[projectId] is the ID of the project
   static Future<FirebaseApp> initializeAppWithEnvironmentVariables({
@@ -89,9 +95,10 @@ class FirebaseApp {
     );
   }
 
+  ///Used to initialize the project with service account
+  ///[serviceAccountContent] is the encoded string of the service account
   static Future<FirebaseApp> initializeAppWithServiceAccount({
     required String serviceAccountContent,
-    required String serviceAccountKeyFilePath,
   }) async {
     // Initialize token generators
     final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
@@ -140,6 +147,7 @@ class FirebaseApp {
     }
   }
 
+  ///This is for unit testing purposes
   static void overrideInstanceForTesting(
     GetAccessTokenWithGeneratedToken tokenGen,
     GenerateCustomToken generateCustomToken,
@@ -148,16 +156,30 @@ class FirebaseApp {
     _tokenGen = generateCustomToken;
   }
 
+  ///Used to initialize the project with service account impersonation
+  ///[serviceAccountContent] is the encoded string of the service account
+  ///[impersonatedEmail] is the email of the impersonated account
   static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
-    required String serviceAccountEmail,
-    required String userEmail,
+    required String serviceAccountContent,
+    required String impersonatedEmail,
   }) async {
-    // Assert the values passed are not empty
-    assert(serviceAccountEmail.isNotEmpty,
-        "Service Account Email cannot be empty");
-    assert(userEmail.isNotEmpty, "User email cannot be empty");
+    final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
+    // Parse the JSON content
+    final Map<String, dynamic> serviceAccount =
+        json.decode(serviceAccountContent);
 
-    // TODO: Implement API to get access token
+    final ServiceAccount serviceAccountModel =
+        ServiceAccount.fromJson(serviceAccount);
+
+    final jwt = await tokenGen.generateServiceAccountJwt(
+      serviceAccountModel,
+      impersonatedEmail: impersonatedEmail,
+    );
+
+    final accessToken =
+        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
     return _instance ??= FirebaseApp._(
       'your_api_key',
@@ -192,6 +214,9 @@ class FirebaseApp {
     );
   }
 
+  ///Used to get firebase storage
+  ///[apiKey] is the API Key associated with the project
+  ///[projectId] is the ID of the project
   FirebaseStorage getStorage() {
     assert(_apiKey != null, 'API Key is null');
     assert(_projectId != null, 'Project ID is null');

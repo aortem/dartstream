@@ -2,6 +2,8 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase/screens/link_with_credientials/link_with_credientials.dart';
+import 'package:firebase/screens/verify_password_reset_code_screen/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/screens/apply_action_code_screen/apply_action_code_screen.dart';
 import 'package:firebase/screens/home_screen/home_screen_view_model.dart';
@@ -24,7 +26,6 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/id_token_changed.dart'
     as id_token;
 
 import '../link_wit_phone_number/link_with_phone_number.dart';
-import '../link_with_credientials/link_with_credientials';
 import '../set_presistence/set_presistance_screen.dart';
 import '../update_current_user/update_current_user.dart';
 import 'package:firebase/screens/get_redirect_result_screen/get_redirect_result_screen.dart';
@@ -331,6 +332,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: "Link with credientials",
                 ),
                 //LinkWIthCredientials
+                10.vSpace,
+                ActionTile(
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => VerifyPasswordResetCode(),
+                      ),
+                    );
+                  },
+                  title: "Verify Password Reset Code",
+                ),
                 10.vSpace,
                 ActionTile(
                   onTap: () async {

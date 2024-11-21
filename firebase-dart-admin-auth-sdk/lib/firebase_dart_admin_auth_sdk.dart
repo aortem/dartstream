@@ -14,8 +14,7 @@ export 'src/auth/check_action_code.dart';
 export 'src/additional_user_info.dart';
 
 // Conditional export for auth_link_with_phone_number.dart
-export 'src/auth/auth_link_with_phone_number_stub.dart'
-    if (dart.library.html) 'src/auth/auth_link_with_phone_number.dart';
+export 'src/auth/auth_link_with_phone_number.dart';
 
 export 'src/auth/auth_redirect_link.dart';
 export 'src/firebase_storage.dart';

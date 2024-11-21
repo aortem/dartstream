@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase/screens/splash_screen/splash_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -29,19 +28,32 @@ void main() async {
         'assets/service_account.json',
       ); //Add your own JSON service account
 
-      // Initialize Firebase with the service account content
-      await FirebaseApp.initializeAppWithServiceAccount(
-        serviceAccountContent: serviceAccountContent,
-        serviceAccountKeyFilePath: '', // file path
-      );
+        // Initialize Firebase with the service account content
+        await FirebaseApp.initializeAppWithServiceAccount(
+          serviceAccountContent: serviceAccountContent,
+        );
+        debugPrint('Firebase initialized for Mobile.');
 
-      //To initialize with service account, Uncomment the function below then pass the service account email and user email in the function below
-      //FirebaseApp.initializeAppWithServiceAccountImpersonation(serviceAccountEmail: serviceAccountEmail, userEmail: userEmail)
+        // Uncomment to use service account impersonation if needed
+        /*
+        await FirebaseApp.initializeAppWithServiceAccountImpersonation(
+          impersonatedEmail: 'impersonatedEmail',
+          serviceAccountContent: serviceAccountContent,
+        );
+        debugPrint('Firebase initialized with service account impersonation.');
+        */
+      }
     }
-  }
 
-  FirebaseApp.instance.getAuth();
-  runApp(const MyApp());
+    // Access Firebase Auth instance
+    final auth = FirebaseApp.instance.getAuth();
+    debugPrint('Firebase Auth instance obtained.');
+
+    runApp(const MyApp());
+  } catch (e, stackTrace) {
+    debugPrint('Error initializing Firebase: $e');
+    debugPrint('StackTrace: $stackTrace');
+  }
 }
 
 // Updated MyApp to provide FirebaseAuth instance

@@ -1,3 +1,18 @@
+## 0.0.1-pre+9
+
+- Update changelog format of previous release
+- Update service account format
+
+## 0.0.1-pre+8
+
+- Add Linter rules for public_members and better code transperancy
+- Add initalization with Service Account Impersonation and proper documentation
+- Update Gradle Build files and dependencies
+- Implement FirebaseAuth.signInWithCustomToken in Sample App
+- Implement FirebaseAuth.generateCustomToken in Sample App
+- Implement FirebaseAuth.verifyPasswordResetCode in Sample App
+- Improve Dart Doc Comments
+
 ## 0.0.1-pre+7
 
 - Added README.md for example folder naming conventions.

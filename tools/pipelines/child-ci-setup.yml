@@ -1,0 +1,21 @@
+stages:
+  - setup
+
+# Setup Stage
+setup:
+  stage: setup
+  image: dart:stable
+ # tags:
+ #   - dart
+  rules:
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+  script:
+    - echo "Setting up environment..."
+    - cd firebase-dart-admin-auth-sdk
+    - dart pub get
+  artifacts:
+    paths:
+      - .dart_tool/
+    expire_in: 1h
+  retry: 2

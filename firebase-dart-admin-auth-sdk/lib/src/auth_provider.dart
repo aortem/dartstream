@@ -1,3 +1,5 @@
+/// An abstract base class representing an authentication provider,
+/// used to identify the specific authentication method (e.g., email, phone, OAuth).
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 abstract class AuthProvider {
@@ -60,22 +62,6 @@ class OIDCAuthProvider implements AuthProvider {
   }) {
     return OAuthCredential(
       providerId: 'oidc.gcp',
-      accessToken: accessToken,
-      idToken: idToken,
-    );
-  }
-}
-
-class AppleAuthProvider implements AuthProvider {
-  @override
-  String get providerId => 'apple.com';
-
-  static OAuthCredential credential({
-    String? accessToken,
-    String? idToken,
-  }) {
-    return OAuthCredential(
-      providerId: 'apple.com',
       accessToken: accessToken,
       idToken: idToken,
     );
