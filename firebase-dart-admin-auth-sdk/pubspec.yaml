@@ -17,7 +17,7 @@ dependencies:
   jwt_generator: ^0.0.3
 #  ds_standard_features_web: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for WEB
 #  ds_standard_features_grpc: ^0.0.1-pre+1 #Standard Dart Team Utilities for //Uncomment for GRPC
-  
+
 
 #------------------ TESTING FEATURES---------------------------------
 

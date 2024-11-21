@@ -10,10 +10,16 @@ class ActionCodeSettings {
   final bool handleCodeInApp;
 
   /// iOS-specific settings to be used with the action code.
-  final IOSSettings? iOS;
+  final String? iOSBundleId;
 
   /// Android-specific settings to be used with the action code.
-  final AndroidSettings? android;
+  final String? androidPackageName;
+
+  /// Android-specific settings to be used with the action code
+  final bool? androidInstallApp;
+
+  /// Android-specific settings to be used with the action code
+  final String? androidMinimumVersion;
 
   /// Optional custom domain to use for the dynamic link, if applicable.
   final String? dynamicLinkDomain;
@@ -29,8 +35,10 @@ class ActionCodeSettings {
   ActionCodeSettings({
     required this.url,
     this.handleCodeInApp = false,
-    this.iOS,
-    this.android,
+    this.iOSBundleId,
+    this.androidPackageName,
+    this.androidInstallApp,
+    this.androidMinimumVersion,
     this.dynamicLinkDomain,
   });
 
@@ -40,13 +48,13 @@ class ActionCodeSettings {
   /// Returns a map containing only the non-null fields.
   Map<String, dynamic> toMap() {
     return {
-      'continueUrl': url,
-      'canHandleCodeInApp': handleCodeInApp,
-      if (iOS != null) 'iOSBundleId': iOS!.bundleId,
-      if (android != null) 'androidPackageName': android!.packageName,
-      if (android?.installApp != null) 'androidInstallApp': android!.installApp,
-      if (android?.minimumVersion != null)
-        'androidMinimumVersion': android!.minimumVersion,
+      'url': url,
+      'handleCodeInApp': handleCodeInApp,
+      if (iOSBundleId != null) 'iOSBundleId': iOSBundleId,
+      if (androidPackageName != null) 'androidPackageName': androidPackageName,
+      if (androidInstallApp != null) 'androidInstallApp': androidInstallApp,
+      if (androidMinimumVersion != null)
+        'androidMinimumVersion': androidMinimumVersion,
       if (dynamicLinkDomain != null) 'dynamicLinkDomain': dynamicLinkDomain,
     };
   }

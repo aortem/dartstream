@@ -1,4 +1,4 @@
-import 'user.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 /// Represents the credentials of a user, typically after successful authentication.
 ///
@@ -10,11 +10,17 @@ class UserCredential {
 
   /// Additional user information that might be provided during authentication.
   /// This is an optional field that could contain extra details like user metadata.
-  final String? additionalUserInfo;
+  final AdditionalUserInfo? additionalUserInfo;
 
   /// The credential associated with the user, which can be a token or other
   /// credential type depending on the authentication method.
-  final String? credential;
+  final AuthCredential? credential;
+
+  /// The type of operation that was performed (e.g., "signIn", "signUp").
+  final String? operationType;
+
+  ///provider id
+  final String? providerId;
 
   /// Creates an instance of [UserCredential].
   ///
@@ -34,6 +40,8 @@ class UserCredential {
     required this.user,
     this.additionalUserInfo,
     this.credential,
+    this.operationType,
+    this.providerId,
   });
 
   /// Creates a [UserCredential] instance from a JSON map.
@@ -52,11 +60,43 @@ class UserCredential {
   /// UserCredential userCredential = UserCredential.fromJson(jsonData);
   /// ```
   factory UserCredential.fromJson(Map<String, dynamic> json) {
+    AuthCredential? credential;
+    if (json['credential'] != null) {
+      final credentialData = json['credential'] as Map<String, dynamic>;
+      final providerId = credentialData['providerId'] as String;
+
+      switch (providerId) {
+        case 'password':
+          credential = EmailAuthCredential(
+            email: credentialData['email'],
+            password: credentialData['password'],
+          );
+          break;
+        case 'phone':
+          credential = PhoneAuthCredential(
+            verificationId: credentialData['verificationId'],
+            smsCode: credentialData['smsCode'],
+          );
+          break;
+        default:
+          credential = OAuthCredential(
+            providerId: providerId,
+            accessToken: credentialData['accessToken'],
+            idToken: credentialData['idToken'],
+          );
+      }
+    }
+
     return UserCredential(
       user: User.fromJson(
           json), // Assumes `User.fromJson` is defined in the 'user.dart' file
-      additionalUserInfo: json['additionalUserInfo'],
-      credential: json['credential'],
+      additionalUserInfo: json['additionalUserInfo'] != null
+          ? AdditionalUserInfo.fromJson(json['additionalUserInfo'])
+          : null,
+      credential: credential,
+      operationType: json['operationType'],
     );
   }
+
+  //get providerId => null;
 }
