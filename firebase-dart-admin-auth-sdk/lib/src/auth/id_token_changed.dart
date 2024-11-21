@@ -1,17 +1,26 @@
 import 'dart:async';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///next or
 typedef NextOrObserver<T> = void Function(T?);
+
+///error
 typedef ErrorFn = void Function(
     FirebaseAuthException error, StackTrace? stackTrace);
+
+///complete
 typedef CompleteFn = void Function();
+
+///unsubscribe
 typedef Unsubscribe = void Function();
 
+///on id token
 class OnIdTokenChangedService {
   final FirebaseAuth _auth;
   final StreamController<User?> _controller =
       StreamController<User?>.broadcast();
 
+  ///on id token
   OnIdTokenChangedService(this._auth) {
     // Listen to the simplified stream from FirebaseAuth
     _auth.onIdTokenChanged().listen(
@@ -24,6 +33,7 @@ class OnIdTokenChangedService {
     );
   }
 
+  ///on id token
   Unsubscribe onIdTokenChanged(
     NextOrObserver<User?> nextOrObserver, {
     ErrorFn? error,
@@ -31,11 +41,7 @@ class OnIdTokenChangedService {
   }) {
     final subscription = _controller.stream.listen(
       (User? user) {
-        if (nextOrObserver is Function) {
-          nextOrObserver(user);
-        } else {
-          nextOrObserver.call(user);
-        }
+        nextOrObserver(user);
       },
       onError: (Object e, StackTrace s) {
         if (error != null) {
@@ -67,6 +73,7 @@ class OnIdTokenChangedService {
     _controller.addError(error, stackTrace);
   }
 
+  ///dispose
   void dispose() {
     _controller.close();
   }

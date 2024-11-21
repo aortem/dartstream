@@ -4,11 +4,14 @@ import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///OAuth
 class OAuthAuth {
   final FirebaseAuth _auth;
 
+  ///OAuth
   OAuthAuth(this._auth);
 
+  ///sign in with pop up
   Future<UserCredential> signInWithPopup(
     AuthProvider provider,
     String accessToken,

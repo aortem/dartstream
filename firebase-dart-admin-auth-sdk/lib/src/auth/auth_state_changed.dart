@@ -1,9 +1,16 @@
 import 'dart:async';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///next or
 typedef NextOrObserver<T> = void Function(T?);
+
+///Error fn
 typedef ErrorFn = void Function(Object error, StackTrace? stackTrace);
+
+///complete
 typedef CompleteFn = void Function();
+
+///unsubscribe
 typedef Unsubscribe = void Function();
 
 /// Service to monitor and manage Firebase authentication state changes.
@@ -38,6 +45,7 @@ class OnAuthStateChangedService {
     );
   }
 
+  ///onAuthstateChange
   Unsubscribe onAuthStateChanged(
     NextOrObserver<User?> nextOrObserver, {
     ErrorFn? error,
@@ -45,11 +53,7 @@ class OnAuthStateChangedService {
   }) {
     final subscription = _controller.stream.listen(
       (User? user) {
-        if (nextOrObserver is Function) {
-          nextOrObserver(user);
-        } else {
-          nextOrObserver.call(user);
-        }
+        nextOrObserver(user);
       },
       onError: (Object e, StackTrace s) {
         if (error != null) {

@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
+///confirmpassword service
 class ConfirmPasswordResetService {
   final dynamic auth;
 
+  ///confirmpassword service
   ConfirmPasswordResetService({required this.auth});
 
+  ///confirm password function
   Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
     try {
       final url = Uri.https(

@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///gcpAuth
 class GCPAuth {
   final FirebaseAuth auth;
 
+  ///gcpauth
   GCPAuth(this.auth);
 
+  ///sign in with gcp
   Future<UserCredential> signInWithGCP({
     required String clientId,
     required String clientSecret,

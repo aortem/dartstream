@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/additional_user_info.dart';
 
+///create user connect
 class CreateUserWithEmailAndPasswordService {
+  ///auth
   final FirebaseAuth auth;
 
+  ///create user service
   CreateUserWithEmailAndPasswordService(this.auth);
 
+  ///create function
   Future<UserCredential> create(String email, String password) async {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',

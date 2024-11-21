@@ -1,14 +1,15 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 import 'dart:developer' as developer;
 
+///email link
 class EmailLinkAuth {
+  ///auth
   final FirebaseAuth auth;
 
+  ///emailinkauth
   EmailLinkAuth(this.auth);
 
+  ///function emailink
   Future<void> sendSignInLinkToEmail(String email,
       {ActionCodeSettings? actionCode}) async {
     await auth.performRequest('sendOobCode', {
@@ -18,6 +19,7 @@ class EmailLinkAuth {
     });
   }
 
+  ///send email link function
   Future<UserCredential> signInWithEmailLink(
       String email, String emailLink) async {
     if (!isSignInWithEmailLink(emailLink)) {
@@ -48,6 +50,7 @@ class EmailLinkAuth {
     }
   }
 
+  /// is sign in function
   bool isSignInWithEmailLink(String emailLink) {
     try {
       final uri = Uri.parse(emailLink);

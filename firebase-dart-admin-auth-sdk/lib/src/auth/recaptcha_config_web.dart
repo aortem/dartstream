@@ -3,7 +3,9 @@ import '../stub_html.dart' if (dart.library.html) 'dart:html' as html;
 import '../stub_js.dart' if (dart.library.js) 'dart:js' as js;
 import 'recaptcha_config.dart';
 
+///recaptcha_config
 class RecaptchaConfigServiceWeb implements RecaptchaConfigService {
+  ///recaptcha_string
   static const String recaptchaScriptUrl =
       'https://www.google.com/recaptcha/api.js?render=';
   String? _siteKey;

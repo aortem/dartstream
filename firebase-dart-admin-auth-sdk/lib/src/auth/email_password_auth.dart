@@ -1,15 +1,15 @@
 import 'dart:developer';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
-import '../firebase_app.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
+///emailpasswordauth
 class EmailPasswordAuth {
+  ///auth
   final FirebaseAuth auth;
 
+  ///emailpassword
   EmailPasswordAuth(this.auth);
 
+  ///signin
   Future<UserCredential?> signIn(String email, String password) async {
     try {
       final response = await auth.performRequest('signInWithPassword', {
@@ -44,6 +44,7 @@ class EmailPasswordAuth {
     }
   }
 
+  ///signup
   Future<UserCredential?> signUp(String email, String password) async {
     try {
       final response = await auth.performRequest('signUp', {

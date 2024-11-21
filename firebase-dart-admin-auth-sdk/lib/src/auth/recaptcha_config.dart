@@ -1,10 +1,15 @@
 import 'dart:async';
 
+///recaptcha config
 abstract class RecaptchaConfigService {
+  ///recaptcha string
   Future<void> initializeRecaptchaConfig(String siteKey);
+
+  ///recaptcha token
   Future<String?> getRecaptchaToken();
 }
 
+///recaptcha config
 class RecaptchaConfigServiceStub implements RecaptchaConfigService {
   @override
   Future<void> initializeRecaptchaConfig(String siteKey) async {

@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///apple auth
 class AppleSignInAuth {
   final FirebaseAuth auth;
 
+  ///apple auth
   AppleSignInAuth(this.auth);
 
+  ///sign in apple
   Future<UserCredential> signInWithApple(String idToken,
       {String? nonce}) async {
     try {

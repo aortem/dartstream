@@ -41,7 +41,7 @@ class CustomTokenAuth {
         },
       );
 
-      if (response.statusCode != 200 || response.body == null) {
+      if (response.statusCode != 200) {
         throw FirebaseAuthException(
             code: 'invalid-custom-token',
             message: 'The custom token format is incorrect or expired');

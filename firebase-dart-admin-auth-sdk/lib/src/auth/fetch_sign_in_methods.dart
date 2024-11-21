@@ -1,11 +1,15 @@
 import 'dart:convert';
 import '../exceptions.dart';
 
+///fetchsignin
 class FetchSignInMethodsService {
+  ///auth
   final dynamic auth;
 
+  ///fetch signin
   FetchSignInMethodsService({required this.auth});
 
+  ///fetch sign in methods
   Future<List<String>> fetchSignInMethodsForEmail(String email) async {
     try {
       final url = Uri.https(

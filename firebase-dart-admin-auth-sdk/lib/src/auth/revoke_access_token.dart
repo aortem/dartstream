@@ -1,10 +1,13 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///revoke access token
 class RevokeAccessTokenService {
   final FirebaseAuth _auth;
 
+  ///revoke access token
   RevokeAccessTokenService({required FirebaseAuth auth}) : _auth = auth;
 
+  ///revoke access token method
   Future<void> revokeAccessToken() async {
     if (_auth.currentUser == null) {
       throw FirebaseAuthException(

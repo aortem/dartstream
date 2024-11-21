@@ -1,13 +1,12 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///get redirect results
 class GetRedirectResultService {
-  final FirebaseAuth _auth;
+  ///get redirect results
+  GetRedirectResultService({required FirebaseAuth auth});
 
-  GetRedirectResultService({required FirebaseAuth auth}) : _auth = auth;
-
+  ///get redirect
   Future<Map<String, dynamic>?> getRedirectResult() async {
     try {
       // Get current user

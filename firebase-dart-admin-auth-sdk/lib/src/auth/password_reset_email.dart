@@ -1,11 +1,15 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
 
+///password reset
 class PasswordResetEmailService {
+  ///auth
   final dynamic auth;
 
+  ///password reset
   PasswordResetEmailService({required this.auth});
 
+  ///password reset function
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       final url = Uri.https(

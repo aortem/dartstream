@@ -2,18 +2,16 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/application_verifier.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/confirmation_result.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/exceptions.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
 
+///phone auth class
 class PhoneAuth {
   final FirebaseAuth _auth;
   final http.Client _httpClient;
 
+  ///phone auth
   PhoneAuth(this._auth) : _httpClient = http.Client();
 
+  /// sign in with phone
   Future<ConfirmationResult> signInWithPhoneNumber(
     String phoneNumber,
     ApplicationVerifier appVerifier,

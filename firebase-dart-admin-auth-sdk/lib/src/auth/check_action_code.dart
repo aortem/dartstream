@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
+///checkaction class
 class CheckActionCodeService {
   final FirebaseAuth auth;
 
+  ///checkaction service
   CheckActionCodeService({required this.auth});
 
+  ///checkaction function
   Future<ActionCodeInfo> checkActionCode(String code) async {
     try {
       final url = Uri.https(
@@ -40,12 +43,15 @@ class CheckActionCodeService {
   }
 }
 
+///actioncodeinfo
 class ActionCodeInfo {
   final String operation;
   final Map<String, dynamic> data;
 
+  ///actioncodeinfo
   ActionCodeInfo({required this.operation, required this.data});
 
+  ///fromJSON
   factory ActionCodeInfo.fromJson(Map<String, dynamic> json) {
     return ActionCodeInfo(
       operation: json['requestType'],
