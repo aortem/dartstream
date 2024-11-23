@@ -1,4 +1,4 @@
-name: "AmazonAuth"
+Name: "AzureAuth"
 version: "1.0.0"
 description: "Amazon authentication provider for Dartstream."
 dependencies:

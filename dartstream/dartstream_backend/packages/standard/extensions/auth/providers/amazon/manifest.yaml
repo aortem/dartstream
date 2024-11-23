@@ -1,0 +1,6 @@
+name: "AmazonAuth"
+version: "0.0.1"
+description: "Google authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_cognito_auth_provider.dart"

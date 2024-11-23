@@ -1,3 +1,11 @@
-export '../../providers/google/lib/ds_firebase_auth_provider.dart';
-export '../../providers/azure/lib/ds_azure_ad_b2c_auth_provider.dart';
-export '../../providers/amazon/lib/ds_cognito_auth_provider.dart';
+name: google_auth_provider
+description: Google authentication provider for Dartstream.
+version: 0.0.1-pre+10
+repository: https://github.com/dartstream
+
+environment:
+ sdk: ">=3.5.2 <4.0.0"
+
+# Dependencies are added in sections alphabetically and according to features. 
+dependencies:
+  firebase_dart_admin_auth_sdk: ^0.0.1-pre+10 # Include the Firebase Auth SDK
