@@ -10,4 +10,4 @@ pubspec.lock
 tools/
 
 #Ignore pipeline tools
-.gitlab-ci.yml
+#.gitlab-ci.yml
