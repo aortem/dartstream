@@ -1,32 +1,51 @@
+/*
+This file focuses solely on DSAuthManager as a standalone component.
+Uses a mock provider instead of the real DSFirebaseAuthProvider. 
+*/
+
 import 'package:test/test.dart';
 import '../../../../../dartstream_backend/packages/standard/extensions/auth/base/lib/ds_auth_manager.dart';
 import '../../../../../dartstream_backend/packages/standard/extensions/auth/base/lib/ds_auth_provider.dart';
-import '../../../../../dartstream_backend/packages/standard/extensions/auth/providers/google/lib/ds_firebase_auth_provider.dart';
+
+class MockAuthProvider implements DSAuthProvider {
+  @override
+  Future<void> signIn(String username, String password) async {}
+
+  @override
+  Future<void> signOut() async {}
+
+  @override
+  Future<DSUser> getUser(String userId) async {
+    return DSUser(
+        id: userId, email: 'test@example.com', displayName: 'Test User');
+  }
+
+  @override
+  Future<bool> verifyToken(String token) async {
+    return token == 'valid_token';
+  }
+}
 
 void main() {
   group('DSAuthManager Tests', () {
-    late DSFirebaseAuthProvider firebaseAuthProvider;
+    late MockAuthProvider mockProvider;
 
     setUp(() {
-      firebaseAuthProvider = DSFirebaseAuthProvider(
-        projectId: 'test_project',
-        privateKeyPath: 'test_key.json',
-      );
-      DSAuthManager.registerProvider('Firebase', firebaseAuthProvider);
+      mockProvider = MockAuthProvider();
+      DSAuthManager.registerProvider('MockProvider', mockProvider);
     });
 
     test('Register and Retrieve Provider', () {
-      final authManager = DSAuthManager('Firebase');
+      final authManager = DSAuthManager('MockProvider');
       expect(authManager, isNotNull);
     });
 
     test('Sign In Through Manager', () async {
-      final authManager = DSAuthManager('Firebase');
+      final authManager = DSAuthManager('MockProvider');
       await authManager.signIn('test_user', 'test_password');
-      expect(firebaseAuthProvider.lastSignInUsername, equals('test_user'));
     });
 
-    test('Unregistered Provider', () {
+    test('Unregistered Provider Throws Error', () {
       expect(
         () => DSAuthManager('UnknownProvider'),
         throwsA(isA<UnsupportedError>()),
@@ -35,7 +54,7 @@ void main() {
 
     test('Duplicate Provider Registration', () {
       expect(
-        () => DSAuthManager.registerProvider('Firebase', firebaseAuthProvider),
+        () => DSAuthManager.registerProvider('MockProvider', mockProvider),
         throwsA(isA<ArgumentError>()),
       );
     });

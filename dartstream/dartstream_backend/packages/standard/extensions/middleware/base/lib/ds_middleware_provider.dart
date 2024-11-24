@@ -8,7 +8,7 @@ abstract class DSAuthProvider {
 }
 
 // Standardized User model to ensure consistent structure across providers
-class DSUser {
+class DSMiddlewareUser {
   final String id;
   final String email;
   final String displayName;
