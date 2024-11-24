@@ -9,16 +9,24 @@ class ExtensionManifest {
   final List<String> dependencies;
   final String entryPoint;
 
-  ExtensionManifest(this.name, this.version, this.description,
-      this.dependencies, this.entryPoint);
+  ExtensionManifest({
+    required this.name,
+    required this.version,
+    required this.description,
+    required this.dependencies,
+    required this.entryPoint,
+  });
 
   factory ExtensionManifest.fromYaml(Map yaml) {
+    // Validate manifest schema
+    validateManifestSchema(yaml);
+
     return ExtensionManifest(
-      yaml['name'],
-      yaml['version'],
-      yaml['description'] ?? '',
-      List<String>.from(yaml['dependencies'] ?? []),
-      yaml['entry_point'],
+      name: yaml['name'],
+      version: yaml['version'],
+      description: yaml['description'] ?? '',
+      dependencies: List<String>.from(yaml['dependencies'] ?? []),
+      entryPoint: yaml['entry_point'],
     );
   }
 
@@ -30,6 +38,29 @@ class ExtensionManifest {
       'dependencies': dependencies,
       'entry_point': entryPoint,
     };
+  }
+
+  /// Hook for onLoad
+  void onLoad() {
+    print('$name extension loaded.');
+    // Add additional initialization logic here if needed.
+  }
+
+  /// Hook for onUnload
+  void onUnload() {
+    print('$name extension unloaded.');
+    // Add cleanup logic here if needed.
+  }
+
+  /// Validate the schema of the manifest
+  static void validateManifestSchema(Map manifestContent) {
+    final requiredFields = ['name', 'version', 'entry_point'];
+    for (var field in requiredFields) {
+      if (!manifestContent.containsKey(field)) {
+        throw FormatException(
+            'Missing required field: $field in manifest.yaml');
+      }
+    }
   }
 }
 
@@ -46,21 +77,26 @@ class ExtensionRegistry {
     "Middleware": "0.0.1",
     "Notifications": "0.0.1",
     "Storage": "0.0.1",
-  }; // Framework components and their versions.
+  };
   final String extensionsDirectory;
   final String? registryFile;
+  bool useCache = true;
 
   ExtensionRegistry({required this.extensionsDirectory, this.registryFile});
 
   /// Discovers extensions from the directory structure.
   void discoverExtensions() {
+    if (useCache && _extensions.isNotEmpty) {
+      print('Using cached extensions.');
+      return;
+    }
+
     final rootDir = Directory(extensionsDirectory);
     if (!rootDir.existsSync()) {
       print('Extensions directory not found: $extensionsDirectory');
       return;
     }
 
-    // Traverse each extension folder
     for (var extensionFolder in rootDir.listSync(recursive: false)) {
       if (extensionFolder is Directory) {
         final providersDir = Directory('${extensionFolder.path}/providers');
@@ -145,7 +181,8 @@ class ExtensionRegistry {
     print('Registering extension: ${extension.name} (${extension.version})');
     _extensions.add(extension);
 
-    // Load the entry point if needed (e.g., reflection or dynamic loading)
+    // Call lifecycle hook
+    extension.onLoad();
     print('Loading entry point: ${extension.entryPoint}');
   }
 
