@@ -25,9 +25,9 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<DSUser> getUser(String userId) async {
+  Future<DSAuthUser> getUser(String userId) async {
     // Firebase-specific user fetching logic
-    return DSUser(
+    return DSAuthUser(
       id: "firebase_$userId",
       email: "user@example.com",
       displayName: "Firebase User",

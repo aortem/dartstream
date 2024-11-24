@@ -3,7 +3,7 @@ import '../../../../../../dartstream_backend/packages/standard/extensions/auth/b
 import '../../../../../../dartstream_backend/packages/standard/extensions/auth/providers/google/lib/ds_firebase_auth_provider.dart';
 
 void main() {
-  group('DSAuthManager Tests', () {
+  group('DSFirebaseAuthProvider Integration Tests', () {
     late DSFirebaseAuthProvider firebaseAuthProvider;
 
     setUp(() {
@@ -14,20 +14,20 @@ void main() {
       DSAuthManager.registerProvider('Firebase', firebaseAuthProvider);
     });
 
-    test('Register and Retrieve Provider', () {
+    test('Register and Retrieve Firebase Provider', () {
       final authManager = DSAuthManager('Firebase');
       expect(authManager, isNotNull);
     });
 
-    test('Sign In Through Manager', () async {
+    test('Sign In Through Firebase Provider', () async {
       final authManager = DSAuthManager('Firebase');
       await authManager.signIn('test_user', 'test_password');
-      print("Successfully signed in through DSAuthManager");
+      print("Successfully signed in through Firebase provider");
     });
 
-    test('Unregistered Provider Throws Error', () {
+    test('Unregistered Firebase Provider Throws Error', () {
       expect(
-        () => DSAuthManager('UnknownProvider'),
+        () => DSAuthManager('UnknownFirebaseProvider'),
         throwsA(isA<UnsupportedError>()),
       );
     });

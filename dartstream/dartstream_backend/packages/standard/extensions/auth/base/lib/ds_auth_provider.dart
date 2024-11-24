@@ -3,7 +3,7 @@
 abstract class DSAuthProvider {
   Future<void> signIn(String username, String password);
   Future<void> signOut();
-  Future<DSUser> getUser(String userId);
+  Future<DSAuthUser> getUser(String userId);
   Future<bool> verifyToken(String token);
 }
 
@@ -13,7 +13,7 @@ class DSAuthUser {
   final String email;
   final String displayName;
 
-  DSUser({
+  DSAuthUser({
     required this.id,
     required this.email,
     required this.displayName,

@@ -15,8 +15,8 @@ class MockAuthProvider implements DSAuthProvider {
   Future<void> signOut() async {}
 
   @override
-  Future<DSUser> getUser(String userId) async {
-    return DSUser(
+  Future<DSAuthUser> getUser(String userId) async {
+    return DSAuthUser(
         id: userId, email: 'test@example.com', displayName: 'Test User');
   }
 
