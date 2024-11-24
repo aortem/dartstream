@@ -103,7 +103,7 @@ class ExtensionRegistry {
           final extension = ExtensionManifest.fromYaml(manifestContent);
 
           // Validate and register the extension.
-          if (_validateDependencies(extension)) {
+          if (validateDependencies(extension)) {
             registerExtension(extension);
           }
         } catch (e) {
@@ -148,7 +148,7 @@ class ExtensionRegistry {
 
   /// Validates an extension's dependencies against the framework's components.
   /// Ensures that all required dependencies are present and their versions are compatible.
-  bool _validateDependencies(ExtensionManifest extension) {
+  bool validateDependencies(ExtensionManifest extension) {
     for (var dependency in extension.dependencies) {
       final parts = dependency.split(' >='); // Parse "Name >=Version".
       if (parts.length < 2) {
