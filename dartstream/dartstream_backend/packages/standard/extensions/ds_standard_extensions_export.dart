@@ -13,7 +13,7 @@ export 'auth/base/lib/ds_auth_provider.dart';
 export 'database/ds_firebase_database.dart';
 export 'database/ds_mysql_database.dart';
 export 'database/ds_postgres_database.dart';
-export 'feature_flags/providers/ds_feature_flag_manager.dart';
+export 'feature_flags/base/lib/ds_feature_flag_manager.dart';
 export 'feature_flags/noop_feature_flag_manager.dart';
 
 // Export utility interfaces
