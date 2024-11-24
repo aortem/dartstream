@@ -63,6 +63,9 @@ class ExtensionRegistry {
   // List of all registered extensions.
   final List<ExtensionManifest> _extensions = [];
 
+  // List of currently active extensions.
+  final List<String> _activeExtensions = [];
+
   // Framework components and their current versions.
   // Extensions must specify dependencies compatible with these components.
   final Map<String, String> frameworkComponents = {
@@ -103,7 +106,7 @@ class ExtensionRegistry {
           final extension = ExtensionManifest.fromYaml(manifestContent);
 
           // Validate and register the extension.
-          if (validateDependencies(extension)) {
+          if (_validateDependencies(extension)) {
             registerExtension(extension);
           }
         } catch (e) {
@@ -146,9 +149,48 @@ class ExtensionRegistry {
     }
   }
 
+  /// Enables an extension by name.
+  void enableExtension(String extensionName) {
+    if (!_extensions.any((ext) => ext.name == extensionName)) {
+      print('Error: Extension "$extensionName" not found.');
+      return;
+    }
+    if (!_activeExtensions.contains(extensionName)) {
+      _activeExtensions.add(extensionName);
+      print('Extension "$extensionName" enabled.');
+    } else {
+      print('Extension "$extensionName" is already enabled.');
+    }
+  }
+
+  /// Disables an extension by name.
+  void disableExtension(String extensionName) {
+    if (_activeExtensions.remove(extensionName)) {
+      print('Extension "$extensionName" disabled.');
+    } else {
+      print('Error: Extension "$extensionName" is not enabled.');
+    }
+  }
+
+  /// Saves the list of active extensions to the registry file.
+  void saveActiveExtensions() {
+    if (registryFile == null) return;
+
+    try {
+      final file = File(registryFile!);
+      final registryContent =
+          jsonDecode(file.readAsStringSync()) as Map<String, dynamic>;
+      registryContent['activeExtensions'] = _activeExtensions;
+      file.writeAsStringSync(jsonEncode(registryContent));
+      print('Active extensions saved to $registryFile');
+    } catch (e) {
+      print('Error saving active extensions: $e');
+    }
+  }
+
   /// Validates an extension's dependencies against the framework's components.
   /// Ensures that all required dependencies are present and their versions are compatible.
-  bool validateDependencies(ExtensionManifest extension) {
+  bool _validateDependencies(ExtensionManifest extension) {
     for (var dependency in extension.dependencies) {
       final parts = dependency.split(' >='); // Parse "Name >=Version".
       if (parts.length < 2) {
@@ -208,4 +250,7 @@ class ExtensionRegistry {
 
   /// Returns the list of all registered extensions.
   List<ExtensionManifest> get extensions => _extensions;
+
+  /// Returns the list of active extensions.
+  List<String> get activeExtensions => _activeExtensions;
 }
