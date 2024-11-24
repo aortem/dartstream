@@ -2,7 +2,7 @@
 name: ds_tools_testing
 description: Core Testing Components Within Larger DartStream Ecosystem.
 version: 0.0.1-pre+3
-repository: https://github.com/dartstream
+repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ">=3.4.0 <4.0.0"

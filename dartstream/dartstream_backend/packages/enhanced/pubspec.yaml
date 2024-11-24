@@ -2,7 +2,7 @@
 name: ds_enhanced_features
 description: Packages for our enhanced features
 version: 0.0.1-pre
-repository: https://github.com/dartstream
+repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ">=3.4.0 <4.0.0"

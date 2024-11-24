@@ -3,7 +3,7 @@
 name: ds_svelte_framework_base
 description: Packages for our svelte framework - maintained by the Aortem and Dart team.
 version: 0.0.1-pre+1
-repository: https://github.com/dartstream
+repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ">=3.4.0 <4.0.0"

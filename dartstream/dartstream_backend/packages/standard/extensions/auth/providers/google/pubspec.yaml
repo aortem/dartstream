@@ -1,7 +1,7 @@
 name: google_auth_provider
 description: Google authentication provider for Dartstream.
 version: 0.0.1-pre+10
-repository: https://github.com/dartstream
+repository: https://github.com/aortem/dartstream
 
 publish_to: none # Mark the package as non-publishable for local testing:
 
