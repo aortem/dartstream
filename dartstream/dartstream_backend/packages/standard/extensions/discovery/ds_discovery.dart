@@ -1,35 +1,33 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:yaml/yaml.dart';
+import '../lifecycle/base/ds_lifecycle_hooks.dart';
 
-class ExtensionManifest {
+/// Represents the structure of an extension manifest.
+/// Includes lifecycle hooks for initialization and disposal.
+class ExtensionManifest implements LifecycleHook {
   final String name;
   final String version;
   final String description;
   final List<String> dependencies;
   final String entryPoint;
 
-  ExtensionManifest({
-    required this.name,
-    required this.version,
-    required this.description,
-    required this.dependencies,
-    required this.entryPoint,
-  });
+  ExtensionManifest(this.name, this.version, this.description,
+      this.dependencies, this.entryPoint);
 
+  /// Factory to create an `ExtensionManifest` object from YAML data.
+  /// This helps standardize the metadata format for all extensions.
   factory ExtensionManifest.fromYaml(Map yaml) {
-    // Validate manifest schema
-    validateManifestSchema(yaml);
-
     return ExtensionManifest(
-      name: yaml['name'],
-      version: yaml['version'],
-      description: yaml['description'] ?? '',
-      dependencies: List<String>.from(yaml['dependencies'] ?? []),
-      entryPoint: yaml['entry_point'],
+      yaml['name'],
+      yaml['version'],
+      yaml['description'] ?? '',
+      List<String>.from(yaml['dependencies'] ?? []),
+      yaml['entry_point'],
     );
   }
 
+  /// Convert the manifest to JSON for saving or inspection purposes.
   Map<String, dynamic> toJson() {
     return {
       'name': name,
@@ -40,32 +38,33 @@ class ExtensionManifest {
     };
   }
 
-  /// Hook for onLoad
-  void onLoad() {
-    print('$name extension loaded.');
-    // Add additional initialization logic here if needed.
+  /// Called when the extension is initialized.
+  @override
+  void onInitialize() {
+    print('Initializing extension: $name');
   }
 
-  /// Hook for onUnload
-  void onUnload() {
-    print('$name extension unloaded.');
-    // Add cleanup logic here if needed.
+  /// Called when the extension is disposed.
+  @override
+  void onDispose() {
+    print('Disposing extension: $name');
   }
 
-  /// Validate the schema of the manifest
-  static void validateManifestSchema(Map manifestContent) {
-    final requiredFields = ['name', 'version', 'entry_point'];
-    for (var field in requiredFields) {
-      if (!manifestContent.containsKey(field)) {
-        throw FormatException(
-            'Missing required field: $field in manifest.yaml');
-      }
-    }
+  /// Simulate loading the entry point for the extension.
+  void registerEntryPoint() {
+    print('Entry point loaded for extension: $name');
   }
 }
 
+/// Registry to manage discovering and registering extensions.
+/// Handles the discovery of extensions from directories, validates their
+/// dependencies, and maintains a registry of all loaded extensions.
 class ExtensionRegistry {
+  // List of all registered extensions.
   final List<ExtensionManifest> _extensions = [];
+
+  // Framework components and their current versions.
+  // Extensions must specify dependencies compatible with these components.
   final Map<String, String> frameworkComponents = {
     "Core": "0.0.1",
     "Auth": "0.0.1",
@@ -78,69 +77,84 @@ class ExtensionRegistry {
     "Notifications": "0.0.1",
     "Storage": "0.0.1",
   };
+
+  // Path to the directory containing extensions.
   final String extensionsDirectory;
+
+  // Optional path to save the registry metadata as a JSON file.
   final String? registryFile;
-  bool useCache = true;
 
   ExtensionRegistry({required this.extensionsDirectory, this.registryFile});
 
-  /// Discovers extensions from the directory structure.
+  /// Discovers extensions in the specified directory structure.
+  /// Reads each extension's `manifest.yaml` file, validates its dependencies,
+  /// and registers it if valid.
   void discoverExtensions() {
-    if (useCache && _extensions.isNotEmpty) {
-      print('Using cached extensions.');
-      return;
-    }
-
     final rootDir = Directory(extensionsDirectory);
     if (!rootDir.existsSync()) {
       print('Extensions directory not found: $extensionsDirectory');
       return;
     }
 
-    for (var extensionFolder in rootDir.listSync(recursive: false)) {
-      if (extensionFolder is Directory) {
-        final providersDir = Directory('${extensionFolder.path}/providers');
-        if (providersDir.existsSync()) {
-          for (var providerFolder in providersDir.listSync(recursive: false)) {
-            if (providerFolder is Directory) {
-              final manifestFile = File('${providerFolder.path}/manifest.yaml');
-              if (manifestFile.existsSync()) {
-                try {
-                  final manifestContent =
-                      loadYaml(manifestFile.readAsStringSync());
-                  if (manifestContent is Map) {
-                    final extension =
-                        ExtensionManifest.fromYaml(manifestContent);
-                    if (_validateDependencies(extension)) {
-                      registerExtension(extension);
-                    }
-                  } else {
-                    print(
-                        'Invalid manifest format in ${manifestFile.path}. Expected a YAML map.');
-                  }
-                } catch (e) {
-                  print('Error reading manifest in ${manifestFile.path}: $e');
-                }
-              } else {
-                print('No manifest found in ${providerFolder.path}');
-              }
+    for (var entity in rootDir.listSync(recursive: false)) {
+      if (entity is Directory) {
+        final manifestFile = File('${entity.path}/manifest.yaml');
+        if (manifestFile.existsSync()) {
+          try {
+            final manifestContent =
+                loadYaml(manifestFile.readAsStringSync()) as Map;
+            final extension = ExtensionManifest.fromYaml(manifestContent);
+
+            // Validate and register the extension.
+            if (_validateDependencies(extension)) {
+              registerExtension(extension);
             }
+          } catch (e) {
+            print('Error reading manifest in ${entity.path}: $e');
           }
-        } else {
-          print('No providers folder found in ${extensionFolder.path}');
         }
       }
     }
 
+    // Save the registry to a file if a path is provided.
     if (registryFile != null) {
       saveRegistry();
     }
   }
 
-  /// Validates extension dependencies against the framework components.
+  /// Registers an extension into the framework.
+  /// Adds the extension to the registry, triggers its entry point,
+  /// and invokes any lifecycle hooks.
+  void registerExtension(ExtensionManifest extension) {
+    print('Registering extension: ${extension.name} (${extension.version})');
+    _extensions.add(extension);
+
+    // Dynamically load the extension's entry point.
+    extension.registerEntryPoint();
+
+    // Trigger lifecycle hooks if applicable.
+    if (extension is LifecycleHook) {
+      extension.onInitialize();
+    }
+  }
+
+  /// Unregisters an extension from the framework.
+  /// Removes the extension from the registry and triggers its `onDispose` hook.
+  void unregisterExtension(ExtensionManifest extension) {
+    print('Unregistering extension: ${extension.name} (${extension.version})');
+    _extensions.remove(extension);
+
+    // Trigger lifecycle hooks if applicable.
+    if (extension is LifecycleHook) {
+      extension.onDispose();
+    }
+  }
+
+  /// Validates an extension's dependencies against the framework's components.
+  /// Ensures that all required dependencies are present and their versions are compatible.
   bool _validateDependencies(ExtensionManifest extension) {
     for (var dependency in extension.dependencies) {
-      final parts = dependency.split(' >='); // Parse "Name >=Version"
+      final parts = dependency.split(' >='); // Parse "Name >=Version".
       if (parts.length < 2) {
         print('Invalid dependency format in ${extension.name}: $dependency');
         return false;
@@ -163,7 +177,11 @@ class ExtensionRegistry {
     return true;
   }
 
-  /// Compares two semantic version strings.
+  /// Compares two semantic version numbers.
+  /// Returns:
+  /// -1 if `current` is less than `required`,
+  ///  0 if they are equal,
+  ///  1 if `current` is greater than `required`.
   int _compareVersions(String current, String required) {
     final currentParts = current.split('.').map(int.parse).toList();
     final requiredParts = required.split('.').map(int.parse).toList();
@@ -176,17 +194,8 @@ class ExtensionRegistry {
     return 0;
   }
 
-  /// Registers an extension into the registry.
-  void registerExtension(ExtensionManifest extension) {
-    print('Registering extension: ${extension.name} (${extension.version})');
-    _extensions.add(extension);
-
-    // Call lifecycle hook
-    extension.onLoad();
-    print('Loading entry point: ${extension.entryPoint}');
-  }
-
-  /// Saves the registered extensions into a central registry file.
+  /// Saves the registered extensions to a JSON file.
+  /// This can be used to persist metadata about extensions for later use.
   void saveRegistry() {
     if (registryFile == null) return;
 
@@ -201,6 +210,6 @@ class ExtensionRegistry {
     }
   }
 
-  /// Returns a list of all registered extensions.
+  /// Returns the list of all registered extensions.
   List<ExtensionManifest> get extensions => _extensions;
 }
