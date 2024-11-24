@@ -3,7 +3,7 @@ import 'ds_commands/ds_init_command.dart';
 import 'ds_commands/ds_configure_command.dart';
 import 'ds_commands/ds_setup_command.dart';
 import 'ds_commands/ds_generate_command.dart';
-import 'ds_commands/ds_discovery_command.dart'; // Import the new command
+import 'ds_commands/ds_discovery_command.dart';
 
 void main(List<String> arguments) {
   var runner = CommandRunner("ds", "DartStream CLI Tools")
@@ -11,7 +11,7 @@ void main(List<String> arguments) {
     ..addCommand(DSConfigureCommand())
     ..addCommand(DSSetupCommand())
     ..addCommand(DSGenerateCommand())
-    ..addCommand(DSDiscoverCommand()); // Add the new command
+    ..addCommand(DSDiscoveryCommand());
 
   runner.run(arguments).catchError((error) {
     print('Error: $error');

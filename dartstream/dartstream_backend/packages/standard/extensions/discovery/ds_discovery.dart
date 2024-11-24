@@ -95,23 +95,19 @@ class ExtensionRegistry {
       print('Extensions directory not found: $extensionsDirectory');
       return;
     }
+    // Recursively search for `manifest.yaml` files
+    for (var entity in rootDir.listSync(recursive: true)) {
+      if (entity is File && entity.path.endsWith('manifest.yaml')) {
+        try {
+          final manifestContent = loadYaml(entity.readAsStringSync()) as Map;
+          final extension = ExtensionManifest.fromYaml(manifestContent);
 
-    for (var entity in rootDir.listSync(recursive: false)) {
-      if (entity is Directory) {
-        final manifestFile = File('${entity.path}/manifest.yaml');
-        if (manifestFile.existsSync()) {
-          try {
-            final manifestContent =
-                loadYaml(manifestFile.readAsStringSync()) as Map;
-            final extension = ExtensionManifest.fromYaml(manifestContent);
-
-            // Validate and register the extension.
-            if (_validateDependencies(extension)) {
-              registerExtension(extension);
-            }
-          } catch (e) {
-            print('Error reading manifest in ${entity.path}: $e');
+          // Validate and register the extension.
+          if (_validateDependencies(extension)) {
+            registerExtension(extension);
           }
+        } catch (e) {
+          print('Error reading manifest in ${entity.path}: $e');
         }
       }
     }
