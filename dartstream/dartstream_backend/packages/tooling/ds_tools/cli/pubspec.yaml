@@ -1,6 +1,6 @@
-name: ds_cli_util
+name: ds_tools_cli
 description: This package has been deprecated. Please use the new CLI tools provided in the `bin` folder of the DartStream framework.
-version: 0.0.1-pre+3deprecated
+version: 0.0.1-pre+3-deprecated
 repository: https://github.com/aortem/dartstream
 
 environment:
