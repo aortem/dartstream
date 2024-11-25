@@ -5,6 +5,7 @@ class DSFeatureFlagManager {
   static final Map<String, DSFeatureFlagProvider> _registeredProviders = {};
 
   /// Registers a feature flag provider.
+  /// Throws an error if the provider name is already registered.
   static void registerProvider(String name, DSFeatureFlagProvider provider) {
     if (_registeredProviders.containsKey(name)) {
       throw ArgumentError('Provider already registered: $name');
@@ -13,6 +14,7 @@ class DSFeatureFlagManager {
   }
 
   /// Fetches a feature flag as a boolean from the specified provider.
+  /// Supports passing a context for dynamic evaluations.
   static Future<bool> getBooleanFlag(
     String providerName,
     String flagKey, {
@@ -28,6 +30,7 @@ class DSFeatureFlagManager {
   }
 
   /// Fetches a feature flag as a string from the specified provider.
+  /// Supports passing a context for dynamic evaluations.
   static Future<String> getStringFlag(
     String providerName,
     String flagKey, {
@@ -43,6 +46,7 @@ class DSFeatureFlagManager {
   }
 
   /// Fetches a feature flag as a number from the specified provider.
+  /// Supports passing a context for dynamic evaluations.
   static Future<num> getNumberFlag(
     String providerName,
     String flagKey, {
@@ -58,6 +62,7 @@ class DSFeatureFlagManager {
   }
 
   /// Fetches a feature flag as JSON from the specified provider.
+  /// Supports passing a context for dynamic evaluations.
   static Future<Map<String, dynamic>> getJsonFlag(
     String providerName,
     String flagKey, {
@@ -68,6 +73,19 @@ class DSFeatureFlagManager {
     return provider.getJsonFlag(
       flagKey,
       defaultValue: defaultValue,
+      context: context,
+    );
+  }
+
+  /// Evaluates a feature flag and returns a detailed result from the specified provider.
+  static Future<DSFeatureFlagEvaluationResult> evaluateFlag(
+    String providerName,
+    String flagKey, {
+    Map<String, dynamic>? context,
+  }) async {
+    final provider = _getProvider(providerName);
+    return provider.evaluateFlag(
+      flagKey,
       context: context,
     );
   }
