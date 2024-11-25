@@ -18,7 +18,7 @@ dependencies:
 # Custom Middleware Import // Off By Default
 
 # STANDARD FEATURES
-  ds_standard_features: ^0.0.1-pre+5
+#  ds_standard_features: ^0.0.1-pre+5
 
 # Database
   sqlite3: ^2.4.2 #Local database development - No driver
