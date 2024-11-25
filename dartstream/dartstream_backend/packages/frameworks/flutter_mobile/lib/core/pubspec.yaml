@@ -1,0 +1,5 @@
+dependencies:
+  flutter:
+    sdk: flutter
+  dartstream_auth: # Reference the auth package
+    path: ../../../../standard/extensions/auth/base

@@ -1,5 +1,6 @@
 // ds_commands/ds_init_command.dart
 import 'package:args/command_runner.dart';
+import 'dart:io';
 
 class DSInitCommand extends Command {
   @override

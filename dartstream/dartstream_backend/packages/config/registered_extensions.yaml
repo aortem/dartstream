@@ -1,0 +1,4 @@
+# This file is beneficial for the following:
+# We want to cache discovered extensions to avoid repeated scans.
+# Provides a high-level view of all registered extensions.
+# Provides a global configuration or dependency resolver.

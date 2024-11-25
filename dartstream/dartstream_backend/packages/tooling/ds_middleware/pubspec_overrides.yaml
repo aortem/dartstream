@@ -1,8 +1,0 @@
-# melos_managed_dependency_overrides: ds_standard_features,ds_tools_general,ds_tools_testing
-dependency_overrides:
-  ds_standard_features:
-    path: ../../standard
-  ds_tools_general:
-    path: ../ds_tools/general
-  ds_tools_testing:
-    path: ../ds_tools/testing

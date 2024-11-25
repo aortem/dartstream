@@ -1,5 +1,6 @@
 // ds_commands/ds_configure_command.dart
 import 'package:args/command_runner.dart';
+import 'dart:io';
 
 class DSConfigureCommand extends Command {
   @override

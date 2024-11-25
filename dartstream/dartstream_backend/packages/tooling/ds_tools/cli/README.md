@@ -1,48 +1,54 @@
-# DartStream
+# DartStream CLI (Deprecated)
 
-## Core CLi Package
+## **⚠️ Notice of Deprecation**
 
-DartStream CLI offers a range of features tailored to support the DartStream framework effectively:
+**This package has been deprecated and is no longer maintained.**  
+Please use the new CLI tools provided in the `bin` folder of the DartStream framework.  
 
-- **Project Initialization**: Quickly scaffold new DartStream projects with pre-configured settings.
-- **Build Automation**: Utilize powerful tools like build_runner for code generation and automated tasks.
-- **Testing**: Integrated support for unit and integration testing using the test package.
-- **Mocking**: Use mockito for legacy projects or mocktail for projects utilizing Dart's null safety features to create mocks and stubs.
-- **Code Coverage**: Ensure your tests cover a wide range of your codebase with the coverage package.
-- **Streamlined Workflows**: Simplify common tasks with custom scripts and commands tailored for the DartStream environment.
+We highly recommend migrating to the new tools for the latest features, updates, and support.  
 
-### Installation Of the CLI Package
+---
 
-To install DartStream CLI, you need to have Dart installed on your machine. If you haven't installed Dart yet, you can download it from the official Dart site.
+## Core CLI Package (Deprecated)
 
-Once Dart is installed, you can install DartStream CLI by running the following command:
+The DartStream CLI previously offered a range of features to support the DartStream framework effectively. However, these features are now fully integrated into the main DartStream framework and accessible via its `bin` tools.
 
+### Previously Available Features:
+- **Project Initialization**: Scaffolding of new DartStream projects.
+- **Build Automation**: Support for code generation and automated tasks.
+- **Testing**: Integration with `test` package for unit and integration tests.
+- **Mocking**: Compatibility with `mockito` or `mocktail`.
+- **Code Coverage**: Coverage reporting with the `coverage` package.
+- **Streamlined Workflows**: Custom scripts for the DartStream environment.
+
+### **Migrating to the New Tools**
+The new DartStream framework CLI tools are located in the `bin` folder. To migrate:
+1. Ensure you have the DartStream framework installed.
+2. Access the CLI tools directly from the `bin` directory.
+3. Refer to the official [DartStream documentation](link-to-docs) for migration guidance.
+
+---
+
+### **Installation (Deprecated)**
+
+Installation of this package is no longer supported. Existing installations will continue to work but may lack compatibility with future versions of DartStream.
+
+If you need to use this package temporarily, install it with the following (not recommended):  
 ```bash
 dart pub global activate dartstream_cli
 ```
 
-### Usage
+**⚠️ Warning:** Continued use of this package may result in unsupported behavior or incompatibility with DartStream.
 
-After installation, you can access DartStream CLI from your terminal or command prompt. Here are some common commands you might find useful:
+---
 
-```bash
-dartstream create my_project
-```
-```bash
-dartstream test
-```
-```bash
-dartstream generate
-```
-```bash
-dartstream run
-```
+## Licensing (Unchanged)
 
-## Licensing
+All DartStream packages are licensed under BSD-3, except for the *services packages* and *SDK packages*. See the [LICENSE](LICENSE.md) file for more details.
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+---
 
+### Enhancing with DartStream
 
-## Enhance with DartStream"
+We hope DartStream continues to support your development needs effectively. Join our growing community and explore the [DartStream framework](link-to-framework) for future-ready tools.
 
-We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!

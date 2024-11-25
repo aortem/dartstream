@@ -1,7 +1,7 @@
 name: ds_workspace
 version: 0.0.1
-description: A package for DartStream project-wide Melos configurations and scripts.
-repository: https://github.com/dartstream
+description: A package for DartStream project-wide configurations and scripts.
+repository: https://github.com/aortem/dartstream
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
