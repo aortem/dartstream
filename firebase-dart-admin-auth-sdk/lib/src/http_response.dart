@@ -8,6 +8,9 @@ class HttpResponse {
   /// The body of the HTTP response, typically a map containing data or a message.
   final Map<String, dynamic> body;
 
+  ///headers
+  final Map<String, String> headers;
+
   /// Constructs a new instance of `HttpResponse`.
   ///
   /// Both [statusCode] and [body] are required parameters.
@@ -16,7 +19,11 @@ class HttpResponse {
   /// ```dart
   /// HttpResponse response = HttpResponse(statusCode: 200, body: {'message': 'Success'});
   /// ```
-  HttpResponse({required this.statusCode, required this.body});
+  HttpResponse({
+    required this.statusCode,
+    required this.body,
+    this.headers = const {},
+  });
 
   /// Converts the `HttpResponse` instance to a Map<String, dynamic>.
   ///

@@ -1,28 +1,86 @@
-/// An abstract base class representing an authentication provider,
-/// used to identify the specific authentication method (e.g., email, phone, OAuth).
-abstract class AuthProvider {}
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
-/// Provides an instance of [EmailAuthProvider] for email and password-based
-/// authentication.
-class EmailAuthProvider extends AuthProvider {
-  /// A singleton instance of [EmailAuthProvider].
-  static EmailAuthProvider get instance => EmailAuthProvider();
+///auth provider
+abstract class AuthProvider {
+  ///provider id
+  String get providerId;
 }
 
-/// Provides an instance of [PhoneAuthProvider] for phone-based authentication.
-class PhoneAuthProvider extends AuthProvider {
-  /// A singleton instance of [PhoneAuthProvider].
-  static PhoneAuthProvider get instance => PhoneAuthProvider();
+///facebook
+
+class FacebookAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'facebook.com';
 }
 
-/// Provides an instance of [GoogleAuthProvider] for Google OAuth-based authentication.
-class GoogleAuthProvider extends AuthProvider {
-  /// A singleton instance of [GoogleAuthProvider].
-  static GoogleAuthProvider get instance => GoogleAuthProvider();
+///google
+
+class GoogleAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'google.com';
+
+  ///credentials provider
+  static OAuthCredential credential({
+    String? accessToken,
+    String? idToken,
+  }) {
+    return OAuthCredential(
+      providerId: 'google.com',
+      accessToken: accessToken,
+      idToken: idToken,
+    );
+  }
 }
 
-/// Provides an instance of [FacebookAuthProvider] for Facebook OAuth-based authentication.
-class FacebookAuthProvider extends AuthProvider {
-  /// A singleton instance of [FacebookAuthProvider].
-  static FacebookAuthProvider get instance => FacebookAuthProvider();
+///twitter
+
+class TwitterAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'twitter.com';
+}
+
+///github
+
+class GithubAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'github.com';
+}
+
+///phone auth
+
+class PhoneAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'phone';
+
+  ///credential
+
+  static PhoneAuthCredential credential({
+    required String verificationId,
+    required String smsCode,
+  }) {
+    return PhoneAuthCredential(
+      verificationId: verificationId,
+      smsCode: smsCode,
+    );
+  }
+}
+
+///OID Authentication
+
+class OIDCAuthProvider implements AuthProvider {
+  @override
+  String get providerId => 'oidc.gcp';
+
+  ///credential
+
+  static OAuthCredential credential({
+    String? accessToken,
+    String? idToken,
+  }) {
+    return OAuthCredential(
+      providerId: 'oidc.gcp',
+      accessToken: accessToken,
+      idToken: idToken,
+    );
+  }
 }

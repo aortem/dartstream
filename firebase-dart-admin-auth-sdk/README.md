@@ -32,7 +32,7 @@ You can manually edit your `pubspec.yaml `file this:
 
 ```yaml
 dependencies:
-  firebase_dart_admin_auth_sdk: ^latest
+  firebase_dart_admin_auth_sdk: ^0.0.1-pre+10
 ```
 
 You can run a `flutter pub get` for Flutter respectively to complete installation.
@@ -44,88 +44,63 @@ You can run a `flutter pub get` for Flutter respectively to complete installatio
 **Example:**
 
 ```
-import 'dart:io';
-import 'package:bot_toast/bot_toast.dart';
-import 'package:firebase/screens/splash_screen/splash_screen.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:flutter/services.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  try {
-    if (kIsWeb) {
-      // Initialize for web
-      debugPrint('Initializing Firebase for Web...');
-      FirebaseApp.initializeAppWithEnvironmentVariables(
-        apiKey: 'YOUR-API-KEY',
-        projectId: 'YOUR-PROJECT-ID',
-        bucketName: 'Your Bucket Name',
+   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+   import 'package:flutter/services.dart' show rootBundle;
+   
+   
+   void main() async {
+      //To initialize with service account put the path to the json file in the function below
+      String serviceAccountContent = await rootBundle.loadString(
+          'assets/service_account.json'); //Add your own JSON service account
+     
+     // Initialize Firebase with the service account content
+      await FirebaseApp.initializeAppWithServiceAccount(
+        serviceAccountContent: serviceAccountContent,
+        serviceAccountKeyFilePath: '',
       );
-      debugPrint('Firebase initialized for Web.');
-    } else {
-      if (Platform.isAndroid || Platform.isIOS) {
-        debugPrint('Initializing Firebase for Mobile...');
+      
+      // Get Firebase auth instance for this project
+      FirebaseApp.instance.getAuth();
 
-        // Load the service account JSON
-        String serviceAccountContent = await rootBundle.loadString(
-          'assets/service_account.json',
-        );
-        debugPrint('Service account loaded.');
-
-        // Initialize Firebase with the service account content
-        await FirebaseApp.initializeAppWithServiceAccount(
-          serviceAccountContent: serviceAccountContent,
-        );
-        debugPrint('Firebase initialized for Mobile.');
-      }
-    }
-
-    // Access Firebase Auth instance
-    final auth = FirebaseApp.instance.getAuth();
-    debugPrint('Firebase Auth instance obtained.');
-
-    runApp(const MyApp());
-  } catch (e, stackTrace) {
-    debugPrint('Error initializing Firebase: $e');
-    debugPrint('StackTrace: $stackTrace');
-  }
-}
+     // Example: Sign in with email and password
+     try {
+       final user = await FirebaseApp.firebaseAuth
+        ?.createUserWithEmailAndPassword('user005@gmail.com', 'password');
+        
+       final await userCredential = await FirebaseApp.firebaseAuth
+       ?.signInWithEmailAndPassword('user005@gmail.com', 'password'); 
+       
+       print('Signed in as ${userCredential?.user.email}');
+     } catch (e) {
+       print('Sign-in error: $e');
+     }
+   }
 
 ```
 
 - Import the package into your Dart or Flutter project:
+
   ```
   import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
   ```
-  For Flutter web initialize Firebase app as follows:
+
+- Save `serviceAccountKey.json` file path in a variable `serviceAccountKeyFilePath`.
+
   ```
-  FirebaseApp.initializeAppWithEnvironmentVariables(
-    apiKey: 'YOUR-API-KEY',
-    projectId: 'YOUR-PROJECT-ID',
-    bucketName: 'Your Bucket Name',
-  );
+  final serviceAccountKeyFilePath = 'path/to/serviceAccountKey.json';
   ```
 
-- For Flutter mobile:
-    - Load the service account JSON
-    ```
-       String serviceAccountContent = await rootBundle.loadString(
-         'assets/service_account.json',
-       );
-    ```
-    - Initialize Flutter mobile with service account content
-    ```
-      await FirebaseApp.initializeAppWithServiceAccount(
-        serviceAccountContent: serviceAccountContent,
-      );
-    ```
+- Initialize FirebaseAuth using service account with keys:
 
-- Access Firebase Auth instance.
   ```
-     final auth = FirebaseApp.instance.getAuth();
+  final auth = FirebaseAuth.fromServiceAccountWithKeys(serviceAccountKeyFilePath: serviceAccountKeyFilePath);
+  ```
+
+- Use the `FirebaseApp.firebaseAuth?.signInWithEmailAndPassword()` to sign in an existing user or new user.
+
+  ```
+  final await userCredential = await FirebaseApp.firebaseAuth
+      ?.signInWithEmailAndPassword('user005@gmail.com', 'password');
   ```
 
 ## Documentation

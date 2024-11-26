@@ -1,3 +1,4 @@
+import 'package:firebase/screens/home_screen/home_screen.dart';
 import 'package:firebase/screens/sign_in_with_email_link_screen/send_sign_in_with_email_link_screen_view_model.dart';
 import 'package:firebase/shared/shared.dart';
 import 'package:firebase/utils/extensions.dart';
@@ -14,11 +15,13 @@ class SendSignInWithEmailLinkScreen extends StatefulWidget {
 
 class _SendSignInWithEmailLinkScreenState
     extends State<SendSignInWithEmailLinkScreen> {
-  final TextEditingController _emailLinkController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _linkController = TextEditingController();
 
   @override
   void dispose() {
-    _emailLinkController.dispose();
+    _emailController.dispose();
+    _linkController.dispose();
     super.dispose();
   }
 
@@ -36,16 +39,39 @@ class _SendSignInWithEmailLinkScreenState
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   InputField(
-                    controller: _emailLinkController,
+                    controller: _emailController,
                     label: 'Email',
                     hint: '',
                   ),
                   20.vSpace,
                   Button(
                     onTap: () =>
-                        value.sendSignInLinkToEmail(_emailLinkController.text),
+                        value.sendSignInLinkToEmail(_emailController.text),
                     title: 'Send Sign In Link',
                     loading: value.loading,
+                  ),
+                  30.vSpace,
+                  const Divider(),
+                  30.vSpace,
+                  InputField(
+                    controller: _linkController,
+                    label: 'Sign-in Link',
+                    hint: 'Paste the sign-in link here',
+                  ),
+                  20.vSpace,
+                  Button(
+                    onTap: () => value.signInWithEmailLink(
+                      _emailController.text,
+                      _linkController.text,
+                      () => Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
+                        ),
+                      ),
+                    ),
+                    title: 'Sign In with Email Link',
+                    loading: value.signingIn,
                   ),
                   20.vSpace,
                   GestureDetector(

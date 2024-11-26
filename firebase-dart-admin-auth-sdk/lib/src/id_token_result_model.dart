@@ -1,3 +1,5 @@
+library;
+
 /// A class representing the result of an ID token for a Firebase user.
 ///
 /// This class encapsulates information about the ID token, including its

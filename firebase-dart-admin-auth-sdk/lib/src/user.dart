@@ -57,6 +57,12 @@ class User {
   /// Custom attributes associated with the user.
   Map<String, dynamic>? customAttributes;
 
+  /// Whether the user is enrolled in multi-factor authentication (MFA).
+  final bool mfaEnabled;
+
+  /// The tenant ID for the user.
+  String? tenantId;
+
   /// Creates an instance of the [User] class with the given parameters.
   ///
   /// The constructor initializes the user's details, authentication tokens,
@@ -68,7 +74,6 @@ class User {
     this.phoneNumber,
     this.displayName,
     this.photoURL,
-    this.idToken,
     this.refreshToken,
     this.createdAt,
     this.customAttributes,
@@ -77,6 +82,9 @@ class User {
     this.passwordUpdatedAt,
     this.providerUserInfo,
     this.validSince,
+    this.mfaEnabled = false,
+    this.idToken,
+    this.tenantId,
   });
 
   /// A getter to determine if the user is signed in anonymously.
@@ -99,6 +107,14 @@ class User {
     return idToken!;
   }
 
+  /// Updates the user's ID token and refresh token.
+
+  void updateIdToken(String newToken) {
+    idToken = newToken;
+    _idTokenExpiration = DateTime.now().add(Duration(hours: 1));
+    refreshToken = newToken;
+  }
+
   /// Converts the [User] instance to a map for easy serialization.
   ///
   /// This method is useful for converting the user object into a format
@@ -112,6 +128,8 @@ class User {
       'displayName': displayName,
       'photoURL': photoURL,
       'isAnonymous': isAnonymous,
+      'refreshToken': refreshToken,
+      'mfaEnabled': mfaEnabled,
     };
   }
 
@@ -126,8 +144,10 @@ class User {
       phoneNumber: json['phoneNumber'],
       displayName: json['displayName'],
       photoURL: json['photoUrl'] ?? json['photoURL'],
+      mfaEnabled: json['mfaEnabled'] ?? false,
       idToken: json['idToken'],
       refreshToken: json['refreshToken'],
+      tenantId: json['tenantId'],
       createdAt: json['createdAt'] == null
           ? null
           : DateTime?.fromMillisecondsSinceEpoch(
@@ -240,4 +260,8 @@ class User {
         idToken.hashCode ^
         _idTokenExpiration.hashCode;
   }
+
+  ///provider data
+
+  get providerData => null;
 }

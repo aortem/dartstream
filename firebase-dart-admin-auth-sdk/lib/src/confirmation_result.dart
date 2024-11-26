@@ -1,15 +1,15 @@
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/user_credential.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+
+///confirm results
 
 class ConfirmationResult {
+  ///verify id
   final String verificationId;
-  final FirebaseAuth _auth;
 
-  ConfirmationResult({required this.verificationId, required FirebaseAuth auth})
-      : _auth = auth;
+  ///confirm function
+  final Future<UserCredential> Function(String) confirm;
 
-  Future<UserCredential> confirm(String verificationCode) async {
-    return await _auth.phone
-        .verifyPhoneNumber(verificationId, verificationCode);
-  }
+  ///confirm result
+
+  ConfirmationResult({required this.verificationId, required this.confirm});
 }
