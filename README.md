@@ -30,22 +30,22 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseAuth.setPersistence                  | ✅        |
 | FirebaseAuth.signInAnonymously               | ✅        |
 | FirebaseAuth.signInWithCredential            | ✅        |
-| FirebaseAuth.signInWithCustomToken           | ❌        |
+| FirebaseAuth.signInWithCustomToken           | ✅        |
 | FirebaseAuth.signInWithEmailAndPassword      | ✅        |
 | FirebaseAuth.signInWithEmailLink             | ✅        |
 | FirebaseAuth.signInWithPhoneNumber           | ✅        |
 | FirebaseAuth.signInWithPopup                 | ✅        |
-| FirebaseAuth.signInWithRedirect              | ❌        |
+| FirebaseAuth.signInWithRedirect              | ✅        |
 | FirebaseAuth.signOut                         | ✅        |
 | FirebaseAuth.updateCurrentUser               | ✅        |
 | FirebaseAuth.useDeviceLanguage               | ✅        |
-| FirebaseAuth.verifyPasswordResetCode         | ❌        |
+| FirebaseAuth.verifyPasswordResetCode         | ✅        |
 | FirebaseLink.parseActionCodeURL              | ✅        |
 | FirebaseUser.deleteUser                      | ✅        |
 | FirebaseUser.getIdToken                      | ✅        |
 | FirebaseUser.getIdTokenResult                | ✅        |
 | FirebaseUser.linkWithCredential              | ✅        |
-| FirebaseUser.linkWithPhoneNumber             | ❌        |
+| FirebaseUser.linkWithPhoneNumber             | ✅        |
 | FirebaseUser.linkWithPopup                   | ✅        |
 | FirebaseUser.linkWithRedirect                | ❌        |
 | FirebaseUser.multiFactor                     | ❌        |
@@ -60,7 +60,7 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.updatePassword                  | ✅        |
 | FirebaseUser.updatePhoneNumber               | ❌        |
 | FirebaseUser.updateProfile                   | ✅        |
-| FirebaseUser.verifyBeforeUpdateEmail         | ❌        |
+| FirebaseUser.verifyBeforeUpdateEmail         | ✅        |
 | FirebaseUserCredential.getAdditionalUserInfo | ✅        |
 
 
