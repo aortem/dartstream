@@ -1,40 +1,5 @@
-/// Abstract base class for feature flag providers in DartStream.
-/// Ensures a consistent interface across all providers.
-abstract class DSFeatureFlagProvider {
-  /// Fetches the value of a feature flag as a boolean.
-  Future<bool> getBooleanFlag(
-    String flagKey, {
-    bool defaultValue = false,
-    Map<String, dynamic>? context,
-  });
-
-  /// Fetches the value of a feature flag as a string.
-  Future<String> getStringFlag(
-    String flagKey, {
-    String defaultValue = '',
-    Map<String, dynamic>? context,
-  });
-
-  /// Fetches the value of a feature flag as a number.
-  Future<num> getNumberFlag(
-    String flagKey, {
-    num defaultValue = 0,
-    Map<String, dynamic>? context,
-  });
-
-  /// Fetches the value of a feature flag as JSON.
-  Future<Map<String, dynamic>> getJsonFlag(
-    String flagKey, {
-    Map<String, dynamic> defaultValue = const {},
-    Map<String, dynamic>? context,
-  });
-
-  /// Evaluates a feature flag and returns detailed results.
-  Future<DSFeatureFlagEvaluationResult> evaluateFlag(
-    String flagKey, {
-    Map<String, dynamic>? context,
-  });
-}
+/*Models like DSFeatureFlagEvaluationResult are part of the feature flag's 
+/core design and are directly used by providers and managers.*/
 
 /// Represents the result of a feature flag evaluation.
 class DSFeatureFlagEvaluationResult {
