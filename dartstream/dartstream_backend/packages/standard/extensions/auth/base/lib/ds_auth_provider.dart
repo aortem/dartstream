@@ -1,3 +1,5 @@
+//Interface across all Auth Providers
+
 // extensions/auth/ds_auth_provider.dart
 
 abstract class DSAuthProvider {

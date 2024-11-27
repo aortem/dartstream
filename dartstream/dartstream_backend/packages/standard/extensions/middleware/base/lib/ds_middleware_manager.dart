@@ -26,7 +26,7 @@ class DSAuthManager {
     return _provider.signOut();
   }
 
-  Future<DSUser> getUser(String userId) {
+  Future<DSMiddlewareUser> getUser(String userId) {
     return _provider.getUser(userId);
   }
 

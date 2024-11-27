@@ -1,3 +1,5 @@
+//Interface across all Auth Providers
+
 import 'ds_auth_provider.dart';
 
 class DSAuthManager {
