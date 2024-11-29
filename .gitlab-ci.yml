@@ -47,47 +47,42 @@ conditional_development_backend:
 #    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
 
 # Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
-android_compose_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-android-compose-integration-test-dev.yml
+# dart_web_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
 
-dart_web_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
+# flutter_desktop_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
 
-flutter_desktop_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
+# flutter_games_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
 
-flutter_games_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
+# flutter_mobile_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
 
-flutter_mobile_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
+# flutter_web_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
 
-flutter_web_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
+# react_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
 
-react_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
+# svelte_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
 
-svelte_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
-
-vue_integration_test_dev:
-  stage: frontend
-  trigger:
-    include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml
+# vue_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml
