@@ -7,7 +7,7 @@
 pubspec.lock
 
 #Ignore pipeline tools For MAIN repo - For Development Only
-tools/
+#tools/
 
 #Ignore pipeline tools
 #.gitlab-ci.yml

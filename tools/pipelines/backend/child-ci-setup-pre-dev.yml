@@ -1,0 +1,67 @@
+# This file runs on any branch that is not main, dev, qa and provides developers a benchmark to check their code.
+# Once passed, the development merge stage occurs with full unit testing.
+
+stages:
+  - analyze
+
+# Setup Stage
+analyze_main:
+  stage: analyze
+  image: dart:stable
+  rules:
+    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
+      when: always
+    - when: never
+  script:
+    - echo "Setting up environment..."
+    - dart pub get
+    - dart analyze > analysis_report.txt
+
+    # Separate analysis output into information, warnings, and errors
+    - echo "Separating issues into info, warnings, and errors..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+
+    # Display counts of each issue type
+    - echo "Summary of Analysis Issues"
+    - |
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues = $info_count"
+      echo "Warning Issues = $warning_count"
+      echo "Error Issues = $error_count"
+
+    # Tracing contributors for collaboration on resolving errors
+    - echo "Tracing contributors for collaboration on resolving errors..."
+    - |
+      error_found=false
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          # Get the last commit author for the file
+          git_log=$(git log -n 1 --pretty=format:"%an <%ae>" -- $file)
+          echo "File: $file - Last modified by: $git_log"
+          if [[ $git_log == *"$GITLAB_USER_LOGIN"* ]]; then
+            echo "Attention needed on issues in file: $file. Please review."
+            error_found=true
+          fi
+        fi
+      done < error_issues.txt
+
+      if $error_found; then
+        echo "Pipeline failed due to unresolved issues in files recently modified. Collaboration is encouraged."
+        exit 1
+      else
+        echo "No critical issues found in files modified by the current user. Passing pipeline."
+      fi
+  artifacts:
+    paths:
+      - .dart_tool/
+      - analysis_report.txt
+      - info_issues.txt
+      - warning_issues.txt
+      - error_issues.txt
+    expire_in: 1h
+  retry: 2
