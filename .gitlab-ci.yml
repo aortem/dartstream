@@ -18,15 +18,14 @@ conditional_non_development_backend:
     - when: never  # Ensures this doesn't run if no condition matches
 
 # Trigger Backend Setup for Development Merges
-conditional_development_backend:
+conditional_development_backend_merge:
   stage: triggers
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_REF_NAME == "development"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
       when: always
     - when: never  # Ensures this doesn't run if no condition matches
-
 
 # Unit Tests for Backend (Dev)
 #unit_test_dev:
