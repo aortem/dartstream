@@ -26,20 +26,9 @@ conditional_development_backend:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
       when: always
      # Run for direct push to 'development' only if user is a maintainer or owner
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development" && ($GITLAB_USER_ACCESS_LEVEL == "Maintainer" || $GITLAB_USER_ACCESS_LEVEL == "Owner")
+    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development"
       when: always
     - when: never  # Ensures this doesn't run if no condition matches
-
-debug_variables:
-  stage: triggers
-  script:
-    - echo "Pipeline Source $CI_PIPELINE_SOURCE"
-    - echo "Branch Name (CI_COMMIT_REF_NAME) $CI_COMMIT_REF_NAME"
-    - echo "Merge Request Target Branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-    - echo "GitLab User Access Level $GITLAB_USER_ACCESS_LEVEL"
-    - echo "GitLab User Login $GITLAB_USER_LOGIN"
-  rules:
-    - when: always  # Ensures this job runs in all scenarios for testing
 
 # Unit Tests for Backend (Dev)
 #unit_test_dev:
