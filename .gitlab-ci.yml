@@ -1,17 +1,112 @@
 stages:
   - triggers
+  - backend
+  - frontend
 
+# The pipeline covers a series of triggers to ensure full testing and coverage.
 
-conditional_development:
+# Trigger Backend Setup for Non-Development Branches
+
+conditional_non_development_backend:
   stage: triggers
   trigger:
-    include: tools/pipelines/child-ci-development.yml
+    include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+    - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "development"
 
-conditional_production:
+# Trigger Backend Setup for Development Merges
+
+conditional_development_backend:
   stage: triggers
   trigger:
-    include: tools/pipelines/child-ci-production.yml
+    include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_REF_NAME == "development"
+
+# Unit Tests for Backend (Dev)
+unit_test_dev:
+  stage: backend
+  trigger:
+    include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
+  dependencies:
+    - conditional_non_development_backend
+
+# Integration Tests for Backend (Dev)
+integration_test_dev:
+  stage: backend
+  trigger:
+    include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
+  dependencies:
+    - unit_test_dev
+
+# Full Lifecycle Tests for Backend (Dev)
+full_lifecycle_dev:
+  stage: backend
+  trigger:
+    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
+  dependencies:
+    - integration_test_dev
+
+# Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
+android_compose_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-android-compose-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+dart_web_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+flutter_desktop_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+flutter_games_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
+  dependencies:
+    - full_lifecycle_dev
+
+flutter_mobile_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+flutter_web_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+react_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+svelte_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
+
+vue_integration_test_dev:
+  stage: frontend
+  trigger:
+    include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml
+  dependencies:
+    - full_lifecycle_dev
