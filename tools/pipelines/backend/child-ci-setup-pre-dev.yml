@@ -5,15 +5,11 @@ stages:
 analyze_qa:
   stage: analyze
   image: dart:stable
-#  rules:
-#    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
-#      when: always
-#    - when: never
   script:
     - echo "Setting up QA environment for analysis..."
     - cd dartstream/test/
     - dart pub get
-    - dart analyze > qa_analysis_report.txt
+    - dart analyze > qa_analysis_report.txt || true
 
     # Separate analysis output into information, warnings, and errors
     - echo "Separating QA issues into info, warnings, and errors..."
@@ -30,6 +26,14 @@ analyze_qa:
       echo "Info Issues = $info_count"
       echo "Warning Issues = $warning_count"
       echo "Error Issues = $error_count"
+
+    # Show details for QA issues
+    - echo "Details of QA Info Messages:"
+    - cat qa_info_issues.txt || echo "No Info Messages."
+    - echo "Details of QA Warnings:"
+    - cat qa_warning_issues.txt || echo "No Warnings."
+    - echo "Details of QA Errors:"
+    - cat qa_error_issues.txt || echo "No Errors."
 
     # Tracking contributors for QA errors
     - echo "Tracking contributors for QA errors..."
@@ -68,15 +72,11 @@ analyze_qa:
 analyze_backend:
   stage: analyze
   image: dart:stable
-#  rules:
-#    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
-#      when: always
-#    - when: never
   script:
     - echo "Setting up Backend environment for analysis..."
     - cd dartstream/dartstream_backend/
     - dart pub get
-    - dart analyze > backend_analysis_report.txt
+    - dart analyze > backend_analysis_report.txt || true
 
     # Separate analysis output into information, warnings, and errors
     - echo "Separating Backend issues into info, warnings, and errors..."
@@ -93,6 +93,14 @@ analyze_backend:
       echo "Info Issues = $info_count"
       echo "Warning Issues = $warning_count"
       echo "Error Issues = $error_count"
+
+    # Show details for Backend issues
+    - echo "Details of Backend Info Messages:"
+    - cat backend_info_issues.txt || echo "No Info Messages."
+    - echo "Details of Backend Warnings:"
+    - cat backend_warning_issues.txt || echo "No Warnings."
+    - echo "Details of Backend Errors:"
+    - cat backend_error_issues.txt || echo "No Errors."
 
     # Tracking contributors for Backend errors
     - echo "Tracking contributors for Backend errors..."
