@@ -2,7 +2,7 @@ stages:
   - triggers
   - backend_unit
   - backend_integration
-  - backend_full lifecycle
+  - backend_full_lifecycle
   - frontend
 
 # The pipeline covers a series of triggers to ensure full testing and coverage.
