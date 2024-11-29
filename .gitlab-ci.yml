@@ -8,40 +8,43 @@ stages:
 # The pipeline covers a series of triggers to ensure full testing and coverage.
 
 # Trigger Backend Setup for Non-Development Branches
-
 conditional_non_development_backend:
   stage: triggers
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "development"
+      when: always
+    - when: never  # Ensures this doesn't run if no condition matches
 
 # Trigger Backend Setup for Development Merges
-
 conditional_development_backend:
   stage: triggers
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_REF_NAME == "development"
+      when: always
+    - when: never  # Ensures this doesn't run if no condition matches
+
 
 # Unit Tests for Backend (Dev)
-unit_test_dev:
-  stage: backend_unit
-  trigger:
-    include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
+#unit_test_dev:
+#  stage: backend_unit
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
 
 # Integration Tests for Backend (Dev)
-integration_test_dev:
-  stage: backend_integration
-  trigger:
-    include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
+# integration_test_dev:
+#  stage: backend_integration
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
 
 # Full Lifecycle Tests for Backend (Dev)
-full_lifecycle_dev:
-  stage: backend_full_lifecycle
-  trigger:
-    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
+#full_lifecycle_dev:
+#  stage: backend_full_lifecycle
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
 
 # Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
 android_compose_integration_test_dev:

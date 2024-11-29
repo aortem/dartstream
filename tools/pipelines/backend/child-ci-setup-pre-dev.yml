@@ -1,70 +1,6 @@
 stages:
   - analyze
 
-# Analyze for QA Directory
-analyze_qa:
-  stage: analyze
-  image: dart:stable
-  script:
-    - echo "Setting up QA environment for analysis..."
-    - cd dartstream/test/
-    - dart pub get
-    - dart analyze > qa_analysis_report.txt || true
-
-    # Separate analysis output into information, warnings, and errors
-    - echo "Separating QA issues into info, warnings, and errors..."
-    - grep -i "info" qa_analysis_report.txt > qa_info_issues.txt || true
-    - grep -i "warning" qa_analysis_report.txt > qa_warning_issues.txt || true
-    - grep -i "error" qa_analysis_report.txt > qa_error_issues.txt || true
-
-    # Display counts of each issue type
-    - echo "Summary of QA Analysis Issues"
-    - |
-      info_count=$(wc -l < qa_info_issues.txt || echo 0)
-      warning_count=$(wc -l < qa_warning_issues.txt || echo 0)
-      error_count=$(wc -l < qa_error_issues.txt || echo 0)
-      echo "Info Issues = $info_count"
-      echo "Warning Issues = $warning_count"
-      echo "Error Issues = $error_count"
-
-    # Optionally display details (commented out for now)
-    # - echo "Details of QA Info Messages:"
-    # - cat qa_info_issues.txt || echo "No Info Messages."
-    # - echo "Details of QA Warnings:"
-    # - cat qa_warning_issues.txt || echo "No Warnings."
-    # - echo "Details of QA Errors:"
-    # - cat qa_error_issues.txt || echo "No Errors."
-
-    # Tracking commits for QA errors (commit hash)
-    - echo "Tracking commits for QA errors..."
-    - |
-      error_found=false
-      while IFS= read -r line; do
-        file=$(echo $line | awk -F ':' '{print $1}')
-        if [[ -n "$file" ]]; then
-          # Get the last commit hash for the file
-          git_log=$(git log -n 1 --pretty=format:"%H" -- $file)
-          echo "File: $file - Last modified in commit: $git_log"
-          error_found=true
-        fi
-      done < qa_error_issues.txt
-
-      if $error_found; then
-        echo "Pipeline failed due to unresolved QA issues. Collaboration is encouraged."
-        exit 1
-      else
-        echo "No critical QA issues found. Passing pipeline."
-      fi
-  artifacts:
-    paths:
-      - dartstream/test/.dart_tool/
-      - qa_analysis_report.txt
-      - qa_info_issues.txt
-      - qa_warning_issues.txt
-      - qa_error_issues.txt
-    expire_in: 1h
-  retry: 2
-
 # Analyze for Backend Directory
 analyze_backend:
   stage: analyze
@@ -126,5 +62,71 @@ analyze_backend:
       - backend_info_issues.txt
       - backend_warning_issues.txt
       - backend_error_issues.txt
+    expire_in: 1h
+  retry: 2
+
+# Analyze for QA Directory
+analyze_qa:
+  stage: analyze
+  image: dart:stable
+  needs:
+    - analyze_backend
+  script:
+    - echo "Setting up QA environment for analysis..."
+    - cd dartstream/test/
+    - dart pub get
+    - dart analyze > qa_analysis_report.txt || true
+
+    # Separate analysis output into information, warnings, and errors
+    - echo "Separating QA issues into info, warnings, and errors..."
+    - grep -i "info" qa_analysis_report.txt > qa_info_issues.txt || true
+    - grep -i "warning" qa_analysis_report.txt > qa_warning_issues.txt || true
+    - grep -i "error" qa_analysis_report.txt > qa_error_issues.txt || true
+
+    # Display counts of each issue type
+    - echo "Summary of QA Analysis Issues"
+    - |
+      info_count=$(wc -l < qa_info_issues.txt || echo 0)
+      warning_count=$(wc -l < qa_warning_issues.txt || echo 0)
+      error_count=$(wc -l < qa_error_issues.txt || echo 0)
+      echo "Info Issues = $info_count"
+      echo "Warning Issues = $warning_count"
+      echo "Error Issues = $error_count"
+
+    # Optionally display details (commented out for now)
+    # - echo "Details of QA Info Messages:"
+    # - cat qa_info_issues.txt || echo "No Info Messages."
+    # - echo "Details of QA Warnings:"
+    # - cat qa_warning_issues.txt || echo "No Warnings."
+    # - echo "Details of QA Errors:"
+    # - cat qa_error_issues.txt || echo "No Errors."
+
+    # Tracking commits for QA errors (commit hash)
+    - echo "Tracking commits for QA errors..."
+    - |
+      error_found=false
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          # Get the last commit hash for the file
+          git_log=$(git log -n 1 --pretty=format:"%H" -- $file)
+          echo "File: $file - Last modified in commit: $git_log"
+          error_found=true
+        fi
+      done < qa_error_issues.txt
+
+      if $error_found; then
+        echo "Pipeline failed due to unresolved QA issues. Collaboration is encouraged."
+        exit 1
+      else
+        echo "No critical QA issues found. Passing pipeline."
+      fi
+  artifacts:
+    paths:
+      - dartstream/test/.dart_tool/
+      - qa_analysis_report.txt
+      - qa_info_issues.txt
+      - qa_warning_issues.txt
+      - qa_error_issues.txt
     expire_in: 1h
   retry: 2
