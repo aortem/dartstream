@@ -40,8 +40,6 @@ full_lifecycle_dev:
   stage: backend
   trigger:
     include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
-  dependencies:
-    - integration_test_dev
 
 # Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
 android_compose_integration_test_dev:
