@@ -31,7 +31,7 @@ conditional_development_backend:
     - when: never  # Ensures this doesn't run if no condition matches
 
 debug_variables:
-  stage: debug
+  stage: triggers
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Branch Name (CI_COMMIT_REF_NAME) $CI_COMMIT_REF_NAME"
