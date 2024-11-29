@@ -28,16 +28,12 @@ unit_test_dev:
   stage: backend
   trigger:
     include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
-  dependencies:
-    - conditional_non_development_backend
 
 # Integration Tests for Backend (Dev)
 integration_test_dev:
   stage: backend
   trigger:
     include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
-  dependencies:
-    - unit_test_dev
 
 # Full Lifecycle Tests for Backend (Dev)
 full_lifecycle_dev:
@@ -52,61 +48,43 @@ android_compose_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-android-compose-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 dart_web_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 flutter_desktop_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 flutter_games_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
-  dependencies:
-    - full_lifecycle_dev
 
 flutter_mobile_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 flutter_web_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 react_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 svelte_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
 
 vue_integration_test_dev:
   stage: frontend
   trigger:
     include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml
-  dependencies:
-    - full_lifecycle_dev
