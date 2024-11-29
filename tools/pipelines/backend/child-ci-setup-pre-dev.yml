@@ -5,10 +5,10 @@ stages:
 analyze_qa:
   stage: analyze
   image: dart:stable
-  rules:
-    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
-      when: always
-    - when: never
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
+#      when: always
+#    - when: never
   script:
     - echo "Setting up QA environment for analysis..."
     - cd dartstream/test/
@@ -68,10 +68,10 @@ analyze_qa:
 analyze_backend:
   stage: analyze
   image: dart:stable
-  rules:
-    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
-      when: always
-    - when: never
+#  rules:
+#    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "qa" && $GITLAB_USER_LOGIN != "alphabetacreatives"
+#      when: always
+#    - when: never
   script:
     - echo "Setting up Backend environment for analysis..."
     - cd dartstream/dartstream_backend/
