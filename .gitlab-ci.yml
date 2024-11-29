@@ -1,6 +1,8 @@
 stages:
   - triggers
-  - backend
+  - backend_unit
+  - backend_integration
+  - backend_full lifecycle
   - frontend
 
 # The pipeline covers a series of triggers to ensure full testing and coverage.
@@ -25,19 +27,19 @@ conditional_development_backend:
 
 # Unit Tests for Backend (Dev)
 unit_test_dev:
-  stage: backend
+  stage: backend_unit
   trigger:
     include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
 
 # Integration Tests for Backend (Dev)
 integration_test_dev:
-  stage: backend
+  stage: backend_integration
   trigger:
     include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
 
 # Full Lifecycle Tests for Backend (Dev)
 full_lifecycle_dev:
-  stage: backend
+  stage: backend_full_lifecycle
   trigger:
     include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
 
