@@ -31,13 +31,13 @@ conditional_development_backend:
     - when: never  # Ensures this doesn't run if no condition matches
 
 debug_variables:
-  stage: triggers
+  stage: debug
   script:
-    - echo "Pipeline Source: $CI_PIPELINE_SOURCE"
-    - echo "Branch Name (CI_COMMIT_REF_NAME): $CI_COMMIT_REF_NAME"
-    - echo "Merge Request Target Branch: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-    - echo "GitLab User Access Level: $GITLAB_USER_ACCESS_LEVEL"
-    - echo "GitLab User Login: $GITLAB_USER_LOGIN"
+    - echo "Pipeline Source $CI_PIPELINE_SOURCE"
+    - echo "Branch Name (CI_COMMIT_REF_NAME) $CI_COMMIT_REF_NAME"
+    - echo "Merge Request Target Branch $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "GitLab User Access Level $GITLAB_USER_ACCESS_LEVEL"
+    - echo "GitLab User Login $GITLAB_USER_LOGIN"
   rules:
     - when: always  # Ensures this job runs in all scenarios for testing
 
