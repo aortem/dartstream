@@ -68,7 +68,11 @@ analyze_main:
       echo "Warning Issues: $warning_count"
       echo "Error Issues: $error_count"
 
-    # Promote collaboration by identifying responsible contributors
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+
+    # Encourage collaboration by highlighting contributors who worked on relevant areas
     - echo "Collaboratively resolving identified issues..."
     - |
       while IFS= read -r line; do
@@ -113,7 +117,11 @@ analyze_example:
       echo "Warning Issues: $warning_count"
       echo "Error Issues: $error_count"
 
-    # Promote collaboration by identifying responsible contributors
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+
+    # Encourage collaboration by highlighting contributors who worked on relevant areas.
     - echo "Collaboratively resolving identified issues..."
     - |
       while IFS= read -r line; do
