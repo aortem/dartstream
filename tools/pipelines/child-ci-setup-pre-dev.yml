@@ -29,6 +29,8 @@ validate_commit_messages:
   stage: validation
   image: debian:bullseye-slim
   script:
+    - apt-get update && apt-get install -y git
+    - git --version
     - echo "Validating commit messages..."
     - |
       REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
