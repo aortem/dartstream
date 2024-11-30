@@ -29,9 +29,7 @@ validate_commit_messages:
   stage: validation
   image: alpine:latest
   script:
-    - # Install necessary tools
     - apk add --no-cache git bash grep
-    # Verify Git installation
     - git --version
     - echo "Validating commit messages..."
     - |
