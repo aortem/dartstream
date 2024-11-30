@@ -47,7 +47,8 @@ validate_commit_messages:
 analyze_main:
   stage: analyze
   image: dart:stable
-  needs: validate_commit_messages
+  needs: 
+    - validate_commit_messages
   script:
     - echo "Starting analysis for the main project..."
     - cd firebase-dart-admin-auth-sdk
@@ -106,7 +107,8 @@ analyze_main:
 analyze_example:
   stage: analyze
   image: ghcr.io/cirruslabs/flutter:stable
-  needs: validate_commit_messages
+  needs: 
+    - validate_commit_messages
   script:
     - echo "Starting analysis for the example project..."
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
