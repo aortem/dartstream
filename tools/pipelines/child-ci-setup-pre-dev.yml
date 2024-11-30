@@ -156,8 +156,6 @@ analyze_example:
       done < filtered_report.txt
 
     - echo "Example project analysis complete. Check filtered_report.txt for details."
-  dependencies:
-    - analyze_main
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
