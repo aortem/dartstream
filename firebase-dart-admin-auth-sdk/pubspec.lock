@@ -302,6 +302,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.0"
+  git_hooks:
+    dependency: "direct dev"
+    description:
+      name: git_hooks
+      sha256: "2d3d6fc1a7bf3430988f0a62ca376b6e26a3ebe187c4935bd6c8b346ba954e60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   glob:
     dependency: transitive
     description:
