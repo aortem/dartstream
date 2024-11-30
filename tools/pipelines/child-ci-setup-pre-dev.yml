@@ -1,10 +1,53 @@
 stages:
+  - validation
   - analyze
+
+validate_branch_name:
+  stage: validation
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=$CI_COMMIT_BRANCH
+      echo "Branch name: $BRANCH_NAME"
+
+      if [[ "$BRANCH_NAME" =~ ^(qa|beta|main)$ ]]; then
+        echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (qa, beta, main)."
+      elif [[ "$BRANCH_NAME" =~ ^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$ ]]; then
+        echo "✅ Branch name '$BRANCH_NAME' follows the naming convention."
+      else
+        echo "❌ Branch name '$BRANCH_NAME' does not follow the naming convention: <type>/<branch-name>"
+        echo "Valid types: feat, fix, hotfix, chore, test, refactor, release, qa, beta, main"
+        exit 1
+      fi
+
+validate_commit_messages:
+  stage: validation
+  needs: validate_branch_name
+  script:
+    - echo "Validating commit messages..."
+    - |
+      REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$REGEX" || true)
+
+      if [[ -n "$INVALID_COMMITS" ]]; then
+        echo "❌ The following commit messages do not follow the convention:"
+        echo "$INVALID_COMMITS"
+        echo ""
+        echo "Commit message format must follow:"
+        echo "<type>(<scope>): <short summary>"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ All commit messages follow the convention."
+      fi
 
 # Analyze Main Project
 analyze_main:
   stage: analyze
   image: dart:stable
+  needs: validate_commit_messages
   script:
     - echo "Starting analysis for the main project..."
     - cd firebase-dart-admin-auth-sdk
@@ -63,6 +106,7 @@ analyze_main:
 analyze_example:
   stage: analyze
   image: ghcr.io/cirruslabs/flutter:stable
+  needs: validate_commit_messages
   script:
     - echo "Starting analysis for the example project..."
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
