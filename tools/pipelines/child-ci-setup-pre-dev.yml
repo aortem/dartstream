@@ -27,12 +27,8 @@ validate_commit_messages:
   script:
     - validate_commit_messages:
   stage: validation
-  image: alpine/git
+  image: debian:bullseye-slim
   script:
-    - set -x  # Enable debugging
-    - which git  # Verify git binary location
-    - git --version  # Check git version
-    - echo "Debugging complete."
     - echo "Validating commit messages..."
     - |
       REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
