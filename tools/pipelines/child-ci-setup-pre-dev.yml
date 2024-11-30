@@ -22,7 +22,8 @@ validate_branch_name:
 
 validate_commit_messages:
   stage: validation
-  needs: validate_branch_name
+  needs: 
+    - validate_branch_name
   script:
     - echo "Validating commit messages..."
     - |
