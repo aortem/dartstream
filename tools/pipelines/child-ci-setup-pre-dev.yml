@@ -27,9 +27,11 @@ validate_commit_messages:
   script:
     - validate_commit_messages:
   stage: validation
-  image: debian:bullseye-slim
+  image: alpine:latest
   script:
-    - apt-get update && apt-get install -y git
+    - # Install necessary tools
+    - apk add --no-cache git bash grep
+    # Verify Git installation
     - git --version
     - echo "Validating commit messages..."
     - |
