@@ -1,5 +1,5 @@
 stages:
-  - validation
+  - triggers
   - backend_unit
   - backend_integration
   - backend_full_lifecycle
@@ -9,7 +9,7 @@ stages:
 
 # Trigger Backend Setup for Non-Development Branches
 conditional_non_development_backend:
-  stage: validation
+  stage: triggers
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
@@ -19,7 +19,7 @@ conditional_non_development_backend:
 
 # Trigger Backend Setup for Development Merges
 conditional_development_backend:
-  stage: validation
+  stage: triggers
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
