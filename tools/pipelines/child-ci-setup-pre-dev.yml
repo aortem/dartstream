@@ -11,7 +11,7 @@ validate_branch_name:
       echo "Branch name: $BRANCH_NAME"
 
       if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
-        echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (qa, beta, main)."
+        echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (development, qa, beta, main)."
       elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
         echo "✅ Branch name '$BRANCH_NAME' follows the naming convention."
       else
