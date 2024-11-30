@@ -32,6 +32,6 @@ dev_dependencies:
 # Optional Local Hooks for development.
 git_hooks:
   hooks:
-    pre-commit: ./tool/validate_commit.dart
-    commit-msg: ./tool/validate_commit_msg.dart
-    pre-push: ./tool/validate_branch.dart
+    pre-commit: ./local_dev_tools/validate_commit.dart
+    commit-msg: ./local_dev_tools/validate_commit_msg.dart
+    pre-push: ./local_dev_tools/validate_branch.dart
