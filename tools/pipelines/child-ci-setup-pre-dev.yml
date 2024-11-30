@@ -10,9 +10,9 @@ validate_branch_name:
       BRANCH_NAME=$CI_COMMIT_BRANCH
       echo "Branch name: $BRANCH_NAME"
 
-      if [[ "$BRANCH_NAME" =~ ^(qa|beta|main)$ ]]; then
+      if echo "$BRANCH_NAME" | grep -Eq "^(qa|beta|main)$"; then
         echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (qa, beta, main)."
-      elif [[ "$BRANCH_NAME" =~ ^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$ ]]; then
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
         echo "✅ Branch name '$BRANCH_NAME' follows the naming convention."
       else
         echo "❌ Branch name '$BRANCH_NAME' does not follow the naming convention: <type>/<branch-name>"
@@ -20,16 +20,18 @@ validate_branch_name:
         exit 1
       fi
 
+
 validate_commit_messages:
   stage: validation
-  needs: 
+  needs:
     - validate_branch_name
   script:
     - echo "Validating commit messages..."
     - |
       REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
       INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$REGEX" || true)
-      if [[ -n "$INVALID_COMMITS" ]]; then
+
+      if [ -n "$INVALID_COMMITS" ]; then
         echo "❌ The following commit messages do not follow the convention:"
         echo "$INVALID_COMMITS"
         echo ""
