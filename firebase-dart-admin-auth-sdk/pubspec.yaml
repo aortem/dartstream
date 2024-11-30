@@ -29,6 +29,7 @@ dev_dependencies:
   test: any
   git_hooks: any
 
+# Optional Local Hooks for development.
 git_hooks:
   hooks:
     pre-commit: ./tool/validate_commit.dart
