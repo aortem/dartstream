@@ -1,5 +1,5 @@
 stages:
-  - triggers
+  - validation
   - backend_unit
   - backend_integration
   - backend_full_lifecycle
@@ -9,7 +9,7 @@ stages:
 
 # Trigger Backend Setup for Non-Development Branches
 conditional_non_development_backend:
-  stage: triggers
+  stage: validation
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
@@ -19,13 +19,13 @@ conditional_non_development_backend:
 
 # Trigger Backend Setup for Development Merges
 conditional_development_backend:
-  stage: triggers
+  stage: validation
   trigger:
     include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
       when: always
-     # Run for direct push to 'development' only if user is a maintainer or owner
+     # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development"
       when: always
     - when: never  # Ensures this doesn't run if no condition matches
