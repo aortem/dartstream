@@ -10,13 +10,13 @@ validate_branch_name:
       BRANCH_NAME=$CI_COMMIT_BRANCH
       echo "Branch name: $BRANCH_NAME"
 
-      if echo "$BRANCH_NAME" | grep -Eq "^(qa|beta|main)$"; then
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
         echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (qa, beta, main)."
       elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
         echo "✅ Branch name '$BRANCH_NAME' follows the naming convention."
       else
         echo "❌ Branch name '$BRANCH_NAME' does not follow the naming convention: <type>/<branch-name>"
-        echo "Valid types: feat, fix, hotfix, chore, test, refactor, release, qa, beta, main"
+        echo "Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main"
         exit 1
       fi
 
