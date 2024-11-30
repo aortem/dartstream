@@ -74,6 +74,11 @@ analyze_backend:
       echo "Warning Issues = $warning_count"
       echo "Error Issues = $error_count"
 
+   # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+      
+
     # Optionally display details (commented out for now)
     # - echo "Details of Backend Info Messages:"
     # - cat backend_info_issues.txt || echo "No Info Messages."
@@ -139,6 +144,10 @@ analyze_qa:
       echo "Info Issues = $info_count"
       echo "Warning Issues = $warning_count"
       echo "Error Issues = $error_count"
+
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
 
     # Optionally display details (commented out for now)
     # - echo "Details of QA Info Messages:"
