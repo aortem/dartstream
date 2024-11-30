@@ -28,7 +28,6 @@ validate_commit_messages:
     - |
       REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
       INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$REGEX" || true)
-
       if [[ -n "$INVALID_COMMITS" ]]; then
         echo "❌ The following commit messages do not follow the convention:"
         echo "$INVALID_COMMITS"
