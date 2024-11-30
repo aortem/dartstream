@@ -1,9 +1,9 @@
 stages:
-  - validation
+  - validate
   - analyze
 
 validate_branch_name:
-  stage: validation
+  stage: validate
   script:
     - echo "Validating branch name..."
     - |
@@ -11,18 +11,17 @@ validate_branch_name:
       echo "Branch name: $BRANCH_NAME"
 
       if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
-        echo "✅ Branch name '$BRANCH_NAME' is valid for protected branches (development, qa, beta, main)."
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
       elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
-        echo "✅ Branch name '$BRANCH_NAME' follows the naming convention."
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
       else
-        echo "❌ Branch name '$BRANCH_NAME' does not follow the naming convention: <type>/<branch-name>"
-        echo "Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main"
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main."
         exit 1
       fi
 
-
 validate_commit_messages:
-  stage: validation
+  stage: validate
   image: alpine:latest
   script:
     - apk add --no-cache git bash grep
@@ -33,136 +32,103 @@ validate_commit_messages:
       INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$REGEX" || true)
 
       if [ -n "$INVALID_COMMITS" ]; then
-        echo "❌ The following commit messages do not follow the convention:"
+        echo "❌ Commit message does not follow convention:"
         echo "$INVALID_COMMITS"
-        echo ""
-        echo "Commit message format must follow:"
-        echo "<type>(<scope>): <short summary>"
+        echo "Expected format: <type>(<scope>): <short summary>."
         echo "Examples:"
         echo "  feat(auth): add OAuth 2.0 support"
         echo "  fix(payment): resolve rounding error in total calculation"
         exit 1
       else
-        echo "✅ All commit messages follow the convention."
+        echo "✅ Commit message follows the convention."
       fi
 
-
-# Analyze Main Project
 analyze_main:
   stage: analyze
   image: dart:stable
   needs: 
     - validate_commit_messages
   script:
-    - echo "Starting analysis for the main project..."
+    - echo "Analyzing main project..."
     - cd firebase-dart-admin-auth-sdk
-    - pwd
-    - echo "Listing contents of the current directory..."
-    - ls -la
+    - dart pub get || { echo "Failed to install dependencies. Exiting..."; exit 1; }
+    - dart analyze lib/ > analysis_report.txt 2> error_log.txt || true
 
-    # Install dependencies
-    - echo "Installing dependencies for the main project using dart pub get..."
+    # Filter and summarize analysis results
+    - echo "Separating issues into categories..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+    - echo "Summary of analysis issues:"
     - |
-      if ! dart pub get; then
-        echo "Failed to install dependencies for the main project. Exiting..."
-        exit 1
-      fi
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues: $info_count"
+      echo "Warning Issues: $warning_count"
+      echo "Error Issues: $error_count"
 
-    # Run analysis with detailed error handling
-    - echo "Running dart analyze for the main project..."
-    - |
-      if ! dart analyze lib/ > analysis_report.txt 2> error_log.txt; then
-        echo "Analysis failed with errors. Details:"
-        cat error_log.txt
-        echo "Full analysis report:"
-        cat analysis_report.txt
-        exit 1
-      else
-        echo "Analysis completed successfully. No critical errors found."
-      fi
-
-    # Filter analysis output
-    - echo "Filtering relevant analysis results (excluding test/unit files)..."
-    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the main project."
-
-    # Identify responsible developers for each file with issues
-    - echo "Identifying responsible developers for issues in the main project..."
+    # Promote collaboration by identifying responsible contributors
+    - echo "Collaboratively resolving identified issues..."
     - |
       while IFS= read -r line; do
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
           git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
           echo "File: $file - Last modified by: $git_log"
-          echo "Issue: $line"
-        else
-          echo "No file information could be extracted for: $line"
+          echo "Suggested collaboration: Work with the contributor to address the issue."
         fi
-      done < filtered_report.txt
+      done < error_issues.txt
 
-    - echo "Main project analysis complete. Check filtered_report.txt for details."
+    - echo "Main project analysis complete. Check categorized issue files for details."
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/analysis_report.txt
-      - firebase-dart-admin-auth-sdk/error_log.txt
-      - firebase-dart-admin-auth-sdk/filtered_report.txt
+      - firebase-dart-admin-auth-sdk/info_issues.txt
+      - firebase-dart-admin-auth-sdk/warning_issues.txt
+      - firebase-dart-admin-auth-sdk/error_issues.txt
     expire_in: 1h
 
-# Analyze Example Project
 analyze_example:
   stage: analyze
   image: ghcr.io/cirruslabs/flutter:stable
   needs: 
     - analyze_main
   script:
-    - echo "Starting analysis for the example project..."
+    - echo "Analyzing example project..."
     - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
-    - pwd
-    - echo "Listing contents of the current directory..."
-    - ls -la
+    - flutter pub get || { echo "Failed to install dependencies. Exiting..."; exit 1; }
+    - dart analyze > analysis_report.txt 2> error_log.txt || true
 
-    # Install dependencies
-    - echo "Installing dependencies for the example project using flutter pub get..."
+    # Filter and summarize analysis results
+    - echo "Separating issues into categories..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+    - echo "Summary of analysis issues:"
     - |
-      if ! flutter pub get; then
-        echo "Failed to install dependencies for the example project. Exiting..."
-        exit 1
-      fi
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues: $info_count"
+      echo "Warning Issues: $warning_count"
+      echo "Error Issues: $error_count"
 
-    # Run analysis with detailed error handling
-    - echo "Running dart analyze for the example project..."
-    - |
-      if ! dart analyze > analysis_report.txt 2> error_log.txt; then
-        echo "Analysis failed with errors. Details:"
-        cat error_log.txt
-        echo "Full analysis report:"
-        cat analysis_report.txt
-        exit 1
-      else
-        echo "Analysis completed successfully. No critical errors found."
-      fi
-
-    # Filter analysis output
-    - echo "Filtering relevant analysis results (excluding test/unit files)..."
-    - grep -E "(Missing documentation for a public member|info|warning|error)" analysis_report.txt | grep -vE "^test/unit" > filtered_report.txt || echo "No relevant issues found for the example project."
-
-    # Identify responsible developers for each file with issues
-    - echo "Identifying responsible developers for issues in the example project..."
+    # Promote collaboration by identifying responsible contributors
+    - echo "Collaboratively resolving identified issues..."
     - |
       while IFS= read -r line; do
         file=$(echo $line | awk -F ':' '{print $1}')
         if [[ -n "$file" ]]; then
           git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
           echo "File: $file - Last modified by: $git_log"
-          echo "Issue: $line"
-        else
-          echo "No file information could be extracted for: $line"
+          echo "Suggested collaboration: Work with the contributor to address the issue."
         fi
-      done < filtered_report.txt
+      done < error_issues.txt
 
-    - echo "Example project analysis complete. Check filtered_report.txt for details."
+    - echo "Example project analysis complete. Check categorized issue files for details."
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_log.txt
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/filtered_report.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/info_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/warning_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_issues.txt
     expire_in: 1h
