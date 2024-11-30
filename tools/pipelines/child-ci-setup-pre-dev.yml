@@ -24,8 +24,6 @@ validate_branch_name:
 validate_commit_messages:
   stage: validation
   image: alpine/git
-  needs:
-    - validate_branch_name
   script:
     - echo "Validating commit messages..."
     - |
@@ -45,6 +43,7 @@ validate_commit_messages:
       else
         echo "✅ All commit messages follow the convention."
       fi
+
 
 # Analyze Main Project
 analyze_main:
