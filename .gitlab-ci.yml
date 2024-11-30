@@ -19,7 +19,7 @@ conditional_development:
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
       when: always
-     # Run for direct push to 'development' only if user is a maintainer or owner
+     # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development"
       when: always
     - when: never  # Ensures this doesn't run if no condition matches
