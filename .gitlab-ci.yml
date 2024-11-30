@@ -30,24 +30,17 @@ conditional_development_backend:
       when: always
     - when: never  # Ensures this doesn't run if no condition matches
 
-# Unified Setup Completion Trigger
-backend_trigger_completed:
-  stage: validation
-  needs:
-    - job: conditional_non_development_backend
-      artifacts: false
-    - job: conditional_development_backend
-      artifacts: false
-  rules:
-    - when: always
-  script:
-    - echo "Either Setup trigger job completed."
 
 # Unit Tests for Backend (Dev)
-#unit_test_dev:
-#  stage: backend_unit
-#  trigger:
-#    include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
+unit_test_dev:
+  stage: backend_unit
+  needs: 
+    - job: conditional_non_development_backend
+      artifacts: false  # Skip artifact downloads if not needed
+    - job: conditional_development_backend
+      artifacts: false
+  trigger:
+    include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
 
 # Integration Tests for Backend (Dev)
 # integration_test_dev:
