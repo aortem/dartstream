@@ -5,6 +5,14 @@ stages:
 validate_branch_name:
   stage: validation
   script:
+    - validate_commit_messages:
+  stage: validation
+  image: alpine/git
+  script:
+    - set -x  # Enable debugging
+    - which git  # Verify git binary location
+    - git --version  # Check git version
+    - echo "Debugging complete."
     - echo "Validating branch name..."
     - |
       BRANCH_NAME=$CI_COMMIT_BRANCH
