@@ -12,10 +12,6 @@ debug_merge_request:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
     - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-   # - echo "User $GITLAB_USER_NAME"
-   # - echo "Commit SHA $CI_COMMIT_SHA"
-   # - echo "Pipeline ID $CI_PIPELINE_ID"
-
 
 conditional_non_development:
   stage: triggers
