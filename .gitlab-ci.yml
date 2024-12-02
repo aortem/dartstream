@@ -14,25 +14,20 @@ debug_merge_request:
 
 # Conditional Triggers
 
-conditional_non_development:
-  stage: triggers
-  trigger:
-    include: tools/pipelines/child-ci-setup-pre-dev.yml
-  rules:
-    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"
-      when: always
-
 conditional_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
-     # Run for direct push or merge to development.
+    # Condition 1: Branch is not main, qa, or development
+    - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"
+      when: always
+    # Condition 2: Triggered by a push event
     - if: $CI_PIPELINE_SOURCE == "push"
       when: always
+    # Fallback: Skip if no condition matches
+    - when: never
 
-    # Fallback rule
-    - when: never  # Ensures this doesn't run if no condition matches
 
 
 #conditional_qa:
