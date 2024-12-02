@@ -5,7 +5,7 @@ stages:
 
 # Conditional Triggers
 
-conditional_development:
+conditional_non_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
