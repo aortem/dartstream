@@ -1,3 +1,46 @@
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/open-feature/community/0e23508c163a6a1ac8c0ced3e4bd78faafe627c7/assets/logo/horizontal/white/openfeature-horizontal-white.svg" />
+    <img align="center" alt="OpenFeature Logo" src="https://raw.githubusercontent.com/open-feature/community/0e23508c163a6a1ac8c0ced3e4bd78faafe627c7/assets/logo/horizontal/black/openfeature-horizontal-black.svg" />
+  </picture>
+</p>
+
+<h2 align="center">Firebase Dart Admin Auth SDK</h2>
+
+<!-- x-hide-in-docs-end -->
+<p align="center" class="github-badges">
+  <!-- Release Badge -->
+  <a href="https://github.com/aortem/firebase-dart-admin-auth-sdk/tags">
+    <img alt="Release" src="https://img.shields.io/static/v1?label=release&message=v0.0.1-pre+10&color=blue&style=for-the-badge" />
+  </a>
+  <br/>
+  <!-- Dart-Specific Badges -->
+  <a href="https://pub.dev/packages/firebase_dart_admin_auth_sdk">
+    <img alt="Pub Version" src="https://img.shields.io/pub/v/firebase_dart_admin_auth_sdk.svg?style=for-the-badge" />
+  </a>
+  <a href="https://dart.dev/">
+    <img alt="Built with Dart" src="https://img.shields.io/badge/Built%20with-Dart-blue.svg?style=for-the-badge" />
+  </a>
+ <!-- Firebase Badge -->
+   <a href="https://firebase.google.com/docs/reference/admin/node/firebase-admin.auth?_gl=1*1ewipg9*_up*MQ..*_ga*NTUxNzc0Mzk3LjE3MzMxMzk3Mjk.*_ga_CW55HF8NVT*MTczMzEzOTcyOS4xLjAuMTczMzEzOTcyOS4wLjAuMA..">
+    <img alt="API Reference" src="https://img.shields.io/badge/API-reference-blue.svg?style=for-the-badge" />
+  <br/>
+<!-- Pipeline Badge -->
+<a href="https://github.com/aortem/firebase-dart-admin-auth-sdk/actions">
+  <img alt="Pipeline Status" src="https://img.shields.io/github/actions/workflow/status/aortem/firebase-dart-admin-auth-sdk/dart-analysis.yml?branch=main&label=pipeline&style=for-the-badge" />
+</a>
+<!-- Code Coverage Badges -->
+  </a>
+  <a href="https://codecov.io/gh/open-feature/dart-server-sdk">
+    <img alt="Code Coverage" src="https://codecov.io/gh/open-feature/dart-server-sdk/branch/main/graph/badge.svg?token=FZ17BHNSU5" />
+<!-- Open Source Badge -->
+  </a>
+  <a href="https://bestpractices.coreinfrastructure.org/projects/6601">
+    <img alt="CII Best Practices" src="https://bestpractices.coreinfrastructure.org/projects/6601/badge?style=for-the-badge" />
+  </a>
+</p>
+<!-- x-hide-in-docs-start -->
+
 # Firebase Dart Admin Auth SDK
 
 Firebase Dart Admin Auth SDK is designed to provide select out of the box features of Firebase in Dart.  Both low level and high level abstractions are provided.
