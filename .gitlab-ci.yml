@@ -4,8 +4,7 @@ stages:
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
-# Conditional Triggers
-
+# Debug Stage
 debug_merge_request:
   stage: debug
   script:
@@ -13,12 +12,15 @@ debug_merge_request:
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
     - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
 
+# Conditional Triggers
+
 conditional_non_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"
+      when: always
 
 conditional_development:
   stage: triggers
@@ -26,12 +28,15 @@ conditional_development:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
-     when: always
+      when: always
 
-     # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
+    # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
     - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development"
       when: always
+
+    # Fallback rule
     - when: never  # Ensures this doesn't run if no condition matches
+
 
 #conditional_qa:
 #  stage: triggers
