@@ -17,7 +17,7 @@ conditional_development:
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
       when: always
 
      # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
