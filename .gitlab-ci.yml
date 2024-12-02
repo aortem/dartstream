@@ -28,7 +28,7 @@ conditional_development:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
      # Run for direct push or merge to development.
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_REF_NAME == "development"
+    - if: $CI_PIPELINE_SOURCE == "push"
       when: always
 
     # Fallback rule
