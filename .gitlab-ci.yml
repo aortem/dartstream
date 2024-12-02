@@ -6,7 +6,7 @@ stages:
 # Conditional Triggers
 
 debug_merge_request:
-  stage: debug
+  stage: triggers
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
