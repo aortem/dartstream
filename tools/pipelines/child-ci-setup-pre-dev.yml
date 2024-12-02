@@ -19,6 +19,8 @@ validate_branch_name:
         echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main."
         exit 1
       fi
+  rules:
+   - when: always
 
 validate_commit_messages:
   stage: validate
