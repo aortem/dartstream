@@ -4,7 +4,7 @@ stages:
 
 # Debug Stage
 debug_merge_request:
-  stage: debug
+  stage: validate
   script:
     - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
     - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
