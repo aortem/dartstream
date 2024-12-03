@@ -5,6 +5,15 @@ stages:
   - backend_full_lifecycle
   - frontend
 
+# Debug Stage
+debug_merge_request:
+  stage: validation
+  script:
+    - echo "Pipeline Source $CI_PIPELINE_SOURCE"
+    - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
+    - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+
 # The pipeline covers a series of triggers to ensure full testing and coverage.
 
 # Trigger Backend Setup for Non-Development Branches
