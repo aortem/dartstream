@@ -25,8 +25,6 @@ dev_dependencies:
   ds_tools_testing: ^0.0.1-pre+2 #Standard Dart Team Testing Tools
   test_reporter: any #required to generate JUnit report 
   http: any
-  mockito: any
-  test: any
   git_hooks: any
 
 # Optional Local Hooks for development.
