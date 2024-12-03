@@ -2,12 +2,21 @@ stages:
   - validate
   - analyze
 
+# Debug Stage
+debug_merge_request:
+  stage: debug
+  script:
+    - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "Branch name determined ${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+
+
 validate_branch_name:
   stage: validate
   script:
     - echo "Validating branch name..."
     - |
-      BRANCH_NAME=$CI_COMMIT_BRANCH
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
       echo "Branch name: $BRANCH_NAME"
 
       if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
