@@ -8,10 +8,10 @@ stages:
 debug_merge_request:
   stage: validation
   script:
-    - echo "Pipeline Source: $CI_PIPELINE_SOURCE"
-    - echo "Commit Branch (Source): $CI_COMMIT_REF_NAME"
-    - echo "Target Branch (Merge Request): $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-    - echo "Source Branch Name (Merge Request): $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "Pipeline Source $CI_PIPELINE_SOURCE"
+    - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
+    - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
 
 # Conditional Triggers
 conditional_development:
@@ -38,6 +38,7 @@ conditional_development:
     # Fallback: Skip if no condition matches
     - when: never
 
+    
 #conditional_qa:
 #  stage: triggers
 #  trigger:
