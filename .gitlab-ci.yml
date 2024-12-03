@@ -1,12 +1,12 @@
 stages:
-  - debug
+  - validation
   - triggers
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
 # Debug Stage
 debug_merge_request:
-  stage: debug
+  stage: validation
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
@@ -23,11 +23,17 @@ conditional_development:
     # Condition 1: Branch is not main, qa, or development
     - if: $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"
       when: always
+    
     # Condition 2: Triggered by a push event
     - if: $CI_PIPELINE_SOURCE == "push"
-    # Condition 3: Triggered by a merge request event
       when: always
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+
+    # Condition 3: Triggered by a merge request event
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == != "development"
+      when: always
+
+    # Condition 4: Triggered by a merge request event
+    - if: $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"
       when: always
     # Fallback: Skip if no condition matches
     - when: never
