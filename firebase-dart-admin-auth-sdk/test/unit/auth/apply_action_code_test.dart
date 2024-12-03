@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:mockito/mockito.dart';
 import '../../mocks/firebase_auth_mock.dart';
 
