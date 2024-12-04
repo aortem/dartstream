@@ -1,4 +1,5 @@
 import 'package:firebase/screens/home_screen/home_screen.dart';
+import 'package:flutter/foundation.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,29 +47,12 @@ class SignInWithCredential extends StatelessWidget {
                 const SizedBox(
                   height: 20,
                 ),
+                ElevatedButton(
+                    onPressed: () {
+                      value.login(kIsWeb ? true : false, context);
+                    },
+                    child: const Text("Sign In With Microsoft"))
               ],
-              // chil
-              //d: Builder(
-              //   builder: (context) {
-              //     if (Platform.isIOS) {
-              //       return Button(
-              //         onTap: () {},
-              //         title: 'Sign In With Apple',
-              //       );
-              //     }
-              //     return Button(
-              //       onTap: () => value.signInWithCredential(
-              //         () => Navigator.push(
-              //           context,
-              //           MaterialPageRoute(
-              //             builder: (context) => const HomeScreen(),
-              //           ),
-              //         ),
-              //       ),
-              //       title: 'Sign In With Google',
-              //     );
-              //   },
-              // ),
             ),
           ),
         ),

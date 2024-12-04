@@ -81,14 +81,6 @@ class SignInMethodsBottomSheet extends StatelessWidget {
 
               20.vSpace,
               ActionTile(
-                  title: "Sign In With Credential (AdditionalProviders)",
-                  onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const OAuthSelectionScreen(),
-                      ))),
-              20.vSpace,
-              ActionTile(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -145,7 +137,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                     builder: (context) => const SignInWithCredential(),
                   ),
                 ),
-                title: "Sign In With Credential",
+                title: "Sign In With Credential (AdditionalProviders)",
               ),
             ],
           ),
