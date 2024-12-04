@@ -53,6 +53,8 @@ validate_commit_messages:
       else
         echo "✅ Commit message follows the convention."
       fi
+  rules:
+   - when: always
 
 analyze_main:
   stage: analyze
@@ -102,6 +104,8 @@ analyze_main:
       - firebase-dart-admin-auth-sdk/warning_issues.txt
       - firebase-dart-admin-auth-sdk/error_issues.txt
     expire_in: 1h
+  rules:
+   - when: always
 
 analyze_example:
   stage: analyze
@@ -143,8 +147,11 @@ analyze_example:
           echo "Suggested collaboration: Work with the contributor to address the issue."
         fi
       done < error_issues.txt
-
     - echo "Example project analysis complete. Check categorized issue files for details."
+
+  rules:
+   - when: always
+
   artifacts:
     paths:
       - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/info_issues.txt
