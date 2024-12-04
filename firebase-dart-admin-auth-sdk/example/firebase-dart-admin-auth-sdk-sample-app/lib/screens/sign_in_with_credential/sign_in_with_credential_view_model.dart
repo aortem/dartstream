@@ -1,5 +1,7 @@
 import 'dart:developer';
 
+import 'package:aad_oauth/aad_oauth.dart';
+import 'package:aad_oauth/model/config.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase/utils/platform_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -61,10 +63,15 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     if (result.status == LoginStatus.success) {
       final AccessToken accessToken = result.accessToken!;
 
+      log('Facebook Access Token: ${accessToken.token}');
       try {
+        var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
+            'http://localhost', accessToken.token, 'facebook.com');
+
         var user1 = await FirebaseApp.firebaseAuth?.signInWithRedirect(
             'http://localhost', accessToken.token, 'facebook.com');
 
+        BotToast.showText(text: '${user?.user.email} just linked in');
         BotToast.showText(text: '${user1?.user.email} just linked in11');
 
         if (user1 != null) {
@@ -82,6 +89,41 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
       log('Login cancelled');
     } else {
       log('Facebook login failed: ${result.message}');
+    }
+  }
+
+  static final Config config = Config(
+    tenant: 'common',
+    clientId: 'c51012fe-405f-4516-a838-5cf23fd5640c',
+    scope: 'openid profile offline_access',
+    navigatorKey: navigatorKey,
+    loader: const SizedBox(),
+    appBar: AppBar(
+      title: const Text('AAD OAuth Demo'),
+    ),
+    onPageFinished: (String url) {
+      log('onPageFinished: $url');
+    },
+  );
+  final AadOAuth oauth = AadOAuth(config);
+
+  void login(bool redirect, BuildContext context) async {
+    config.webUseRedirect = redirect;
+    final result = await oauth.login();
+    result.fold(
+      (l) => showError(l.toString(), context),
+      (r) =>
+          showMessage('Logged in successfully, your access token: $r', context),
+    );
+    var accessToken = await oauth.getAccessToken();
+    if (accessToken != null) {
+      ScaffoldMessenger.of(context).hideCurrentSnackBar();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(accessToken)));
+      var user1 = await FirebaseApp.firebaseAuth?.signInWithRedirect(
+          'http://localhost', accessToken, 'microsoft.com');
+
+      BotToast.showText(text: '${user1?.user.email} just linked in');
     }
   }
 
