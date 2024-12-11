@@ -109,7 +109,7 @@ This implementation does not yet support all functionalities of the firebase aut
 
 ## Available Versions
 
-Firebase Dart Admin Auth SDK is available in two versions to cater to different needs and scales:
+Firebase Dart Admin Auth SDK is available in two versions to cater to different needs:
 
 1. **Main - Stable Version**: Usually one release a month.  This version attempts to keep stability without introducing breaking changes.
 2. **Pre-Release - Edge Version**: Provided as an early indication of a release when breaking changes are expect.  This release is inconsistent. Use only if you are looking to test new features.
@@ -130,48 +130,40 @@ We welcome contributions of all forms from the community! If you're interested i
 
 Firebase Dart Admin Auth SDK offers various support tiers for our open-source products with an Initial Response Service Level Agreement (IRSLA):
 
-- **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
-- **Enhanced Support**: $100/month with a 72-hour IRSLA, billed annually.
-
-Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
-
 ### Community Support
-- Free support provided by the Firebase Dart Admin Auth SDK community.
+- **Cost**: Free
+- **Features**: Access to community forums, basic documentation.
+- **Ideal for**: Individual developers or small startups.
+- **SLA**: NA
 
 ### Standard Support
-- $10/month - Billed Annually.
-- 10 business days (Monday-Friday) IRSLA
+- **Cost**: $10/month - Billed Annually.
+- **Features**: Extended documentation, email support, 10 business days response SLA.
+- **Ideal for**: Growing startups and small businesses.
+- **SLA**: 10 business days (Monday-Friday) IRSLANA
 - [Subscribe-Coming Soon]()
-- **Features**:
-  - Unlimited Support Tickets with Guaranteed RSLA.
-  - One Open/Active Ticket at a time.
 
 ### Enhanced Support
-- $100/month - Billed Annually.
-- 72-hour IRSLA.
+- **Cost**: $100/month - Billed Annually
+- **Features**: Access to roadmap, 72-hour response SLA, feature request prioritization.
+- **Ideal for**: Medium-sized enterprises requiring frequent support.
+- **SLA**: 5 business days IRSLA
 - [Subscribe-Coming Soon]()
-- **Features**:
-  - Everything in Standard Support Plus.
-  - Access to Roadmap.
-  - Feature Request Upvoting (Priority feature request).
-  - One Open/Active Ticket at a time.
 
-  ### Enterprise Support (Beta)
-- $450/month - Billed Annually
-- 48-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/cN2fZU5Db3Fx4ko6ot)
-- **Features**:
-  - Everything in Enhanced Support Plus:
-  - Comprehensive support for a broader range of Dart backend development open source projects.
+### Enterprise Support
+- **Cost**: 450/month
+- **Features**: 
+  - 48-hour response SLA, 
+  - Access to beta features:
+  - Comprehensive support for all Aortem Open Source products.
   - Premium access to our exclusive enterprise customer forum.
   - Early access to cutting-edge features.
-  - Exclusive access to Partner/Reseller/Channel Program.
+  - Exclusive access to Partner/Reseller/Channel Program..
+- **Ideal for**: Large organizations and enterprises with complex needs.
+- **SLA**: 48-hour IRSLA
+- [Subscribe-Coming Soon]()
 
-
-Enterprise Support is designed for businesses, agencies, and partners seeking top-tier support across a wide range of Dart backend and server-side projects.  All Open Source projects that are part of the Aortem Collective are included in the Enterprise subscription, with more projects being added soon.
-
-To choose a support tier, click on one of the options above.
+*Enterprise Support is designed for businesses, agencies, and partners seeking top-tier support across a wide range of Dart backend and server-side projects.  All Open Source projects that are part of the Aortem Collective are included in the Enterprise subscription, with more projects being added soon.
 
 ## Licensing
 
