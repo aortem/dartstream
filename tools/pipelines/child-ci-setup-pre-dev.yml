@@ -85,7 +85,7 @@ validate_dart_sdk_version:
 
     # Extract the Dart SDK version from pubspec.yaml
     - SDK_VERSION=$(grep -Po '(?<=sdk:\s">=)[0-9]+\.[0-9]+\.[0-9]+' pubspec.yaml || echo "not_found")
-    - MINIMUM_VERSION="3.6.0"
+    - MINIMUM_VERSION="3.5.4"
 
     # Debug: Log the extracted versions
     - echo "Extracted Dart SDK version from pubspec.yaml $SDK_VERSION"

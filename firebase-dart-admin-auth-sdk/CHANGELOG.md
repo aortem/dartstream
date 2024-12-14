@@ -1,3 +1,7 @@
+## 0.0.1-pre+12
+
+- Update SDK version formatting
+
 ## 0.0.1-pre+11
 
 - add sign in with redirect & link with credentials & verify password reset code
