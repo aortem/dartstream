@@ -88,8 +88,8 @@ validate_dart_sdk_version:
     - MINIMUM_VERSION="3.6.0"
 
     # Debug: Log the extracted versions
-    - echo "Extracted Dart SDK version from pubspec.yaml: $SDK_VERSION"
-    - echo "Required minimum Dart SDK version: $MINIMUM_VERSION"
+    - echo "Extracted Dart SDK version from pubspec.yaml $SDK_VERSION"
+    - echo "Required minimum Dart SDK version $MINIMUM_VERSION"
 
     # Check if the version was extracted successfully
     - |
