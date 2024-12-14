@@ -1,25 +1,45 @@
 stages:
+  - validation
   - triggers
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
-# Conditional Triggers
+# Debug Stage
+debug_merge_request:
+  stage: validation
+  script:
+    - echo "Pipeline Source $CI_PIPELINE_SOURCE"
+    - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
+    - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "Merge ID environment variable (Merge Request) $CI_MERGE_REQUEST_IID"
 
-conditional_non_development:
+# Conditional Triggers
+conditional_development:
   stage: triggers
   trigger:
     include: tools/pipelines/child-ci-setup-pre-dev.yml
   rules:
-    - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "development"
+    # Condition 1: Branch is not main, qa, or development
+    - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
+      when: always
 
-conditional_development:
-  stage: triggers
-  trigger:
-    include: tools/pipelines/child-ci-development.yml
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_REF_NAME == "development"
+    # Condition 2: Triggered by a push event
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: always
 
+    # Condition 3: Triggered by a merge request event (source branch is not "development")
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "development"'
+      when: always
 
+    # Condition 4: Triggered by a merge request event (source branch is "development", "qa", or "main")
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
+      when: always
+
+    # Fallback: Skip if no condition matches
+    - when: never
+
+    
 #conditional_qa:
 #  stage: triggers
 #  trigger:

@@ -1,0 +1,10 @@
+#This file targets the root folder.  The example folder contains it's own root.
+targets:
+  $default:
+    sources:
+      include:
+        - lib/**
+        - test/**
+        - bin/**
+      exclude:
+        - example/**

@@ -13,7 +13,7 @@ export 'src/user.dart';
 export 'src/auth/check_action_code.dart';
 export 'src/additional_user_info.dart';
 
-// Conditional export for auth_link_with_phone_number.dart
+
 export 'src/auth/auth_link_with_phone_number.dart';
 
 export 'src/auth/auth_redirect_link.dart';

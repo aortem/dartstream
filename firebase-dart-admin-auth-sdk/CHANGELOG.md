@@ -1,3 +1,18 @@
+## 0.0.1-pre+12
+
+- Update SDK version formatting
+
+## 0.0.1-pre+11
+
+- add sign in with redirect & link with credentials & verify password reset code
+- add Micorsoft Integration
+- update documentation: Added `auth_redirect_link'.
+- add feat (auth): Completed the "Sign in with Microsoft" feature and integrated it into a sample app.
+- added webView to open apple sign-page page(uses 'client_id=YOUR_SERVICES_ID&')
+- fix(code): Removed unused files:
+- auth_link_with_phone_number_stub.dart
+- auth_redirect_link_stub.dart
+
 ## 0.0.1-pre+10
 
 - Add debug initialization in sample app for better testing

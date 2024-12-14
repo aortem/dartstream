@@ -1,0 +1,33 @@
+name: Dart Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dart-analyze:
+    name: Run Dart Analyze
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          flutter: false
+
+      - name: Run Dart Analysis
+        run: |
+          dart pub get
+          dart analyze > analysis_report.txt || true
+
+      - name: Upload Analysis Report
+        uses: actions/upload-artifact@v3
+        with:
+          name: dart-analysis-report
+          path: analysis_report.txt

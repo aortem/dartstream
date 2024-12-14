@@ -1,3 +1,5 @@
+library;
+
 /// A class representing the result of an ID token for a Firebase user.
 ///
 /// This class encapsulates information about the ID token, including its
@@ -6,9 +8,6 @@
 /// and token metadata in Firebase Authentication.
 ///
 /// **Fields**:
-library;
-
-///id token results
 
 class IdTokenResult {
   /// - token: The ID token as a string. This token is used for authentication.

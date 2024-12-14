@@ -78,6 +78,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 ),
                 title: "Sign In With Pop Up",
               ),
+
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(
@@ -136,7 +137,7 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                     builder: (context) => const SignInWithCredential(),
                   ),
                 ),
-                title: "Sign In With Credential",
+                title: "Sign In With Credential (AdditionalProviders)",
               ),
             ],
           ),
