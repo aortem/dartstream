@@ -78,12 +78,17 @@ validate_dart_sdk_version:
     - echo "Validating Dart SDK version..."
     - cd firebase-dart-admin-auth-sdk/
     - REQUIRED_VERSION="3.5.4"
-    - ACTUAL_VERSION=$(dart --version 2>&1 | grep -oP "(?<=Dart SDK version: )\d+\.\d+\.\d+")
-    - echo "Required Dart SDK version: $REQUIRED_VERSION"
-    - echo "Actual Dart SDK version: $ACTUAL_VERSION"
+    - ACTUAL_VERSION=$(dart --version 2>&1 | grep -oP "(?<=Dart SDK version )\d+\.\d+\.\d+" || echo "unknown")
+    - echo "Required Dart SDK version $REQUIRED_VERSION"
+    - echo "Actual Dart SDK version $ACTUAL_VERSION"
     - |
-      if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$ACTUAL_VERSION" | sort -V | head -n1)" != "$REQUIRED_VERSION" ]; then
-        echo "✅ Dart SDK version meets the requirement."
+      if [ "$ACTUAL_VERSION" = "unknown" ]; then
+        echo "❌ Failed to determine Dart SDK version."
+        exit 1
+      fi
+
+      if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$ACTUAL_VERSION" | sort -V | head -n1)" = "$REQUIRED_VERSION" ]; then
+        echo "✅ Dart SDK version meets or exceeds the requirement."
       else
         echo "❌ Dart SDK version $ACTUAL_VERSION is lower than required version $REQUIRED_VERSION."
         exit 1
