@@ -71,27 +71,29 @@ validate_commit_messages:
 
 validate_dart_sdk_version:
   stage: validate
-  image: dart:stable
+  image: alpine:latest
   needs:
     - validate_commit_messages
   script:
-    - echo "Validating Dart SDK version..."
+    - echo "Validating Dart SDK version from pubspec.yaml..."
+    - apk add --no-cache grep
     - cd firebase-dart-admin-auth-sdk/
-    - REQUIRED_VERSION="3.5.4"
-    - ACTUAL_VERSION=$(dart --version 2>&1 | grep -oP "(?<=Dart SDK version )\d+\.\d+\.\d+" || echo "unknown")
-    - echo "Required Dart SDK version $REQUIRED_VERSION"
-    - echo "Actual Dart SDK version $ACTUAL_VERSION"
-    - |
-      if [ "$ACTUAL_VERSION" = "unknown" ]; then
-        echo "❌ Failed to determine Dart SDK version."
-        exit 1
-      fi
 
-      if [ "$(printf '%s\n' "$REQUIRED_VERSION" "$ACTUAL_VERSION" | sort -V | head -n1)" = "$REQUIRED_VERSION" ]; then
-        echo "✅ Dart SDK version meets or exceeds the requirement."
-      else
-        echo "❌ Dart SDK version $ACTUAL_VERSION is lower than required version $REQUIRED_VERSION."
+    # Extract the Dart SDK version from pubspec.yaml
+    - SDK_VERSION=$(grep 'sdk ">=*' pubspec.yaml | grep -o '[0-9]\+\.[0-9]\+\.[0-9]\+')
+    - MINIMUM_VERSION="3.6.0"
+
+    # Log the extracted versions
+    - echo "Extracted Dart SDK version from pubspec.yaml $SDK_VERSION"
+    - echo "Required minimum Dart SDK version $MINIMUM_VERSION"
+
+    # Compare versions
+    - |
+      if [[ $(echo -e "${SDK_VERSION}\n${MINIMUM_VERSION}" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+        echo "❌ Dart SDK version must be at least $MINIMUM_VERSION, found $SDK_VERSION"
         exit 1
+      else
+        echo "✅ Dart SDK version is satisfactory: $SDK_VERSION"
       fi
   rules:
     - when: always
