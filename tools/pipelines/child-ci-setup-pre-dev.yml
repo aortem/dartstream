@@ -70,6 +70,7 @@ validate_commit_messages:
     - when: always
 
 
+
 analyze_main:
   stage: analyze
   image: dart:stable
