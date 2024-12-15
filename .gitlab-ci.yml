@@ -23,7 +23,7 @@ debug_merge_request:
 validation_trigger:
   stage: validation
   trigger:
-    include: tools/pipelines/child-ci-setup-validation.yml
+    include: tools/pipelines/backend/child-ci-setup-validation.yml
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
@@ -48,7 +48,7 @@ validation_trigger:
 analyze_flutter_mobile:
   stage: analyze_sample_apps
   trigger:
-    include: tools/pipelines/child-ci-analyze-flutter-mobile.yml
+    include: tools/pipelines/backend/child-ci-analyze-flutter-mobile.yml
   needs:
     - job: validation_trigger
   rules:
