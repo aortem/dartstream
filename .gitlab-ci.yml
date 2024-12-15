@@ -45,7 +45,7 @@ validation_trigger:
 analyze_flutter_mobile:
   stage: analyze_sample_apps
   trigger:
-    include: tools/pipelines/child-ci-analyze-flutter_mobile.yml
+    include: tools/pipelines/child-ci-analyze-flutter-mobile.yml
   needs:
     - job: validation_trigger
   rules:
