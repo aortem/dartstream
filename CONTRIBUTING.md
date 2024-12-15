@@ -1,6 +1,6 @@
 # Contributing to Firebase Dart Admin Auth SDK
 
-Thank you for considering contributing to the FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any applicatoin that wants to use Firebase and dart together.
+Thank you for considering contributing to the FirebaseDart Authentication SDK, a Dart implementation for Firebase Authentication services designed to work out of the box for any application that wants to use Firebase and dart together.
 
 ## Quicklinks
 
