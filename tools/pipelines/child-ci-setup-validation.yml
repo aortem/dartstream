@@ -1,0 +1,182 @@
+stages:
+  - validate
+  - analyze
+
+# Debug Stage
+debug_merge_request:
+  stage: validate
+  script:
+    - echo "Debugging merge request..."
+    - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "Determining branch name..."
+    - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
+    - echo "Branch name determined $BRANCH_NAME"
+
+
+validate_branch_name:
+  stage: validate
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main."
+        exit 1
+      fi
+  rules:
+   - when: always
+
+validate_commit_messages:
+  stage: validate
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="$REGEX"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
+    - when: always
+
+validate_dart_sdk_version:
+  stage: validate
+  image: alpine:latest
+  needs:
+    - validate_commit_messages
+  script:
+    - echo "Validating Dart SDK versions in all pubspec.yaml files..."
+    - apk add --no-cache grep
+    - cd firebase-dart-admin-auth-sdk
+
+    # Find all pubspec.yaml files (recursively, all levels)
+    - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
+    - echo "Found the following pubspec.yaml files:"
+    - echo "$PUBSPEC_FILES"
+
+    # Define the minimum required Dart SDK version
+    - MINIMUM_VERSION="3.5.4"
+    - ALL_VALID="true"
+
+    # Iterate over each pubspec.yaml file
+    - |
+      for PUBSPEC in $PUBSPEC_FILES; do
+        echo "Checking $PUBSPEC..."
+
+        # Extract the Dart SDK version
+        SDK_VERSION=$(grep -Po '(?<=sdk:\s\^)[0-9]+\.[0-9]+\.[0-9]+' "$PUBSPEC" || echo "not_found")
+        echo "Extracted Dart SDK version from $PUBSPEC: $SDK_VERSION"
+
+        # Validate the extracted version
+        if [ "$SDK_VERSION" = "not_found" ]; then
+          echo "❌ Failed to extract Dart SDK version from $PUBSPEC. Ensure the file contains a valid 'sdk' entry."
+          ALL_VALID="false"
+          continue
+        fi
+
+        # Compare the version
+        if [[ $(echo -e "${SDK_VERSION}\n${MINIMUM_VERSION}" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+          echo "❌ Dart SDK version in $PUBSPEC must be at least $MINIMUM_VERSION, found $SDK_VERSION"
+          ALL_VALID="false"
+        else
+          echo "✅ Dart SDK version in $PUBSPEC is satisfactory: $SDK_VERSION"
+        fi
+      done
+
+    # Exit with failure if any pubspec.yaml file has an invalid version
+    - |
+      if [ "$ALL_VALID" != "true" ]; then
+        echo "❌ One or more pubspec.yaml files have an invalid Dart SDK version."
+        exit 1
+      else
+        echo "✅ All pubspec.yaml files have a valid Dart SDK version."
+      fi
+  rules:
+    - when: always
+
+analyze_main:
+  stage: analyze
+  image: dart:stable
+  needs: 
+    - validate_commit_messages
+  script:
+    - echo "Analyzing main project..."
+    - cd firebase-dart-admin-auth-sdk
+    - dart pub get || { echo "Failed to install dependencies. Exiting..."; exit 1; }
+    - dart analyze lib/ > analysis_report.txt 2> error_log.txt || true
+
+    # Filter and summarize analysis results
+    - echo "Separating issues into categories..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+    - echo "Summary of analysis issues:"
+    - |
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues: $info_count"
+      echo "Warning Issues: $warning_count"
+      echo "Error Issues: $error_count"
+
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+
+    # Encourage collaboration by highlighting contributors who worked on relevant areas
+    - echo "Collaboratively resolving identified issues..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Suggested collaboration: Work with the contributor to address the issue."
+        fi
+      done < error_issues.txt
+
+    - echo "Main project analysis complete. Check categorized issue files for details."
+  artifacts:
+    paths:
+      - firebase-dart-admin-auth-sdk/info_issues.txt
+      - firebase-dart-admin-auth-sdk/warning_issues.txt
+      - firebase-dart-admin-auth-sdk/error_issues.txt
+    expire_in: 1h
+  rules:
+   - when: always

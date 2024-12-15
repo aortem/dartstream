@@ -1,12 +1,13 @@
 stages:
+  - setup
   - validation
-  - triggers
+  - analyze_sample_apps
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
 # Debug Stage
 debug_merge_request:
-  stage: validation
+  stage: setup
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
@@ -16,9 +17,9 @@ debug_merge_request:
 
 # Conditional Triggers
 conditional_development:
-  stage: triggers
+  stage: validation
   trigger:
-    include: tools/pipelines/child-ci-setup-pre-dev.yml
+    include: tools/pipelines/child-ci-setup-validation.yml
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
