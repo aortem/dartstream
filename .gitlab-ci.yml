@@ -15,7 +15,7 @@ debug_merge_request:
     - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
     - echo "Merge ID environment variable (Merge Request) $CI_MERGE_REQUEST_IID"
 
-# Validation Conditional Triggers
+# Validate Conditional Triggers
 validation_trigger:
   stage: validation
   trigger:
