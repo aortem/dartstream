@@ -1,6 +1,6 @@
 #This pubspec file imports is used for any authentication framework features.
 #This works for both mobile and web.
-name: ds_auth_base
+name: ds_middleware_base
 description: Base package for DartStream authentication, including foundational classes and interfaces.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
