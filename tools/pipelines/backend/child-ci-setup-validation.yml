@@ -153,7 +153,8 @@ analyze_main:
     - TOTAL_ERRORS=0
 
     # Analyze each lib folder and collect issues
-    - for LIB_FOLDER in $LIB_FOLDERS; do
+    - |
+      for LIB_FOLDER in $LIB_FOLDERS; do
         echo "Analyzing $LIB_FOLDER...";
         dart analyze "$LIB_FOLDER" > "$LIB_FOLDER/analysis_report.txt" 2> "$LIB_FOLDER/error_log.txt" || true;
 
@@ -172,35 +173,22 @@ analyze_main:
         TOTAL_ERRORS=$((TOTAL_ERRORS + error_count));
 
         echo "Issues for $LIB_FOLDER:";
-        echo "  Info $info_count";
-        echo "  Warnings $warning_count";
-        echo "  Errors $error_count";
+        echo "  Info: $info_count";
+        echo "  Warnings: $warning_count";
+        echo "  Errors: $error_count";
       done;
 
     # Output overall summary
-    - echo "Overall Summary:";
-    - echo "  Total Info Issues $TOTAL_INFO";
-    - echo "  Total Warning Issues $TOTAL_WARNINGS";
-    - echo "  Total Error Issues $TOTAL_ERRORS";
+    - |
+      echo "Overall Summary:";
+      echo "  Total Info Issues: $TOTAL_INFO";
+      echo "  Total Warning Issues: $TOTAL_WARNINGS";
+      echo "  Total Error Issues: $TOTAL_ERRORS";
 
     # Check for outdated dependencies across the project
     - echo "Checking for outdated dependencies in all projects...";
     - dart pub outdated || true;
 
-    # Encourage collaboration by highlighting contributors for files with errors
-    - echo "Collaboratively resolving identified issues...";
-    - for LIB_FOLDER in $LIB_FOLDERS; do
-        while IFS= read -r line; do
-          file=$(echo $line | awk -F ':' '{print $1}');
-          if [[ -n "$file" ]]; then
-            git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file");
-            echo "File $file - Last modified by $git_log";
-            echo "Suggested collaboration Work with the contributor to address the issue.";
-          fi;
-        done < "$LIB_FOLDER/error_issues.txt";
-      done;
-
-    - echo "Analysis of all lib folders complete. Check categorized issue files for details."
   artifacts:
     paths:
       - "**/lib/info_issues.txt"
@@ -208,5 +196,5 @@ analyze_main:
       - "**/lib/error_issues.txt"
     expire_in: 1h
   rules:
-   - when: always
+    - when: always
 

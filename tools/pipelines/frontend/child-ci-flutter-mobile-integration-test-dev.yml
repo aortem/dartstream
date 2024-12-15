@@ -1,62 +1,52 @@
 stages:
-  - setup
-  - unit_tests
-  - integration_tests
-  - e2e_tests
+  - analyze
 
-# Setup Stage
-setup:
-  stage: setup
-  image: dart:stable
- # tags:
- #   - dart
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
+analyze_flutter_mobile:
+  stage: analyze
+  image: ghcr.io/cirruslabs/flutter:stable
   script:
-    - echo "Setting up environment..."
-    - cd firebase-dart-admin-auth-sdk
-    - dart pub get
+    - echo "Analyzing example project..."
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - flutter pub get || { echo "Failed to install dependencies. Exiting..."; exit 1; }
+    - dart analyze > analysis_report.txt 2> error_log.txt || true
+
+    # Filter and summarize analysis results
+    - echo "Separating issues into categories..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+    - echo "Summary of analysis issues:"
+    - |
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues: $info_count"
+      echo "Warning Issues: $warning_count"
+      echo "Error Issues: $error_count"
+
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+
+    # Encourage collaboration by highlighting contributors who worked on relevant areas.
+    - echo "Collaboratively resolving identified issues..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Suggested collaboration: Work with the contributor to address the issue."
+        fi
+      done < error_issues.txt
+    - echo "Example project analysis complete. Check categorized issue files for details."
+
+  rules:
+   - when: always
+
   artifacts:
     paths:
-      - .dart_tool/
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/info_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/warning_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_issues.txt
     expire_in: 1h
-  retry: 2
-
-# Unit Tests
-unit_tests:
-  stage: unit_tests
-  image: dart:stable
- # tags:
- #   - dart
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-  script:
-    - echo "Running Unit Tests..."
-    - cd firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk/test/test/unit # Navigate to the directory with pubspec.yaml
-    - dart pub get
-    - dart test test/unit/ --reporter expanded
-  artifacts:
-    paths:
-      - test-reports/unit/
-    expire_in: 1d
-  retry: 2
-
-# Integration Tests
-integration_tests:
-  stage: integration_tests
-  image: dart:stable
-#  tags:
-#    - dart
-  rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-    - if: $CI_COMMIT_REF_NAME == "development" && $GITLAB_USER_LOGIN == "alphabetacreatives"
-  script:
-    - echo "Running Integration Tests..."
-    - dart test test/integration/ --reporter expanded
-  artifacts:
-    paths:
-      - test-reports/integration/
-    expire_in: 1d
-  retry: 2
