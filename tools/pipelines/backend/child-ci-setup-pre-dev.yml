@@ -38,25 +38,95 @@ validate_commit_messages:
   image: alpine:latest
   script:
     - apk add --no-cache git bash grep
-    - git --version
     - echo "Validating commit messages..."
     - |
-      REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
-      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$REGEX" || true)
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="$REGEX"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
 
       if [ -n "$INVALID_COMMITS" ]; then
-        echo "❌ The following commit messages do not follow the convention:"
+        echo "❌ Commit message does not follow convention:"
         echo "$INVALID_COMMITS"
-        echo ""
-        echo "Commit message format must follow:"
-        echo "<type>(<scope>): <short summary>"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
         echo "Examples:"
         echo "  feat(auth): add OAuth 2.0 support"
         echo "  fix(payment): resolve rounding error in total calculation"
         exit 1
       else
-        echo "✅ All commit messages follow the convention."
+        echo "✅ Commit message follows the convention."
       fi
+  rules:
+    - when: always
+
+validate_dart_sdk_version:
+  stage: validate
+  image: alpine:latest
+  needs:
+    - validate_commit_messages
+  script:
+    - echo "Validating Dart SDK versions in all pubspec.yaml files..."
+    - apk add --no-cache grep
+    - cd firebase-dart-admin-auth-sdk
+
+    # Find all pubspec.yaml files (recursively, all levels)
+    - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
+    - echo "Found the following pubspec.yaml files:"
+    - echo "$PUBSPEC_FILES"
+
+    # Define the minimum required Dart SDK version
+    - MINIMUM_VERSION="3.5.4"
+    - ALL_VALID="true"
+
+    # Iterate over each pubspec.yaml file
+    - |
+      for PUBSPEC in $PUBSPEC_FILES; do
+        echo "Checking $PUBSPEC..."
+
+        # Extract the Dart SDK version
+        SDK_VERSION=$(grep -Po '(?<=sdk:\s\^)[0-9]+\.[0-9]+\.[0-9]+' "$PUBSPEC" || echo "not_found")
+        echo "Extracted Dart SDK version from $PUBSPEC: $SDK_VERSION"
+
+        # Validate the extracted version
+        if [ "$SDK_VERSION" = "not_found" ]; then
+          echo "❌ Failed to extract Dart SDK version from $PUBSPEC. Ensure the file contains a valid 'sdk' entry."
+          ALL_VALID="false"
+          continue
+        fi
+
+        # Compare the version
+        if [[ $(echo -e "${SDK_VERSION}\n${MINIMUM_VERSION}" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+          echo "❌ Dart SDK version in $PUBSPEC must be at least $MINIMUM_VERSION, found $SDK_VERSION"
+          ALL_VALID="false"
+        else
+          echo "✅ Dart SDK version in $PUBSPEC is satisfactory: $SDK_VERSION"
+        fi
+      done
+
+    # Exit with failure if any pubspec.yaml file has an invalid version
+    - |
+      if [ "$ALL_VALID" != "true" ]; then
+        echo "❌ One or more pubspec.yaml files have an invalid Dart SDK version."
+        exit 1
+      else
+        echo "✅ All pubspec.yaml files have a valid Dart SDK version."
+      fi
+  rules:
+    - when: always
 
 # Analyze for Backend Directory
 analyze_backend:

@@ -1,45 +1,61 @@
 stages:
+  - setup
   - validation
+  - analyze_sample_apps
   - backend_unit
   - backend_integration
   - backend_full_lifecycle
   - frontend
 
+# The pipeline covers a series of triggers to ensure full testing and coverage
+
 # Debug Stage
 debug_merge_request:
-  stage: validation
+  stage: setup
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
     - echo "Target Branch (Merge Request) $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
-    - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME
+    - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "Merge ID environment variable (Merge Request) $CI_MERGE_REQUEST_IID"
 
-# The pipeline covers a series of triggers to ensure full testing and coverage.
-
-# Trigger Backend Setup for Non-Development Branches
-conditional_non_development_backend:
+# Validate Conditional Triggers
+validation_trigger:
   stage: validation
   trigger:
-    include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
+    include: tools/pipelines/child-ci-setup-validation.yml
   rules:
-    - if: $CI_COMMIT_REF_NAME != "development" && $CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != "development"
+    # Condition 1: Branch is not main, qa, or development
+    - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
       when: always
-    - when: never  # Ensures this doesn't run if no condition matches
 
-# Trigger Backend Setup for Development Merges
-conditional_development_backend:
-  stage: validation
+    # Condition 2: Triggered by a push event
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: always
+
+    # Condition 3: Triggered by a merge request event (source branch is not "development")
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "development"'
+      when: always
+
+    # Condition 4: Triggered by a merge request event (source branch is "development", "qa", or "main")
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
+      when: always
+
+    # Fallback: Skip if no condition matches
+    - when: never
+
+# Analyze Conditional Triggers
+analyze_flutter_mobile:
+  stage: analyze_sample_apps
   trigger:
-    include: tools/pipelines/backend/child-ci-setup-pre-dev.yml
+    include: tools/pipelines/child-ci-analyze-flutter-mobile.yml
+  needs:
+    - job: validation_trigger
   rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development"
-      when: always
-     # Run for direct push to 'development' only if user is a maintainer or owner for protected pipeline.
-    - if: $CI_PIPELINE_SOURCE == "push" && $CI_COMMIT_BRANCH == "development"
-      when: always
-    - when: never  # Ensures this doesn't run if no condition matches
+    # Always runs after validation trigger
+    - when: always
 
-
+    
 # Unit Tests for Backend (Dev)
 unit_test_dev:
   stage: backend_unit
