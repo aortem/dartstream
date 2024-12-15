@@ -50,7 +50,7 @@ analyze_flutter_mobile:
     - job: validation_trigger
   rules:
     # Always runs after validation trigger
-    - when: never
+    - when: always
 
 #  stage: triggers
 #  trigger:
