@@ -9,7 +9,7 @@ analyze_main:
     - when: always
   script:
     - echo "Starting analysis for the main project..."
-    - cd firebase-dart-admin-auth-sdk
+    - cd dartstream/dartstream_backend
     - pwd
     - echo "Listing contents of the current directory..."
     - ls -la
@@ -56,9 +56,9 @@ analyze_main:
     - echo "Main project analysis complete. Check filtered_report.txt for details."
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/analysis_report.txt
-      - firebase-dart-admin-auth-sdk/error_log.txt
-      - firebase-dart-admin-auth-sdk/filtered_report.txt
+      - dartstream/dartstream_backend/analysis_report.txt
+      - dartstream/dartstream_backend/error_log.txt
+      - dartstream/dartstream_backend/filtered_report.txt
     expire_in: 1h
 
 # Analyze Example Project
@@ -69,7 +69,7 @@ analyze_example:
     - when: always
   script:
     - echo "Starting analysis for the example project..."
-    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - cd dartstream/dartstream_backend/example/dartstream/dartstream_backend-sample-app
     - pwd
     - echo "Listing contents of the current directory..."
     - ls -la
@@ -118,7 +118,7 @@ analyze_example:
     - analyze_main
   artifacts:
     paths:
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/analysis_report.txt
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_log.txt
-      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/filtered_report.txt
+      - dartstream/dartstream_backend/example/dartstream/dartstream_backend-sample-app/analysis_report.txt
+      - dartstream/dartstream_backend/example/dartstream/dartstream_backend-sample-app/error_log.txt
+      - dartstream/dartstream_backend/example/dartstream/dartstream_backend-sample-app/filtered_report.txt
     expire_in: 1h

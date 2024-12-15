@@ -83,7 +83,7 @@ validate_dart_sdk_version:
   script:
     - echo "Validating Dart SDK versions in all pubspec.yaml files..."
     - apk add --no-cache grep
-    - cd firebase-dart-admin-auth-sdk
+    - cd dartstream/dartstream_backend
 
     # Find all pubspec.yaml files (recursively, all levels)
     - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
