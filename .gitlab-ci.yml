@@ -15,8 +15,8 @@ debug_merge_request:
     - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
     - echo "Merge ID environment variable (Merge Request) $CI_MERGE_REQUEST_IID"
 
-# Conditional Triggers
-conditional_development:
+# Validation Conditional Triggers
+validation_trigger:
   stage: validation
   trigger:
     include: tools/pipelines/child-ci-setup-validation.yml
@@ -41,7 +41,17 @@ conditional_development:
     - when: never
 
     
-#conditional_qa:
+# Analyze Conditional Triggers
+analyze_flutter_mobile:
+  stage: analyze_sample_apps
+  trigger:
+    include: tools/pipelines/child-ci-analyze-flutter_mobile.yml
+  needs:
+    - job: validation_trigger
+  rules:
+    # Always runs after validation trigger
+    - when: never
+
 #  stage: triggers
 #  trigger:
 #    include: tools/pipelines/child-ci-qa.yml
