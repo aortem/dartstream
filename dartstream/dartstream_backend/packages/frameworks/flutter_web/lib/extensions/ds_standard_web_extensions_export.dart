@@ -11,12 +11,10 @@ export 'ds_standard_web_extensions.dart'
     show WebExtension, WidgetExtension, ServiceExtension, WebExtensionState;
 
 // Export example extensions
-export 'ds_standard_web_extensions.dart'
-    show AuthWidgetExtension, DatabaseServiceExtension, FeatureFlagExtension;
+export 'ds_standard_web_extensions.dart' show AuthWidgetExtension;
 
 // Export providers from standard features
-export 'package:ds_standard_features/ds_standard_features.dart'
-    show DSAuthProvider, DSDatabaseProvider, DSFeatureFlagProvider;
+export 'package:ds_standard_features/ds_standard_features.dart';
 
 // Export Flutter types needed by extensions
 export 'package:flutter/material.dart' show Widget, BuildContext, Container;
