@@ -7,6 +7,8 @@ class DSStandardWebOverrides {
   // Singleton instance
   static final DSStandardWebOverrides _instance =
       DSStandardWebOverrides._internal();
+
+  /// Get the singleton instance
   factory DSStandardWebOverrides() => _instance;
   DSStandardWebOverrides._internal();
 
@@ -109,8 +111,10 @@ class WebStorageOverride implements StorageProvider {
 
 /// Web-specific navigation override
 class WebNavigationOverride implements NavigationProvider {
+  /// Constructor
   final BuildContext context;
 
+  /// Constructor
   WebNavigationOverride(this.context);
 
   @override
@@ -177,13 +181,24 @@ class WebUIOverrides {
 
 /// Base provider interfaces
 abstract class StorageProvider {
+  /// Initialize storage provider
   Future<void> initialize();
+
+  /// Write data to storage
   Future<void> write(String key, dynamic value);
+
+  /// Read data from storage
   Future<dynamic> read(String key);
+
+  /// Delete data from storage
   Future<void> delete(String key);
 }
 
+/// Base provider interfaces
 abstract class NavigationProvider {
+  /// Navigate to a new route
   Future<void> navigate(String route, {Map<String, dynamic>? arguments});
+
+  /// Pop the current route
   Future<void> pop();
 }

@@ -95,6 +95,7 @@ class DSWebUtilities {
     html.window.sessionStorage[key] = value;
   }
 
+  /// Gets data from session storage
   static String? getFromSessionStorage(String key) {
     return html.window.sessionStorage[key];
   }
@@ -182,6 +183,8 @@ class DSWebUtilities {
 
   /// Debounces a function
   static Timer? _debounceTimer;
+
+  /// Debounces a function
   static void debounce(
     Function() func, {
     Duration duration = const Duration(milliseconds: 300),
@@ -192,6 +195,8 @@ class DSWebUtilities {
 
   /// Throttles a function
   static DateTime? _throttleTime;
+
+  /// Throttles a function
   static void throttle(
     Function() func, {
     Duration duration = const Duration(milliseconds: 300),
@@ -246,8 +251,14 @@ class DSWebUtilities {
 extension WebContextExtensions on BuildContext {
   /// Screen size utilities
   bool get isSmallScreen => DSWebUtilities.isSmallScreen(this);
+
+  /// Screen size utilities
   bool get isMediumScreen => DSWebUtilities.isMediumScreen(this);
+
+  /// Screen size utilities
   bool get isLargeScreen => DSWebUtilities.isLargeScreen(this);
+
+  /// Screen size utilities
   Size get screenSize => DSWebUtilities.getScreenSize(this);
 
   /// Responsive value getter

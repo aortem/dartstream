@@ -12,6 +12,8 @@ import 'package:flutter/material.dart';
 class DSStandardWebApi {
   // Singleton instance
   static final DSStandardWebApi _instance = DSStandardWebApi._internal();
+
+  /// factory constructor for singleton instance
   factory DSStandardWebApi() => _instance;
   DSStandardWebApi._internal();
 
@@ -93,8 +95,10 @@ class DSStandardWebApi {
 class DSWebRequestHandler {
   final DSStandardWebApi _api;
 
+  /// Constructor
   DSWebRequestHandler(this._api);
 
+  /// Handle incoming requests
   Future<void> handleRequest(String type, Map<String, dynamic> config) async {
     switch (type) {
       case 'auth':
@@ -108,10 +112,12 @@ class DSWebRequestHandler {
 /// Web-specific response handler
 /// Manages web-specific response processing
 class DSWebResponseHandler {
+  /// Constructor
   void handleResponse(dynamic response) {
     // Handle web-specific response processing
   }
 
+  /// Error handling
   void handleError(dynamic error) {
     // Handle web-specific error processing
   }
@@ -120,10 +126,16 @@ class DSWebResponseHandler {
 /// Web-specific configuration
 /// Manages web-specific settings and configurations
 class DSWebConfig {
+  /// Configuration settings
   final bool enableLogging;
+
+  /// Enable metrics tracking
   final bool enableMetrics;
+
+  /// Custom configuration settings
   final Map<String, dynamic> customConfig;
 
+  /// Constructor
   DSWebConfig({
     this.enableLogging = false,
     this.enableMetrics = false,

@@ -9,6 +9,8 @@ class DSStandardWebExtensions {
   // Singleton instance
   static final DSStandardWebExtensions _instance =
       DSStandardWebExtensions._internal();
+
+  /// Get the singleton instance
   factory DSStandardWebExtensions() => _instance;
   DSStandardWebExtensions._internal();
 
@@ -84,15 +86,30 @@ abstract class WebExtension {
 }
 
 /// Extension state enumeration
-enum WebExtensionState { notRegistered, registered, initialized, error }
+/// Used to track the lifecycle of an extension
+enum WebExtensionState {
+  /// Extension is not registered
+  notRegistered,
+
+  /// Extension is registered
+  registered,
+
+  /// Extension is initialized
+  initialized,
+
+  /// Error state
+  error
+}
 
 /// Widget extension base class
 abstract class WidgetExtension extends WebExtension {
+  /// Build the extension widget
   Widget build(BuildContext context);
 }
 
 /// Service extension base class
 abstract class ServiceExtension extends WebExtension {
+  /// Execute the service with parameters
   Future<void> executeService(Map<String, dynamic> params);
 }
 
@@ -100,6 +117,7 @@ abstract class ServiceExtension extends WebExtension {
 class AuthWidgetExtension extends WidgetExtension {
   final DSAuthProvider _authProvider;
 
+  /// Constructor
   AuthWidgetExtension(this._authProvider);
 
   @override

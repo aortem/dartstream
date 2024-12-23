@@ -10,6 +10,8 @@ import 'overrides/ds_standard_web_overrides.dart';
 class DSFlutterWebCore {
   // Singleton instance
   static final DSFlutterWebCore _instance = DSFlutterWebCore._internal();
+
+  /// Get the singleton instance
   factory DSFlutterWebCore() => _instance;
   DSFlutterWebCore._internal();
 
@@ -56,8 +58,14 @@ class DSFlutterWebCore {
 
   /// Access core components
   DSStandardWebCore get core => _core;
+
+  /// Access API components
   DSStandardWebApi get api => _api;
+
+  /// Access extension components
   DSStandardWebExtensions get extensions => _extensions;
+
+  /// Access override components
   DSStandardWebOverrides get overrides => _overrides;
 
   /// Clean up resources
@@ -72,14 +80,19 @@ class DSFlutterWebCore {
 
 /// Helper methods for framework access
 extension DSFlutterWebExtensions on BuildContext {
+  /// Access core components
   DSFlutterWebCore get flutterWeb => DSFlutterWebCore();
 }
 
 /// Main application widget
 class DartStreamWebApp extends StatelessWidget {
+  /// Main application widget
   final Widget child;
+
+  /// Configuration for the framework
   final Map<String, dynamic> config;
 
+  /// Main application widget
   const DartStreamWebApp({
     super.key,
     required this.child,

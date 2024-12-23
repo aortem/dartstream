@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 class DSStandardWebCore {
   // Singleton instance
   static final DSStandardWebCore _instance = DSStandardWebCore._internal();
+
+  /// Get the singleton instance of the core framework
   factory DSStandardWebCore() => _instance;
   DSStandardWebCore._internal();
 
@@ -149,15 +151,18 @@ class DSStandardWebCore {
 
 /// Interface for disposable resources
 abstract class Disposable {
+  /// Dispose of the resource
   Future<void> dispose();
 }
 
 /// Standard extension registry
 class StandardExtensionRegistry {
+  /// Discover available extensions
   Future<void> discoverExtensions() async {
     // Implement extension discovery
   }
 
+  /// Initialize discovered extensions
   Future<void> initializeExtensions() async {
     // Implement extension initialization
   }
