@@ -1,7 +1,14 @@
-library ds_standard_utilities;
+/// Export file for Flutter Web Utilities
+/// Provides centralized exports for all utility functions
 
-// Export standard utilities module
+library ds_standard_web_utilities;
+
+// Export main utilities implementation
 export 'ds_standard_web_utilities.dart';
 
+// Export utility classes and extensions
+export 'ds_standard_web_utilities.dart'
+    show DSWebUtilities, WebContextExtensions;
 
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Export Flutter types needed by utilities
+export 'package:flutter/material.dart' show BuildContext, MediaQuery, Size;
