@@ -1,140 +1,118 @@
 import 'package:flutter/material.dart';
-
-// Import framework components
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:google_auth_provider/ds_firebase_auth_export.dart';
 import 'core/ds_standard_web_core.dart';
-import 'api/ds_standard_web_api.dart';
-import 'extensions/ds_standard_web_extensions.dart';
-import 'overrides/ds_standard_web_overrides.dart';
+import 'src/config/app_config.dart';
+import 'src/features/auth/auth_demo.dart';
 
-/// Main entry point for Flutter web framework integration
-class DSFlutterWebCore {
-  // Singleton instance
-  static final DSFlutterWebCore _instance = DSFlutterWebCore._internal();
+void main() {
+  runApp(const DartStreamAuthDemo());
+}
 
-  /// Get the singleton instance
-  factory DSFlutterWebCore() => _instance;
-  DSFlutterWebCore._internal();
+/// Main application widget for DartStream Auth Demo.
+class DartStreamAuthDemo extends StatefulWidget {
+  /// Creates the DartStream Auth Demo widget.
+  const DartStreamAuthDemo({super.key});
 
-  // Core components
+  @override
+  State<DartStreamAuthDemo> createState() => _DartStreamAuthDemoState();
+}
+
+class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
   late final DSStandardWebCore _core;
-  late final DSStandardWebApi _api;
-  late final DSStandardWebExtensions _extensions;
-  late final DSStandardWebOverrides _overrides;
+  late final DSAuthManager _authManager;
+  bool _initialized = false;
+  String? _error;
 
-  /// Initialize the Flutter web framework
-  Future<void> initialize({
-    required BuildContext context,
-    required Map<String, dynamic> config,
-  }) async {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _initializeDartStream(BuildContext context) async {
     try {
       // Initialize core
       _core = DSStandardWebCore();
-      await _core.initialize(config: config, context: context);
 
-      // Initialize API
-      _api = DSStandardWebApi();
-      _api.initialize(context);
+      // Create and register Firebase auth provider
+      final firebaseProvider = DSFirebaseAuthProvider(
+        projectId: AppConfig.projectId,
+        privateKeyPath: AppConfig.privateKeyPath,
+      );
 
-      // Initialize extensions
-      _extensions = DSStandardWebExtensions();
-      // Register default extensions if needed
+      // Create metadata for provider
+      final metadata = DSAuthProviderMetadata(
+        type: 'firebase',
+        region: 'global',
+        clientId: AppConfig.projectId,
+      );
 
-      // Initialize overrides
-      _overrides = DSStandardWebOverrides();
-      _registerDefaultOverrides();
+      // Register provider with auth manager
+      DSAuthManager.registerProvider('firebase', firebaseProvider, metadata);
 
-      print('Flutter web framework initialized successfully');
+      // Initialize auth manager with registered provider
+      _authManager = DSAuthManager('firebase');
+
+      // Initialize core with auth manager
+      await _core.initialize(
+        config: {
+          'auth': {
+            'manager': _authManager,
+          }
+        },
+        context: context, // Pass the BuildContext from the build method
+      );
+
+      setState(() {
+        _initialized = true;
+      });
     } catch (e) {
-      print('Error initializing Flutter web framework: $e');
-      rethrow;
+      setState(() {
+        _error = e.toString();
+      });
     }
   }
 
-  /// Register default overrides
-  void _registerDefaultOverrides() {
-    _overrides.registerOverride<StorageProvider>(WebStorageOverride());
-    // Register other default overrides
-  }
-
-  /// Access core components
-  DSStandardWebCore get core => _core;
-
-  /// Access API components
-  DSStandardWebApi get api => _api;
-
-  /// Access extension components
-  DSStandardWebExtensions get extensions => _extensions;
-
-  /// Access override components
-  DSStandardWebOverrides get overrides => _overrides;
-
-  /// Clean up resources
-  Future<void> dispose() async {
-    await _core.dispose();
-    await _extensions.dispose();
-  }
-
-  /// Check if framework is initialized
-  bool get isInitialized => _core.isInitialized;
-}
-
-/// Helper methods for framework access
-extension DSFlutterWebExtensions on BuildContext {
-  /// Access core components
-  DSFlutterWebCore get flutterWeb => DSFlutterWebCore();
-}
-
-/// Main application widget
-class DartStreamWebApp extends StatelessWidget {
-  /// Main application widget
-  final Widget child;
-
-  /// Configuration for the framework
-  final Map<String, dynamic> config;
-
-  /// Main application widget
-  const DartStreamWebApp({
-    super.key,
-    required this.child,
-    required this.config,
-  });
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: _initializeFramework(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          if (snapshot.hasError) {
-            return _buildErrorWidget(snapshot.error.toString());
-          }
-          return child;
-        }
-        return _buildLoadingWidget();
-      },
-    );
-  }
+    if (!_initialized && _error == null) {
+      _initializeDartStream(context); // Pass BuildContext here
+    }
 
-  Future<void> _initializeFramework(BuildContext context) async {
-    await DSFlutterWebCore().initialize(
-      context: context,
-      config: config,
-    );
-  }
+    if (!_initialized) {
+      return const MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      );
+    }
 
-  Widget _buildErrorWidget(String error) {
-    return Material(
-      child: Center(
-        child: Text('Error initializing framework: $error'),
+    if (_error != null) {
+      return MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Error initializing DartStream: $_error'),
+          ),
+        ),
+      );
+    }
+
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'DartStream Auth Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
+      home: AuthDemo(authManager: _authManager),
     );
   }
 
-  Widget _buildLoadingWidget() {
-    return const Material(
-      child: Center(
-        child: CircularProgressIndicator(),
-      ),
-    );
+  @override
+  void dispose() {
+    _core.dispose();
+    super.dispose();
   }
 }
