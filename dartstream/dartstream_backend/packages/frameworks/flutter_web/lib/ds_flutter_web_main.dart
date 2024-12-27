@@ -1,17 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:google_auth_provider/ds_firebase_auth_export.dart';
 import 'core/ds_standard_web_core.dart';
 import 'src/config/app_config.dart';
 import 'src/features/auth/auth_demo.dart';
 
-void main() {
-  runApp(const DartStreamAuthDemo());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  try {
+    // Initialize Firebase for web
+    debugPrint('Initializing Firebase for Web...');
+    await FirebaseApp.initializeAppWithEnvironmentVariables(
+      apiKey: AppConfig.apiKey,
+      projectId: AppConfig.projectId,
+      authdomain: '${AppConfig.projectId}.firebaseapp.com',
+      messagingSenderId: AppConfig.messagingSenderId,
+      bucketName: AppConfig.storageBucket,
+      appId: AppConfig.appId,
+    );
+
+    // Get auth instance
+    FirebaseApp.instance.getAuth();
+    debugPrint('Firebase Auth instance obtained.');
+
+    runApp(const DartStreamAuthDemo());
+  } catch (e, stackTrace) {
+    debugPrint('Error initializing Firebase: $e');
+    debugPrint('StackTrace: $stackTrace');
+  }
 }
 
-/// Main application widget for DartStream Auth Demo.
 class DartStreamAuthDemo extends StatefulWidget {
-  /// Creates the DartStream Auth Demo widget.
   const DartStreamAuthDemo({super.key});
 
   @override
@@ -19,8 +40,8 @@ class DartStreamAuthDemo extends StatefulWidget {
 }
 
 class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
-  late final DSStandardWebCore _core;
-  late final DSAuthManager _authManager;
+  DSStandardWebCore? _core;
+  DSAuthManager? _authManager;
   bool _initialized = false;
   String? _error;
 
@@ -29,71 +50,120 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
     super.initState();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_initialized && _error == null) {
+      _initializeDartStream(context);
+    }
+  }
+
   Future<void> _initializeDartStream(BuildContext context) async {
+    if (_initialized) return;
+
     try {
-      // Initialize core
+      // Initialize core first
       _core = DSStandardWebCore();
 
-      // Create and register Firebase auth provider
+      // Create Firebase provider instance
       final firebaseProvider = DSFirebaseAuthProvider(
         projectId: AppConfig.projectId,
         privateKeyPath: AppConfig.privateKeyPath,
+        apiKey: AppConfig.apiKey,
       );
 
-      // Create metadata for provider
+      // Create metadata
       final metadata = DSAuthProviderMetadata(
         type: 'firebase',
         region: 'global',
         clientId: AppConfig.projectId,
       );
 
-      // Register provider with auth manager
+      // Initialize provider
+      await firebaseProvider.initialize({
+        'projectId': AppConfig.projectId,
+        'apiKey': AppConfig.apiKey,
+      });
+
+      // Register provider
       DSAuthManager.registerProvider('firebase', firebaseProvider, metadata);
 
-      // Initialize auth manager with registered provider
+      // Create auth manager
       _authManager = DSAuthManager('firebase');
 
-      // Initialize core with auth manager
-      await _core.initialize(
+      // Enable debugging if needed
+      DSAuthManager.enableDebugging = AppConfig.enableDebugLogging;
+
+      // Initialize core last
+      await _core?.initialize(
         config: {
           'auth': {
+            'provider': firebaseProvider,
             'manager': _authManager,
-          }
+          },
+          'sessionTimeout': AppConfig.sessionTimeout.inSeconds,
+          'debug': AppConfig.enableDebugLogging,
         },
-        context: context, // Pass the BuildContext from the build method
+        context: context,
       );
 
-      setState(() {
-        _initialized = true;
-      });
-    } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _initialized = true;
+          _error = null;
+        });
+      }
+    } catch (e, stackTrace) {
+      debugPrint('Initialization Error: $e');
+      debugPrint('StackTrace: $stackTrace');
+      if (mounted) {
+        setState(() {
+          _error = e.toString();
+          _initialized = false;
+        });
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    if (!_initialized && _error == null) {
-      _initializeDartStream(context); // Pass BuildContext here
-    }
-
     if (!_initialized) {
-      return const MaterialApp(
-        home: Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      );
-    }
-
-    if (_error != null) {
       return MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: Scaffold(
           body: Center(
-            child: Text('Error initializing DartStream: $_error'),
+            child: _error != null
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'Error: $_error',
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _error = null;
+                            _initialized = false;
+                          });
+                          _initializeDartStream(context);
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  )
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      CircularProgressIndicator(),
+                      SizedBox(height: 16),
+                      Text('Initializing DartStream...'),
+                    ],
+                  ),
           ),
         ),
       );
@@ -103,16 +173,18 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
       debugShowCheckedModeBanner: false,
       title: 'DartStream Auth Demo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: AuthDemo(authManager: _authManager),
+      home: AuthDemo(authManager: _authManager!),
     );
   }
 
   @override
   void dispose() {
-    _core.dispose();
+    if (_initialized) {
+      _core?.dispose();
+    }
     super.dispose();
   }
 }

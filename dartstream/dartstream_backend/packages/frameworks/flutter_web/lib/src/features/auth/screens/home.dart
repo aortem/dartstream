@@ -4,16 +4,19 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 class HomeScreen extends StatelessWidget {
   final DSAuthUser user;
   final DSAuthManager authManager;
+  final VoidCallback onSignOut;
 
   const HomeScreen({
     super.key,
     required this.user,
     required this.authManager,
+    required this.onSignOut,
   });
 
   Future<void> _handleSignOut(BuildContext context) async {
     try {
       await authManager.signOut();
+      onSignOut();
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -21,6 +24,7 @@ class HomeScreen extends StatelessWidget {
             content: Text(
               e is DSAuthError ? e.message : e.toString(),
             ),
+            backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
       }
@@ -36,6 +40,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => _handleSignOut(context),
+            tooltip: 'Sign Out',
           ),
         ],
       ),
@@ -48,6 +53,7 @@ class HomeScreen extends StatelessWidget {
               constraints: const BoxConstraints(maxWidth: 400),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   const Text(
                     'Authentication Successful!',
@@ -55,6 +61,7 @@ class HomeScreen extends StatelessWidget {
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
                   _UserInfoRow(
@@ -71,6 +78,20 @@ class HomeScreen extends StatelessWidget {
                     label: 'Display Name:',
                     value: user.displayName,
                   ),
+                  if (user.customAttributes != null) ...[
+                    const SizedBox(height: 16),
+                    const Text(
+                      'Custom Attributes:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    ...user.customAttributes!.entries.map(
+                      (entry) => _UserInfoRow(
+                        label: '${entry.key}:',
+                        value: entry.value.toString(),
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 32),
                   ElevatedButton(
                     onPressed: () => _handleSignOut(context),
@@ -98,6 +119,7 @@ class _UserInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
@@ -105,7 +127,10 @@ class _UserInfoRow extends StatelessWidget {
         ),
         const SizedBox(width: 8),
         Expanded(
-          child: Text(value, softWrap: true),
+          child: Text(
+            value,
+            softWrap: true,
+          ),
         ),
       ],
     );

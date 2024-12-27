@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:ds_auth_base/ds_auth_base_export.dart';
-import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   final DSAuthManager authManager;
-  final VoidCallback onLoginSuccess;
 
-  const LoginScreen({
+  const RegisterScreen({
     super.key,
     required this.authManager,
-    required this.onLoginSuccess,
   });
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final _confirmPasswordController = TextEditingController();
+  final _displayNameController = TextEditingController();
   String? _error;
   bool _loading = false;
 
-  Future<void> _handleLogin() async {
-    FocusScope.of(context).unfocus();
-
+  Future<void> _handleRegistration() async {
     if (!_formKey.currentState!.validate()) return;
 
     if (!mounted) return;
@@ -36,32 +33,31 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
-
-      await widget.authManager.signIn(email, password);
+      await widget.authManager.createAccount(
+        _emailController.text,
+        _passwordController.text,
+        displayName: _displayNameController.text,
+      );
 
       if (mounted) {
-        widget.onLoginSuccess(); // Directly call success after sign in
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully! Please login.'),
+          ),
+        );
+        Navigator.pop(context); // Return to login screen
       }
     } catch (e) {
       if (!mounted) return;
-
-      print('Login error: $e');
 
       setState(() {
         if (e is DSAuthError) {
           _error = e.message;
         } else {
-          _error = 'An unexpected error occurred. Please try again.';
+          _error = e.toString();
         }
+        _loading = false;
       });
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
     }
   }
 
@@ -69,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DartStream Auth Demo'),
+        title: const Text('Create Account'),
       ),
       body: Center(
         child: Card(
@@ -85,8 +81,21 @@ class _LoginScreenState extends State<LoginScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     TextFormField(
+                      controller: _displayNameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Display Name',
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter your display name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
                       controller: _emailController,
-                      textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(),
@@ -104,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: _passwordController,
-                      textInputAction: TextInputAction.done,
                       decoration: const InputDecoration(
                         labelText: 'Password',
                         border: OutlineInputBorder(),
@@ -112,10 +120,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       obscureText: true,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
+                          return 'Please enter a password';
                         }
                         if (value.length < 6) {
                           return 'Password must be at least 6 characters';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirm Password',
+                        border: OutlineInputBorder(),
+                      ),
+                      obscureText: true,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please confirm your password';
+                        }
+                        if (value != _passwordController.text) {
+                          return 'Passwords do not match';
                         }
                         return null;
                       },
@@ -132,36 +158,14 @@ class _LoginScreenState extends State<LoginScreen> {
                     ],
                     const SizedBox(height: 32),
                     ElevatedButton(
-                      onPressed: _loading ? null : _handleLogin,
+                      onPressed: _loading ? null : _handleRegistration,
                       child: _loading
                           ? const SizedBox(
                               width: 20,
                               height: 20,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Login'),
-                    ),
-                    const SizedBox(height: 16),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Don't have an account?"),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () {
-                            FocusScope.of(context)
-                                .unfocus(); // Ensure focus is cleared
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => RegisterScreen(
-                                  authManager: widget.authManager,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text('Create Account'),
-                        ),
-                      ],
+                          : const Text('Create Account'),
                     ),
                   ],
                 ),
@@ -177,6 +181,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    _displayNameController.dispose();
     super.dispose();
   }
 }

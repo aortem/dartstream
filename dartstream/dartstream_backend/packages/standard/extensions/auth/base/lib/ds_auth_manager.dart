@@ -24,7 +24,7 @@ class DSAuthManager {
     }
   }
 
-  // Register a provider dynamically
+  /// Register a provider dynamically
   static void registerProvider(
       String name, DSAuthProvider provider, DSAuthProviderMetadata metadata) {
     _registeredProviders[name] = provider;
@@ -38,7 +38,7 @@ class DSAuthManager {
 
   late DSAuthProvider _provider;
 
-  // Initialize with a specific provider
+  /// Initialize with a specific provider
   DSAuthManager(String providerName) {
     if (!_registeredProviders.containsKey(providerName)) {
       throw DSAuthError('Provider not registered: $providerName');
@@ -47,9 +47,21 @@ class DSAuthManager {
     log('Initialized manager with provider: $providerName');
   }
 
-  Future<void> signIn(String username, String password) {
+  Future<DSAuthUser> getCurrentUser() {
+    log('Fetching current user...');
+    return _provider.getCurrentUser();
+  }
+
+  Future<void> createAccount(String email, String password,
+      {String? displayName}) {
+    log('Creating new account...');
+    return _provider.createAccount(email, password, displayName: displayName);
+  }
+
+  Future<void> signIn(String username, String password) async {
     log('Signing in with provider...');
-    return _provider.signIn(username, password);
+    await _provider.signIn(username, password);
+    // Don't verify token after sign in since Firebase already validated credentials
   }
 
   Future<void> signOut() {
@@ -62,7 +74,7 @@ class DSAuthManager {
     return _provider.getUser(userId);
   }
 
-  Future<bool> verifyToken(String token) {
+  Future<bool> verifyToken([String? token]) {
     log('Verifying token...');
     return _provider.verifyToken(token);
   }

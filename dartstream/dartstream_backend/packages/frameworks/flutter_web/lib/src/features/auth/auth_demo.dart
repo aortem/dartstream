@@ -18,6 +18,7 @@ class AuthDemo extends StatefulWidget {
 class _AuthDemoState extends State<AuthDemo> {
   DSAuthUser? _currentUser;
   String? _error;
+  bool _loading = true;
 
   @override
   void initState() {
@@ -26,19 +27,67 @@ class _AuthDemoState extends State<AuthDemo> {
   }
 
   Future<void> _loadCurrentUser() async {
+    if (!mounted) return;
+
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+
     try {
-      // Get user ID from token or session
-      // Then load user details
-      // This will be implemented based on how we're storing the current user
+      // Attempt to verify any existing token
+      final isValidToken = await widget.authManager.verifyToken('current');
+
+      if (isValidToken) {
+        // Get current user if token is valid
+        final user = await widget.authManager.getCurrentUser();
+        if (mounted) {
+          setState(() {
+            _currentUser = user;
+            _loading = false;
+          });
+          return;
+        }
+      } else {
+        // Token invalid or not present
+        if (mounted) {
+          setState(() {
+            _currentUser = null;
+            _loading = false;
+          });
+        }
+      }
     } catch (e) {
-      setState(() {
-        _error = e.toString();
-      });
+      if (mounted) {
+        setState(() {
+          _error = e is DSAuthError ? e.message : e.toString();
+          _currentUser = null;
+          _loading = false;
+        });
+      }
     }
+  }
+
+  void _handleLoginSuccess() {
+    _loadCurrentUser();
+  }
+
+  void _handleSignOut() {
+    setState(() {
+      _currentUser = null;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    if (_loading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
     if (_error != null) {
       return Scaffold(
         body: Center(
@@ -46,6 +95,7 @@ class _AuthDemoState extends State<AuthDemo> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text('Error: $_error'),
+              const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: _loadCurrentUser,
                 child: const Text('Retry'),
@@ -60,9 +110,13 @@ class _AuthDemoState extends State<AuthDemo> {
       return HomeScreen(
         user: _currentUser!,
         authManager: widget.authManager,
+        onSignOut: _handleSignOut,
       );
     }
 
-    return LoginScreen(authManager: widget.authManager);
+    return LoginScreen(
+      authManager: widget.authManager,
+      onLoginSuccess: _handleLoginSuccess,
+    );
   }
 }
