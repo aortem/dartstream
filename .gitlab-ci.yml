@@ -44,7 +44,7 @@ validation_trigger:
 unit_test_trigger:
   stage: validation
   trigger:
-    include: tools/pipelines/backend/child-ci-unit-test.yml
+    include: tools/pipelines/backend/child-ci-unit-tests.yml
   needs:
     - job: validation_trigger
   rules:
