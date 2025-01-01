@@ -7,9 +7,9 @@ unit_tests:
   image: dart:stable
   script:
     - echo "Running Unit Tests..."
-    - cd firebase-dart-admin-auth-sdk/test/unit
+    - cd firebase-dart-admin-auth-sdk/test/unit/
     - dart pub get
-    - dart test --coverage=coverage --reporter expanded
+    - dart test . --coverage=coverage --reporter expanded
     - echo "Uploading coverage report to Codecov..."
     - curl -s https://codecov.io/bash | bash -s -- -t $CODECOV_TOKEN -R github.com/aortem/firebase-dart-admin-auth-sdk -f coverage/lcov.info
   artifacts:
