@@ -1,3 +1,7 @@
+## 0.0.1-pre+13
+
+- Update SDK version to 3.6.0
+
 ## 0.0.1-pre+12
 
 - Update SDK version formatting

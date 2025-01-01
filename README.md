@@ -11,7 +11,7 @@
 <p align="center" class="github-badges">
   <!-- Release Badge -->
   <a href="https://github.com/aortem/firebase-dart-admin-auth-sdk/tags">
-    <img alt="Release" src="https://img.shields.io/static/v1?label=release&message=v0.0.1-pre+10&color=blue&style=for-the-badge" />
+    <img alt="Release" src="https://img.shields.io/static/v1?label=release&message=v0.0.1-pre+13&color=blue&style=for-the-badge" />
   </a>
   <br/>
   <!-- Dart-Specific Badges -->
