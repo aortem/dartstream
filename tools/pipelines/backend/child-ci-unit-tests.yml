@@ -1,7 +1,7 @@
 stages:
   - unit_tests
 
-# Unit Tests
+# Firebase SDK Unit Tests
 unit_tests:
   stage: unit_tests
   image: dart:stable
@@ -16,4 +16,6 @@ unit_tests:
     paths:
       - coverage/
     expire_in: 1d
+  rules:
+   - when: always
   retry: 2
