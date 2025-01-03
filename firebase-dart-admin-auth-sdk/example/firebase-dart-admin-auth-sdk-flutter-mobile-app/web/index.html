@@ -1,0 +1,142 @@
+<<<<<<< HEAD
+
+<!DOCTYPE html>
+<html>
+<head>
+  <!--
+  Ensure the base href is set correctly.
+=======
+<!DOCTYPE html>
+<html>
+  <head>
+    <!--
+    If you are serving your web app in a path other than the root, change the
+    href value below to reflect the base path you are serving from.
+
+    The path provided below has to start and end with a slash "/" in order for
+    it to work correctly.
+
+    For more details:
+    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+>>>>>>> e2ce3d1eb951f7d2f64ea007f4425e46b810cc68
+  -->
+    <base href="$FLUTTER_BASE_HREF" />
+
+  <meta charset="UTF-8" />
+  <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+  <meta name="description" content="A new Flutter project." />
+
+  <!-- Add the Google Sign-In client ID -->
+  <meta name="google-signin-client_id" content="YOUR-CLIENT-ID">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="firebase_dart_admin_auth_sample_app"
+    />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+  <title>firebase_dart_admin_auth_sample_app</title>
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- Add Google API platform.js for Google Sign-In -->
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+  <!-- Add Google API client initialization -->
+  <!-- Initialize Google API client -->
+  <script>
+      function initializeGapi() {
+        gapi.load('client:auth2', function() {
+          gapi.auth2.init({
+            client_id: 'YOUR-CLIENT-ID',
+            scope: 'profile email'
+          }).then(function() {
+            console.log('Google API client initialized');
+          });
+        });
+      }
+  </script>
+
+  <!-- Add Facebook SDK for JavaScript -->
+  <script async defer crossorigin="anonymous"
+          src="https://connect.facebook.net/en_US/sdk.js"
+          onload="initializeFacebookLogin()"></script>
+
+          <script>
+            function initializeFacebookLogin() {
+              if (typeof FB !== 'undefined') {
+                FB.init({
+                  appId: '893849532657430',
+                  cookie: true,
+                  xfbml: true,
+                  version: 'v12.0'
+                });
+                console.log("Facebook SDK initialized");
+              } else {
+                console.error("Facebook SDK could not be initialized. Check if SDK script loaded.");
+              }
+            }
+        
+            async function loginWithFacebook() {
+              return new Promise((resolve, reject) => {
+                if (typeof FB === 'undefined') {
+                  reject('Facebook SDK not loaded');
+                  return;
+                }
+                FB.login((response) => {
+                  if (response.authResponse) {
+                    resolve(response.authResponse.accessToken);
+                  } else {
+                    reject('User cancelled login or did not fully authorize.');
+                  }
+                }, { scope: 'email' });
+              });
+            }
+          </script>
+          <script type="text/javascript" src="https://alcdn.msauth.net/browser/2.13.1/js/msal-browser.min.js"
+          integrity="sha384-2Vr9MyareT7qv+wLp1zBt78ZWB4aljfCTMUrml3/cxm0W81ahmDOC6uyNmmn0Vrc"
+          crossorigin="anonymous"></script>
+        <script src="assets/packages/aad_oauth/assets/msalv2.js"></script>
+</head>
+<body onload="initializeGapi()">
+<!-- Your Flutter bootstrap script -->
+<script src="flutter_bootstrap.js" async></script>
+</body>
+    This is a placeholder for base href that will be replaced by the value of
+    the `--base-href` argument provided to `flutter build`.
+  -->
+    <base href="$FLUTTER_BASE_HREF" />
+
+    <meta charset="UTF-8" />
+    <meta content="IE=Edge" http-equiv="X-UA-Compatible" />
+    <meta name="description" content="A new Flutter project." />
+    <meta name="google-signin-client_id" content="YOUR_GOOGLE_SIGN_IN_OAUTH_CLIENT_ID.apps.googleusercontent.com">
+
+    <!-- iOS meta tags & icons -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta
+      name="apple-mobile-web-app-title"
+      content="firebase_dart_admin_auth_sample_app"
+    />
+    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <title>firebase_dart_admin_auth_sample_app</title>
+    <link rel="manifest" href="manifest.json" />
+  </head>
+  <body>
+    <script src="flutter_bootstrap.js" async></script>
+  </body>
+</html>
+

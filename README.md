@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/aortem/logos/main/Aortem-logo-github.png" />
-    <img align="center" alt="Aortem Logo" src="https://raw.githubusercontent.com/aortem/logos/main/Aortem-logo-github.png" />
+    <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/aortem/logos/main/Aortem-logo-small.png" />
+    <img align="center" alt="Aortem Logo" src="https://raw.githubusercontent.com/aortem/logos/main/Aortem-logo-small.png" />
   </picture>
 </p>
 
@@ -11,7 +11,7 @@
 <p align="center" class="github-badges">
   <!-- Release Badge -->
   <a href="https://github.com/aortem/firebase-dart-admin-auth-sdk/tags">
-    <img alt="Release" src="https://img.shields.io/static/v1?label=release&message=v0.0.1-pre+10&color=blue&style=for-the-badge" />
+    <img alt="Release" src="https://img.shields.io/static/v1?label=release&message=v0.0.1-pre+13&color=blue&style=for-the-badge" />
   </a>
   <br/>
   <!-- Dart-Specific Badges -->
@@ -90,18 +90,18 @@ This implementation does not yet support all functionalities of the firebase aut
 | FirebaseUser.linkWithCredential              | ✅        |
 | FirebaseUser.linkWithPhoneNumber             | ✅        |
 | FirebaseUser.linkWithPopup                   | ✅        |
-| FirebaseUser.linkWithRedirect                | ❌        |
-| FirebaseUser.multiFactor                     | ❌        |
-| FirebaseUser.reauthenticateWithCredential    | ❌        |
-| FirebaseUser.reauthenticateWithPhoneNumber   | ❌        |
-| FirebaseUser.reauthenticateWithPopUp         | ❌        |
-| FirebaseUser.reauthenticateWithRedirect      | ❌        |
+| FirebaseUser.linkWithRedirect                | ✅        |
+| FirebaseUser.multiFactor                     | ✅        |
+| FirebaseUser.reauthenticateWithCredential    | ✅        |
+| FirebaseUser.reauthenticateWithPhoneNumber   | ✅        |
+| FirebaseUser.reauthenticateWithPopUp         | ✅        |
+| FirebaseUser.reauthenticateWithRedirect      | ✅        |
 | FirebaseUser.reload                          | ✅        |
 | FirebaseUser.sendEmailVerification           | ✅        |
 | FirebaseUser.unlink                          | ✅        |
-| FirebaseUser.updateEmail                     | ❌        |
+| FirebaseUser.updateEmail                     | ✅        |
 | FirebaseUser.updatePassword                  | ✅        |
-| FirebaseUser.updatePhoneNumber               | ❌        |
+| FirebaseUser.updatePhoneNumber               | ✅        |
 | FirebaseUser.updateProfile                   | ✅        |
 | FirebaseUser.verifyBeforeUpdateEmail         | ✅        |
 | FirebaseUserCredential.getAdditionalUserInfo | ✅        |
@@ -126,49 +126,29 @@ Explore the `/example` directory in this repository to find sample applications 
 
 We welcome contributions of all forms from the community! If you're interested in helping improve  Firebase Dart Admin Auth SDK, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.  Our team will review your pull request. Once approved, we will integrate your changes into our primary repository and push the mirrored changes on the main github branch.
 
-## Support Tiers
+## Support
 
-Firebase Dart Admin Auth SDK offers various support tiers for our open-source products with an Initial Response Service Level Agreement (IRSLA):
-
-### Community Support
-- **Cost**: Free
-- **Features**: Access to community forums, basic documentation.
-- **Ideal for**: Individual developers or small startups.
-- **SLA**: NA
-
-### Standard Support
-- **Cost**: $10/month - Billed Annually.
-- **Features**: Extended documentation, email support, 10 business days response SLA.
-- **Ideal for**: Growing startups and small businesses.
-- **SLA**: 10 business days (Monday-Friday) IRSLANA
-- [Subscribe-Coming Soon]()
-
-### Enhanced Support
-- **Cost**: $100/month - Billed Annually
-- **Features**: Access to roadmap, 72-hour response SLA, feature request prioritization.
-- **Ideal for**: Medium-sized enterprises requiring frequent support.
-- **SLA**: 5 business days IRSLA
-- [Subscribe-Coming Soon]()
-
-### Enterprise Support
-- **Cost**: 450/month
-- **Features**: 
-  - 48-hour response SLA, 
-  - Access to beta features:
-  - Comprehensive support for all Aortem Open Source products.
-  - Premium access to our exclusive enterprise customer forum.
-  - Early access to cutting-edge features.
-  - Exclusive access to Partner/Reseller/Channel Program..
-- **Ideal for**: Large organizations and enterprises with complex needs.
-- **SLA**: 48-hour IRSLA
-- [Subscribe-Coming Soon]()
-
-*Enterprise Support is designed for businesses, agencies, and partners seeking top-tier support across a wide range of Dart backend and server-side projects.  All Open Source projects that are part of the Aortem Collective are included in the Enterprise subscription, with more projects being added soon.
+For support across all Aortem open-source products, including this SDK, visit our Support Page.
 
 ## Licensing
 
-All  Firebase Dart Admin Auth SDK packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, which are licensed from third party software  Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+The **EntraID Dart Auth SDK** is licensed under a dual-license approach:
 
+1. **BSD-3 License**:
+   - Applies to all packages and libraries in the SDK.
+   - Allows use, modification, and redistribution, provided that credit is given and compliance with the BSD-3 terms is maintained.
+   - Permits usage in open-source projects, applications, and private deployments.
+
+2. **Enhanced License Version 2 (ELv2)**:
+   - Applies to all use cases where the SDK or its derivatives are offered as part of a **cloud service**.
+   - This ensures that the SDK cannot be directly used by cloud providers to offer competing services without explicit permission.
+   - Example restricted use cases:
+     - Including the SDK in a hosted SaaS authentication platform.
+     - Offering the SDK as a component of a managed cloud service.
+
+### **Summary**
+- You are free to use the SDK in your applications, including open-source and commercial projects, as long as the SDK is not directly offered as part of a third-party cloud service.
+- For details, refer to the [LICENSE](LICENSE.md) file.
 
 ## Enhance with Firebase Dart Admin Auth SDK
 

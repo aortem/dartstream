@@ -1,12 +1,13 @@
 stages:
+  - setup
   - validation
-  - triggers
+  - analyze_sample_apps
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
 # Debug Stage
 debug_merge_request:
-  stage: validation
+  stage: setup
   script:
     - echo "Pipeline Source $CI_PIPELINE_SOURCE"
     - echo "Commit Branch (Source) $CI_COMMIT_REF_NAME"
@@ -14,11 +15,11 @@ debug_merge_request:
     - echo "Source Branch Name (Merge Request) $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
     - echo "Merge ID environment variable (Merge Request) $CI_MERGE_REQUEST_IID"
 
-# Conditional Triggers
-conditional_development:
-  stage: triggers
+# Validate Conditional Triggers
+validation_trigger:
+  stage: validation
   trigger:
-    include: tools/pipelines/child-ci-setup-pre-dev.yml
+    include: tools/pipelines/backend/child-ci-setup-validation.yml
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
@@ -39,8 +40,28 @@ conditional_development:
     # Fallback: Skip if no condition matches
     - when: never
 
+# Unit Test Conditional Triggers
+unit_test_trigger:
+  stage: validation
+  trigger:
+    include: tools/pipelines/backend/child-ci-unit-tests.yml
+  needs:
+    - job: validation_trigger
+  rules:
+    # Always runs after validation trigger
+    - when: always
     
-#conditional_qa:
+# Analyze Conditional Triggers
+analyze_flutter_mobile:
+  stage: analyze_sample_apps
+  trigger:
+    include: tools/pipelines/frontend/child-ci-analyze-flutter-mobile.yml
+  needs:
+    - job: unit_test_trigger
+  rules:
+    # Always runs after unit_test trigger
+    - when: always
+
 #  stage: triggers
 #  trigger:
 #    include: tools/pipelines/child-ci-qa.yml

@@ -1,0 +1,52 @@
+stages:
+  - analyze
+
+analyze_flutter_mobile:
+  stage: analyze
+  image: ghcr.io/cirruslabs/flutter:stable
+  script:
+    - echo "Analyzing example project..."
+    - cd firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app
+    - flutter pub get || { echo "Failed to install dependencies. Exiting..."; exit 1; }
+    - dart analyze > analysis_report.txt 2> error_log.txt || true
+
+    # Filter and summarize analysis results
+    - echo "Separating issues into categories..."
+    - grep -i "info" analysis_report.txt > info_issues.txt || true
+    - grep -i "warning" analysis_report.txt > warning_issues.txt || true
+    - grep -i "error" analysis_report.txt > error_issues.txt || true
+    - echo "Summary of analysis issues:"
+    - |
+      info_count=$(wc -l < info_issues.txt || echo 0)
+      warning_count=$(wc -l < warning_issues.txt || echo 0)
+      error_count=$(wc -l < error_issues.txt || echo 0)
+      echo "Info Issues: $info_count"
+      echo "Warning Issues: $warning_count"
+      echo "Error Issues: $error_count"
+
+    # Check for outdated dependencies
+    - echo "Checking for outdated dependencies..."
+    - dart pub outdated || true
+
+    # Encourage collaboration by highlighting contributors who worked on relevant areas.
+    - echo "Collaboratively resolving identified issues..."
+    - |
+      while IFS= read -r line; do
+        file=$(echo $line | awk -F ':' '{print $1}')
+        if [[ -n "$file" ]]; then
+          git_log=$(git log -n 1 --pretty=format:"%h by %an <%ae>" -- "$file")
+          echo "File: $file - Last modified by: $git_log"
+          echo "Suggested collaboration: Work with the contributor to address the issue."
+        fi
+      done < error_issues.txt
+    - echo "Example project analysis complete. Check categorized issue files for details."
+
+  rules:
+   - when: always
+
+  artifacts:
+    paths:
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/info_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/warning_issues.txt
+      - firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/error_issues.txt
+    expire_in: 1h

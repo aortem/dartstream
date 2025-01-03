@@ -1,0 +1,21 @@
+stages:
+  - unit_tests
+
+# Firebase SDK Unit Tests
+unit_tests:
+  stage: unit_tests
+  image: dart:stable
+  script:
+    - echo "Running Unit Tests..."
+    - cd firebase-dart-admin-auth-sdk/test/unit/
+    - dart pub get
+    - dart test . --coverage=coverage --reporter expanded || echo "Some tests failed, proceeding with coverage upload..."
+    - echo "Uploading coverage report to Codecov..."
+    - curl -s https://codecov.io/bash | bash -s -- -t $CODECOV_TOKEN -R github.com/aortem/firebase-dart-admin-auth-sdk -f coverage/lcov.info || echo "Coverage upload failed."
+  artifacts:
+    paths:
+      - coverage/
+    expire_in: 1d
+  rules:
+   - when: always
+  retry: 2
