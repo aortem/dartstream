@@ -5,8 +5,8 @@ repository: https://github.com/aortem/dartstream
 
 publish_to: none # Mark the package as non-publishable for local testing:
 
-environment: 
- sdk: ^3.6.0 
+environment:
+ sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
   firebase_dart_admin_auth_sdk: ^0.0.1-pre+10 # Include the Firebase Auth SDK
