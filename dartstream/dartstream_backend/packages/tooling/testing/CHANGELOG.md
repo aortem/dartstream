@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.1] - 2025-01-03
+
+### upgrade testing suite dependencies
+
 ## [0.0.1-pre+2] - 2024-05-30
 
 ### Downgraded Test Dependency
