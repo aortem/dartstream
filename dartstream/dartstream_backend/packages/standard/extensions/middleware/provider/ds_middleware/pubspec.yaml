@@ -1,5 +1,5 @@
 name: ds_middleware
-description: DartStream Custom Middleware.  Use as the secondary option to Shelf Middleware.
+description: DartStream Middleware.  Use as the secondary option to Shelf Middleware.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
