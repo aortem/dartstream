@@ -181,7 +181,32 @@ class FirebaseApp {
     final accessToken =
         await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
 
-    accessToken;
+    return _instance ??= FirebaseApp._(
+      'your_api_key',
+      'your_project_id',
+      'your_auth_domain',
+      'your_messaging_sender_id',
+      'your_bucket_name',
+      'your_app_id',
+      serviceAccountModel,
+      accessToken,
+    );
+  }
+
+  ///Used to initialize the project with service account impersonation in a GCP enviroment
+  ///[gcpAccessToken] is the encoded string of the service account
+  ///[impersonatedEmail] is the email of the impersonated account
+  static Future<FirebaseApp> initializeAppWithServiceAccountImpersonationGCP({
+    required String gcpAccessToken,
+    required String impersonatedEmail,
+  }) async {
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGcpTokenImplementation();
+
+    final accessToken = await accesTokenGen.getAccessTokenWithGeneratedToken(
+      gcpAccessToken,
+      targetServiceAccountEmail: impersonatedEmail,
+    );
 
     return _instance ??= FirebaseApp._(
       'your_api_key',
@@ -191,7 +216,7 @@ class FirebaseApp {
       'your_bucket_name',
       'your_app_id',
       null,
-      null,
+      accessToken,
     );
   }
 

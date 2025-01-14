@@ -22,11 +22,18 @@ class FirebasePhoneNumberLink {
   ///
   /// Throws an error if the request fails or the verification code cannot be sent.
   Future<void> sendVerificationCode(String phoneNumber) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/accounts:sendVerificationCode?key=${auth.apiKey}';
+    String url =
+        'https://identitytoolkit.googleapis.com/v1/accounts:sendVerificationCode';
+    if (auth.apiKey != 'your_api_key') {
+      url = '$url?key=${auth.apiKey}';
+    }
     final response = await http.post(
       Uri.parse(url),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        if (auth.accessToken != null)
+          'Authorization': 'Bearer ${auth.accessToken}',
+      },
       body: json.encode({
         'phoneNumber': phoneNumber,
         'recaptchaToken':

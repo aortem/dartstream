@@ -35,11 +35,16 @@ class PhoneAuth {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:sendVerificationCode',
-      {'key': _auth.apiKey},
+      {if (_auth.apiKey != 'your_api_key') 'key': _auth.apiKey},
     );
 
     final response = await _httpClient.post(
       url,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        if (_auth.accessToken != null)
+          'Authorization': 'Bearer ${_auth.accessToken}',
+      },
       body: json.encode({
         'phoneNumber': phoneNumber,
         'recaptchaToken': await appVerifier.verify(),
@@ -62,11 +67,16 @@ class PhoneAuth {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:signInWithPhoneNumber',
-      {'key': _auth.apiKey},
+      {if (_auth.apiKey != 'your_api_key') 'key': _auth.apiKey},
     );
 
     final response = await _httpClient.post(
       url,
+      headers: {
+        'Content-Type': 'application/json; charset=UTF-8',
+        if (_auth.accessToken != null)
+          'Authorization': 'Bearer ${_auth.accessToken}',
+      },
       body: json.encode({
         'sessionInfo': verificationId,
         'code': smsCode,

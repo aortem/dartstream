@@ -16,7 +16,9 @@ class AppleSignInAuth {
       final url = Uri.https(
         'identitytoolkit.googleapis.com',
         '/v1/accounts:signInWithIdp',
-        {'key': auth.apiKey},
+        {
+          if (auth.apiKey != 'your_api_key') 'key': auth.apiKey,
+        },
       );
 
       final requestBody = {

@@ -14,9 +14,8 @@ class CreateUserWithEmailAndPasswordService {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:signUp',
-      {'key': auth.apiKey},
+      {if (auth.apiKey != 'your_api_key') 'key': auth.apiKey},
     );
-
     final response = await auth.httpClient.post(
       url,
       body: json.encode({
@@ -24,7 +23,11 @@ class CreateUserWithEmailAndPasswordService {
         'password': password,
         'returnSecureToken': true,
       }),
-      headers: {'Content-Type': 'application/json'},
+      headers: {
+        'Content-Type': 'application/json',
+        if (auth.accessToken != null)
+          'Authorization': 'Bearer ${auth.accessToken}',
+      },
     );
 
     if (response.statusCode != 200) {

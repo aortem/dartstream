@@ -40,14 +40,19 @@ void main() async {
         debugPrint('Initializing Firebase for Mobile...');
 
         // Load the service account JSON
-        String serviceAccountContent = await rootBundle.loadString(
-          'assets/service_account.json',
-        );
+        // String serviceAccountContent = await rootBundle.loadString(
+        //   'assets/service_account.json',
+        // );
         debugPrint('Service account loaded.');
 
         // Initialize Firebase with the service account content
-        await FirebaseApp.initializeAppWithServiceAccount(
-          serviceAccountContent: serviceAccountContent,
+        // await FirebaseApp.initializeAppWithServiceAccount(
+        //   serviceAccountContent: serviceAccountContent,
+        // );
+
+        await FirebaseApp.initializeAppWithServiceAccountImpersonationGCP(
+          gcpAccessToken: 'gcp-access-token',
+          impersonatedEmail: 'account-to-be-impersonated',
         );
         auth = FirebaseApp.instance.getAuth(); // Initialize auth for mobile
         debugPrint('Firebase initialized for Mobile.');
