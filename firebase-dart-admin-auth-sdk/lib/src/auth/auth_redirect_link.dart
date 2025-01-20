@@ -34,13 +34,19 @@ class SignInWithRedirectService {
       String redirectUri, String idToken, String providerId) async {
     try {
       // Firebase REST API URL for signing in with an identity provider
-      final url =
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp?key=${auth.apiKey}';
+      String url =
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithIdp';
+
+      if (auth.apiKey != 'your_api_key') {
+        url = '$url?key=${auth.apiKey}';
+      }
 
       final response = await http.post(
         Uri.parse(url),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
+          if (auth.accessToken != null)
+            'Authorization': 'Bearer ${auth.accessToken}',
         },
         body: jsonEncode(<String, dynamic>{
           'postBody': 'access_token=$idToken&providerId=$providerId',

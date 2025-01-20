@@ -15,11 +15,16 @@ class ConfirmPasswordResetService {
       final url = Uri.https(
         'identitytoolkit.googleapis.com',
         '/v1/accounts:resetPassword',
-        {'key': auth.apiKey},
+        {if (auth.apiKey != 'your_api_key') 'key': auth.apiKey},
       );
 
       final response = await auth.httpClient.post(
         url,
+        headers: {
+          'Content-Type': 'application/json; charset=UTF-8',
+          if (auth.accessToken != null)
+            'Authorization': 'Bearer ${auth.accessToken}',
+        },
         body: json.encode({
           'oobCode': oobCode,
           'newPassword': newPassword,

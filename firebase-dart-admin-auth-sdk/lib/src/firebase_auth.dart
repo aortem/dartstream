@@ -228,6 +228,7 @@ class FirebaseAuth {
     this.serviceAccount,
     this.generateCustomToken,
   }) {
+    log(apiKey ?? 'api key');
     this.httpClient = httpClient ??
         http.Client(); // Use the injected client or default to a new one
     emailPassword = EmailPasswordAuth(this);
@@ -294,7 +295,7 @@ class FirebaseAuth {
       'identitytoolkit.googleapis.com',
       '/v1/accounts:$endpoint',
       {
-        'key': apiKey,
+        if (apiKey != 'your_api_key') 'key': apiKey,
       },
     );
 
@@ -306,7 +307,6 @@ class FirebaseAuth {
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
-      log("error is $error ");
       throw FirebaseAuthException(
         code: error['message'],
         message: error['message'],

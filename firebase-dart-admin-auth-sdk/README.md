@@ -32,7 +32,7 @@ You can manually edit your `pubspec.yaml `file this:
 
 ```yaml
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.1-pre+11
+  firebase_dart_admin_auth_sdk: ^0.0.1-pre+14
 ```
 
 You can run a `flutter pub get` for Flutter respectively to complete installation.
