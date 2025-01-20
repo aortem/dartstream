@@ -1,6 +1,6 @@
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:mockito/mockito.dart';
-import '../../mocks/firebase_auth_mock.dart';
+import '../mocks/firebase_auth_mock.dart';
 
 void main() {
   group('FirebaseAuth Tests', () {
