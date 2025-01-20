@@ -1,6 +1,18 @@
 ## 0.0.1-pre+14
 
 - Update Yaml file for core dependencies
+- add service account impersonation via gap
+- update the api call of the following:
+  - apple sign in auth
+  - send verification code
+  - sign in with redirect
+  - refresh token
+  - check action code
+  - confirm password
+  - create account with email and password
+  - fetch sign in methods
+  - send password reset email
+  - send verification code
 
 ## 0.0.1-pre+13
 
