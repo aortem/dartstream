@@ -1,3 +1,7 @@
+## 0.0.1-pre+14
+
+- Update Yaml file for core dependencies
+
 ## 0.0.1-pre+13
 
 - Update SDK version to 3.6.0

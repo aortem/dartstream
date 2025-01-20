@@ -1,28 +1,49 @@
-BSD 3-Clause License
+## LICENSE
 
-Copyright (c) 2023, Aortem
+### **Firebase Dart Auth Admin SDK Licensing**
 
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
+The **Firebase Dart Auth Admin SDK** is provided under a dual-license approach to balance open-source flexibility with protections against unauthorized cloud-service usage.
 
-1. Redistributions of source code must retain the above copyright notice, this
-   list of conditions and the following disclaimer.
+---
 
-2. Redistributions in binary form must reproduce the above copyright notice,
-   this list of conditions and the following disclaimer in the documentation
-   and/or other materials provided with the distribution.
+### **BSD-3 License**
 
-3. Neither the name of the copyright holder nor the names of its
-   contributors may be used to endorse or promote products derived from
-   this software without specific prior written permission.
+The majority of the SDK is licensed under the **BSD-3 License**, which allows:
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- Redistribution and use in source and binary forms, with or without modification, provided that the following conditions are met:
+  1. Redistributions of source code must retain the above copyright notice, this list of conditions, and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions, and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  3. Neither the name of the project nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+
+For the full text of the BSD-3 License, see:  
+[BSD-3 License Full Text](https://opensource.org/licenses/BSD-3-Clause)
+
+---
+
+### **Enhanced License Version 2 (ELv2)**
+
+In addition to the terms of the BSD-3 License, the **Enhanced License Version 2 (ELv2)** applies **specifically to cloud-service use cases**.
+
+#### **ELv2 Restrictions**
+Under ELv2, you **may not**:
+- Use the SDK or any of its components to offer a **competing cloud service** or **managed service**.
+- Integrate the SDK into any publicly available SaaS platform or cloud infrastructure without prior explicit permission from the copyright holder.
+
+#### **Acceptable Use Cases**
+You **may**:
+- Use the SDK in private or on-premises deployments for your organization.
+- Include the SDK in applications or services that you directly distribute to your customers, provided the SDK is not the core offering of a cloud service.
+- Modify the SDK for use in open-source or commercial products, as long as the resulting product is not marketed as a hosted or managed service.
+
+For the full text of the Enhanced License Version 2 (ELv2), see:  
+[Elastic License 2.0 Full Text](https://www.elastic.co/licensing/elastic-license)
+
+#### **Contact for Cloud Service Usage**
+To inquire about using the SDK in cloud services or managed environments, please contact [your email or contact page].
+
+---
+
+### **Summary**
+
+- **BSD-3 License** applies to general usage, including redistribution and modification.
+- **ELv2** imposes additional restrictions on cloud-service usage to protect the integrity and purpose of the SDK.
