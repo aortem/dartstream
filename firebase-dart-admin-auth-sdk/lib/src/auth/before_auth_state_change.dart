@@ -93,8 +93,9 @@ class FirebaseBeforeAuthStateChangeService {
   /// Throws an exception if the HTTP request fails.
   Future<http.Response> _refreshAuthToken(
       String authToken, String refreshToken) async {
-    final url =
-        'https://identitytoolkit.googleapis.com/v1/token?key=${auth.apiKey}';
+    String url = 'https://identitytoolkit.googleapis.com/v1/token';
+
+    url = '$url?key=${auth.apiKey}';
 
     // Making the HTTP request to Firebase Authentication to refresh the token
     final response = await http.post(
