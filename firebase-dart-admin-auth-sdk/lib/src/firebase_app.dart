@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
+import 'dart:developer';
+import 'dart:io';
 
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/firebase_storage.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
@@ -220,7 +224,159 @@ class FirebaseApp {
     );
   }
 
-  ///Returns a Firebase Auth instance associated with the Project
+
+  static Future<String> impersonateServiceAccount(
+      String serviceAccountEmail) async {
+    log("resposns is 434");
+    // Get the access token for the current authenticated user (ADC).
+    Future<String> _getAuthToken() async {
+      log("resposns is 987");
+      final response = await http.get(
+        Uri.parse(
+            'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token'),
+        headers: {
+          'Metadata-Flavor': 'Google',
+        },
+      );
+      log("resposns is $response");
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['access_token'];
+      } else {
+        throw Exception('Failed to retrieve ADC token: ${response.body}');
+      }
+    }
+
+    // Obtain the current authentication token.
+    final authToken = await _getAuthToken();
+
+    // Make the impersonation request.
+    final response = await http.post(
+      Uri.parse(
+          'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceAccountEmail:generateAccessToken'),
+      headers: {
+        'Authorization': 'Bearer $authToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'scope': ['https://www.googleapis.com/auth/cloud-platform'],
+      }),
+    );
+
+    // Parse the response and return the access token.
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['accessToken'];
+    } else {
+      throw Exception(
+          'Failed to impersonate service account: ${response.body}');
+    }
+  }
+
+
+
+  static Future<String> _getIdToken() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      throw Exception(
+          'Service account impersonation is not supported in mobile environment. Please use a different authentication method.');
+    }
+
+    try {
+      // First try GCP metadata server
+      final response = await http.get(
+        Uri.parse(
+            'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity'),
+        headers: {'Metadata-Flavor': 'Google'},
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      // If metadata server is not accessible, try alternative authentication
+      final credentials = await _getCredentialsFile();
+      if (credentials != null) {
+        // Use credentials to get token
+        return credentials['token'] ?? '';
+      }
+    }
+
+    throw Exception(
+        'Failed to get ID token. Please ensure you are running on GCP or have valid credentials.');
+  }
+
+  static Future<Map<String, dynamic>?> _getCredentialsFile() async {
+    final credentialsPath =
+        Platform.environment['GOOGLE_APPLICATION_CREDENTIALS'];
+    if (credentialsPath != null) {
+      final credentialsFile = File(credentialsPath);
+      if (await credentialsFile.exists()) {
+        return jsonDecode(await credentialsFile.readAsString());
+      }
+    }
+    return null;
+  }
+
+  static Future<String> _impersonateServiceAccount(
+      String idToken, String serviceAccountEmail) async {
+    final response = await http.post(
+      Uri.parse(
+          'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceAccountEmail:generateAccessToken'),
+      headers: {
+        'Authorization': 'Bearer $idToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'scope': [
+          'https://www.googleapis.com/auth/cloud-platform',
+          'https://www.googleapis.com/auth/firebase.database',
+          'https://www.googleapis.com/auth/datastore',
+          // Add other scopes as needed
+        ],
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to impersonate service account: ${response.statusCode} ${response.body}');
+    }
+
+    final data = jsonDecode(response.body);
+    return data['accessToken'];
+  }
+
+  static Future<void> initializeWithServiceAccountImpersonation({
+    required String serviceAccountEmail,
+  }) async {
+    try {
+      if (Platform.isAndroid || Platform.isIOS) {
+        throw Exception(
+            'Service account impersonation is not supported in mobile environment.');
+      }
+
+      String? accessToken;
+
+      try {
+        // Try GCP impersonation flow first
+        final idToken = await _getIdToken();
+        accessToken =
+            await _impersonateServiceAccount(idToken, serviceAccountEmail);
+      } catch (e) {
+        log("GCP impersonation failed: $e");
+        rethrow;
+      }
+
+      if (accessToken != null) {
+        log("Successfully obtained access token");
+        // Use the access token for Firebase operations
+      }
+    } catch (e) {
+      log('Error during Firebase initialization: $e');
+      throw Exception('Failed to initialize Firebase with impersonation: $e');
+    }
+  }
+
+  ///
+  ///
+  //e Auth instance associated with the Project
   ///Throws not initialized if Firebase app is not intialized
   FirebaseAuth getAuth() {
     if (_accessToken == null) assert(_apiKey != null, 'API Key is null');

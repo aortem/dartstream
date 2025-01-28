@@ -1,6 +1,6 @@
 name: firebase_dart_admin_auth_sdk
 description: A Dart SDK for Firebase Admin Authentication, enabling secure server-side authentication and user management for Dart-based backend applications.
-version: 0.0.1-pre+14
+version: 0.0.1-pre+15
 repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
@@ -14,7 +14,7 @@ dependencies:
 
   ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
   jwt_generator: ^0.0.3 # Internal JWT Generator Package
-
+  googleapis_auth: ^1.6.0
 #------------------ TESTING FEATURES---------------------------------
 
 dev_dependencies:
