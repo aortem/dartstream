@@ -1,0 +1,14 @@
+{
+  "name": "@firebase/firestore-lite",
+  "description": "A lite version of the Firestore SDK",
+  "main": "../dist/lite/index.node.cjs.js",
+  "main-esm": "../dist/lite/index.node.mjs",
+  "module": "../dist/lite/index.browser.esm2017.js",
+  "browser": "../dist/lite/index.browser.esm2017.js",
+  "react-native": "../dist/lite/index.rn.esm2017.js",
+  "typings": "../dist/lite/index.d.ts",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
