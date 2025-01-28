@@ -43,7 +43,7 @@ android {
 
     defaultConfig {
         applicationId = "com.aortem.firebase.dart.admin.auth.sample.app"
-        minSdk = minSdkVersion
+        minSdk = 21
         targetSdk = targetSdkVersion
         versionCode = flutterVersionCode
         versionName = flutterVersionName

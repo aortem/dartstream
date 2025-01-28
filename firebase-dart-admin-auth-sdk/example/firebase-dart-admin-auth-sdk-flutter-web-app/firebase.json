@@ -1,0 +1,17 @@
+{
+  "hosting": {
+    "target": "firebase-admin-auth-sdk-flutter_web_app-usman",
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
