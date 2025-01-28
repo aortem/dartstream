@@ -14,7 +14,7 @@ dependencies:
 
   ds_standard_features: ^0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
   jwt_generator: ^0.0.3 # Internal JWT Generator Package
-
+  googleapis_auth: ^1.6.0
 #------------------ TESTING FEATURES---------------------------------
 
 dev_dependencies:
