@@ -1,6 +1,8 @@
 # Ignore all IDE settings
 .idea/
 
+node_modules/
+
 # Ignore Flutter plugin files in example project
 /firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins
 /firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins-dependencies

@@ -52,8 +52,9 @@ validate_commit_messages:
         COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
       else
         echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
         REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
-        COMBINED_REGEX="$REGEX"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
       fi
 
       # Validate the last commit message
