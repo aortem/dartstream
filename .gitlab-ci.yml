@@ -17,13 +17,17 @@ debug_merge_request:
     - echo "Determining branch name..."
     - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
     - echo "Branch name determined $BRANCH_NAME"
-  when: always  
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_PIPELINE_SOURCE == "push"'
+      when: always  
 
 # Validate Conditional Triggers
 validation_trigger:
   stage: validation
   trigger:
     include: tools/pipelines/backend/child-ci-setup-validation.yml
+  needs:
+    - job: debug_merge_request
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
