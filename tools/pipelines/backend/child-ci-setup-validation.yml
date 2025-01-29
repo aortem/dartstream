@@ -15,7 +15,7 @@ debug_merge_request:
     - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
     - echo "Branch name determined $BRANCH_NAME"
   rules:
-    - if: 'true'  # Forces execution in ALL scenarios
+    - if: '$CI_PIPELINE_SOURCE'  # Forces execution in ALL scenarios
       when: always
 
 validate_branch_name:
