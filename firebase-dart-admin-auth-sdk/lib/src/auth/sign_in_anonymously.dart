@@ -35,7 +35,8 @@ class FirebaseSignInAnonymously {
       // Send the request to Firebase Authentication to sign up the user anonymously
       final response = await auth.performRequest('signUp', {
         // 'idToken': idToken,  // No idToken required for anonymous sign-in
-        'returnSecureToken': true,  // Request to return a secure token for the anonymous user
+        'returnSecureToken':
+            true, // Request to return a secure token for the anonymous user
       });
 
       // Check if the sign-in request was successful (status code 200)
@@ -47,7 +48,6 @@ class FirebaseSignInAnonymously {
         auth.updateCurrentUser(userCredential.user);
 
         // Log the user's ID token for debugging purposes
-        log("Current user data: ${userCredential.user.idToken}");
 
         // Set the user as the current user in the FirebaseApp instance
         FirebaseApp.instance.setCurrentUser(userCredential.user);
@@ -57,6 +57,7 @@ class FirebaseSignInAnonymously {
       } else {
         // Log an error if the sign-in request failed
         log('Error signing in: ${response.body}');
+        print('Error signing in: ${response.body}');
         return null;
       }
     } catch (e) {
