@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' show Platform;
-
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
@@ -160,92 +160,222 @@ class FirebaseApp {
     _tokenGen = generateCustomToken;
   }
 
+  ///Used to initialize the project with service account impersonation
+  ///[serviceAccountContent] is the encoded string of the service account
+  ///[impersonatedEmail] is the email of the impersonated account
+  static Future<FirebaseApp> initializeAppWithServiceAccountImpersonation({
+    required String serviceAccountContent,
+    required String impersonatedEmail,
+  }) async {
+    final tokenGen = _tokenGen ??= GenerateCustomTokenImplementation();
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGeneratedTokenImplementation();
+    // Parse the JSON content
+    final Map<String, dynamic> serviceAccount =
+        json.decode(serviceAccountContent);
+
+    final ServiceAccount serviceAccountModel =
+        ServiceAccount.fromJson(serviceAccount);
+
+    final jwt = await tokenGen.generateServiceAccountJwt(
+      serviceAccountModel,
+      impersonatedEmail: impersonatedEmail,
+    );
+
+    final accessToken =
+        await accesTokenGen.getAccessTokenWithGeneratedToken(jwt);
+
+    return _instance ??= FirebaseApp._(
+      'your_api_key',
+      'your_project_id',
+      'your_auth_domain',
+      'your_messaging_sender_id',
+      'your_bucket_name',
+      'your_app_id',
+      serviceAccountModel,
+      accessToken,
+    );
+  }
+
+  ///Used to initialize the project with service account impersonation in a GCP enviroment
+  ///[gcpAccessToken] is the encoded string of the service account
+  ///[impersonatedEmail] is the email of the impersonated account
+  static Future<FirebaseApp> initializeAppWithServiceAccountImpersonationGCP({
+    required String gcpAccessToken,
+    required String impersonatedEmail,
+  }) async {
+    final accesTokenGen =
+        _accesstokenGen ??= GetAccessTokenWithGcpTokenImplementation();
+
+    final accessToken = await accesTokenGen.getAccessTokenWithGeneratedToken(
+      gcpAccessToken,
+      targetServiceAccountEmail: impersonatedEmail,
+    );
+
+    return _instance ??= FirebaseApp._(
+      'your_api_key',
+      'your_project_id',
+      'your_auth_domain',
+      'your_messaging_sender_id',
+      'your_bucket_name',
+      'your_app_id',
+      null,
+      accessToken,
+    );
+  }
 
 
- 
- /// Generates an access token by impersonating a service account.
-  ///
-  /// This function:
-  /// 1. Tries the GCP metadata server (if running on GCP).
-  /// 2. Falls back to `gcloud` CLI if the GCP metadata server is unavailable.
-  ///
-  /// Returns:
-  /// - `String` access token.
-  /// Throws:
-  /// - `Exception` if token generation fails.
-  static Future<String> generateAccessToken(String serviceAccountEmail) async {
-    try {
-      // Step 1: Try GCP metadata server (if running on GCP)
-      if (_isGcpEnvironment()) {
-        print('🔹 Attempting to fetch token from GCP metadata server...');
-        final response = await http.get(
-          Uri.parse(
-              'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token'),
-          headers: {'Metadata-Flavor': 'Google'},
-        );
-
-        if (response.statusCode == 200) {
-          final jsonResponse = jsonDecode(response.body);
-          return jsonResponse['access_token'];
-        }
-      }
-
-      // Step 2: Fallback to `gcloud` CLI
-      print('🔹 Falling back to `gcloud` CLI for token generation...');
-      final process = await Process.run(
-        'gcloud',
-        [
-          'auth',
-          'print-access-token',
-          '--impersonate-service-account=$serviceAccountEmail',
-        ],
-        runInShell: true, // Required for Windows
+  static Future<String> impersonateServiceAccount(
+      String serviceAccountEmail) async {
+    log("resposns is 434");
+    // Get the access token for the current authenticated user (ADC).
+    Future<String> _getAuthToken() async {
+      log("resposns is 987");
+      final response = await http.get(
+        Uri.parse(
+            'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/token'),
+        headers: {
+          'Metadata-Flavor': 'Google',
+        },
       );
-
-      if (process.exitCode == 0) {
-        return process.stdout.toString().trim();
+      log("resposns is $response");
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['access_token'];
       } else {
-        throw Exception(
-            '❌ `gcloud` CLI failed: ${process.stderr}\nMake sure `gcloud` is installed and configured.');
+        throw Exception('Failed to retrieve ADC token: ${response.body}');
+      }
+    }
+
+    // Obtain the current authentication token.
+    final authToken = await _getAuthToken();
+
+    // Make the impersonation request.
+    final response = await http.post(
+      Uri.parse(
+          'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceAccountEmail:generateAccessToken'),
+      headers: {
+        'Authorization': 'Bearer $authToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'scope': ['https://www.googleapis.com/auth/cloud-platform'],
+      }),
+    );
+
+    // Parse the response and return the access token.
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body)['accessToken'];
+    } else {
+      throw Exception(
+          'Failed to impersonate service account: ${response.body}');
+    }
+  }
+
+
+
+  static Future<String> _getIdToken() async {
+    if (Platform.isAndroid || Platform.isIOS) {
+      throw Exception(
+          'Service account impersonation is not supported in mobile environment. Please use a different authentication method.');
+    }
+
+    try {
+      // First try GCP metadata server
+      final response = await http.get(
+        Uri.parse(
+            'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/identity'),
+        headers: {'Metadata-Flavor': 'Google'},
+      );
+
+      if (response.statusCode == 200) {
+        return response.body;
       }
     } catch (e) {
-      print('❌ Error generating access token: $e');
-      throw Exception('Failed to generate access token: $e');
+      // If metadata server is not accessible, try alternative authentication
+      final credentials = await _getCredentialsFile();
+      if (credentials != null) {
+        // Use credentials to get token
+        return credentials['token'] ?? '';
+      }
     }
+
+    throw Exception(
+        'Failed to get ID token. Please ensure you are running on GCP or have valid credentials.');
   }
 
-  /// Checks if running in a GCP environment.
-  static bool _isGcpEnvironment() {
-    return Platform.environment.containsKey('GOOGLE_CLOUD_PROJECT');
+  static Future<Map<String, dynamic>?> _getCredentialsFile() async {
+    final credentialsPath =
+        Platform.environment['GOOGLE_APPLICATION_CREDENTIALS'];
+    if (credentialsPath != null) {
+      final credentialsFile = File(credentialsPath);
+      if (await credentialsFile.exists()) {
+        return jsonDecode(await credentialsFile.readAsString());
+      }
+    }
+    return null;
   }
 
-  /// Firebase Initialization using service account
-  static Future<FirebaseApp> initializeAppWithServiceAccountWithOutImpersenation(
-      String projectId, String serviceAccountEmail) async {
+  static Future<String> _impersonateServiceAccount(
+      String idToken, String serviceAccountEmail) async {
+    final response = await http.post(
+      Uri.parse(
+          'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$serviceAccountEmail:generateAccessToken'),
+      headers: {
+        'Authorization': 'Bearer $idToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'scope': [
+          'https://www.googleapis.com/auth/cloud-platform',
+          'https://www.googleapis.com/auth/firebase.database',
+          'https://www.googleapis.com/auth/datastore',
+          // Add other scopes as needed
+        ],
+      }),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception(
+          'Failed to impersonate service account: ${response.statusCode} ${response.body}');
+    }
+
+    final data = jsonDecode(response.body);
+    return data['accessToken'];
+  }
+
+  static Future<void> initializeWithServiceAccountImpersonation({
+    required String serviceAccountEmail,
+  }) async {
     try {
-      // Step 1: Generate access token using service account
-      String accessToken = await generateAccessToken(serviceAccountEmail);
-      print('✅ Access token generated successfully.');
+      if (Platform.isAndroid || Platform.isIOS) {
+        throw Exception(
+            'Service account impersonation is not supported in mobile environment.');
+      }
 
-      return _instance ??= FirebaseApp._(
-        'your_api_key',
-        'your_project_id',
-        'your_auth_domain',
-        'your_messaging_sender_id',
-        'your_bucket_name',
-        'your_app_id',
-        null,
-        accessToken,
-      );
-      // Step 2: Initialize Firebase Admin SDK and get project information
+      String? accessToken;
+
+      try {
+        // Try GCP impersonation flow first
+        final idToken = await _getIdToken();
+        accessToken =
+            await _impersonateServiceAccount(idToken, serviceAccountEmail);
+      } catch (e) {
+        log("GCP impersonation failed: $e");
+        rethrow;
+      }
+
+      if (accessToken != null) {
+        log("Successfully obtained access token");
+        // Use the access token for Firebase operations
+      }
     } catch (e) {
-      print('🚨 Error initializing Firebase: $e');
-      throw Exception('Firebase initialization failed: $e');
+      log('Error during Firebase initialization: $e');
+      throw Exception('Failed to initialize Firebase with impersonation: $e');
     }
   }
 
- 
-
+  ///
+  ///
   //e Auth instance associated with the Project
   ///Throws not initialized if Firebase app is not intialized
   FirebaseAuth getAuth() {
