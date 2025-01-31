@@ -1,3 +1,9 @@
+## 0.0.1-pre+17
+
+HotFix: 
+ - Impersonate Service Account Without keys update.
+ - Reverting to the previous method name FirebaseApp.```initializeAppWithServiceAccountImpersonationGCP```
+
 ## 0.0.1-pre+16
 
 - Create a service account without using the key impersonation method
