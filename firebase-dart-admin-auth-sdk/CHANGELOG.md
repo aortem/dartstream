@@ -1,3 +1,10 @@
+## 0.0.1-pre+16
+
+- Create a service account without using the key impersonation method
+- Authenticate using the service account email and project ID
+- Obtain ADC (Application Default Credentials) from Google Cloud for authentication
+- Remove all incorrect code and previous methods related to this function
+
 ## 0.0.1-pre+15
 
 - support service account without impersonation key
