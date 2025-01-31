@@ -288,49 +288,36 @@ class FirebaseAuth {
   }
 
   /// Base function for http calls
-Future<HttpResponse> performRequest(
-    String endpoint, Map<String, dynamic> body) async {
-  final useApiKey = apiKey != null && apiKey != 'your_api_key';
-  final useAccessToken = accessToken != null;
+  Future<HttpResponse> performRequest(
+      String endpoint, Map<String, dynamic> body) async {
+    //log(apiKey.toString());
+    final url = Uri.https(
+      'identitytoolkit.googleapis.com',
+      '/v1/accounts:$endpoint',
+      {
+        if (apiKey != 'your_api_key') 'key': apiKey,
+      },
+    );
 
-  if (!useApiKey && !useAccessToken) {
-    throw FirebaseAuthException(
-      code: 'missing_credentials',
-      message: 'Either API key or Access Token must be provided.',
+    final response =
+        await httpClient.post(url, body: json.encode(body), headers: {
+      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+      'Content-Type': 'application/json',
+    });
+
+    if (response.statusCode != 200) {
+      final error = json.decode(response.body)['error'];
+      throw FirebaseAuthException(
+        code: error['message'],
+        message: error['message'],
+      );
+    }
+    return HttpResponse(
+      statusCode: response.statusCode,
+      body: json.decode(response.body),
+      headers: response.headers,
     );
   }
-
-  final url = Uri.https(
-    'identitytoolkit.googleapis.com',
-    '/v1/accounts:$endpoint',
-    useApiKey ? {'key': apiKey} : {},
-  );
-
-  final headers = {
-    'Content-Type': 'application/json',
-    if (useAccessToken) 'Authorization': 'Bearer $accessToken',
-  };
-
-  final response = await httpClient.post(
-    url,
-    body: json.encode(body),
-    headers: headers,
-  );
-
-  if (response.statusCode != 200) {
-    final error = json.decode(response.body)['error'];
-    throw FirebaseAuthException(
-      code: error['message'],
-      message: error['message'],
-    );
-  }
-
-  return HttpResponse(
-    statusCode: response.statusCode,
-    body: json.decode(response.body),
-    headers: response.headers,
-  );
-}
 
   /// updateCurrentUser method to automatically trigger the streams
   void updateCurrentUser(User user) {
