@@ -1,12 +1,15 @@
 import 'dart:convert';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
 
+/// VerifyIdTokenService
 class VerifyIdTokenService {
+  /// VerifyIdTokenService
   final FirebaseAuth auth;
 
+  /// VerifyIdTokenService
   VerifyIdTokenService({required this.auth});
 
+  /// Verify ID token
   Future<Map<String, dynamic>> verifyIdToken(String idToken) async {
     try {
       // Basic validation
