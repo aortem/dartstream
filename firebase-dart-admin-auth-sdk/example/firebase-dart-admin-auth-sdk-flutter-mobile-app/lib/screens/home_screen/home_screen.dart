@@ -3,6 +3,7 @@ import 'dart:async';
 import 'dart:developer';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:firebase/screens/link_with_credientials/link_with_credientials.dart';
+import 'package:firebase/screens/verify_id_token_screen/verify_id_token_screen.dart';
 import 'package:firebase/screens/verify_password_reset_code_screen/verify_password_reset_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:firebase/screens/apply_action_code_screen/apply_action_code_screen.dart';
@@ -300,6 +301,15 @@ class _HomeScreenState extends State<HomeScreen> {
                     }
                   },
                   title: "Delete User",
+                ),
+                10.vSpace,
+                ActionTile(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const VerifyIdTokenScreen(),
+                    ));
+                  },
+                  title: "Verify ID Token",
                 ),
                 10.vSpace,
                 ActionTile(
