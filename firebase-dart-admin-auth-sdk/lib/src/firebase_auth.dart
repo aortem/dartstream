@@ -61,6 +61,7 @@ import 'auth/parse_action_code_url.dart';
 
 import 'firebase_user/set_language_code.dart';
 import 'id_token_result_model.dart';
+import 'auth/verify_id_token.dart';
 
 ///Base Firebase auth class that contains all the methods provided by the sdk
 class FirebaseAuth {
@@ -215,6 +216,9 @@ class FirebaseAuth {
   final StreamController<User?> idTokenChangedController =
       StreamController<User?>.broadcast();
 
+  /// Service for verifying ID tokens
+  late VerifyIdTokenService verifyTokenService;
+
   /// Firebae Auth constructor class
   FirebaseAuth({
     this.apiKey,
@@ -285,6 +289,7 @@ class FirebaseAuth {
     getLanguageService = LanguageGetService(auth: this);
     firebaseBeforeAuthStateChangeService =
         FirebaseBeforeAuthStateChangeService(this);
+    verifyTokenService = VerifyIdTokenService(auth: this);
   }
 
   /// Base function for http calls
@@ -312,10 +317,20 @@ class FirebaseAuth {
         message: error['message'],
       );
     }
+
+    // Add CORS headers to the response
+    // final modifiedHeaders = Map<String, String>.from(response.headers)
+    //   ..addAll({
+    //     'Access-Control-Allow-Origin': '*',
+    //     'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    //     'Access-Control-Allow-Headers': 'Authorization, Content-Type',
+    //   });
+
     return HttpResponse(
       statusCode: response.statusCode,
       body: json.decode(response.body),
       headers: response.headers,
+      //headers: modifiedHeaders,
     );
   }
 
@@ -937,5 +952,10 @@ class FirebaseAuth {
       clientId: clientId,
       clientSecret: clientSecret,
     );
+  }
+
+  /// Verifies a Firebase ID token and returns the decoded token information
+  Future<Map<String, dynamic>> verifyIdToken(String idToken) {
+    return verifyTokenService.verifyIdToken(idToken);
   }
 }
