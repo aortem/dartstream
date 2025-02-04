@@ -1,3 +1,7 @@
+## 0.0.1-pre+18
+
+- add firebase.verifyidtoken method
+
 ## 0.0.1-pre+17
 
 HotFix: 
