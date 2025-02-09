@@ -955,7 +955,21 @@ class FirebaseAuth {
   }
 
   /// Verifies a Firebase ID token and returns the decoded token information
-  Future<Map<String, dynamic>> verifyIdToken(String idToken) {
-    return verifyTokenService.verifyIdToken(idToken);
+  ///
+  /// Takes a [idToken] string and returns a map containing the verified user data
+  /// Throws [FirebaseAuthException] if verification fails
+  Future<Map<String, dynamic>> verifyIdToken(String idToken) async {
+    try {
+      // Initialize verification service if not already created
+      verifyTokenService = VerifyIdTokenService(auth: this);
+
+      // Use direct token verification without additional parameters
+      // since service account context is handled in VerifyIdTokenService
+      return await verifyTokenService.verifyIdToken(idToken);
+    } catch (e) {
+      throw FirebaseAuthException(
+          code: 'token-verification-failed',
+          message: 'Failed to verify ID token: ${e.toString()}');
+    }
   }
 }
