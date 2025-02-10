@@ -1,3 +1,7 @@
+## 0.0.1-pre+19
+
+- additional update to firebase.verifyidtoken method
+
 ## 0.0.1-pre+18
 
 - add firebase.verifyidtoken method
