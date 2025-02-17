@@ -4,6 +4,7 @@ name: ds_dartweb_framework_base
 description: Packages for our flutter_web framework - maintained by the Aortem and Dart team.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
+publish_to: none
 
 environment:
  sdk: ^3.6.0
@@ -13,3 +14,9 @@ dependencies:
 
 # STANDARD PACKAGES - Built By The Dart Team
   ds_standard_features: ^0.0.1-pre+11
+  flutter:
+    sdk: flutter 
+  ds_auth_base:
+    path: ../../standard/extensions/auth/base
+  google_auth_provider:
+    path: ../../standard/extensions/auth/providers/google

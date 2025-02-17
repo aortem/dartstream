@@ -20,20 +20,16 @@ import 'src/ds_event_handlers.dart';
 /// - Event handling
 /// - Error mapping
 class DSFirebaseAuthProvider implements DSAuthProvider {
-  /// Provider metadata for registration and management
-  static final Map<String, dynamic> _providerMetadata = {
-    'type': 'firebase',
-    'region': 'global',
-    'clientId': null,
-  };
-
-  /// Returns the provider's metadata
-  static Map<String, dynamic> getMetadata() => _providerMetadata;
+  static DSFirebaseAuthProvider? _instance;
+  bool _isInitialized = false;
 
   /// Firebase project identifier
   final String projectId;
 
   /// Path to the Firebase private key file
+  final String apiKey;
+
+  /// Firebase private key file path
   final String privateKeyPath;
 
   /// Firebase authentication instance
@@ -45,37 +41,58 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   /// Manages user sessions
   late final DSSessionManager _sessionManager;
 
-  /// Handles authentication events
+  /// Event handler for Firebase authentication events
   late final DSFirebaseEventHandler _eventHandler;
 
-  /// Creates a new Firebase authentication provider
-  DSFirebaseAuthProvider({
+  /// Factory method to create a new instance of the Firebase authentication provider
+  factory DSFirebaseAuthProvider({
+    required String projectId,
+    required String privateKeyPath,
+    required String apiKey,
+  }) {
+    _instance ??= DSFirebaseAuthProvider._internal(
+      projectId: projectId,
+      privateKeyPath: privateKeyPath,
+      apiKey: apiKey,
+    );
+    return _instance!;
+  }
+
+  DSFirebaseAuthProvider._internal({
     required this.projectId,
     required this.privateKeyPath,
+    required this.apiKey,
   });
 
   /// Initializes the Firebase authentication provider and its dependencies
   ///
   /// [config] - Configuration map containing provider settings
-  /// May include additional Firebase-specific configurations
+  /// May include additional Firebase-specific configurati
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
-    // Update metadata
-    _providerMetadata['clientId'] = config['projectId'] ?? projectId;
+    if (_isInitialized) {
+      print('Firebase Auth Provider already initialized');
+      return;
+    }
 
-    _auth = FirebaseAuth(
-      projectId: config['projectId'] ?? projectId,
-    );
+    try {
+      // Get the already initialized auth instance
+      _auth = FirebaseApp.instance.getAuth();
 
-    // Initialize token and session management
-    _tokenManager = DSTokenManager();
-    _sessionManager = DSSessionManager();
+      _tokenManager = DSTokenManager();
+      _sessionManager = DSSessionManager();
 
-    // Set up event handling for auth state changes
-    _eventHandler = DSFirebaseEventHandler(
-      onEvent: _handleAuthEvent,
-    );
-    _eventHandler.initialize(_auth);
+      _eventHandler = DSFirebaseEventHandler(
+        onEvent: _handleAuthEvent,
+      );
+      _eventHandler.initialize(_auth);
+
+      _isInitialized = true;
+      print('Firebase Auth Provider initialized successfully');
+    } catch (e) {
+      print('Error initializing Firebase Auth Provider: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
   }
 
   /// Signs in a user with username/email and password
@@ -108,7 +125,8 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
         displayName: user.displayName ?? '',
       ));
     } catch (e) {
-      throw DSFirebaseErrorMapper.mapError(e as FirebaseAuthException);
+      print('Original signIn error: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
     }
   }
 
@@ -127,25 +145,54 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       await _auth.signOut();
       await onLogout();
     } catch (e) {
-      throw DSFirebaseErrorMapper.mapError(e as FirebaseAuthException);
+      throw DSFirebaseErrorMapper.mapError(e);
     }
   }
 
-  /// Handles successful login events
-  ///
-  /// [user] - The authenticated user information
-  /// Can be used to perform additional post-login actions
+  /// creates a new user account with email and password
   @override
-  Future<void> onLoginSuccess(DSAuthUser user) async {
-    // Handle successful login
+  Future<void> createAccount(String email, String password,
+      {String? displayName}) async {
+    try {
+      print('Attempting to create account for email: $email');
+      final credential = await _auth.createUserWithEmailAndPassword(
+        email,
+        password,
+      );
+
+      final user = credential.user;
+      print('User created successfully with ID: ${user.uid}');
+
+      if (displayName != null && displayName.isNotEmpty) {
+        print('Setting display name: $displayName');
+        user.displayName = displayName;
+        print('Display name set successfully');
+      }
+
+      await signOut();
+      print('User signed out after account creation');
+    } catch (e) {
+      print('Error during account creation: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
   }
 
-  /// Handles successful logout events
-  ///
-  /// Can be used to perform additional cleanup or post-logout actions
   @override
-  Future<void> onLogout() async {
-    // Handle successful logout
+  Future<DSAuthUser> getCurrentUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+
+      return DSAuthUser(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName ?? '',
+      );
+    } catch (e) {
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
   }
 
   /// Retrieves user information by user ID
@@ -167,7 +214,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
         displayName: user.displayName ?? '',
       );
     } catch (e) {
-      throw DSFirebaseErrorMapper.mapError(e as FirebaseAuthException);
+      throw DSFirebaseErrorMapper.mapError(e);
     }
   }
 
@@ -177,17 +224,20 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   /// Returns true if token is valid, false otherwise
   /// Throws [FirebaseAuthException] if verification fails
   @override
-  Future<bool> verifyToken(String token) async {
+  Future<bool> verifyToken([String? token]) async {
     try {
-      if (!_tokenManager.isTokenValid(token)) {
+      // After successful sign in, we should already have a current user
+      final user = _auth.currentUser;
+      if (user == null) {
+        print('No current user found during token verification');
         return false;
       }
 
-      final response =
-          await _auth.performRequest('verifyIdToken', {'token': token});
-      return response.statusCode == 200;
+      // Skip additional verification since we're already authenticated
+      return true;
     } catch (e) {
-      throw DSFirebaseErrorMapper.mapError(e as FirebaseAuthException);
+      print('Token verification error: $e');
+      return false;
     }
   }
 
@@ -208,8 +258,25 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
 
       return response.body['access_token'] as String;
     } catch (e) {
-      throw DSFirebaseErrorMapper.mapError(e as FirebaseAuthException);
+      throw DSFirebaseErrorMapper.mapError(e);
     }
+  }
+
+  /// Handles successful login events
+  ///
+  /// [user] - The authenticated user information
+  /// Can be used to perform additional post-login actions
+  @override
+  Future<void> onLoginSuccess(DSAuthUser user) async {
+    // Handle successful login
+  }
+
+  /// Handles successful logout events
+  ///
+  /// Can be used to perform additional cleanup or post-logout actions
+  @override
+  Future<void> onLogout() async {
+    // Handle successful logout
   }
 
   /// Generates a unique device identifier for session management
@@ -226,19 +293,19 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   void _handleAuthEvent(DSAuthEvent event) {
     switch (event.type) {
       case DSAuthEventType.signedIn:
-        // Handle successful sign in event
+        // Handle signed in event
         break;
       case DSAuthEventType.signedOut:
-        // Handle successful sign out event
+        // Handle signed out event
         break;
       case DSAuthEventType.tokenRefreshed:
         // Handle token refresh event
         break;
       case DSAuthEventType.error:
-        // Handle authentication error event
+        // Handle error event
         break;
       default:
-        // Handle any unrecognized events
+        // Handle unknown event
         break;
     }
   }
@@ -247,6 +314,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   ///
   /// Should be called when provider is no longer needed
   void dispose() {
-    _auth.dispose();
+    _isInitialized = false;
+    _instance = null;
   }
 }

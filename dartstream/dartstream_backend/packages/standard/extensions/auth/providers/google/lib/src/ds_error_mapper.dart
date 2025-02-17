@@ -1,31 +1,49 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
-/// Maps Firebase Auth errors to DartStream errors
+/// Maps Firebase Admin Auth errors to DartStream errors
 class DSFirebaseErrorMapper {
-  static DSAuthError mapError(FirebaseAuthException error) {
-    final errorCode = _mapErrorCode(error.code);
-    final errorMessage = _getErrorMessage(error.code);
+  static DSAuthError mapError(dynamic error) {
+    print('Mapping error: $error');
 
+    // Handle string errors (like initialization errors)
+    if (error is String) {
+      if (error.contains('not initialized')) {
+        return DSAuthError(
+          'Authentication service is not properly initialized. Please try again.',
+          code: 500,
+        );
+      }
+      return DSAuthError(error);
+    }
+
+    // Handle Firebase Auth exceptions
+    if (error is FirebaseAuthException) {
+      final errorCode = _mapErrorCode(error.code);
+      final errorMessage = _getErrorMessage(error.code);
+
+      return DSAuthError(
+        errorMessage,
+        code: int.tryParse(errorCode) ?? 0,
+      );
+    }
+
+    // Handle unknown errors
     return DSAuthError(
-      code: errorCode,
-      message: errorMessage,
-      originalError: error,
+      'An unexpected error occurred: ${error.toString()}',
+      code: 500,
     );
   }
 
   static String _mapErrorCode(String firebaseCode) {
     final Map<String, String> errorCodeMap = {
       'user-not-found': 'auth/user-not-found',
-      'wrong-password': 'auth/invalid-credentials',
-      'email-already-in-use': 'auth/email-taken',
-      'weak-password': 'auth/weak-password',
+      'invalid-credential': 'auth/invalid-credentials',
+      'email-already-exists': 'auth/email-taken',
+      'invalid-password': 'auth/weak-password',
       'invalid-email': 'auth/invalid-email',
       'operation-not-allowed': 'auth/operation-not-allowed',
       'user-disabled': 'auth/user-disabled',
-      'invalid-verification-code': 'auth/invalid-code',
-      'invalid-verification-id': 'auth/invalid-verification-id',
-      'quota-exceeded': 'auth/quota-exceeded',
-      'network-request-failed': 'auth/network-error',
     };
 
     return errorCodeMap[firebaseCode] ?? 'auth/unknown-error';
@@ -34,33 +52,14 @@ class DSFirebaseErrorMapper {
   static String _getErrorMessage(String firebaseCode) {
     final Map<String, String> errorMessages = {
       'user-not-found': 'No user found with these credentials',
-      'wrong-password': 'Invalid password provided',
-      'email-already-in-use': 'Email address is already in use',
-      'weak-password': 'Password is too weak',
+      'invalid-credential': 'Invalid credentials provided',
+      'email-already-exists': 'Email address is already in use',
+      'invalid-password': 'Password is invalid or too weak',
       'invalid-email': 'Invalid email address format',
       'operation-not-allowed': 'Operation is not allowed',
       'user-disabled': 'User account has been disabled',
-      'invalid-verification-code': 'Invalid verification code',
-      'invalid-verification-id': 'Invalid verification ID',
-      'quota-exceeded': 'Quota has been exceeded',
-      'network-request-failed': 'Network request failed',
     };
 
-    return errorMessages[firebaseCode] ?? 'An unknown error occurred';
+    return errorMessages[firebaseCode] ?? 'An authentication error occurred';
   }
-}
-
-class DSAuthError implements Exception {
-  final String code;
-  final String message;
-  final dynamic originalError;
-
-  DSAuthError({
-    required this.code,
-    required this.message,
-    this.originalError,
-  });
-
-  @override
-  String toString() => 'DSAuthError: $message (Code: $code)';
 }

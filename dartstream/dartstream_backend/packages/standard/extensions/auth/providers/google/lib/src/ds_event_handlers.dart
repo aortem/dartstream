@@ -16,13 +16,16 @@ class DSFirebaseEventHandler {
 
   void _handleAuthStateChange(User? user) {
     if (user != null) {
+      final isNewUser = user.metadata?.creationTime != null &&
+          user.metadata.creationTime == user.metadata.lastSignInTime;
+
       onEvent(DSAuthEvent(
         type: DSAuthEventType.signedIn,
         data: {
           'userId': user.uid,
           'email': user.email,
           'isNewUser':
-              user.metadata.creationTime == user.metadata.lastSignInTime,
+              isNewUser, // Set to false or use logic based on availability
         },
       ));
     } else {
