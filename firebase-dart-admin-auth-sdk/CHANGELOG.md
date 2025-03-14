@@ -1,3 +1,7 @@
+## 0.0.1-pre+21
+
+- update SDK to 3.7.2
+
 ## 0.0.1-pre+20
 
 - update SDK to 3.7.0

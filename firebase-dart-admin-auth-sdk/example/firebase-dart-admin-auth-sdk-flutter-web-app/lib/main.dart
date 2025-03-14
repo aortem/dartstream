@@ -5,7 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+//import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:provider/provider.dart';
 
@@ -48,13 +48,13 @@ void main() async {
     );
     //
 
-    // initialize the facebook javascript SDK
+/*    // initialize the facebook javascript SDK
     await FacebookAuth.i.webAndDesktopInitialize(
       appId: "893849532657430",
       cookie: true,
       xfbml: true,
       version: "v15.0",
-    );
+    ); */
 
     //   // Initialize for web
     //   debugPrint('Initializing Firebase for Web...');
@@ -73,9 +73,9 @@ void main() async {
     //     debugPrint('Initializing Firebase for Mobile...');
 
     //     // Load the service account JSON
-    //     // String serviceAccountContent = await rootBundle.loadString(
-    //     //   'assets/service_account.json',
-    //     // );
+    String serviceAccountContent = await rootBundle.loadString(
+      'assets/service_account.json',
+    );
 
     //     debugPrint('Service account loaded.');
 

@@ -1,0 +1,18 @@
+stages:
+  - publish_package
+
+# Publish Package
+publish_package:
+  image: google/cloud-sdk:alpine
+  stage: publish package
+  environment:
+    name: production
+  before_script:
+    - bash tools/scripts/gcloud_prod_acc_cloudbuild.sh
+  script:
+    - gcloud auth print-identity-token --audiences=https://pub.dev | dart pub token add https://pub.dev
+    - dart pub publish --force
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+    - if: $CI_COMMIT_REF_NAME == "development"
+      when: always
