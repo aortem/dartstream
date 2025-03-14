@@ -4,7 +4,7 @@ stages:
 # Publish Package
 publish_package:
   image: google/cloud-sdk:alpine
-  stage: publish package
+  stage: publish_package
   environment:
     name: production
   before_script:
