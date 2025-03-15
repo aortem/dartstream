@@ -9,12 +9,15 @@ publish_package:
     name: production
   before_script:
     - bash tools/scripts/gcloud_prod_acc_cloudbuild.sh
-     # Install dependencies for Dart on Alpine
     - apk add --no-cache wget unzip
-    # Download and install Dart SDK (adjust version as needed)
-    - wget -qO- https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dart-sdk-linux-x64-release.zip > dart-sdk.zip
-    - unzip dart-sdk.zip -d /usr/lib
-    - export PATH="/usr/lib/dart-sdk/bin:$PATH"
+  # Download Dart SDK using wget with -O flag
+    - wget -q -O dart-sdk.zip https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dart-sdk-linux-x64-release.zip
+  # Check if the file was downloaded successfully
+    - |
+      if [ ! -f dart-sdk.zip ]; then
+        echo "Dart SDK download failed."
+        exit 1
+      fi
   script:
     - gcloud auth print-identity-token --audiences=https://pub.dev | dart pub token add https://pub.dev
     - dart pub publish --dry-run
