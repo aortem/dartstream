@@ -223,6 +223,7 @@ class FirebaseApp {
     );
   }
 
+  ///Used to initialize the project with service account
   static Future<String> impersonateServiceAccount(
       String serviceAccountEmail) async {
     log("resposns is 434");
@@ -339,6 +340,7 @@ class FirebaseApp {
     return data['accessToken'];
   }
 
+  ///Used to initialize the project with service account
   static Future<void> initializeWithServiceAccountImpersonation({
     required String serviceAccountEmail,
   }) async {
@@ -355,6 +357,7 @@ class FirebaseApp {
         final idToken = await _getIdToken();
         accessToken =
             await _impersonateServiceAccount(idToken, serviceAccountEmail);
+        log("access token is $accessToken");
       } catch (e) {
         log("GCP impersonation failed: $e");
         rethrow;
