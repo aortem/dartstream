@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io' show Platform;
 import 'dart:developer';
 import 'dart:io';
 
@@ -224,12 +223,11 @@ class FirebaseApp {
     );
   }
 
-
   static Future<String> impersonateServiceAccount(
       String serviceAccountEmail) async {
     log("resposns is 434");
     // Get the access token for the current authenticated user (ADC).
-    Future<String> _getAuthToken() async {
+    Future<String> getAuthToken() async {
       log("resposns is 987");
       final response = await http.get(
         Uri.parse(
@@ -247,7 +245,7 @@ class FirebaseApp {
     }
 
     // Obtain the current authentication token.
-    final authToken = await _getAuthToken();
+    final authToken = await getAuthToken();
 
     // Make the impersonation request.
     final response = await http.post(
@@ -270,8 +268,6 @@ class FirebaseApp {
           'Failed to impersonate service account: ${response.body}');
     }
   }
-
-
 
   static Future<String> _getIdToken() async {
     if (Platform.isAndroid || Platform.isIOS) {
@@ -364,10 +360,8 @@ class FirebaseApp {
         rethrow;
       }
 
-      if (accessToken != null) {
-        log("Successfully obtained access token");
-        // Use the access token for Firebase operations
-      }
+      log("Successfully obtained access token");
+      // Use the access token for Firebase operations
     } catch (e) {
       log('Error during Firebase initialization: $e');
       throw Exception('Failed to initialize Firebase with impersonation: $e');

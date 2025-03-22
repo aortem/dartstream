@@ -22,5 +22,9 @@
 /// ```dart
 /// import 'package:your_package_name/mocks/conditional_imports.dart';
 /// ```
-export '../../lib/src/html_import.dart' if (dart.library.html) '../src/stub_html.dart';
-export '../../lib/src/js_import.dart' if (dart.library.js) '../src/stub_js.dart';
+library;
+
+export '../../lib/src/html_import.dart'
+    if (dart.library.html) '../src/stub_html.dart';
+export '../../lib/src/js_import.dart'
+    if (dart.library.js) '../src/stub_js.dart';
