@@ -77,12 +77,3 @@ analyze_flutter_mobile:
   rules:
     # Always runs after unit_test trigger
     - when: always
-
-# Pubdev Package Deployment
-production_package:
-  stage: package_deployment
-  trigger:
-    include: tools/pipelines/pubdev/child-ci-pub-dev.yml
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "development"
-    - if: $CI_COMMIT_BRANCH == "development"
