@@ -13,7 +13,6 @@
   <a href="https://github.com/aortem/firebase-dart-admin-auth-sdk/tags">
     <img alt="GitHub Tag" src="https://img.shields.io/github/v/tag/aortem/firebase-dart-admin-auth-sdk?style=for-the-badge" />
   </a>
-  <br/>
   <!-- Dart-Specific Badges -->
   <a href="https://pub.dev/packages/firebase_dart_admin_auth_sdk">
     <img alt="Pub Version" src="https://img.shields.io/pub/v/firebase_dart_admin_auth_sdk.svg?style=for-the-badge" />
@@ -21,13 +20,6 @@
   <a href="https://dart.dev/">
     <img alt="Built with Dart" src="https://img.shields.io/badge/Built%20with-Dart-blue.svg?style=for-the-badge" />
   </a>
-  <br/>
-<!-- Open Source Badge -->
-  </a>
-  <a href="https://bestpractices.coreinfrastructure.org/projects/6601">
-    <img alt="CII Best Practices" src="https://bestpractices.coreinfrastructure.org/projects/6601/badge?style=for-the-badge" />
-  </a>
-</p>
 <!-- x-hide-in-docs-start -->
 
 # Firebase Dart Admin Auth SDK
