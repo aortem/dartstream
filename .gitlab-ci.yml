@@ -2,7 +2,6 @@ stages:
   - setup
   - validation
   - analyze_sample_apps
-  - package_deployment
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
@@ -58,7 +57,7 @@ validation_trigger:
 
 # Unit Test Conditional Triggers
 unit_test_trigger:
-  stage: validation
+  stage: unit_testing
   trigger:
     include: tools/pipelines/backend/child-ci-unit-tests.yml
   needs:
@@ -67,7 +66,7 @@ unit_test_trigger:
     # Always runs after validation trigger
     - when: always
     
-# Analyze Conditional Triggers
+# Sample App Conditional Triggers
 analyze_flutter_mobile:
   stage: analyze_sample_apps
   trigger:
