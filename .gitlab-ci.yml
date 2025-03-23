@@ -1,6 +1,7 @@
 stages:
   - setup
   - validation
+  - unit_testing
   - analyze_sample_apps
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
