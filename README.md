@@ -5,8 +5,6 @@
   </picture>
 </p>
 
-<h2 align="center">Firebase Dart Admin Auth SDK</h2>
-
 <!-- x-hide-in-docs-end -->
 <p align="center" class="github-badges">
   <!-- Release Badge -->
