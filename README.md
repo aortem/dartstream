@@ -132,4 +132,4 @@ The **EntraID Dart Auth SDK** is licensed under a dual-license approach:
 
 ## Enhance with Firebase Dart Admin Auth SDK
 
-We hope the Firebase Dart Admin Auth SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!  test
+We hope the Firebase Dart Admin Auth SDK helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
