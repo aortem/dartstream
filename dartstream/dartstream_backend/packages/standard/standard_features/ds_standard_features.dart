@@ -2,8 +2,7 @@
 library ds_standard_features;
 
 //------------------ IMPORTS ---------------------------------
-
-import 'package:ds_standard_features/ds_standard_features.dart';
+import 'ds_standard_features.dart';
 
 //Export our Standard Libraries
 export '../core/ds_standard_core_export.dart'; // Exporting your core classes
