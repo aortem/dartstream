@@ -1,38 +1,9 @@
 # Global Repo Rules
 
 # Ignore all IDE settings
-.idea/
-.vscode/
+**/.idea/
+**/.vscode/
 
 # Ignore Dart clocal build tools
-.dart_tool/
+**/.dart_tool/
 **/pubspec.lock
-
-# Ignore all IDE settings
-.idea/
-
-node_modules/
-
-# Ignore Flutter plugin files in example project
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/.flutter-plugins-dependencies
-
-# Ignore macOS generated files in example project
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/macos/Flutter/GeneratedPluginRegistrant.swift
-
-#Ignore Release Key
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/firebase-dart-admin-auth-sdk-release-key.jks
-
-#Ignore Service Account JSON Key
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/assets/service_account.json
-
-#Ignore Gradle Properties
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle.properties
-
-#Ignore Gradle Wrapper Properties
-/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-sample-app/android/gradle/wrapper/gradle-wrapper.properties
-
-
-# Optional: Ignore pubspec.lock in the library root (if this is a library, not an application)
-# Uncomment the line below if firebase-dart-admin-auth-sdk is a package:
-# pubspec.lock
