@@ -1,8 +1,8 @@
 #This pubspec file imports is used for any dependencies for standard Dartstream features.
 #This works for both mobile and web.
-name: _
+name: ds_standard_features_internal
 description: Packages for our standard features - maintained by the Dart team.
-version: 0.0.1-pre+11
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none
 
