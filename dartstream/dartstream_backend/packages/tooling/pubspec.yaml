@@ -1,9 +1,9 @@
 #This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
-name: _
+name: ds_dartstream_tooling
 description: Core Testing Components Within Larger DartStream Ecosystem.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
-publish_to: none
+# publish_to: none
 
 environment:
  sdk: ^3.7.2
