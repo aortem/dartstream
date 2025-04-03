@@ -11,3 +11,4 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
   ds_tools_testing: ^0.0.2
+  ds_tools_general: ^0.0.2
