@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
-import '../../dartstream_backend/packages/standard/extensions/discovery/ds_discovery.dart';
+import '../../dartstream_backend/packages/standard/standard_extensions/platform_services/discovery/ds_discovery.dart';
 
 /// CLI Command for validating extensions.
 class DSValidateCommand extends Command {
@@ -21,13 +21,19 @@ class DSValidateCommand extends Command {
     final args = argResults?.arguments ?? [];
     // Resolve extensions directory relative to this script
     final scriptDir = p.dirname(Platform.script.toFilePath());
-    final extensionsDirectory = args.isNotEmpty
-        ? args[0]
-        : p.normalize(p.join(
-            scriptDir, '../dartstream_backend/packages/standard/extensions'));
-    final registryFile = args.length > 1
-        ? args[1]
-        : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
+    final extensionsDirectory =
+        args.isNotEmpty
+            ? args[0]
+            : p.normalize(
+              p.join(
+                scriptDir,
+                '../dartstream_backend/packages/standard/extensions',
+              ),
+            );
+    final registryFile =
+        args.length > 1
+            ? args[1]
+            : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
 
     print('Validating extensions...');
     print('- Extensions directory: $extensionsDirectory');
@@ -55,7 +61,8 @@ class DSValidateCommand extends Command {
         if (!_validateManifestFields(extension)) {
           allValid = false;
           print(
-              'Error: Missing required fields in the manifest of ${extension.name}.');
+            'Error: Missing required fields in the manifest of ${extension.name}.',
+          );
           continue;
         }
 

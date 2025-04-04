@@ -1,5 +1,5 @@
 import 'package:args/command_runner.dart';
-import '../../dartstream_backend/packages/standard/extensions/discovery/ds_discovery.dart';
+import '../../dartstream_backend/packages/standard/standard_extensions/platform_services/discovery/ds_discovery.dart';
 
 class DSEnableExtensionCommand extends Command {
   @override
