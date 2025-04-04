@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:yaml/yaml.dart';
-import '../lifecycle/base/ds_lifecycle_hooks.dart';
+import '../../reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
 
 /// Represents the structure of an extension manifest.
 /// Includes lifecycle hooks for initialization and disposal.
@@ -12,8 +12,13 @@ class ExtensionManifest implements LifecycleHook {
   final List<String> dependencies;
   final String entryPoint;
 
-  ExtensionManifest(this.name, this.version, this.description,
-      this.dependencies, this.entryPoint);
+  ExtensionManifest(
+    this.name,
+    this.version,
+    this.description,
+    this.dependencies,
+    this.entryPoint,
+  );
 
   /// Factory to create an `ExtensionManifest` object from YAML data.
   /// This helps standardize the metadata format for all extensions.
@@ -202,13 +207,15 @@ class ExtensionRegistry {
 
       if (!frameworkComponents.containsKey(name)) {
         print(
-            'Error: Missing dependency "$name" for extension "${extension.name}".');
+          'Error: Missing dependency "$name" for extension "${extension.name}".',
+        );
         return false;
       }
 
       if (_compareVersions(frameworkComponents[name]!, requiredVersion) < 0) {
         print(
-            'Error: Incompatible dependency "$name". Requires >=$requiredVersion, found ${frameworkComponents[name]}.');
+          'Error: Incompatible dependency "$name". Requires >=$requiredVersion, found ${frameworkComponents[name]}.',
+        );
         return false;
       }
     }
@@ -239,8 +246,9 @@ class ExtensionRegistry {
 
     try {
       final file = File(registryFile!);
-      final jsonContent =
-          jsonEncode(_extensions.map((ext) => ext.toJson()).toList());
+      final jsonContent = jsonEncode(
+        _extensions.map((ext) => ext.toJson()).toList(),
+      );
       file.writeAsStringSync(jsonContent);
       print('Registry saved to $registryFile');
     } catch (e) {

@@ -14,7 +14,7 @@ export 'ds_standard_web_extensions.dart'
 export 'ds_standard_web_extensions.dart' show AuthWidgetExtension;
 
 // Export providers from standard features
-export 'package:ds_standard_features/ds_standard_features.dart';
+//export 'package:ds_standard_features/ds_standard_features.dart';
 
 // Export Flutter types needed by extensions
 export 'package:flutter/material.dart' show Widget, BuildContext, Container;

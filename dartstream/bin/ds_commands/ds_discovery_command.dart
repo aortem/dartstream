@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
-import '../../dartstream_backend/packages/standard/extensions/discovery/ds_discovery.dart';
-import '../../dartstream_backend/packages/standard/extensions/lifecycle/base/ds_lifecycle_hooks.dart';
+import '../../dartstream_backend/packages/standard/standard_extensions/platform_services/discovery/ds_discovery.dart';
+import '../../dartstream_backend/packages/standard/standard_extensions/reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
 
 /// CLI Command for Dartstream to discover and manage extensions dynamically.
 class DSDiscoveryCommand extends Command {
@@ -22,13 +22,19 @@ class DSDiscoveryCommand extends Command {
     final args = argResults?.arguments ?? [];
     // Resolve extensions directory relative to this script
     final scriptDir = p.dirname(Platform.script.toFilePath());
-    final extensionsDirectory = args.isNotEmpty
-        ? args[0]
-        : p.normalize(p.join(
-            scriptDir, '../dartstream_backend/packages/standard/extensions'));
-    final registryFile = args.length > 1
-        ? args[1]
-        : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
+    final extensionsDirectory =
+        args.isNotEmpty
+            ? args[0]
+            : p.normalize(
+              p.join(
+                scriptDir,
+                '../dartstream_backend/packages/standard/extensions',
+              ),
+            );
+    final registryFile =
+        args.length > 1
+            ? args[1]
+            : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
 
     print('Starting extension discovery...');
     print('- Extensions directory: $extensionsDirectory');
