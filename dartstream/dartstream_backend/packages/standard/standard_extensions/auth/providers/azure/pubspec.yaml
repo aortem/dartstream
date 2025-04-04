@@ -6,5 +6,5 @@ repository: https://github.com/aortem/dartstream
 publish_to: none # Mark the package as non-publishable for local testing:
 
 environment:
- sdk: ^3.7.0
+ sdk: ^3.7.2
  
