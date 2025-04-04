@@ -1,0 +1,2 @@
+C:/Users/preth/dartapps/apps/sdks/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-flutter-mobile-app/android/app/.cxx/Debug/49433g2i/x86_64/CMakeFiles/edit_cache.dir
+C:/Users/preth/dartapps/apps/sdks/firebase-dart-admin-auth-sdk/firebase-dart-admin-auth-sdk/example/firebase-dart-admin-auth-sdk-flutter-mobile-app/android/app/.cxx/Debug/49433g2i/x86_64/CMakeFiles/rebuild_cache.dir

@@ -29,7 +29,7 @@ val targetSdkVersion = (project.findProperty("flutter.targetSdkVersion") as? Str
 
 android {
     namespace = "com.aortem.firebase.dart.admin.auth.sample.app"
-    compileSdk = compileSdkVersion?.toInt() ?: 34
+    compileSdk = compileSdkVersion?.toInt() ?: 35
     ndkVersion = ndkVersion
 
     compileOptions {
