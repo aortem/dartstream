@@ -8,7 +8,7 @@ library ds_standard_web_core;
 export 'ds_standard_web_core.dart';
 
 // Export necessary interfaces and types
-export 'package:ds_standard_features/ds_standard_features.dart';
+//export 'package:ds_standard_features/ds_standard_features.dart';
 
 // Export framework component types
 export 'package:flutter/material.dart' show BuildContext;

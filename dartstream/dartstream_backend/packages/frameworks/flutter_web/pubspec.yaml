@@ -13,10 +13,10 @@ environment:
 dependencies:
 
 # STANDARD PACKAGES - Built By The Dart Team
-  ds_standard_features: ^0.0.1-pre+11
+  ds_standard_features: ^0.0.2
   flutter:
     sdk: flutter 
   ds_auth_base:
-    path: ../../standard/extensions/auth/base
+    path: ../../standard/standard_extensions/auth/base
   google_auth_provider:
-    path: ../../standard/extensions/auth/providers/google
+    path: ../../standard/standard_extensions/auth/providers/google

@@ -1,6 +1,6 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:ds_dartweb_framework_base/core/ds_standard_web_core.dart';
-import 'package:ds_standard_features/ds_standard_features.dart';
+//import 'package:ds_standard_features/ds_standard_features.dart';
 import 'package:flutter/material.dart';
 
 /// Flutter web specific extension system.
@@ -28,8 +28,10 @@ class DSStandardWebExtensions {
   }
 
   /// Initialize a registered extension
-  Future<void> initializeExtension(String name,
-      {Map<String, dynamic>? config}) async {
+  Future<void> initializeExtension(
+    String name, {
+    Map<String, dynamic>? config,
+  }) async {
     final extension = _extensions[name];
     if (extension == null) {
       throw Exception('Extension $name is not registered');
@@ -98,7 +100,7 @@ enum WebExtensionState {
   initialized,
 
   /// Error state
-  error
+  error,
 }
 
 /// Widget extension base class
