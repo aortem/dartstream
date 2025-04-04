@@ -5,7 +5,6 @@ labels: ["community::documentation"]
 #projects: ["octo-org/1", "octo-org/44"]
 assignees:
   - ABC2015
-  - ginjardev
 body:
   - type: markdown
     attributes:

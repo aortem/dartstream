@@ -1,0 +1,56 @@
+name: Run Release
+
+on:
+  workflow_dispatch:  # Enables manual triggering from the Actions tab
+  push:
+    branches:
+      - main
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # tag pattern on pub.dev: 'v{{version}'
+
+permissions:
+  contents: read
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # for googleapis/release-please-action to create release commit
+      pull-requests: write # for googleapis/release-please-action to create release PR
+    # Release-please creates a PR that tracks all changes
+    steps:
+      - name: Run release-please
+        working-directory: firebase-dart-admin-auth-sdk
+        uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          command: manifest
+          token: ${{secrets.RELEASE_PLEASE_ACTION_TOKEN}}
+          default-branch: main
+      - name: Dump Release Please Output
+        env:
+          RELEASE_PLEASE_OUTPUT: ${{ toJSON(steps.release.outputs) }}
+        run: |
+          echo "$RELEASE_PLEASE_OUTPUT"
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      release_tag_name: ${{ steps.release.outputs.tag_name }}
+      upload_url: ${{ steps.release.outputs.upload_url }}
+
+# Publishing is handled in publish.yaml
+  dart-release:
+    needs: release-please
+    if: ${{ fromJSON(needs.release-please.outputs.release_created || false) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write # Required for authentication using OIDC
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+      - name: Install dependencies
+        run: dart pub get
+      - name: Publish
+        run: dart pub publish --force
+

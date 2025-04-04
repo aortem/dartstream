@@ -1,0 +1,1 @@
+C:\Users\preth\dartapps\apps\sdks\firebase-dart-admin-auth-sdk\firebase-dart-admin-auth-sdk\example\firebase-dart-admin-auth-sdk-flutter-mobile-app\build\app\intermediates\cxx\Debug\49433g2i\obj\armeabi-v7a

@@ -25,7 +25,7 @@ class HttpResponse {
     this.headers = const {},
   });
 
-  /// Converts the `HttpResponse` instance to a Map<String, dynamic>.
+  /// Converts the `HttpResponse` instance to a Map.
   ///
   /// This method is useful for converting the object to a structure that can
   /// be easily converted to a JSON string or for storing as part of a larger map.
@@ -54,7 +54,7 @@ class HttpResponse {
     return json.encode(toMap());
   }
 
-  /// Factory constructor to create an `HttpResponse` instance from a Map<String, dynamic>.
+  /// Factory constructor to create an `HttpResponse` instance from a Map
   ///
   /// The map must include the keys `statusCode` and `body`. This constructor is
   /// useful when you have a map representation of the response, for instance, when
