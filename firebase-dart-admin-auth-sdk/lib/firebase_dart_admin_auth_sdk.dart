@@ -1,4 +1,4 @@
-library firebase_dart_admin_auth_sdk;
+library;
 
 export 'src/firebase_auth.dart';
 export 'src/user_credential.dart';
@@ -12,7 +12,6 @@ export 'src/application_verifier.dart';
 export 'src/user.dart';
 export 'src/auth/check_action_code.dart';
 export 'src/additional_user_info.dart';
-
 
 export 'src/auth/auth_link_with_phone_number.dart';
 

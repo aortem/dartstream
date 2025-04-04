@@ -1,6 +1,7 @@
 stages:
   - setup
   - validation
+  - unit_testing
   - analyze_sample_apps
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
@@ -9,14 +10,26 @@ stages:
 debug_merge_request:
   stage: setup
   script:
-    - echo "Debugging merge request..."
-    - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
+    - echo "Basic Merge Request Variables..." 
     - echo "CI_MERGE_REQUEST_IID is '$CI_MERGE_REQUEST_IID'"
-    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
-    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME is $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME is $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_EVENT_TYPE is $CI_MERGE_REQUEST_EVENT_TYPE"
+    
+    - echo "Commit Information Variables..."
+    - echo "CI_COMMIT_REF_NAME is $CI_COMMIT_REF_NAME"
+    - echo "CI_COMMIT_BRANCH is $CI_COMMIT_BRANCH"
+    - echo "CI_COMMIT_MESSAGE is $CI_COMMIT_MESSAGE" 
+
     - echo "Determining branch name..."
     - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
     - echo "Branch name determined $BRANCH_NAME"
+
+    - echo "Pipeline Metadata..."
+    - echo "CI_PIPELINE_SOURCE is $CI_PIPELINE_SOURCE"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE'  # Forces execution in ALL scenarios
+      when: always
 
 # Validate Conditional Triggers
 validation_trigger:
@@ -45,7 +58,7 @@ validation_trigger:
 
 # Unit Test Conditional Triggers
 unit_test_trigger:
-  stage: validation
+  stage: unit_testing
   trigger:
     include: tools/pipelines/backend/child-ci-unit-tests.yml
   needs:
@@ -54,7 +67,7 @@ unit_test_trigger:
     # Always runs after validation trigger
     - when: always
     
-# Analyze Conditional Triggers
+# Sample App Conditional Triggers
 analyze_flutter_mobile:
   stage: analyze_sample_apps
   trigger:
@@ -64,23 +77,3 @@ analyze_flutter_mobile:
   rules:
     # Always runs after unit_test trigger
     - when: always
-
-#  stage: triggers
-#  trigger:
-#    include: tools/pipelines/child-ci-qa.yml
-#  rules:
-#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "qa" || $CI_COMMIT_BRANCH == "qa"
-
-#conditional_preprod:
-#  stage: triggers
-#  trigger:
-#    include: tools/pipelines/child-ci-preprod.yml
-#  rules:
-#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "preprod" || $CI_COMMIT_BRANCH == "preprod"
-
-#conditional_production:
-#  stage: triggers
-#  trigger:
-#    include: tools/pipelines/child-ci-production.yml
-#  rules:
-#    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "production" || $CI_COMMIT_BRANCH == "production"

@@ -1,0 +1,27 @@
+stages:
+  - publish_package
+
+# Publish Package
+publish_package:
+  image: google/cloud-sdk:alpine
+  stage: publish_package
+  environment:
+    name: production
+  before_script:
+    - bash tools/scripts/gcloud_prod_acc_cloudbuild.sh
+    - apk add --no-cache wget unzip
+  # Download Dart SDK using wget with -O flag
+    - wget -q -O dart-sdk.zip https://storage.googleapis.com/dart-archive/channels/stable/release/latest/sdk/dart-sdk-linux-x64-release.zip
+    - ls -lh dart-sdk.zip
+    - echo "Dart SDK downloaded successfully."
+    # Additional commands (like unzipping and installing Dart) can follow here
+    - unzip dart-sdk.zip -d /usr/lib/dart-sdk
+    - export PATH="/usr/lib/dart-sdk/bin:$PATH"
+    - dart --version
+  script:
+    - gcloud auth print-identity-token --audiences=https://pub.dev | dart pub token add https://pub.dev
+    - dart pub publish --dry-run
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+    - if: '$CI_COMMIT_REF_NAME == "development"'
+      when: always

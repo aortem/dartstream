@@ -1,3 +1,102 @@
-# https://dart.dev/guides/libraries/private-files
-# Created by `dart pub`
+##########################################
+# Common OS Files
+##########################################
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+##########################################
+# Common IDE / Editor Files
+##########################################
+# IntelliJ / Android Studio
+*.iml
+.idea/
+.gradle/
+
+# VSCode
+.vscode/
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+##########################################
+# Flutter / Dart
+##########################################
+# Flutter/Dart build and tool files
+/build/
+/.flutter-plugins
+.flutter-plugins-dependencies
 .dart_tool/
+.packages
+.pub-cache/
+pubspec.lock
+
+# Generated plugin registrant
+GeneratedPluginRegistrant.*
+
+##########################################
+# Android (Android Compose)
+##########################################
+# Gradle files
+.gradle/
+**/build/
+!**/src/**/build/
+local.properties
+*.apk
+*.ap_
+# Android Studio Navigation editor temp files
+.navigation/
+
+##########################################
+# Node.js / JavaScript / TypeScript (React, Svelte, Vue)
+##########################################
+# Node modules, build and cache directories
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+dist/
+build/
+coverage/
+
+# Optional: Ignore IDE config files for JavaScript projects
+.vscode/
+.idea/
+
+##########################################
+# Svelte-specific (if applicable)
+##########################################
+.svelte-kit/
+
+##########################################
+# Vue-specific (if applicable)
+##########################################
+# Vue CLI build output
+dist/
+
+##########################################
+# Other Common Files and Directories
+##########################################
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+lerna-debug.log*
+
+# Temporary files
+tmp/
+temp/
