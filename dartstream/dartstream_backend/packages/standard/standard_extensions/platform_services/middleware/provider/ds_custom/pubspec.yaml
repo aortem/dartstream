@@ -4,4 +4,4 @@ version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.7.0
+ sdk: ^3.7.2
