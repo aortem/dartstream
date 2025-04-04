@@ -19,11 +19,7 @@ jobs:
       pull-requests: write # for googleapis/release-please-action to create release PR
     # Release-please creates a PR that tracks all changes
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      
-      - name: Run release-please
-        working-directory: firebase-dart-admin-auth-sdk
+      - working-directory: firebase-dart-admin-auth-sdk
         uses: google-github-actions/release-please-action@v3
         id: release
         with:

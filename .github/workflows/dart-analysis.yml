@@ -28,8 +28,7 @@ jobs:
           dart analyze > analysis_report.txt || true
           ls -la  # Optional: List files to confirm analysis_report.txt exists
 
-      - name: Upload Analysis Report
-        working-directory: firebase-dart-admin-auth-sdk
+      - working-directory: firebase-dart-admin-auth-sdk
         uses: actions/upload-artifact@v3
         with:
           name: dart-analysis-report
