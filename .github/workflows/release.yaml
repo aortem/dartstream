@@ -1,6 +1,7 @@
 name: Run Release
 
 on:
+  workflow_dispatch:  # Enables manual triggering from the Actions tab
   push:
     branches:
       - main
