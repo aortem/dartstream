@@ -1,6 +1,6 @@
 {
     "packages": {
-      "firebase-dart-admin-auth-sdk": {
+      ".": {
         "release-type": "dart",
         "prerelease": true,
         "bump-minor-pre-major": true,
