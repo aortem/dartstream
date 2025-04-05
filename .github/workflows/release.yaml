@@ -1,3 +1,4 @@
+
 name: Run Release
 
 on:
@@ -32,7 +33,6 @@ jobs:
             --target-branch=main \
             --config-file=firebase-dart-admin-auth-sdk/release-please-config.json \
             --manifest-file=firebase-dart-admin-auth-sdk/.release-please-manifest.json
-
       - name: Dump Release Output
         run: echo "Release process completed."
 
