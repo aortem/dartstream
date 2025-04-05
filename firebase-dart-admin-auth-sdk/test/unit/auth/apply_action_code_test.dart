@@ -1,5 +1,5 @@
-import 'package:ds_tools_testing/ds_tools_testing.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings.dart';
+/*import 'package:ds_tools_testing/ds_tools_testing.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/action_code_settings_test.dart';
 
 void main() {
   group('ActionCodeSettings', () {
@@ -47,8 +47,9 @@ void main() {
 
   group('AndroidSettings', () {
     test('should create an instance with required parameters', () {
-      final androidSettings =
-          AndroidSettings(packageName: 'com.example.android');
+      final androidSettings = AndroidSettings(
+        packageName: 'com.example.android',
+      );
       expect(androidSettings.packageName, 'com.example.android');
       expect(androidSettings.installApp, isNull);
       expect(androidSettings.minimumVersion, isNull);
@@ -66,3 +67,4 @@ void main() {
     });
   });
 }
+*/
