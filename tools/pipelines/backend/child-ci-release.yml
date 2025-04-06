@@ -34,11 +34,10 @@ release:
         echo "Latest Git tag: $LATEST_TAG"
       fi
 
-      echo "Remote tags:"
-      git ls-remote --tags origin
-      if git ls-remote --tags origin | grep -q "refs/tags/v0.0.2-pre"; then
-      echo "Deleting remote tag v0.0.2-pre"
-      git push origin --delete "v0.0.2-pre"
+      # Delete the local tag if it exists.
+      if git tag | grep -q "^v$VERSION$"; then
+      echo "Local tag v$VERSION exists. Deleting it."
+      git tag -d "v$VERSION"
       fi
 
       # Query pub.dev for the latest published version.
