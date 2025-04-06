@@ -18,13 +18,13 @@ release:
       VERSION="$(grep '^version:' pubspec.yaml | sed 's/version: //')"
       echo "Version from pubspec.yaml: $VERSION"
 
-      # Get the latest GitLab release (using the Releases API).
-      LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
-      echo "Latest GitLab release tag: ${LATEST_RELEASE}"
-
       # Extract the latest version from CHANGELOG.md.
       CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
       echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
+
+      # Get the latest GitLab release (using the Releases API).
+      LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
+      echo "Latest GitLab release tag: ${LATEST_RELEASE}"    
 
       # Get the latest Git tag (assumes tags are prefixed with "v").
       LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -49,12 +49,13 @@ release:
         echo "Version has not been bumped."
         echo "Printing code changes for manual review so you can update the changelog."
         CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
+      # CODE_CHANGES=$(git diff "$LATEST_TAG" HEAD)  This provides the full code output.
         echo "Code changes since $LATEST_TAG:"
         echo "$CODE_CHANGES"
         exit 0
       fi
-    - git config --global user.email "ci@aortem.com"
-    - git config --global user.name "Aortem CI/CD"
+    - git config --global user.email "jandrews@venturseed.com"
+    - git config --global user.name "Jeremy Andrews"
     - git tag "v$VERSION"
     - git push origin "v$VERSION"
     - |
