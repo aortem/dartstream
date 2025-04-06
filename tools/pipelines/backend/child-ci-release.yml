@@ -37,4 +37,4 @@ release:
         --data-urlencode "description=${RELEASE_NOTES}" \
         "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "development"'
