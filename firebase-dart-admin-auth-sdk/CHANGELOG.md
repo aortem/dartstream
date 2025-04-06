@@ -1,4 +1,4 @@
-## 0.0.3-pre
+## 0.0.2-pre
 
 **🐛 Bug Fixes**
 - firebase‑sdk: resolve dart analyze errors  
