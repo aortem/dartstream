@@ -23,7 +23,7 @@ release:
       echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
       # Extract the latest version from CHANGELOG.md.
-      CHANGELOG_VERSION=$(grep -m 1 '^## \[' CHANGELOG.md | sed 's/^## \[\(.*\)\].*/\1/')
+      CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
       echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
       # Get the latest Git tag (assumes tags are prefixed with "v").
