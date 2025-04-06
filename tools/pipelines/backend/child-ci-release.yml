@@ -39,7 +39,6 @@ release:
       git push origin --delete "v0.0.2-pre"
       fi
 
-
       # Query pub.dev for the latest published version.
       PUB_PACKAGE_NAME="$(grep '^name:' pubspec.yaml | sed 's/name: //')"
       PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
