@@ -85,5 +85,5 @@ gitlab_github_release:
   trigger:
     include: tools/pipelines/backend/child-ci-release.yml
   rules:
-    - if: '$CI_COMMIT_BRANCH == "main"'
+    - if: '$CI_COMMIT_BRANCH == "development"'
       when: always
