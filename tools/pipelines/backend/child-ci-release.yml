@@ -10,6 +10,7 @@ release:
     - apk add --no-cache bash jq curl
   script:
     - |
+      cd firebase-dart-admin-auth-sdk
       # Extract version from pubspec.yaml
       VERSION="$(grep '^version:' pubspec.yaml | sed 's/version: //')"
       echo "Version is: $VERSION"
