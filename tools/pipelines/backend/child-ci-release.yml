@@ -11,6 +11,8 @@ release:
   script:
     - |
       cd firebase-dart-admin-auth-sdk
+      # Fetch all tags from the remote repository
+      git fetch --tags
       # Extract version from pubspec.yaml
       VERSION="$(grep '^version:' pubspec.yaml | sed 's/version: //')"
       echo "Version is: $VERSION"
