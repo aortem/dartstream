@@ -34,6 +34,8 @@ release:
         echo "Latest Git tag: $LATEST_TAG"
       fi
 
+      echo "Remote tags:"
+      git ls-remote --tags origin
       if git ls-remote --tags origin | grep -q "refs/tags/v0.0.2-pre"; then
       echo "Deleting remote tag v0.0.2-pre"
       git push origin --delete "v0.0.2-pre"
