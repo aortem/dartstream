@@ -3,7 +3,9 @@ stages:
 
 release:
   stage: release
-  image: alpine/git
+  image: 
+    name: alpine/git
+    entrypoint: ["/bin/sh", "-c"]
   before_script:
     - apk add --no-cache bash jq curl
   script:
