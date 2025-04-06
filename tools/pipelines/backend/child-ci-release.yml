@@ -22,9 +22,17 @@ release:
       LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
       echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
+      # Extract the latest version from CHANGELOG.md.
+      CHANGELOG_VERSION=$(grep -m 1 '^## \[' CHANGELOG.md | sed 's/^## \[\(.*\)\].*/\1/')
+      echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
+
       # Get the latest Git tag (assumes tags are prefixed with "v").
-      # LATEST_TAG=$(git describe --tags --abbrev=0)
-      # echo "Latest Git tag: $LATEST_TAG"
+      LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+      if [ -z "$LATEST_TAG" ]; then
+        echo "No existing tag found."
+      else
+        echo "Latest Git tag: $LATEST_TAG"
+      fi
 
       # Query pub.dev for the latest published version.
       PUB_PACKAGE_NAME="$(grep '^name:' pubspec.yaml | sed 's/name: //')"
