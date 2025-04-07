@@ -53,11 +53,17 @@ release:
         echo "New version detected. Proceeding with auto-release."
       else
         echo "Version has not been bumped."
+
+      if [ -n "$LATEST_TAG" ]; then
         echo "Printing code changes for manual review so you can update the changelog."
         CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
       # CODE_CHANGES=$(git diff "$LATEST_TAG" HEAD)  This provides the full code output.
         echo "Code changes since $LATEST_TAG:"
         echo "$CODE_CHANGES"
+      else
+        echo "No previous tag found. Nothing to diff."
+      fi
+
         exit 0
       fi
     - git config --global user.email "jandrews@venturseed.com"
