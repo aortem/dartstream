@@ -1,3 +1,29 @@
+## 0.0.2-pre
+
+**🐛 Bug Fixes**
+- firebase‑sdk: resolve dart analyze errors  
+- firebase‑sdk: resolve dart analyze errorsand dart dry run  
+- fixed access token issue  
+- fixed build error, removed project level android home  
+
+**✨ New Features**
+- auth: add Microsoft sign‑in and update auth_redirect_link docs  
+- auth: add verify id token method  
+- auth: implement Apple authentication with webview support  
+- auth: implement service account without impersonation key  
+- auth: support service account without impersonation key for Dart and Flutter server‑side  
+- auth: updated verify token method  
+- implemented remaining tickets  
+- implemented service account impersonation with gcp  
+- implemented service account impersonation, added proper documentations  
+
+**🧹 Chore**
+- add build runner and test cases  
+- add code cov and pipeline triggers  
+- add conditional imports and update pipeline for merged results  
+- add dart doc commnets  
+- add logo  
+
 ## 0.0.1-pre+22
 
 - yaml update

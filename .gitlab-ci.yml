@@ -3,6 +3,7 @@ stages:
   - validation
   - unit_testing
   - analyze_sample_apps
+  - release
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
@@ -77,3 +78,12 @@ analyze_flutter_mobile:
   rules:
     # Always runs after unit_test trigger
     - when: always
+
+# Release Triggers
+gitlab_github_release:
+  stage: release
+  trigger:
+    include: tools/pipelines/backend/child-ci-release.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: always
