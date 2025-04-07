@@ -22,6 +22,12 @@ release:
       CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
       echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
+      # Query pub.dev for the latest published version.
+      PUB_PACKAGE_NAME="$(grep '^name:' pubspec.yaml | sed 's/name: //')"
+      PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
+      PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
+      echo "Latest version on pub.dev: $PUB_DEV_LATEST"
+
       # Get the latest GitLab release (using the Releases API).
       LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
       echo "Latest GitLab release tag: ${LATEST_RELEASE}"    
@@ -34,17 +40,11 @@ release:
         echo "Latest Git tag: $LATEST_TAG"
       fi
 
-      # Delete the local tag if it exists.
+      # (Optional) Delete the local tag if it exists.
       if git tag | grep -q "^v$VERSION$"; then
       echo "Local tag v$VERSION exists. Deleting it."
       git tag -d "v$VERSION"
       fi
-
-      # Query pub.dev for the latest published version.
-      PUB_PACKAGE_NAME="$(grep '^name:' pubspec.yaml | sed 's/name: //')"
-      PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
-      PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
-      echo "Latest version on pub.dev: $PUB_DEV_LATEST"
 
       # Determine if the version has been bumped.
       # If current version is different from both the latest tag and pub.dev,
@@ -62,6 +62,7 @@ release:
       fi
     - git config --global user.email "jandrews@venturseed.com"
     - git config --global user.name "Jeremy Andrews"
+    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
     - git tag "v$VERSION"
     - git push origin "v$VERSION"
     - |
