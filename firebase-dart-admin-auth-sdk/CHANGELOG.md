@@ -1,3 +1,16 @@
+## 0.0.3-pre
+
+- Eliminated redundant import statements
+- Removed duplicate lines for BotToast, firebase_dart_admin_auth_sdk, flutter/material.dart, and flutter_facebook_auth.
+- Added a web-specific branch that uses the Google Identity Services (via gis, id, and oauth2) for handling Google OAuth.
+- Configured logging for the web SDK (id.setLogLevel('debug')) and updated the token request workflow.
+- Enhanced error handling by logging detailed information for cancellation, token errors, and linking failures.
+- Added additional try/catch blocks and BotToast notifications for user feedback on errors.
+- Ensured that separate code paths for web and mobile are clearly distinguished, with appropriate flows for each platform.
+- Consolidated the sign-in logic to reduce code duplication (e.g., signing in with Google and linking credentials).
+- Incorporated navigation to the HomeScreen after a successful link with credentials.
+- Added BotToast feedback to confirm when an account has been successfully linked.
+
 ## 0.0.2-pre
 
 **🐛 Bug Fixes**

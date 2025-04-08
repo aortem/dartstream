@@ -1,0 +1,22 @@
+# cloudbuild.yaml
+steps:
+- id: Create temporary token
+  name: gcr.io/cloud-builders/gcloud
+  volumes:
+  - name: temporary-secrets
+    path: /secrets
+  script: |
+    gcloud auth print-identity-token \
+      --impersonate-service-account=pub-dev@$PROJECT_ID.iam.gserviceaccount.com \
+      --audiences=https://pub.dev \
+      --include-email > /secrets/temporary-pub-token.txt
+  env:
+  - PROJECT_ID=$PROJECT_ID
+- id: Publish to pub.dev
+  name: dart
+  volumes:
+  - name: temporary-secrets
+    path: /secrets
+  script: | 
+    cat /secrets/temporary-pub-token.txt | dart pub token add https://pub.dev
+    dart pub publish --force

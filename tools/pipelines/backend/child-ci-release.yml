@@ -41,10 +41,10 @@ release:
       fi
 
       # (Optional) Delete the local tag if it exists.
-      if git tag | grep -q "^v$VERSION$"; then
-      echo "Local tag v$VERSION exists. Deleting it."
-      git tag -d "v$VERSION"
-      fi
+      # if git tag | grep -q "^v$VERSION$"; then
+      # echo "Local tag v$VERSION exists. Deleting it."
+      # git tag -d "v$VERSION"
+      # fi
 
       # Determine if the version has been bumped.
       # If current version is different from both the latest tag and pub.dev,
@@ -60,6 +60,7 @@ release:
         echo "$CODE_CHANGES"
         exit 0
       fi
+      
     - git config --global user.email "jandrews@venturseed.com"
     - git config --global user.name "Jeremy Andrews"
     - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
