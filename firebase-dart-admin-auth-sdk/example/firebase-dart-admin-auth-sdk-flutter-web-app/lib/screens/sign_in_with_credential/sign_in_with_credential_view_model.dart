@@ -10,9 +10,15 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import '../home_screen/home_screen.dart';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
+
+import 'package:google_identity_services_web/id.dart';
+import 'package:google_identity_services_web/loader.dart' as gis;
+import 'package:google_identity_services_web/oauth2.dart';
+
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class SignInWithCredentialViewModel extends ChangeNotifier {
+class microsoftSignIn extends ChangeNotifier {
   List<String> scopes = <String>[
     'email',
     'https://www.googleapis.com/auth/contacts.readonly',
@@ -28,33 +34,66 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> signInWithCredential(VoidCallback onSuccess) async {
+  Future<void> signInWithGoogle(VoidCallback onSuccess) async {
     try {
       setLoading(true);
 
-      var signInAccount = await _googleSignIn.signIn();
+      if (kIsWeb) {
+        // WEB FLOW
+        print("its web");
+        log("its web tessss");
+        await gis.loadWebSdk();
+        id.setLogLevel('debug');
+        const List<String> scopes = <String>[
+          'https://www.googleapis.com/auth/userinfo.profile',
+          'https://www.googleapis.com/auth/userinfo.email',
+        ];
+        final config = TokenClientConfig(
+          client_id:
+              '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Replace!
+          scope: scopes,
+          callback: (TokenResponse token) async {
+            if (token.error != null) {
+              throw Exception('Google OAuth error: ${token.error}');
+            }
 
-      var signInAuth = await signInAccount?.authentication;
+            await FirebaseApp.firebaseAuth?.signInWithRedirect(
+                'http://localhost', token.access_token!, 'google.com');
+            // await FirebaseApp.firebaseAuth?.signInWithCredential(credential);
+            onSuccess();
+          },
+          error_callback: (error) {
+            throw Exception('Google OAuth failed: ${error?.message}');
+          },
+        );
 
-      if (signInAuth == null) {
-        throw Exception("Something went wrong");
+        final client = oauth2.initTokenClient(config);
+        client.requestAccessToken();
+      } else {
+        // NON-WEB FLOW (Android/iOS/Desktop)
+        var signInAccount = await _googleSignIn.signIn();
+
+        var signInAuth = await signInAccount?.authentication;
+
+        if (signInAuth == null) {
+          throw Exception("Something went wrong");
+        }
+
+        OAuthCredential credential = OAuthCredential(
+          providerId: getPlatformId(),
+          accessToken: signInAuth.accessToken,
+          idToken: signInAuth.idToken,
+        );
+
+        await FirebaseApp.firebaseAuth?.signInWithCredential(credential);
       }
-
-      OAuthCredential credential = OAuthCredential(
-        providerId: getPlatformId(),
-        accessToken: signInAuth.accessToken,
-        idToken: signInAuth.idToken,
-      );
-
-      await FirebaseApp.firebaseAuth?.signInWithCredential(credential);
-
-      onSuccess();
     } catch (e) {
       BotToast.showText(text: e.toString());
     } finally {
       setLoading(false);
     }
   }
+////////////////////////////////////////////////
 
   Future<void> loginWithFacebook(BuildContext context) async {
     final LoginResult result =
@@ -107,7 +146,7 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
   );
   final AadOAuth oauth = AadOAuth(config);
 
-  void login(bool redirect, BuildContext context) async {
+  void signInWithMicrosoft(bool redirect, BuildContext context) async {
     config.webUseRedirect = redirect;
     final result = await oauth.login();
     result.fold(

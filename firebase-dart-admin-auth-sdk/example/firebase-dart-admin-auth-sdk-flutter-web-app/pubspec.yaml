@@ -19,8 +19,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 version: 0.0.4
 
 environment:
-  sdk: ^3.7.2
-
+  sdk: '>=3.6.0 <4.0.0'
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
 # consider running `flutter pub upgrade --major-versions`. Alternatively,
@@ -45,6 +44,7 @@ dependencies:
   flutter_facebook_auth: ^6.0.4
   aad_oauth: ^1.0.1
   webview_flutter: ^4.10.0
+  google_identity_services_web: ^0.3.3
 
 
 dev_dependencies:
