@@ -4,8 +4,7 @@ version: 0.0.2-pre
 repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
-  sdk: '>=3.7.0-323.0.dev <4.0.0'
-
+   sdk: ^3.7.2
 
 
 # Add regular dependencies here.
@@ -14,7 +13,7 @@ dependencies:
 #------------------ STANDARD FEATURES---------------------------------
 ## There are three standard libraries. 
 
-  ds_standard_features: 0.0.1-pre+11 #Standard Dart Team Utilities For HTTP //Default
+  ds_standard_features: ^0.0.2 #Standard Dart Team Utilities For HTTP //Default
   jwt_generator: ^0.0.3 # Internal JWT Generator Package
   googleapis_auth: ^1.6.0
 #------------------ TESTING FEATURES---------------------------------

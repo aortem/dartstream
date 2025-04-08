@@ -18,7 +18,7 @@ import 'package:google_identity_services_web/oauth2.dart';
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
-class microsoftSignIn extends ChangeNotifier {
+class MicrosoftSignIn extends ChangeNotifier {
   List<String> scopes = <String>[
     'email',
     'https://www.googleapis.com/auth/contacts.readonly',
@@ -40,7 +40,7 @@ class microsoftSignIn extends ChangeNotifier {
 
       if (kIsWeb) {
         // WEB FLOW
-        print("its web");
+
         log("its web tessss");
         await gis.loadWebSdk();
         id.setLogLevel('debug');
@@ -49,8 +49,7 @@ class microsoftSignIn extends ChangeNotifier {
           'https://www.googleapis.com/auth/userinfo.email',
         ];
         final config = TokenClientConfig(
-          client_id:
-              '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Replace!
+          client_id: 'your  apps.googleusercontent com', // Replace!
           scope: scopes,
           callback: (TokenResponse token) async {
             if (token.error != null) {

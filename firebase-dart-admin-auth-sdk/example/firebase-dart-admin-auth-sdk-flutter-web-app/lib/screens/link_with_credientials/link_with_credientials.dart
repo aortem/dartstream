@@ -42,7 +42,6 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
     try {
       if (kIsWeb) {
         // 🌐 Web-specific flow using Firebase Auth signInWithPopup
-        print("its web");
 
         await gis.loadWebSdk();
         id.setLogLevel('debug');
@@ -51,8 +50,7 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
           'https://www.googleapis.com/auth/userinfo.email',
         ];
         final config = TokenClientConfig(
-          client_id:
-              '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Replace!
+          client_id: 'your apps.googleusercontent com', // Replace!
           scope: scopes,
           callback: (TokenResponse token) async {
             if (token.error != null) {

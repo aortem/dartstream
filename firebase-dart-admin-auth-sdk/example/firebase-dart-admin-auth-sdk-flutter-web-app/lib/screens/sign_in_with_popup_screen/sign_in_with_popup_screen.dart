@@ -35,7 +35,6 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
     try {
       if (kIsWeb) {
         // 🌐 Web-specific Google Sign-In
-        print("its web");
 
         await gis.loadWebSdk();
         id.setLogLevel('debug');
@@ -44,8 +43,7 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
           'https://www.googleapis.com/auth/userinfo.email',
         ];
         final config = TokenClientConfig(
-          client_id:
-              '473309149917-5n0s3r0sei7a64dsq0pk0j26oklr0kv0.apps.googleusercontent.com', // Replace!
+          client_id: 'your app .apps.googleusercontent.com', // Replace!
           scope: scopes,
           callback: (TokenResponse token) async {
             if (token.error != null) {

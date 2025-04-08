@@ -14,8 +14,8 @@ class SignInWithCredential extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => microsoftSignIn(),
-      child: Consumer<microsoftSignIn>(
+      create: (context) => MicrosoftSignIn(),
+      child: Consumer<MicrosoftSignIn>(
         builder: (context, value, child) => Scaffold(
           body: SizedBox(
             width: MediaQuery.of(context).size.width * 1,
