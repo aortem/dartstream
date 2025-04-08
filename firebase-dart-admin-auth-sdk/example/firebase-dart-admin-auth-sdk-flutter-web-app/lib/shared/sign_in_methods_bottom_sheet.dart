@@ -12,8 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase/screens/apple_sign_in_screen/apple_sign_in_screen.dart';
 import 'package:firebase/screens/gcp_sign_in_screen/gcp_sign_in_screen.dart';
 
-import '../screens/sign_in_with_redirect/sign_in_with_redirect.dart';
-
 void showSignMethodsBottomSheet(BuildContext context) {
   showModalBottomSheet(
     context: context,
@@ -79,16 +77,6 @@ class SignInMethodsBottomSheet extends StatelessWidget {
                 title: "Sign In With Pop Up",
               ),
 
-              20.vSpace,
-              ActionTile(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const OAuthSelectionScreen(),
-                  ),
-                ),
-                title: "Sign In With Redirect",
-              ),
               20.vSpace,
               ActionTile(
                 onTap: () => Navigator.push(

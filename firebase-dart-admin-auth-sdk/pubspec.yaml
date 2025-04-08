@@ -4,7 +4,8 @@ version: 0.0.2-pre
 repository: https://github.com/aortem/firebase-dart-admin-auth-sdk
 
 environment:
-  sdk: ^3.7.2
+   sdk: ^3.7.2
+
 
 # Add regular dependencies here.
 

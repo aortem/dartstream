@@ -12,7 +12,7 @@ import 'auth/generate_custom_token.dart';
 import 'auth/get_access_token_with_generated_token.dart';
 
 /// The base class to initialize the firebase dart admin sdk
-class FirebaseApp {
+class FirebaseApp { 
   ///Instance of the Firebase App
   static FirebaseApp? _instance;
   //API key associated with the project
