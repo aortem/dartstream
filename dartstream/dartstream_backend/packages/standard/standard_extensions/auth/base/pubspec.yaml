@@ -1,5 +1,3 @@
-#This pubspec file imports is used for any authentication framework features.
-#This works for both mobile and web.
 name: ds_auth_base
 description: Base package for DartStream authentication, including foundational classes and interfaces.
 version: 0.0.1-pre+1
@@ -11,6 +9,6 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-  firebase_dart_admin_auth_sdk: ^0.0.1-pre+10
+  firebase_dart_admin_auth_sdk: ^0.0.1-pre+19
 
 # STANDARD PACKAGES - Built By The Dart Team
