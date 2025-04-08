@@ -12,7 +12,29 @@ class DSListExtensionsCommand extends Command {
   final description = 'Lists all discovered and registered extensions.';
 
   /// Constructor for initializing the list command.
-  DSListExtensionsCommand();
+  DSListExtensionsCommand() {
+    argParser.addOption(
+      'level',
+      abbr: 'l',
+      help: 'Filter by extension level',
+      allowed: ['core', 'extended', 'third-party', 'all'],
+      defaultsTo: 'all',
+    );
+
+    argParser.addFlag(
+      'inactive',
+      abbr: 'i',
+      help: 'Include inactive extensions',
+      negatable: false,
+    );
+
+    argParser.addFlag(
+      'json',
+      abbr: 'j',
+      help: 'Output in JSON format',
+      negatable: false,
+    );
+  }
 
   /// Executes the list extensions logic.
   @override
@@ -34,9 +56,19 @@ class DSListExtensionsCommand extends Command {
             ? args[1]
             : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
 
+    final levelFilter = argResults?['level'] as String;
+    final includeInactive = argResults?['inactive'] as bool;
+    final jsonOutput = argResults?['json'] as bool;
+
     print('Listing extensions from the registry...');
     print('- Extensions directory: $extensionsDirectory');
-    print('- Registry file: $registryFile\n');
+    print('- Registry file: $registryFile');
+    if (levelFilter != 'all') {
+      print('- Filtering by level: $levelFilter');
+    }
+    if (includeInactive) {
+      print('- Including inactive extensions');
+    }
 
     try {
       final registry = ExtensionRegistry(
@@ -49,14 +81,131 @@ class DSListExtensionsCommand extends Command {
 
       if (registry.extensions.isEmpty) {
         print('No extensions discovered or registered.');
+        return;
+      }
+
+      // Filter extensions by level if requested
+      List<ExtensionManifest> filteredExtensions = [];
+      switch (levelFilter) {
+        case 'core':
+          filteredExtensions = registry.coreExtensions;
+          break;
+        case 'extended':
+          filteredExtensions = registry.extendedFeatures;
+          break;
+        case 'third-party':
+          filteredExtensions = registry.thirdPartyEnhancements;
+          break;
+        default:
+          filteredExtensions = registry.extensions;
+      }
+
+      if (jsonOutput) {
+        _outputJson(
+          filteredExtensions,
+          registry.activeExtensions,
+          includeInactive,
+        );
       } else {
-        print('Discovered extensions:');
-        for (final extension in registry.extensions) {
-          print('- ${extension.name} (${extension.version})');
-        }
+        _outputFormatted(
+          filteredExtensions,
+          registry.activeExtensions,
+          includeInactive,
+        );
       }
     } catch (e) {
       print('Error listing extensions: $e');
     }
+  }
+
+  void _outputFormatted(
+    List<ExtensionManifest> extensions,
+    List<String> activeExtensions,
+    bool includeInactive,
+  ) {
+    // Group extensions by level
+    final core = <ExtensionManifest>[];
+    final extended = <ExtensionManifest>[];
+    final thirdParty = <ExtensionManifest>[];
+
+    for (final ext in extensions) {
+      if (!includeInactive && !activeExtensions.contains(ext.name)) {
+        continue;
+      }
+
+      switch (ext.level) {
+        case ExtensionLevel.core:
+          core.add(ext);
+          break;
+        case ExtensionLevel.extended:
+          extended.add(ext);
+          break;
+        case ExtensionLevel.thirdParty:
+          thirdParty.add(ext);
+          break;
+      }
+    }
+
+    print('\nRegistered Extensions:');
+
+    if (core.isNotEmpty) {
+      print('\n=== Core Extensions ===');
+      for (final ext in core) {
+        final active =
+            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
+        print('- ${ext.name} ${ext.version} $active');
+        print('  Description: ${ext.description}');
+      }
+    }
+
+    if (extended.isNotEmpty) {
+      print('\n=== Extended Features ===');
+      for (final ext in extended) {
+        final active =
+            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
+        final core =
+            ext.coreExtension != null ? 'for ${ext.coreExtension}' : '';
+        print('- ${ext.name} ${ext.version} $active $core');
+        print('  Description: ${ext.description}');
+      }
+    }
+
+    if (thirdParty.isNotEmpty) {
+      print('\n=== Third-Party Enhancements ===');
+      for (final ext in thirdParty) {
+        final active =
+            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
+        print('- ${ext.name} ${ext.version} $active');
+        print('  Description: ${ext.description}');
+      }
+    }
+
+    print('\nTotal: ${extensions.length} extensions');
+  }
+
+  void _outputJson(
+    List<ExtensionManifest> extensions,
+    List<String> activeExtensions,
+    bool includeInactive,
+  ) {
+    final result = {
+      'extensions':
+          extensions
+              .where(
+                (ext) => includeInactive || activeExtensions.contains(ext.name),
+              )
+              .map(
+                (ext) => {
+                  ...ext.toJson(),
+                  'active': activeExtensions.contains(ext.name),
+                },
+              )
+              .toList(),
+      'totalCount': extensions.length,
+      'activeCount':
+          extensions.where((ext) => activeExtensions.contains(ext.name)).length,
+    };
+
+    print(result);
   }
 }

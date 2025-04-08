@@ -3,6 +3,9 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 import '../../reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
 
+/// Extension level enumeration to classify extension types
+enum ExtensionLevel { core, extended, thirdParty }
+
 /// Represents the structure of an extension manifest.
 /// Includes lifecycle hooks for initialization and disposal.
 class ExtensionManifest implements LifecycleHook {
@@ -11,6 +14,9 @@ class ExtensionManifest implements LifecycleHook {
   final String description;
   final List<String> dependencies;
   final String entryPoint;
+  final ExtensionLevel level;
+  final String?
+  coreExtension; // For extended features, the core extension they enhance
 
   ExtensionManifest(
     this.name,
@@ -18,17 +24,46 @@ class ExtensionManifest implements LifecycleHook {
     this.description,
     this.dependencies,
     this.entryPoint,
+    this.level,
+    this.coreExtension,
   );
 
   /// Factory to create an `ExtensionManifest` object from YAML data.
   /// This helps standardize the metadata format for all extensions.
   factory ExtensionManifest.fromYaml(Map yaml) {
+    // Parse extension level from string if provided
+    ExtensionLevel level = ExtensionLevel.thirdParty; // Default
+
+    if (yaml.containsKey('level')) {
+      // Explicit level in manifest
+      final levelStr = yaml['level'] as String;
+      if (levelStr == 'core') {
+        level = ExtensionLevel.core;
+      } else if (levelStr == 'extended') {
+        level = ExtensionLevel.extended;
+      }
+    } else {
+      // Infer from core_extension presence (if exists, must be extended feature)
+      if (yaml.containsKey('core_extension') &&
+          yaml['core_extension'] != null) {
+        level = ExtensionLevel.extended;
+      } else {
+        // Infer from name (auth providers are typically core)
+        final name = yaml['name'] as String? ?? '';
+        if (name.endsWith('Auth')) {
+          level = ExtensionLevel.core;
+        }
+      }
+    }
+
     return ExtensionManifest(
       yaml['name'],
       yaml['version'],
       yaml['description'] ?? '',
       List<String>.from(yaml['dependencies'] ?? []),
       yaml['entry_point'],
+      level,
+      yaml['core_extension'],
     );
   }
 
@@ -40,6 +75,8 @@ class ExtensionManifest implements LifecycleHook {
       'description': description,
       'dependencies': dependencies,
       'entry_point': entryPoint,
+      'level': level.toString().split('.').last,
+      'core_extension': coreExtension,
     };
   }
 
@@ -53,6 +90,18 @@ class ExtensionManifest implements LifecycleHook {
   @override
   void onDispose() {
     print('Disposing extension: $name');
+  }
+
+  /// Called when the extension is registered
+  @override
+  void onRegister() {
+    print('Registering extension: $name');
+  }
+
+  /// Called when configuration is updated
+  @override
+  void onConfigUpdate(Map<String, dynamic> config) {
+    print('Config updated for extension: $name');
   }
 
   /// Simulate loading the entry point for the extension.
@@ -107,7 +156,20 @@ class ExtensionRegistry {
     for (var entity in rootDir.listSync(recursive: true)) {
       if (entity is File && entity.path.endsWith('manifest.yaml')) {
         try {
-          final manifestContent = loadYaml(entity.readAsStringSync()) as Map;
+          // Safely parse YAML and handle null case
+          final content = entity.readAsStringSync();
+          if (content.trim().isEmpty) {
+            print('Empty manifest file in ${entity.path}');
+            continue;
+          }
+
+          final yamlDoc = loadYaml(content);
+          if (yamlDoc == null) {
+            print('Null YAML document in ${entity.path}');
+            continue;
+          }
+
+          final manifestContent = yamlDoc as Map;
           final extension = ExtensionManifest.fromYaml(manifestContent);
 
           // Validate and register the extension.
@@ -126,6 +188,40 @@ class ExtensionRegistry {
     }
   }
 
+  /// Discovers extensions by level
+  /// This allows targeted loading of specific extension types
+  void discoverExtensionsByLevel(ExtensionLevel level) {
+    final rootDir = Directory(extensionsDirectory);
+    if (!rootDir.existsSync()) {
+      print('Extensions directory not found: $extensionsDirectory');
+      return;
+    }
+
+    // Recursively search for `manifest.yaml` files
+    for (var entity in rootDir.listSync(recursive: true)) {
+      if (entity is File && entity.path.endsWith('manifest.yaml')) {
+        try {
+          // Safely parse YAML and handle null case
+          final content = entity.readAsStringSync();
+          if (content.trim().isEmpty) continue;
+
+          final yamlDoc = loadYaml(content);
+          if (yamlDoc == null) continue;
+
+          final manifestContent = yamlDoc as Map;
+          final extension = ExtensionManifest.fromYaml(manifestContent);
+
+          // Only process extensions of the specified level
+          if (extension.level == level && validateDependencies(extension)) {
+            registerExtension(extension);
+          }
+        } catch (e) {
+          print('Error reading manifest in ${entity.path}: $e');
+        }
+      }
+    }
+  }
+
   /// Registers an extension into the framework.
   /// Adds the extension to the registry, triggers its entry point,
   /// and invokes any lifecycle hooks.
@@ -136,10 +232,9 @@ class ExtensionRegistry {
     // Dynamically load the extension's entry point.
     extension.registerEntryPoint();
 
-    // Trigger lifecycle hooks if applicable.
-    if (extension is LifecycleHook) {
-      extension.onInitialize();
-    }
+    // Trigger lifecycle hooks
+    extension.onRegister();
+    extension.onInitialize();
   }
 
   /// Unregisters an extension from the framework.
@@ -148,10 +243,8 @@ class ExtensionRegistry {
     print('Unregistering extension: ${extension.name} (${extension.version})');
     _extensions.remove(extension);
 
-    // Trigger lifecycle hooks if applicable.
-    if (extension is LifecycleHook) {
-      extension.onDispose();
-    }
+    // Trigger lifecycle hooks
+    extension.onDispose();
   }
 
   /// Enables an extension by name.
@@ -191,6 +284,34 @@ class ExtensionRegistry {
     } catch (e) {
       print('Error saving active extensions: $e');
     }
+  }
+
+  /// Gets extensions of a specific level
+  List<ExtensionManifest> getExtensionsByLevel(ExtensionLevel level) {
+    return _extensions.where((ext) => ext.level == level).toList();
+  }
+
+  /// Gets core extensions
+  List<ExtensionManifest> get coreExtensions =>
+      getExtensionsByLevel(ExtensionLevel.core);
+
+  /// Gets extended features
+  List<ExtensionManifest> get extendedFeatures =>
+      getExtensionsByLevel(ExtensionLevel.extended);
+
+  /// Gets third-party enhancements
+  List<ExtensionManifest> get thirdPartyEnhancements =>
+      getExtensionsByLevel(ExtensionLevel.thirdParty);
+
+  /// Gets extended features for a specific core extension
+  List<ExtensionManifest> getExtendedFeaturesForCore(String coreExtensionName) {
+    return _extensions
+        .where(
+          (ext) =>
+              ext.level == ExtensionLevel.extended &&
+              ext.coreExtension == coreExtensionName,
+        )
+        .toList();
   }
 
   /// Validates an extension's dependencies against the framework's components.
@@ -246,9 +367,13 @@ class ExtensionRegistry {
 
     try {
       final file = File(registryFile!);
-      final jsonContent = jsonEncode(
-        _extensions.map((ext) => ext.toJson()).toList(),
-      );
+      final Map<String, dynamic> registry = {
+        'extensions': _extensions.map((ext) => ext.toJson()).toList(),
+        'activeExtensions': _activeExtensions,
+        'lastUpdated': DateTime.now().toIso8601String(),
+      };
+
+      final jsonContent = jsonEncode(registry);
       file.writeAsStringSync(jsonContent);
       print('Registry saved to $registryFile');
     } catch (e) {
