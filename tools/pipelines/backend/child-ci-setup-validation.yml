@@ -103,7 +103,7 @@ validate_dart_sdk_version:
         echo "Checking $PUBSPEC..."
 
         # Extract the Dart SDK version
-        SDK_VERSION=$(grep -Po '(?<=sdk:\s\^)[0-9]+\.[0-9]+\.[0-9]+' "$PUBSPEC" || echo "not_found")
+        SDK_VERSION=$(grep -m 1 -Po '(?<=sdk:\s\^)[0-9]+\.[0-9]+\.[0-9]+' "$PUBSPEC" || echo "not_found")
         echo "Extracted Dart SDK version from $PUBSPEC: $SDK_VERSION"
 
         # Validate the extracted version
