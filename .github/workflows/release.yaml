@@ -1,34 +1,34 @@
-name: Run Release
+# name: Run Release
 
-on:
-  workflow_dispatch:  # Enables manual triggering from the Actions tab
-  push:
-    branches:
-      - main
+# on:
+#  workflow_dispatch:  # Enables manual triggering from the Actions tab
+#  push:
+#    branches:
+#      - main
 
-permissions:
-  contents: read
+# permissions:
+#  contents: read
 
-jobs:
-  release-please:
-    defaults:
-      run:
-        working-directory: firebase-dart-admin-auth-sdk
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write        # For release-please to create release commits and tags
-      pull-requests: write     # For release-please to create PRs
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+# jobs:
+#  release-please:
+#    defaults:
+#      run:
+#        working-directory: firebase-dart-admin-auth-sdk
+#    runs-on: ubuntu-latest
+#    permissions:
+#      contents: write        # For release-please to create release commits and tags
+#      pull-requests: write     # For release-please to create PRs
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
 
-      - name: Run release-please CLI
-        run: |
-          npx release-please release-pr \
-            --repo-url=https://github.com/aortem/firebase-dart-admin-auth-sdk \
-            --token="${{ secrets.RELEASE_PLEASE_ACTION_TOKEN }}" \
-            --target-branch=main \
-            --config-file=firebase-dart-admin-auth-sdk/release-please-config.json \
-            --manifest-file=firebase-dart-admin-auth-sdk/.release-please-manifest.json
-      - name: Dump Release Output
-        run: echo "Release process completed."
+#      - name: Run release-please CLI
+#        run: |
+#          npx release-please release-pr \
+#            --repo-url=https://github.com/aortem/firebase-dart-admin-auth-sdk \
+#            --token="${{ secrets.RELEASE_PLEASE_ACTION_TOKEN }}" \
+#            --target-branch=main \
+#            --config-file=firebase-dart-admin-auth-sdk/release-please-config.json \
+#            --manifest-file=firebase-dart-admin-auth-sdk/.release-please-manifest.json
+#      - name: Dump Release Output
+#        run: echo "Release process completed."
