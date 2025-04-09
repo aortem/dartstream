@@ -1,4 +1,7 @@
 # cloudbuild.yaml
+options:
+  logsBucket: gs://pub-dev-pusblish
+
 steps:
 - id: Create temporary token
   name: gcr.io/cloud-builders/gcloud
