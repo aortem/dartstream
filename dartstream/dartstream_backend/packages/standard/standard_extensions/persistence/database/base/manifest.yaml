@@ -1,5 +1,7 @@
 name: "Database"
 version: "0.1.0"
-description: "Database extension placeholder."
-dependencies: []
-entry_point: "lib/database_extension.dart"
+description: "Database extension for DartStream providing a unified interface for multiple database providers"
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "ds_database_base_export.dart"

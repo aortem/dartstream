@@ -1,0 +1,7 @@
+name: "SQLDatabase"
+version: "0.0.1"
+description: "SQL database providers (PostgreSQL and MySQL) for DartStream"
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_sql_database.dart"
