@@ -14,12 +14,13 @@ dependencies:
 ## There are three standard libraries. 
 
   ds_standard_features: ^0.0.2 #Standard Dart Team Utilities For HTTP //Default
+  googleapis_auth: ^2.0.0 #Googe Apis
   jwt_generator: ^0.0.3 # Internal JWT Generator Package
-  googleapis_auth: ^1.6.0
+  
 #------------------ TESTING FEATURES---------------------------------
 
 dev_dependencies:
-  ds_tools_testing: ^0.0.1 #Standard Dart Team Testing Tools
+  ds_tools_testing: ^0.0.2 #Standard Dart Team Testing Tools
   git_hooks: any
 
 # Optional Local Hooks for development.
