@@ -1,5 +1,0 @@
-name: "Database"
-version: "0.1.0"
-description: "Database extension placeholder."
-dependencies: []
-entry_point: "lib/database_extension.dart"
