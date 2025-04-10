@@ -1,4 +1,4 @@
-name: auth0_provider
+name: ds_auth0_auth_provider
 description: Auth0 authentication provider for Dartstream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream

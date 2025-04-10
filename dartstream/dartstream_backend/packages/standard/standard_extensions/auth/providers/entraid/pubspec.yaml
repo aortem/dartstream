@@ -1,5 +1,5 @@
-name: AzureAuth
-description: Amazon authentication provider for Dartstream.
+name: ds_entraid_auth_provider
+description: Azure authentication provider for Dartstream.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 

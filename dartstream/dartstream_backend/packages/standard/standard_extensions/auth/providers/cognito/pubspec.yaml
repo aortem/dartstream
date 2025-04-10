@@ -1,4 +1,4 @@
-name: amazon_provider"
+name: ds_cognito_auth_provider
 description: "Amazon authentication provider for Dartstream."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream

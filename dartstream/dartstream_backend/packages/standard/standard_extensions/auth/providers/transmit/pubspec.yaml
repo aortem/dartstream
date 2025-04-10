@@ -1,5 +1,5 @@
-name: fingerprint_provider
-description: Fingerprint authentication provider for Dartstream.
+name: ds_transmit_auth_provider
+description: Transmit Authentication Provider For Dartstream.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 

@@ -1,4 +1,4 @@
-name: fingerprint_provider
+name: ds_ping_auth_provider
 description: Fingerprint authentication provider for Dartstream.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
