@@ -1,5 +1,6 @@
 import 'dart:async';
 import '../../../standard_extensions/reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
+import 'package:ds_standard_features/ds_standard_features.dart';
 
 /// The core module of Dartstream.
 /// Handles the foundational setup, configurations, and lifecycle of the framework.

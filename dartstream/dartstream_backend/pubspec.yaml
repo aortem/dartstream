@@ -15,5 +15,21 @@ workspace:
   - packages/standard/standard_extensions/auth/providers
   - packages/standard/standard_extensions/persistence/database/base
   - packages/standard/standard_extensions/persistence/database/providers
-  - packages/standard/standard_extensions/persistence/logging      
-  - packages/standard/standard_features
+  - packages/standard/standard_extensions/persistence/logging/base
+  - packages/standard/standard_extensions/persistence/logging/providers
+  - packages/standard/standard_extensions/persistence/storage/base
+  - packages/standard/standard_extensions/persistence/storage/providers
+  - packages/standard/standard_extensions/platform_services/discovery/
+  - packages/standard/standard_extensions/platform_services/feature_flags/base
+  - packages/standard/standard_extensions/platform_services/feature_flags/providers
+  - packages/standard/standard_extensions/platform_services/middleware/base
+  - packages/standard/standard_extensions/platform_services/middleware/providers
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers  
+  - packages/standard/standard_extensions/reactive_dataflow/events/base
+  - packages/standard/standard_extensions/reactive_dataflow/events/providers
+  - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 
+  - packages/standard/standard_extensions/reactive_dataflow/notifications/base
+  - packages/standard/standard_extensions/reactive_dataflow/notifications/providers
