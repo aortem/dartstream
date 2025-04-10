@@ -1,6 +1,6 @@
-name: "AmazonAuth"
-version: "1.0.0"
+name: amazon_provider"
 description: "Amazon authentication provider for Dartstream."
+version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 
 publish_to: none # Mark the package as non-publishable for local testing:
