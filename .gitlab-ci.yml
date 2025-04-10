@@ -78,6 +78,15 @@ unit_test_dev:
   trigger:
     include: tools/pipelines/backend/child-ci-unit-tests-pre-dev.yml
 
+# Release Triggers
+gitlab_github_release:
+  stage: release
+  trigger:
+    include: tools/pipelines/backend/child-ci-release.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: always
+
 # Integration Tests for Backend (Dev)
 # integration_test_dev:
 #  stage: backend_integration

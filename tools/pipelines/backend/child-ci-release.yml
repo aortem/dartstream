@@ -11,7 +11,7 @@ release:
   script:
     - |
       # Change into the project folder and fetch tags.
-      cd firebase-dart-admin-auth-sdk
+      cd dartstream/dartstream_backend
       git fetch --tags
 
       # Extract the current version from pubspec.yaml.
