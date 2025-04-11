@@ -1,4 +1,3 @@
-# cloudbuild.yaml
 options:
   default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
   
@@ -15,11 +14,13 @@ steps:
       --include-email > /secrets/temporary-pub-token.txt
   env:
   - PROJECT_ID=$PROJECT_ID
+  
 - id: Publish to pub.dev
   name: dart
+  dir: firebase-dart-admin-auth-sdk    # Running from the directory with pubspec.yaml
   volumes:
   - name: temporary-secrets
     path: /secrets
-  script: | 
+  script: |
     cat /secrets/temporary-pub-token.txt | dart pub token add https://pub.dev
     dart pub publish --force
