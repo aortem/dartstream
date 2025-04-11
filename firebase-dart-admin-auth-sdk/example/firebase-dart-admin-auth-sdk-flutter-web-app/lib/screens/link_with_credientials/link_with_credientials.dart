@@ -37,7 +37,6 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
 
   // Scope for Microsoft OAuth
   //static const scope = 'openid profile User.Read';
-
   Future<User?> signInWithGoogle() async {
     try {
       if (kIsWeb) {
