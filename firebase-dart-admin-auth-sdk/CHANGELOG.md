@@ -99,7 +99,7 @@ HotFix:
 
 - Update SDK version formatting
 
-## 0.0.1-pre+11
+## 0.0.3
 
 - add sign in with redirect & link with credentials & verify password reset code
 - add Micorsoft Integration
