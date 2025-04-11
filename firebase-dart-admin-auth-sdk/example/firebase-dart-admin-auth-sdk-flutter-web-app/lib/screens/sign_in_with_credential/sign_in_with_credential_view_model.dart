@@ -91,6 +91,7 @@ class MicrosoftSignIn extends ChangeNotifier {
   /// - Replace the placeholder `client_id` with your actual Google Client ID.
   /// - Ensure that Firebase is correctly initialized on both platforms.
   Future<void> signInWithGoogle(VoidCallback onSuccess) async {
+  Future<void> signInWithGoogle(VoidCallback onSuccess) async {
     try {
       setLoading(true);
 

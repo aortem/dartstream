@@ -14,8 +14,8 @@ class SignInWithCredential extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => SignInWithCredentialViewModel(),
-      child: Consumer<SignInWithCredentialViewModel>(
+      create: (context) => MicrosoftSignIn(),
+      child: Consumer<MicrosoftSignIn>(
         builder: (context, value, child) => Scaffold(
           body: SizedBox(
             width: MediaQuery.of(context).size.width * 1,
@@ -26,7 +26,7 @@ class SignInWithCredential extends StatelessWidget {
               children: [
                 ElevatedButton(
                     onPressed: () {
-                      value.signInWithCredential(
+                      value.signInWithGoogle(
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -49,7 +49,7 @@ class SignInWithCredential extends StatelessWidget {
                 ),
                 ElevatedButton(
                     onPressed: () {
-                      value.login(kIsWeb ? true : false, context);
+                      value.signInWithMicrosoft(kIsWeb ? true : false, context);
                     },
                     child: const Text("Sign In With Microsoft"))
               ],
