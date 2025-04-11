@@ -1,7 +1,7 @@
 # cloudbuild.yaml
 options:
-  logsBucket: gs://firebase-dart-admin-auth-sdk-pub-dev-publish
-
+  default_logs_bucket_behavior: REGIONAL_USER_OWNED_BUCKET
+  
 steps:
 - id: Create temporary token
   name: gcr.io/cloud-builders/gcloud
