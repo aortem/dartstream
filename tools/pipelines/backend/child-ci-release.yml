@@ -61,8 +61,8 @@ release:
         exit 0
       fi
       
-    - git config --global user.email "jandrews@venturseed.com"
-    - git config --global user.name "Jeremy Andrews"
+    - git config --global user.email "${_GIT_EMAIL}"
+    - git config --global user.name "${_GIT_USER}"
     - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
     - git tag "v$VERSION"
     - git push origin "v$VERSION"

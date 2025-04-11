@@ -1,4 +1,7 @@
 # cloudbuild.yaml
+options:
+  logsBucket: gs://firebase-dart-admin-auth-sdk-pub-dev-publish
+
 steps:
 - id: Create temporary token
   name: gcr.io/cloud-builders/gcloud
