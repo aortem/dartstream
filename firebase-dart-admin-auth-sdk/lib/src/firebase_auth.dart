@@ -3,28 +3,24 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/apple_sign_in_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/gcp_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/link_with_credentails.dart';
 
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
-import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/apple_sign_in_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/apply_action_code.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/custom_token_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/email_link_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/email_password_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/gcp_auth.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/generate_custom_token.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/get_additional_user_info.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/link_provider_to_user.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/phone_auth.dart';
-
 import 'package:firebase_dart_admin_auth_sdk/src/auth/reload_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/send_email_verification_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/set_language_code.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/sign_out_auth.dart';
-import 'package:firebase_dart_admin_auth_sdk/src/auth/oauth_auth.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/unlink_provider.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_current_user.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/update_password.dart';
@@ -32,8 +28,11 @@ import 'package:firebase_dart_admin_auth_sdk/src/auth/update_profile.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/user_device_language.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_before_email_update.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/auth/verify_password_reset_code.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/firebase_user/link_with_credentails.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/http_response.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/platform_resolver.dart';
 import 'package:firebase_dart_admin_auth_sdk/src/popup_redirect_resolver.dart';
+import 'package:firebase_dart_admin_auth_sdk/src/service_account.dart';
 
 // New imports for Sprint 2 #16 to #21
 import 'package:firebase_dart_admin_auth_sdk/src/auth/password_reset_email.dart';
@@ -150,7 +149,7 @@ class FirebaseAuth {
 
   /// email password
   late CreateUserWithEmailAndPasswordService
-      createUserWithEmailAndPasswordService;
+  createUserWithEmailAndPasswordService;
 
   ///connect auth Emulator
   late ConnectAuthEmulatorService connectAuthEmulatorService;
@@ -171,7 +170,7 @@ class FirebaseAuth {
   late final RecaptchaVerifier _recaptchaVerifier;
   late final PopupRedirectResolver _popupRedirectResolver;
   late final RecaptchaConfigService _recaptchaConfigService;
-////Ticket mo 36 to 41///////////////
+  ////Ticket mo 36 to 41///////////////
   late FirebasePhoneNumberLink firebasePhoneNumberLink;
 
   /// Parase firebase url link
@@ -203,7 +202,7 @@ class FirebaseAuth {
 
   /// Firebase before auth change
   late FirebaseBeforeAuthStateChangeService
-      firebaseBeforeAuthStateChangeService;
+  firebaseBeforeAuthStateChangeService;
 
   /// Current firebase auth user
   User? currentUser;
@@ -233,7 +232,8 @@ class FirebaseAuth {
     this.generateCustomToken,
   }) {
     log(apiKey ?? 'api key');
-    this.httpClient = httpClient ??
+    this.httpClient =
+        httpClient ??
         http.Client(); // Use the injected client or default to a new one
     emailPassword = EmailPasswordAuth(this);
     customToken = CustomTokenAuth(this);
@@ -287,28 +287,32 @@ class FirebaseAuth {
     setPresistence = PersistenceService(auth: this);
     setLanguageService = LanguageService(auth: this);
     getLanguageService = LanguageGetService(auth: this);
-    firebaseBeforeAuthStateChangeService =
-        FirebaseBeforeAuthStateChangeService(this);
+    firebaseBeforeAuthStateChangeService = FirebaseBeforeAuthStateChangeService(
+      this,
+    );
     verifyTokenService = VerifyIdTokenService(auth: this);
   }
 
   /// Base function for http calls
   Future<HttpResponse> performRequest(
-      String endpoint, Map<String, dynamic> body) async {
+    String endpoint,
+    Map<String, dynamic> body,
+  ) async {
     //log(apiKey.toString());
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:$endpoint',
-      {
-        if (apiKey != 'your_api_key') 'key': apiKey,
-      },
+      {if (apiKey != 'your_api_key') 'key': apiKey},
     );
 
-    final response =
-        await httpClient.post(url, body: json.encode(body), headers: {
-      if (accessToken != null) 'Authorization': 'Bearer $accessToken',
-      'Content-Type': 'application/json',
-    });
+    final response = await httpClient.post(
+      url,
+      body: json.encode(body),
+      headers: {
+        if (accessToken != null) 'Authorization': 'Bearer $accessToken',
+        'Content-Type': 'application/json',
+      },
+    );
 
     if (response.statusCode != 200) {
       final error = json.decode(response.body)['error'];
@@ -343,7 +347,9 @@ class FirebaseAuth {
 
   /// Sign in with email and password
   Future<UserCredential?> signInWithEmailAndPassword(
-      String email, String password) {
+    String email,
+    String password,
+  ) {
     return emailPassword.signIn(email, password);
   }
 
@@ -361,19 +367,24 @@ class FirebaseAuth {
     assert(serviceAccount != null, 'Service Account cannot be null');
     assert(generateCustomToken != null, 'Custom token cannot be null');
 
-    String token =
-        await generateCustomToken!.generateSignInJwt(serviceAccount!, uid: uid);
+    String token = await generateCustomToken!.generateSignInJwt(
+      serviceAccount!,
+      uid: uid,
+    );
     return customToken.signInWithCustomToken(token);
   }
 
   ///sign in with credentials
   Future<Future<Object?>> signInWithCredential(
-      AuthCredential credential) async {
+    AuthCredential credential,
+  ) async {
     if (credential is EmailAuthCredential) {
       return signInWithEmailAndPassword(credential.email, credential.password);
     } else if (credential is PhoneAuthCredential) {
       return signInWithPhoneNumber(
-          credential.verificationId, credential.smsCode as ApplicationVerifier);
+        credential.verificationId,
+        credential.smsCode as ApplicationVerifier,
+      );
     } else if (credential is OAuthCredential) {
       return signInWithPopup(credential.providerId as AuthProvider, clientId);
     } else {
@@ -458,7 +469,10 @@ class FirebaseAuth {
 
   ///sign in redirect
   Future<UserCredential?> signInWithRedirect(
-      String redirectUri, String idToken, String providerId) async {
+    String redirectUri,
+    String idToken,
+    String providerId,
+  ) async {
     try {
       return await signInRedirect.signInWithRedirect(
         redirectUri,
@@ -477,7 +491,10 @@ class FirebaseAuth {
   ///update user info
 
   Future<void> updateUserInformation(
-      String userId, String idToken, Map<String, dynamic> userData) async {
+    String userId,
+    String idToken,
+    Map<String, dynamic> userData,
+  ) async {
     try {
       await updateUserService.updateCurrentUser(userId, idToken, userData);
     } catch (e) {
@@ -493,7 +510,9 @@ class FirebaseAuth {
   Future<void> deviceLanguage(String languageCode) async {
     try {
       await useDeviceLanguage.useDeviceLanguage(
-          currentUser!.idToken!, languageCode);
+        currentUser!.idToken!,
+        languageCode,
+      );
     } catch (e) {
       print('Use device language failed: $e');
       throw FirebaseAuthException(
@@ -524,39 +543,29 @@ class FirebaseAuth {
 
   ///Reload/Refresh user
   Future<User> reloadUser() {
-    return _reloadUser.reloadUser(
-      currentUser?.idToken,
-    );
+    return _reloadUser.reloadUser(currentUser?.idToken);
   }
 
   ///Send verification code to user email
   Future<void> sendEmailVerificationCode() {
-    return _sendEmailVerificationCode
-        .sendEmailVerificationCode(currentUser?.idToken);
+    return _sendEmailVerificationCode.sendEmailVerificationCode(
+      currentUser?.idToken,
+    );
   }
 
   ///Set language code
   Future<User> setLanguageCode(String languageCode) {
-    return _setLanguageCode.setLanguageCode(
-      currentUser?.idToken,
-      languageCode,
-    );
+    return _setLanguageCode.setLanguageCode(currentUser?.idToken, languageCode);
   }
 
   /// Unlink a provider
   Future<User> unlinkProvider(String providerId) {
-    return _unlinkProvider.unlinkProvider(
-      currentUser?.idToken,
-      providerId,
-    );
+    return _unlinkProvider.unlinkProvider(currentUser?.idToken, providerId);
   }
 
   /// Update password
   Future<User> updatePassword(String newPassowrd) {
-    return _updatePassword.updatePassword(
-      newPassowrd,
-      currentUser?.idToken,
-    );
+    return _updatePassword.updatePassword(newPassowrd, currentUser?.idToken);
   }
 
   // New methods with complete functionality Sprint 2 #16 to #21
@@ -601,18 +610,20 @@ class FirebaseAuth {
   }
 
   /// Sends a sign-in link to the specified email address using the provided ActionCodeSettings.
-  Future<void> sendSignInLinkToEmail(String email,
-      {ActionCodeSettings? actionCode}) {
-    return emailLink.sendSignInLinkToEmail(
-      email,
-      actionCode: actionCode,
-    );
+  Future<void> sendSignInLinkToEmail(
+    String email, {
+    ActionCodeSettings? actionCode,
+  }) {
+    return emailLink.sendSignInLinkToEmail(email, actionCode: actionCode);
   }
 
   ///link account credential
 
   Future<UserCredential?> linkAccountWithCredientials(
-      String redirectUri, String idToken, String providerId) async {
+    String redirectUri,
+    String idToken,
+    String providerId,
+  ) async {
     try {
       return await linkWithCredientialClass.linkWithCrediential(
         redirectUri,
@@ -648,10 +659,7 @@ class FirebaseAuth {
   }
 
   ///Update profile
-  Future<User> updateProfile(
-    String displayName,
-    String displayImage,
-  ) async {
+  Future<User> updateProfile(String displayName, String displayImage) async {
     return await _updateProfile.updateProfile(
       displayName,
       displayImage,
@@ -700,10 +708,15 @@ class FirebaseAuth {
 
   ///FirebaseUser phone number link
   Future<void> firebasePhoneNumberLinkMethod(
-      String phone, String verificationCode) async {
+    String phone,
+    String verificationCode,
+  ) async {
     try {
       await firebasePhoneNumberLink.linkPhoneNumber(
-          currentUser!.idToken!, phone, verificationCode);
+        currentUser!.idToken!,
+        phone,
+        verificationCode,
+      );
     } catch (e) {
       log("error is $e");
       throw FirebaseAuthException(
@@ -726,7 +739,9 @@ class FirebaseAuth {
     //  log("access token is$accesToken");
     try {
       await firebaseDeleteUser.deleteUser(
-          currentUser!.idToken!, currentUser!.uid);
+        currentUser!.idToken!,
+        currentUser!.uid,
+      );
       FirebaseApp.instance.setCurrentUser(null);
       log('User Deleted ');
       return;
@@ -751,7 +766,7 @@ class FirebaseAuth {
     return await user?.getIdTokenResult();
   }
 
-/////////////////Firebase SignIn Anonymously /////////////////////////
+  /////////////////Firebase SignIn Anonymously /////////////////////////
 
   Future<UserCredential?> signInAnonymouslyMethod() async {
     try {
@@ -765,13 +780,19 @@ class FirebaseAuth {
     }
   }
 
-///////////////////////////////
+  ///////////////////////////////
   ///////////////////////////////
   Future<void> setPresistanceMethod(
-      String presistanceType, String databaseName) {
+    String presistanceType,
+    String databaseName,
+  ) {
     try {
-      return setPresistence.setPersistence(currentUser!.uid,
-          currentUser!.idToken!, presistanceType, databaseName);
+      return setPresistence.setPersistence(
+        currentUser!.uid,
+        currentUser!.idToken!,
+        presistanceType,
+        databaseName,
+      );
     } catch (e) {
       print('Failed Set Persistence: $e');
       throw FirebaseAuthException(
@@ -781,11 +802,15 @@ class FirebaseAuth {
     }
   }
 
-/////////////////
+  /////////////////
   Future<void> setLanguageCodeMethod(String languageCode, String dataBaseName) {
     try {
       return setLanguageService.setLanguagePreference(
-          currentUser!.uid, currentUser!.idToken!, languageCode, dataBaseName);
+        currentUser!.uid,
+        currentUser!.idToken!,
+        languageCode,
+        dataBaseName,
+      );
     } catch (e) {
       print('Failed Set Language: $e');
       throw FirebaseAuthException(
@@ -799,7 +824,10 @@ class FirebaseAuth {
   Future<void> getLanguageCodeMethod(String databaseName) {
     try {
       return getLanguageService.getLanguagePreference(
-          currentUser!.uid, currentUser!.idToken!, databaseName);
+        currentUser!.uid,
+        currentUser!.idToken!,
+        databaseName,
+      );
     } catch (e) {
       // print('Failed to Get Set Language: $e');
       throw FirebaseAuthException(
@@ -835,8 +863,8 @@ class FirebaseAuth {
   ///fetch signin methods
   Future<List<String>> fetchSignInMethodsForEmail(String email) async {
     try {
-      List<String> methods =
-          await fetchSignInMethods.fetchSignInMethodsForEmail(email);
+      List<String> methods = await fetchSignInMethods
+          .fetchSignInMethodsForEmail(email);
       return methods;
     } catch (e) {
       print('Fetch sign-in methods failed: $e');
@@ -876,7 +904,9 @@ class FirebaseAuth {
   ///create user email
 
   Future<UserCredential> createUserWithEmailAndPassword(
-      String email, String password) {
+    String email,
+    String password,
+  ) {
     return createUserWithEmailAndPasswordService.create(email, password);
   }
 
@@ -895,7 +925,9 @@ class FirebaseAuth {
   Future<void> confirmPasswordReset(String oobCode, String newPassword) async {
     try {
       await confirmPasswordResetService.confirmPasswordReset(
-          oobCode, newPassword);
+        oobCode,
+        newPassword,
+      );
     } catch (e) {
       throw FirebaseAuthException(
         code: 'confirm-password-reset-error',
@@ -927,7 +959,8 @@ class FirebaseAuth {
 
   ///getmulti
   Future<multi_factor.MultiFactorResolver> getMultiFactorResolver(
-      multi_factor.MultiFactorError error) async {
+    multi_factor.MultiFactorError error,
+  ) async {
     try {
       return await multiFactorService.getMultiFactorResolver(error);
     } catch (e) {
@@ -968,8 +1001,9 @@ class FirebaseAuth {
       return await verifyTokenService.verifyIdToken(idToken);
     } catch (e) {
       throw FirebaseAuthException(
-          code: 'token-verification-failed',
-          message: 'Failed to verify ID token: ${e.toString()}');
+        code: 'token-verification-failed',
+        message: 'Failed to verify ID token: ${e.toString()}',
+      );
     }
   }
 }

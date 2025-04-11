@@ -22,6 +22,62 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
 
   bool isLoading = false;
 
+  /// Signs in a user with Google and links the account to Firebase.
+  ///
+  /// This function supports both web and mobile platforms and adapts the
+  /// sign-in flow accordingly.
+  ///
+  /// ---
+  ///
+  /// 💻 **Web Flow**:
+  /// - Uses **Google Identity Services (GIS)** for OAuth2 authentication.
+  /// - Loads the GIS SDK dynamically.
+  /// - Initializes a `TokenClient` with `client_id`, scopes, and callback functions.
+  /// - Upon successful OAuth, links the received `access_token` with Firebase.
+  /// - Handles errors via `error_callback`.
+  ///
+  /// 📱 **Mobile Flow**:
+  /// - Uses the `google_sign_in` Flutter plugin.
+  /// - Prompts the user to select a Google account.
+  /// - Retrieves the `accessToken` and `idToken` after successful authentication.
+  /// - Links the `accessToken` with Firebase using a custom linking method.
+  ///
+  /// ---
+  ///
+  /// ⚙️ **Requirements**:
+  /// - **Web**:
+  ///   - A valid OAuth 2.0 `client_id` from Google Developer Console (of type `Web application`).
+  ///   - GIS JavaScript SDK properly loaded.
+  ///   - Allowed redirect URI (e.g., `http://localhost` during development).
+  /// - **Mobile**:
+  ///   - The `google_sign_in` package must be configured with the correct `client_id`
+  ///     in the `google-services.json` / `GoogleService-Info.plist`.
+  ///   - The `FirebaseApp.firebaseAuth?.linkAccountWithCredientials` method must be
+  ///     implemented to accept an access token and link to Firebase with the provider ID (`google.com`).
+  ///
+  /// 🧪 **Note**:
+  /// This implementation assumes you have custom Firebase logic to handle
+  /// linking accounts via access tokens. You may replace
+  /// `linkAccountWithCredientials()` with Firebase's native methods like
+  /// `signInWithCredential()` using `GoogleAuthProvider.credential()`,
+  /// if you're using the default Firebase SDK.
+  ///
+  /// ---
+  ///
+  /// 🧾 **Returns**:
+  /// - A [User] object if sign-in and linking succeed.
+  /// - `null` if the process is cancelled or an error occurs.
+  ///
+  /// 📣 **Side Effects**:
+  /// - Uses `BotToast.showText()` to show status and error messages.
+  /// - Logs debug messages with `log()`.
+  /// - Navigates to `HomeScreen` after successful linking.
+  ///
+  /// ---
+  ///
+  /// 🔐 Make sure to:
+  /// - Replace the placeholder `client_id` with your actual Google Client ID.
+  /// - Ensure that Firebase is correctly initialized on both platforms.
   Future<void> signInWithGoogle() async {
     setState(() {
       isLoading = true;
