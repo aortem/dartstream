@@ -10,7 +10,7 @@ environment:
 
 workspace:
   - packages/tooling
-  - packages/standard/standard_engine
+  - packages/standard/standard_engine/
   - packages/standard/standard_extensions/auth/base
   - packages/standard/standard_extensions/auth/providers/auth0
   - packages/standard/standard_extensions/auth/providers/cognito

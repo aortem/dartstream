@@ -1,6 +1,6 @@
 #This pubspec file is used to import our standard features tooling.
 name: ds_dartstream_tooling
-description: Core Testing Components Within Larger DartStream Ecosystem.
+description: Core Testing Components For Dartstream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none

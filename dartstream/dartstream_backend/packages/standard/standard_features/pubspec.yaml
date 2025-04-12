@@ -1,5 +1,5 @@
 #This pubspec file is used to import our standard features library.
-name: ds_dartstream_standard
+name: ds_dartstream_standard_features
 description: Packages for our standard features - maintained by the Dart team.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream

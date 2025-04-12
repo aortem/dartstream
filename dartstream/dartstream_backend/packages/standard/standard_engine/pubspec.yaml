@@ -1,16 +1,13 @@
-#This pubspec file imports is used for any dependencies for standard Dartstream features.
-#This works for both mobile and web.
-name: ds_dartstream__brian_to_name
-description: Packages for our standard features - maintained by the Dart team.
+# The Dartstream Code Engine
+name: ds_dartstream_standard_engine
+description: The Core Engine For Dartstream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
-publish_to: none
 
 environment:
  sdk: ^3.7.2
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-
-# STANDARD PACKAGES - Built By The Dart Team
-#  ds_standard_features: ^0.0.2
+  ds_tools_testing: ^0.0.2
+  ds_standard_features: ^0.0.3
