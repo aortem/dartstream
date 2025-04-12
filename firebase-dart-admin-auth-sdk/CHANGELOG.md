@@ -1,3 +1,5 @@
+# Changelog
+
 ## 0.0.1
 
 - fix and refactor unused code and comments in link_with_credientials.dart.
