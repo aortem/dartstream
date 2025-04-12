@@ -5,15 +5,12 @@ release:
   stage: release
   image:
     name: alpine/git
-    entrypoint: ["/bin/sh", "-c"]
+    entrypoint: ["/bin/bash", "-c"]   # Changed from /bin/sh to /bin/bash
   before_script:
     - apk add --no-cache bash jq curl
   script:
     - |
-      # Define the list of project directories relative to the root.
-      # Based on your dartstream file tree, for example:
-      #   - "dartstream/dartstream_backend" is the correct level for backend
-      # You can add additional project folders here.
+      # Define the list of project directories as a bash array.
       PROJECT_DIRS=("dartstream/dartstream_backend" "folder2" "folder3")
 
       # Save the current working directory to return later.
@@ -44,7 +41,7 @@ release:
         echo "Files in $(pwd):"
         ls -la
 
-        # Fetch tags.
+        # Fetch git tags.
         git fetch --tags
 
         # Extract the current version from pubspec.yaml.
