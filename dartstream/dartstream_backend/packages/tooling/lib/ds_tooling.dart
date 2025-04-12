@@ -5,4 +5,4 @@ library ds_tooling;
 
 // Export DS Tools Testing Libraries
 export 'package:ds_tools_testing/ds_tools_testing.dart';
-export 'package:ds_dartstream_tooling/ds_tools_testing.dart';
+export 'package:ds_tools_general/ds_tools_general.dart';
