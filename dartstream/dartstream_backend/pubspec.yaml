@@ -2,7 +2,7 @@
 name: ds_dartstream
 publish_to: none
 description: A starting point for Dart libraries or applications.
-version: 1.0.0-pre+1
+version: 0.0.1-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
