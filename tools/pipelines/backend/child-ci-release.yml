@@ -5,54 +5,53 @@ release:
   stage: release
   image:
     name: alpine/git
-    entrypoint: ["/bin/bash", "-c"]   # Change to bash
+    entrypoint: ["/bin/bash", "-c"]
   before_script:
-    - apk add --no-cache bash jq curl
+    - apk add --no-cache bash jq curl findutils
   script:
     - |
-      # Define the list of project directories relative to the root.
-      PROJECT_DIRS=("dartstream/dartstream_backend" "folder2" "folder3")
+      #!/bin/bash
+      set -e
+      echo "Using bash version: $BASH_VERSION"
 
-      # Save the current working directory to return later.
+      # Use find to identify candidate project directories.
+      # This command finds all pubspec.yaml files and extracts their directories.
+      PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
+      echo "Found candidate project directories:"
+      echo "$PROJECT_DIRS"
+
+      # Save the current working directory (root directory).
       ROOT_DIR=$(pwd)
 
-      for dir in "${PROJECT_DIRS[@]}"; do
+      # Iterate over each candidate project directory.
+      for dir in $PROJECT_DIRS; do
         echo "=========================================="
         echo "Processing directory: ${dir}"
         
-        # Check if the directory exists.
-        if [ ! -d "${dir}" ]; then
-          echo "Directory ${dir} does not exist. Skipping."
+        # Check that required file CHANGELOG.md exists in this directory.
+        if [ ! -f "${dir}/CHANGELOG.md" ]; then
+          echo "Required file CHANGELOG.md not found in ${dir}, skipping."
           continue
         fi
 
-        # Change into the project folder and print the current working directory.
+        # Move into the project directory.
         cd "${dir}"
         echo "Current working directory: $(pwd)"
-
-        # Check for required files.
-        if [ ! -f "pubspec.yaml" ] || [ ! -f "CHANGELOG.md" ]; then
-          echo "Required files (pubspec.yaml or CHANGELOG.md) not found in ${dir}, skipping."
-          cd "${ROOT_DIR}" || exit 1
-          continue
-        fi
-
-        # List files for debugging.
         echo "Files in $(pwd):"
         ls -la
 
-        # Fetch tags.
+        # Fetch git tags.
         git fetch --tags
 
-        # Extract the current version from pubspec.yaml.
+        # Extract version from pubspec.yaml.
         VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
         echo "Version from pubspec.yaml: $VERSION"
 
-        # Extract the latest version from CHANGELOG.md.
+        # Extract latest version from CHANGELOG.md.
         CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
         echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        # Query pub.dev for the latest published version.
+        # Query pub.dev for latest published version.
         PUB_PACKAGE_NAME=$(grep '^name:' pubspec.yaml | sed 's/name: //')
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
         PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
@@ -101,7 +100,7 @@ release:
         echo "Release notes extracted for version $VERSION:"
         echo "$RELEASE_NOTES"
 
-        # Create a GitLab release using the Releases API.
+        # Create a GitLab release via the Releases API.
         echo "Creating GitLab release for tag v$VERSION"
         curl --request POST \
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
