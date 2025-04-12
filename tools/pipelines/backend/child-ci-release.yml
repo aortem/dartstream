@@ -5,115 +5,81 @@ release:
   stage: release
   image:
     name: alpine/git
-    entrypoint: ["/bin/bash", "-c"]   # Changed from /bin/sh to /bin/bash
+    entrypoint: ["/bin/sh", "-c"]
   before_script:
     - apk add --no-cache bash jq curl
   script:
     - |
-      # Define the list of project directories as a bash array.
-      PROJECT_DIRS=("dartstream/dartstream_backend" "folder2" "folder3")
+      # Change into the project folder and fetch tags.
+      cd firebase-dart-admin-auth-sdk
+      git fetch --tags
 
-      # Save the current working directory to return later.
-      ROOT_DIR=$(pwd)
+      # Extract the current version from pubspec.yaml.
+      VERSION="$(grep '^version:' pubspec.yaml | sed 's/version: //')"
+      echo "Version from pubspec.yaml: $VERSION"
 
-      for dir in "${PROJECT_DIRS[@]}"; do
-        echo "=========================================="
-        echo "Processing directory: ${dir}"
-        
-        # Check if the directory exists.
-        if [ ! -d "${dir}" ]; then
-          echo "Directory ${dir} does not exist. Skipping."
-          continue
-        fi
+      # Extract the latest version from CHANGELOG.md.
+      CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
+      echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        # Change into the project folder and print the current working directory for debugging.
-        cd "${dir}"
-        echo "Current working directory: $(pwd)"
+      # Query pub.dev for the latest published version.
+      PUB_PACKAGE_NAME="$(grep '^name:' pubspec.yaml | sed 's/name: //')"
+      PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
+      PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
+      echo "Latest version on pub.dev: $PUB_DEV_LATEST"
 
-        # Check for required files.
-        if [ ! -f "pubspec.yaml" ] || [ ! -f "CHANGELOG.md" ]; then
-          echo "Required files (pubspec.yaml or CHANGELOG.md) not found in ${dir}, skipping."
-          cd "${ROOT_DIR}" || exit 1
-          continue
-        fi
+      # Get the latest GitLab release (using the Releases API).
+      LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
+      echo "Latest GitLab release tag: ${LATEST_RELEASE}"    
 
-        # Print out the file list for debugging.
-        echo "Files in $(pwd):"
-        ls -la
+      # Get the latest Git tag (assumes tags are prefixed with "v").
+      LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+      if [ -z "$LATEST_TAG" ]; then
+        echo "No existing tag found."
+      else
+        echo "Latest Git tag: $LATEST_TAG"
+      fi
 
-        # Fetch git tags.
-        git fetch --tags
+      # (Optional) Delete the local tag if it exists.
+      # if git tag | grep -q "^v$VERSION$"; then
+      # echo "Local tag v$VERSION exists. Deleting it."
+      # git tag -d "v$VERSION"
+      # fi
 
-        # Extract the current version from pubspec.yaml.
-        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
-        echo "Version from pubspec.yaml: $VERSION"
-
-        # Extract the latest version from CHANGELOG.md.
-        CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
-        echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
-
-        # Query pub.dev for the latest published version.
-        PUB_PACKAGE_NAME=$(grep '^name:' pubspec.yaml | sed 's/name: //')
-        PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
-        PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
-        echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
-
-        # Get the latest GitLab release (using the Releases API).
-        LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
-        echo "Latest GitLab release tag: ${LATEST_RELEASE}"
-
-        # Get the latest Git tag (assumes tags are prefixed with "v").
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        if [ -z "$LATEST_TAG" ]; then
-          echo "No existing Git tag found."
-        else
-          echo "Latest Git tag: $LATEST_TAG"
-        fi
-
-        # Determine if the version has been bumped.
-        if [ "v$VERSION" != "$LATEST_TAG" ] && [ "$VERSION" != "$PUB_DEV_LATEST" ]; then
-          echo "New version detected in ${dir}. Proceeding with auto-release."
-        else
-          echo "Version has not been bumped in ${dir}."
-          echo "Printing code changes for manual review:"
-          CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
-          echo "Code changes since $LATEST_TAG:"
-          echo "$CODE_CHANGES"
-          cd "${ROOT_DIR}" || exit 1
-          continue
-        fi
-
-        # Configure git.
-        git config --global user.email "${_GIT_USER}"
-        git config --global user.name "${_GIT_USER}"
-
-        # Set the remote URL (ensure this URL is correct for the current repository).
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
-
-        # Create and push the Git tag.
-        echo "Creating Git tag: v$VERSION"
-        git tag "v$VERSION"
-        echo "Pushing Git tag v$VERSION to origin"
-        git push origin "v$VERSION"
-
-        # Extract release notes from CHANGELOG.md.
-        RELEASE_NOTES=$(awk '/^## \['"$VERSION"'\]/ {flag=1; next} /^## / {if(flag){exit}} flag' CHANGELOG.md)
-        echo "Release notes extracted for version $VERSION:"
-        echo "$RELEASE_NOTES"
-
-        # Create a GitLab release via the Releases API.
-        echo "Creating GitLab release for tag v$VERSION"
-        curl --request POST \
-          --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          --data "name=Release v$VERSION" \
-          --data "tag_name=v$VERSION" \
-          --data-urlencode "description=${RELEASE_NOTES}" \
-          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
-
-        # Return to the root directory.
-        cd "${ROOT_DIR}" || exit 1
-      done
-
-      echo "All directories processed."
+      # Determine if the version has been bumped.
+      # If current version is different from both the latest tag and pub.dev,
+      # then we assume the version has been bumped already and we proceed.
+      if [ "v$VERSION" != "$LATEST_TAG" ] && [ "$VERSION" != "$PUB_DEV_LATEST" ]; then
+        echo "New version detected. Proceeding with auto-release."
+      else
+        echo "Version has not been bumped."
+        echo "Printing code changes for manual review so you can update the changelog."
+        CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
+      # CODE_CHANGES=$(git diff "$LATEST_TAG" HEAD)  This provides the full code output.
+        echo "Code changes since $LATEST_TAG:"
+        echo "$CODE_CHANGES"
+        exit 0
+      fi
+      
+    - git config --global user.email "${_GIT_EMAIL}"
+    - git config --global user.name "${_GIT_USER}"
+    - git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
+    - git tag "v$VERSION"
+    - git push origin "v$VERSION"
+    - |
+      # Extract release notes for the current version from CHANGELOG.md.
+      # This looks for a header like "## [0.0.3-pre]" (without the "v") and prints
+      # all lines until the next header that starts with "## ".
+      RELEASE_NOTES=$(awk '/^## \['"$VERSION"'\]/ {flag=1; next} /^## / {if(flag){exit}} flag' CHANGELOG.md)
+      echo "Release notes extracted:"
+      echo "$RELEASE_NOTES"
+    - |
+      # Create a GitLab release using the Releases API.
+      curl --request POST \
+        --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+        --data "name=Release v$VERSION" \
+        --data "tag_name=v$VERSION" \
+        --data-urlencode "description=${RELEASE_NOTES}" \
+        "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
