@@ -9,7 +9,7 @@ environment:
  sdk: ^3.7.2
 
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.3-pre # Include the Firebase Auth SDK
+  firebase_dart_admin_auth_sdk: ^0.0.1
   ds_auth_base:
     path: ../../base
   ds_standard_features: ^0.0.3

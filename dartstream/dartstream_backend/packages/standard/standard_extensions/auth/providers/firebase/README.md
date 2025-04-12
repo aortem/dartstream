@@ -18,9 +18,9 @@ A DartStream authentication provider implementing Firebase Authentication servic
 ```yaml
 dependencies:
 
-    # Firebase Admin Auth SDK
+   # Firebase Admin Auth SDK
 
-   firebase_dart_admin_auth_sdk: ^0.0.1-pre+10
+   firebase_dart_admin_auth_sdk: ^0.0.1  
 
    # Base authentication package
 
