@@ -1,5 +1,4 @@
-#This pubspec file imports is used for any dependencies for standard Dartstream features.
-#This works for both mobile and web.
+#This pubspec file is used to import our standard features library.
 name: ds_dartstream_standard
 description: Packages for our standard features - maintained by the Dart team.
 version: 0.0.1
