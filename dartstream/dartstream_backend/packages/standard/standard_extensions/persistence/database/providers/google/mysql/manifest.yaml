@@ -1,0 +1,7 @@
+name: "GoogleMySQLDatabase"
+version: "0.1.0"
+description: "MySQL database provider for DartStream using Google Cloud SQL"
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "ds_mysql_database.dart"

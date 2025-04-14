@@ -6,5 +6,7 @@ repository: https://github.com/aortem/dartstream
 environment:
   sdk: ^3.7.2
 
+resolution: workspace
+
 dependencies:
   ds_standard_features: ^0.0.1-pre+11

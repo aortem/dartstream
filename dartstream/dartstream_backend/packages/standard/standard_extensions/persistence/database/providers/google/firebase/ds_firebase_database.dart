@@ -1,9 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import '../../base/ds_database_provider.dart';
+import '../../../base/ds_database_provider.dart';
 import 'dart:async';
 import 'package:logging/logging.dart';
 
 /// Firebase Firestore implementation of the DSDatabaseProvider
+/// Integrates DartStream with Google's Firebase Firestore service
 class DSFirebaseDatabase implements DSDatabaseProvider {
   /// Firebase Firestore instance
   late FirebaseFirestore _firestore;
@@ -246,7 +247,7 @@ class DSFirebaseDatabase implements DSDatabaseProvider {
     );
   }
 
-  /// Count documents matching criteria
+  /// Count documents matching criteria (Firebase-specific extension)
   Future<int?> countDocuments(
     String collection, {
     Map<String, dynamic> where = const {},
@@ -266,7 +267,7 @@ class DSFirebaseDatabase implements DSDatabaseProvider {
     }
   }
 
-  /// Create or update a document with specified ID
+  /// Create or update a document with specified ID (Firebase-specific extension)
   Future<void> setDocument(
     String collection,
     String id,
@@ -285,7 +286,7 @@ class DSFirebaseDatabase implements DSDatabaseProvider {
     }
   }
 
-  /// Batch creates multiple documents
+  /// Batch creates multiple documents (Firebase-specific extension)
   Future<List<String>> createDocuments(
     String collection,
     List<Map<String, dynamic>> dataList,
@@ -315,7 +316,7 @@ class DSFirebaseDatabase implements DSDatabaseProvider {
     }
   }
 
-  /// Listen to document changes
+  /// Listen to document changes (Firebase-specific extension)
   Stream<Map<String, dynamic>?> documentStream(String collection, String id) {
     _checkInitialized('documentStream');
     return _firestore
@@ -325,7 +326,7 @@ class DSFirebaseDatabase implements DSDatabaseProvider {
         .map((snapshot) => snapshot.exists ? snapshot.data() : null);
   }
 
-  /// Listen to query results
+  /// Listen to query results (Firebase-specific extension)
   Stream<List<Map<String, dynamic>>> queryStream(
     String collection, {
     required Map<String, dynamic> where,
