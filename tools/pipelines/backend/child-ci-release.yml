@@ -4,10 +4,10 @@ stages:
 release:
   stage: release
   image:
-    name: alpine/git
+    name: debian:bullseye-slim
     entrypoint: ["/bin/bash", "-c"]
   before_script:
-    - apk add --no-cache bash jq curl findutils
+    - apt-get update && apt-get install -y curl jq git findutil
   script:
     - |
       #!/bin/bash
