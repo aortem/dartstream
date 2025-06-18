@@ -1,0 +1,10 @@
+name: ds_workspace
+version: 0.0.1
+description: A package for DartStream project-wide configurations and scripts.
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.8.1
+
+dev_dependencies:
+  melos: ^5.3.0
