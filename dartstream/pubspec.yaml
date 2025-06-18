@@ -5,7 +5,7 @@ version: 1.0.0-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
- sdk: "^3.3.0"
+ sdk: ^3.8.1
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:

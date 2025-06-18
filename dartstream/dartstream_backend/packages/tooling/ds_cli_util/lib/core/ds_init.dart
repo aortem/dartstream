@@ -56,7 +56,7 @@ description: A new DartStream project created by DS CLI.
 version: 0.1.0
 
 environment:
-  sdk: '>=2.12.0 <3.0.0' # Adjust based on your compatibility
+  sdk: ^3.8.1 # Adjust based on your compatibility
 
 dependencies:
   # Add your project dependencies here, for example:
