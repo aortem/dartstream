@@ -7,8 +7,8 @@ release:
   before_script:
     - apk add --no-cache bash curl git jq findutils
   script:
-    - |
-      #!/bin/bash
+    - >
+      bash -c '
       set -e
       echo "Using bash version: $BASH_VERSION"
 
@@ -41,7 +41,13 @@ release:
 
         PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
-        PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r ".latest.version")
+        PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
+        if echo "$PUB_RESPONSE" | jq empty 2>/dev/null; then
+          PUB_DEV_LATEST=$(echo "$PUB_RESPONSE" | jq -r ".latest.version")
+        else
+          echo "⚠️  Failed to parse pub.dev response or package not published yet."
+          PUB_DEV_LATEST="none"
+        fi
         echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
 
         LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
@@ -51,7 +57,7 @@ release:
         LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
         echo "Latest Git tag: $LATEST_TAG"
 
-        if [ "v$VERSION" != "$LATEST_TAG" ] && [ "$VERSION" != "$PUB_DEV_LATEST" ]; then
+        if [ "v$VERSION" != "$LATEST_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
           echo "New version detected in ${dir}. Proceeding with auto-release."
         else
           echo "Version has not been bumped in ${dir}."
@@ -88,5 +94,6 @@ release:
       done
 
       echo "All directories processed."
+      '
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
