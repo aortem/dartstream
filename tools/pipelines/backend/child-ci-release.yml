@@ -3,116 +3,90 @@ stages:
 
 release:
   stage: release
-  image:
-    name: alpine/git
-    entrypoint: ["/bin/bash", "-c"]
+  image: alpine:latest
   before_script:
-    - apk add --no-cache bash jq curl findutils
+    - apk add --no-cache bash curl git jq findutils
   script:
-    - |
-      #!/bin/bash
-      set -e
-      echo "Using bash version: $BASH_VERSION"
+    - bash -c '
+        set -e
+        echo "Using bash version: $BASH_VERSION"
 
-      # Use find to identify candidate project directories.
-      # This command finds all pubspec.yaml files and extracts their directories.
-      PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
-      echo "Found candidate project directories:"
-      echo "$PROJECT_DIRS"
+        PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
+        echo "Found candidate project directories:"
+        echo "$PROJECT_DIRS"
 
-      # Save the current working directory (root directory).
-      ROOT_DIR=$(pwd)
+        ROOT_DIR=$(pwd)
 
-      # Iterate over each candidate project directory.
-      for dir in $PROJECT_DIRS; do
-        echo "=========================================="
-        echo "Processing directory: ${dir}"
-        
-        # Check that required file CHANGELOG.md exists in this directory.
-        if [ ! -f "${dir}/CHANGELOG.md" ]; then
-          echo "Required file CHANGELOG.md not found in ${dir}, skipping."
-          continue
-        fi
+        for dir in $PROJECT_DIRS; do
+          echo "=========================================="
+          echo "Processing directory: ${dir}"
 
-        # Move into the project directory.
-        cd "${dir}"
-        echo "Current working directory: $(pwd)"
-        echo "Files in $(pwd):"
-        ls -la
+          if [ ! -f "${dir}/CHANGELOG.md" ]; then
+            echo "Required file CHANGELOG.md not found in ${dir}, skipping."
+            continue
+          fi
 
-        # Fetch git tags.
-        git fetch --tags
+          cd "${dir}"
+          echo "Current working directory: $(pwd)"
+          ls -la
 
-        # Extract version from pubspec.yaml.
-        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //')
-        echo "Version from pubspec.yaml: $VERSION"
+          git fetch --tags
 
-        # Extract latest version from CHANGELOG.md.
-        CHANGELOG_VERSION=$(grep -m 1 '^## ' CHANGELOG.md | sed 's/^## *//; s/ .*//')
-        echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
+          VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //")
+          echo "Version from pubspec.yaml: $VERSION"
 
-        # Query pub.dev for latest published version.
-        PUB_PACKAGE_NAME=$(grep '^name:' pubspec.yaml | sed 's/name: //')
-        PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
-        PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r '.latest.version')
-        echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
+          CHANGELOG_VERSION=$(grep -m 1 "^## " CHANGELOG.md | sed "s/^## *//; s/ .*//")
+          echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        # Get the latest GitLab release (using the Releases API).
-        LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
-        echo "Latest GitLab release tag: ${LATEST_RELEASE}"
+          PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
+          PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
+          PUB_DEV_LATEST=$(curl --silent "$PUB_API_URL" | jq -r ".latest.version")
+          echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
 
-        # Get the latest Git tag (assumes tags are prefixed with "v").
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        if [ -z "$LATEST_TAG" ]; then
-          echo "No existing Git tag found."
-        else
+          LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r ".[0].tag_name")
+          echo "Latest GitLab release tag: ${LATEST_RELEASE}"
+
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
           echo "Latest Git tag: $LATEST_TAG"
-        fi
 
-        # Determine if the version has been bumped.
-        if [ "v$VERSION" != "$LATEST_TAG" ] && [ "$VERSION" != "$PUB_DEV_LATEST" ]; then
-          echo "New version detected in ${dir}. Proceeding with auto-release."
-        else
-          echo "Version has not been bumped in ${dir}."
-          echo "Printing code changes for manual review:"
-          CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
-          echo "Code changes since $LATEST_TAG:"
-          echo "$CODE_CHANGES"
-          cd "${ROOT_DIR}" || exit 1
-          continue
-        fi
+          if [ "v$VERSION" != "$LATEST_TAG" ] && [ "$VERSION" != "$PUB_DEV_LATEST" ]; then
+            echo "New version detected in ${dir}. Proceeding with auto-release."
+          else
+            echo "Version has not been bumped in ${dir}."
+            echo "Printing code changes for manual review:"
+            CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
+            echo "$CODE_CHANGES"
+            cd "$ROOT_DIR" || exit 1
+            continue
+          fi
 
-        # Configure git.
-        git config --global user.email "${_GIT_USER}"
-        git config --global user.name "${_GIT_USER}"
+          git config --global user.email "${_GIT_USER}"
+          git config --global user.name "${_GIT_USER}"
 
-        # Set the remote URL for the current repository.
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
+          git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
 
-        # Create and push the Git tag.
-        echo "Creating Git tag: v$VERSION"
-        git tag "v$VERSION"
-        echo "Pushing Git tag v$VERSION to origin"
-        git push origin "v$VERSION"
+          echo "Creating Git tag: v$VERSION"
+          git tag "v$VERSION"
+          echo "Pushing Git tag v$VERSION to origin"
+          git push origin "v$VERSION"
 
-        # Extract release notes from CHANGELOG.md.
-        RELEASE_NOTES=$(awk '/^## \['"$VERSION"'\]/ {flag=1; next} /^## / {if(flag){exit}} flag' CHANGELOG.md)
-        echo "Release notes extracted for version $VERSION:"
-        echo "$RELEASE_NOTES"
+          RELEASE_NOTES=$(awk "/^## \[$VERSION\]/ {flag=1; next} /^## / {if(flag){exit}} flag" CHANGELOG.md)
+          echo "Release notes extracted:"
+          echo "$RELEASE_NOTES"
 
-        # Create a GitLab release via the Releases API.
-        echo "Creating GitLab release for tag v$VERSION"
-        curl --request POST \
-          --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          --data "name=Release v$VERSION" \
-          --data "tag_name=v$VERSION" \
-          --data-urlencode "description=${RELEASE_NOTES}" \
-          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
+          echo "Creating GitLab release for tag v$VERSION"
+          curl --request POST \
+            --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+            --data "name=Release v$VERSION" \
+            --data "tag_name=v$VERSION" \
+            --data-urlencode "description=${RELEASE_NOTES}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 
-        # Return to the root directory.
-        cd "${ROOT_DIR}" || exit 1
-      done
+          cd "$ROOT_DIR" || exit 1
+        done
 
-      echo "All directories processed."
+        echo "All directories processed."
+      '
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
