@@ -33,7 +33,7 @@ release:
 
         git fetch --tags
 
-        VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //")
+        VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //" | tr -d '[:space:]')
         echo "Version from pubspec.yaml: $VERSION"
 
         CHANGELOG_VERSION=$(grep -m 1 "^## " CHANGELOG.md | sed "s/^## *//; s/ .*//")
