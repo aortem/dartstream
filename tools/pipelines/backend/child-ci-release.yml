@@ -71,7 +71,7 @@ release:
         git config --global user.email "${_GIT_USER}"
         git config --global user.name "${_GIT_USER}"
 
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/aortem-sdks/firebase-dart-admin-auth-sdk.git
+        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
 
         echo "Creating Git tag: v$VERSION"
         git tag "v$VERSION"
