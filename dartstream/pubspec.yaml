@@ -10,9 +10,6 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-# Multi Repository Dependencies
-  melos: ^5.2.2
-
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
 
