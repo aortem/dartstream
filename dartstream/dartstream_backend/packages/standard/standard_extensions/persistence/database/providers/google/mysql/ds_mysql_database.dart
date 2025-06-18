@@ -1,7 +1,8 @@
 import 'package:mysql1/mysql1.dart';
-import '../../base/ds_database_provider.dart';
+import './../../../base/ds_database_provider.dart';
 
 /// MySQL implementation of the DSDatabaseProvider
+/// Integrates DartStream with Google Cloud SQL for MySQL
 class DSMySQLDatabase implements DSDatabaseProvider {
   /// MySQL connection instance
   MySqlConnection? _connection;
@@ -40,7 +41,6 @@ class DSMySQLDatabase implements DSDatabaseProvider {
         user: username,
         password: password,
         timeout: Duration(seconds: config['timeout'] as int? ?? 30),
-        // Fixed: Renamed 'secure' to 'useSSL' to match ConnectionSettings parameter
         useSSL: config['secure'] as bool? ?? false,
       );
 

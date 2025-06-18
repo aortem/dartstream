@@ -1,7 +1,8 @@
 import 'package:postgres/postgres.dart';
-import '../../base/ds_database_provider.dart';
+import './../../../base/ds_database_provider.dart';
 
 /// PostgreSQL implementation of the DSDatabaseProvider
+/// Integrates DartStream with Google Cloud SQL for PostgreSQL
 class DSPostgresDatabase implements DSDatabaseProvider {
   /// PostgreSQL connection instance
   Connection? _connection;

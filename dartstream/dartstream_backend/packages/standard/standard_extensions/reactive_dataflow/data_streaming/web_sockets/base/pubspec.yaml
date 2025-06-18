@@ -1,0 +1,13 @@
+name: ds_websocket_base
+description: "Amazon authentication provider for Dartstream."
+version: "0.0.1-pre"
+repository: https://github.com/aortem/dartstream
+
+publish_to: none # Mark the package as non-publishable for local testing:
+
+environment:
+ sdk: ^3.7.2
+
+resolution: workspace
+
+entry_point: "lib/amazon_auth_provider.dart"

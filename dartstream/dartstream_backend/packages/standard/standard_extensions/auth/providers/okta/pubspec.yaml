@@ -8,6 +8,8 @@ publish_to: none # Mark the package as non-publishable for local testing:
 environment:
  sdk: ^3.8.1
 
+resolution: workspace
+
 dependencies:
   firebase_dart_admin_auth_sdk: ^0.0.1
   ds_auth_base:
