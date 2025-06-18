@@ -1,0 +1,18 @@
+site:
+  title: Dartstream Docs
+  start_page: dartstream::index.adoc
+
+content:
+  sources:
+    # 1) url: ..  ← use the parent folder (your repo root) as the Git repo
+    # 2) branches: HEAD  ← match whatever branch you have checked out locally
+    # 3) start_path  ← where inside the repo the component lives
+    - url: ../..
+      branches: HEAD
+      start_path: dartstream/docs/components/dartstream
+
+
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
