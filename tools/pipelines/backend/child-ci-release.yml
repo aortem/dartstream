@@ -7,7 +7,7 @@ release:
     name: debian:bullseye-slim
     entrypoint: ["/bin/bash", "-c"]
   before_script:
-    - apt-get update && apt-get install -y curl jq git findutil
+    - apt-get update && apt-get install -y curl jq git findutils
   script:
     - |
       #!/bin/bash
