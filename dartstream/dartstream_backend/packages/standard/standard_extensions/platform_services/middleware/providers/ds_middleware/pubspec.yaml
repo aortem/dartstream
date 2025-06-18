@@ -4,11 +4,7 @@ version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
 environment:
-<<<<<<< HEAD:dartstream/dartstream_backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/pubspec.yaml
  sdk: ^3.8.1
-=======
- sdk: ^3.8.1
->>>>>>> main:dartstream/dartstream_backend/packages/standard/extensions/middleware/provider/ds_middleware/pubspec.yaml
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:

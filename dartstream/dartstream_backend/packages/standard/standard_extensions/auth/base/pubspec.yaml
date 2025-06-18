@@ -4,11 +4,7 @@ version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
-<<<<<<< HEAD:dartstream/dartstream_backend/packages/standard/standard_extensions/auth/base/pubspec.yaml
  sdk: ^3.8.1 
-=======
- sdk: ^3.8.1
->>>>>>> main:dartstream/dartstream_backend/packages/standard/extensions/auth/base/pubspec.yaml
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
