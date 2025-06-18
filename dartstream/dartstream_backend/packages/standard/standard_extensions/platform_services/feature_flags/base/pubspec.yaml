@@ -7,7 +7,7 @@ repository: https://github.com/aortem/dartstream
 
 environment:
 <<<<<<< HEAD:dartstream/dartstream_backend/packages/standard/standard_extensions/platform_services/feature_flags/base/pubspec.yaml
- sdk: ^3.7.2
+ sdk: ^3.8.1
 =======
  sdk: ^3.8.1
 >>>>>>> main:dartstream/dartstream_backend/packages/standard/extensions/feature_flags/base/pubspec.yaml
