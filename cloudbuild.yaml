@@ -1,6 +1,6 @@
 # cloudbuild.yaml
 options:
-  logsBucket: gs://dartstream-pub-dev-pusblish
+  logsBucket: gs://dartstream-pub-dev-publish
 
 steps:
 - id: Create temporary token
