@@ -27,3 +27,18 @@ void main() {
     expect(find.text('1'), findsOneWidget);
   });
 }
+
+
+// 3️⃣ Service class to wrap your API
+class ApiService {
+//  final _auth = FirebaseAuth.instance;
+  final _baseUrl = 'https://YOUR_CLOUD_RUN_URL.a.run.app';
+
+  /// Get the current user’s ID token (forceRefresh: true if expired)
+  Future<String> _getIdToken() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      throw Exception('Not signed in');
+    }
+    return await user.getIdToken();
+  }
