@@ -1,3 +1,16 @@
+# Changelog
+
+## 0.0.2
+
+- fix and refactor unused code and comments in link_with_credientials.dart.
+- refactor signInWithGoogle() logic into a new sign_in_with_credential_view_model.dart for better separation of concerns.
+- add sign_in_with_credential_view_model.dart: Introduced a new view model with a comprehensive and platform-adaptive signInWithGoogle() method for both web and mobile.
+- add new sign_in_with_popup_screen.dart: New UI screen component likely supporting OAuth sign-in flow via popup.
+- Core SDK logic updates with significant changes made to lib/src/firebase_auth.dart:
+- refactor to improved credential linking and multi-platform sign-in flows.
+- minor updates to multi_factor_resolver.dart.
+- dependency Updates Updated one dependency in pubspec.yaml.
+
 ## 0.0.1
 
 - fix and refactor unused code and comments in link_with_credientials.dart.
@@ -54,7 +67,7 @@
 
 ## 0.0.1-pre+21
 
-- update SDK to 3.7.2
+- update SDK to 3.8.1
 
 ## 0.0.1-pre+20
 
