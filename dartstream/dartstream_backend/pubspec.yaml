@@ -1,9 +1,22 @@
-# This pubspec file is the root of the framework and contains all of the depedencies
+# Purpose:
+# https://dart.dev/tools/pub/workspaces
+
+  # This is the framework’s root
+  # Contains actual code and dependencies
+  # Uses the workspace: field to manually define subpackage paths (even though Dart doesn't support it natively yet outside experimental tooling)
+  # Is effectively the main “entry point” for developing and testing all backend features
+  # 🔹 Note: 
+    # The workspace: key is currently only recognized by experimental tooling or for organizational clarity. 
+    # Dart’s official tooling does not yet support it. 
+    # Provided here for documentation or internal tooling reference however dart pubc won’t act on it natively.
+  # [DartCodeAI](https://dartcodeai.com) will be integrated in a future state.   
+
+
 name: ds_dartstream
 publish_to: none
 description: A starting point for Dart libraries or applications.
 version: 0.0.1-pre+3
-# repository: https://github.com/my_org/my_repo
+repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ^3.8.1
