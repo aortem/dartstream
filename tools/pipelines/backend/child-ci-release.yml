@@ -31,7 +31,7 @@ release:
         echo "Current working directory: $(pwd)"
         ls -la
 
-        git fetch --tags
+        git fetch --prune --unshallow --tags
 
         VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //" | tr -d '[:space:]')
         echo "Version from pubspec.yaml: $VERSION"
