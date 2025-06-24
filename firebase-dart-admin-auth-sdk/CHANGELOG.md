@@ -3,6 +3,8 @@
 ## 0.0.2
 
 - Bump Dart Version to 3.8.1
+- Formatting Changes To Satify Dart Formatter
+- Update BSD-3 License
 
 ## 0.0.1
 
