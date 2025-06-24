@@ -142,16 +142,17 @@ validate_format:
   image: dart:stable
   script:
     - echo "🔍 Fetching Dart deps…"
+    - cd firebase-dart-admin-auth-sdk
     - dart pub get
 
-    # if you have a Flutter example, fetch its deps too:
-    - |
-      if [ -d example/firebase-dart-admin-auth-sdk-flutter-mobile-app ]; then
-        echo "🔍 Fetching Flutter example deps…"
-        cd example/firebase-dart-admin-auth-sdk-flutter-mobile-app
-        flutter pub get
-        cd - >/dev/null
-      fi
+    # # if you have a Flutter example, fetch its deps too:
+    # - |
+    #   if [ -d example/firebase-dart-admin-auth-sdk-flutter-mobile-app ]; then
+    #     echo "🔍 Fetching Flutter example deps…"
+    #     cd example/firebase-dart-admin-auth-sdk-flutter-mobile-app
+    #     flutter pub get
+    #     cd - >/dev/null
+    #   fi
 
     - echo "🔧 Running pub.dev/Pana–style format check…"
     # silent check, exit code tells us pass/fail
