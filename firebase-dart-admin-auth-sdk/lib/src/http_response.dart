@@ -35,10 +35,7 @@ class HttpResponse {
   /// Map<String, dynamic> map = response.toMap();
   /// ```
   Map<String, dynamic> toMap() {
-    return {
-      'statusCode': statusCode,
-      'body': body,
-    };
+    return {'statusCode': statusCode, 'body': body};
   }
 
   /// Converts the `HttpResponse` instance to a JSON string.

@@ -37,10 +37,7 @@ class EmailPasswordAuth {
       if (e is FirebaseAuthException) {
         rethrow;
       }
-      throw FirebaseAuthException(
-        code: 'auth-error',
-        message: e.toString(),
-      );
+      throw FirebaseAuthException(code: 'auth-error', message: e.toString());
     }
   }
 

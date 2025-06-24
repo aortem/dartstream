@@ -14,7 +14,8 @@ class InitializeRecaptchaConfigScreen extends StatelessWidget {
       await auth.initializeRecaptchaConfig(siteKey);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            content: Text('reCAPTCHA config initialized successfully')),
+          content: Text('reCAPTCHA config initialized successfully'),
+        ),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(

@@ -10,12 +10,17 @@ class SignInWithEmailAndPasswordViewModel extends ChangeNotifier {
   }
 
   Future<void> signIn(
-      String email, String password, VoidCallback onSuccess) async {
+    String email,
+    String password,
+    VoidCallback onSuccess,
+  ) async {
     try {
       setLoading(true);
 
-      await FirebaseApp.firebaseAuth
-          ?.signInWithEmailAndPassword(email, password);
+      await FirebaseApp.firebaseAuth?.signInWithEmailAndPassword(
+        email,
+        password,
+      );
 
       onSuccess();
     } catch (e) {

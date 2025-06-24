@@ -36,11 +36,13 @@ class VerifyPasswordResetCode extends StatelessWidget {
                     // Attempt to verify the password reset code
                     var email = await FirebaseApp.firebaseAuth
                         ?.verifyPasswordResetCode(
-                            verifyPasswordRestController.text);
+                          verifyPasswordRestController.text,
+                        );
 
                     if (email != null) {
                       BotToast.showText(
-                          text: "Password reset code verified. Email: $email");
+                        text: "Password reset code verified. Email: $email",
+                      );
 
                       log("Password reset code verified. Email: $email");
                       // Proceed with your logic, e.g., redirecting to reset password screen

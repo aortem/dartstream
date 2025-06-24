@@ -41,7 +41,7 @@ class UpdateProfile {
           "idToken": idToken, // The Firebase ID token of the user.
           "displayName": displayName, // The new display name to set.
           "photoUrl": displayImage, // The new photo URL to set.
-          "returnSecureToken": true // Return a secure token after the update.
+          "returnSecureToken": true, // Return a secure token after the update.
         },
       );
 

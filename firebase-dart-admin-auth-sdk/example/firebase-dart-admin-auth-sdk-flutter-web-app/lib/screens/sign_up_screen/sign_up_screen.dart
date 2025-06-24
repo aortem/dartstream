@@ -56,11 +56,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     30.vSpace,
                     Button(
                       onTap: () => value.signUp(
-                          _emailController.text, _passwordController.text, () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ));
-                      }),
+                        _emailController.text,
+                        _passwordController.text,
+                        () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const HomeScreen(),
+                            ),
+                          );
+                        },
+                      ),
                       loading: value.loading,
                       title: 'Sign Up',
                     ),
@@ -73,15 +78,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           TextSpan(
                             text: 'Sign In With Varieties Of Method',
                             recognizer: TapGestureRecognizer()
-                              ..onTap =
-                                  () => showSignMethodsBottomSheet(context),
-                            style:
-                                Theme.of(context).textTheme.bodySmall?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                      color: Colors.purple,
-                                    ),
-                          )
+                              ..onTap = () =>
+                                  showSignMethodsBottomSheet(context),
+                            style: Theme.of(context).textTheme.bodySmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                  color: Colors.purple,
+                                ),
+                          ),
                         ],
                       ),
                     ),

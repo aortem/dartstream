@@ -20,10 +20,7 @@ class GoogleAuthProvider implements AuthProvider {
   String get providerId => 'google.com';
 
   ///credentials provider
-  static OAuthCredential credential({
-    String? accessToken,
-    String? idToken,
-  }) {
+  static OAuthCredential credential({String? accessToken, String? idToken}) {
     return OAuthCredential(
       providerId: 'google.com',
       accessToken: accessToken,
@@ -73,10 +70,7 @@ class OIDCAuthProvider implements AuthProvider {
 
   ///credential
 
-  static OAuthCredential credential({
-    String? accessToken,
-    String? idToken,
-  }) {
+  static OAuthCredential credential({String? accessToken, String? idToken}) {
     return OAuthCredential(
       providerId: 'oidc.gcp',
       accessToken: accessToken,

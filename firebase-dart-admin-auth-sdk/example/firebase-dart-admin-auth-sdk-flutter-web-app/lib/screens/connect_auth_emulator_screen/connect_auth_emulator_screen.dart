@@ -14,18 +14,18 @@ class ConnectAuthEmulatorScreen extends StatefulWidget {
 }
 
 class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
-  final TextEditingController _hostController =
-      TextEditingController(text: 'localhost');
-  final TextEditingController _portController =
-      TextEditingController(text: '9099');
+  final TextEditingController _hostController = TextEditingController(
+    text: 'localhost',
+  );
+  final TextEditingController _portController = TextEditingController(
+    text: '9099',
+  );
   String _result = '';
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Connect to Auth Emulator'),
-      ),
+      appBar: AppBar(title: const Text('Connect to Auth Emulator')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -44,10 +44,7 @@ class _ConnectAuthEmulatorScreenState extends State<ConnectAuthEmulatorScreen> {
               textInputType: TextInputType.number,
             ),
             const SizedBox(height: 20),
-            Button(
-              onTap: _connectToEmulator,
-              title: 'Connect to Emulator',
-            ),
+            Button(onTap: _connectToEmulator, title: 'Connect to Emulator'),
             const SizedBox(height: 20),
             Text(_result, style: const TextStyle(fontSize: 16)),
           ],

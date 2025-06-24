@@ -18,7 +18,9 @@ class GenerateCustomTokenImplementation extends GenerateCustomToken {
   /// Returns a [Future] that resolves to the signed JWT as a [String].
   @override
   Future<String> generateCustomToken(
-      FcmTokenDto fcmToken, String privateKey) async {
+    FcmTokenDto fcmToken,
+    String privateKey,
+  ) async {
     // RsaKeyParser extracts private key from a PEM string
     final parser = RsaKeyParser();
     final rsaPrivateKey = parser.extractPrivateKey(privateKey);
@@ -99,10 +101,7 @@ class GenerateCustomTokenImplementation extends GenerateCustomToken {
 /// of tokens, allowing for implementations that suit specific use cases.
 abstract class GenerateCustomToken {
   /// Generates a custom JWT based on the provided [FcmTokenDto] and private key.
-  Future<String> generateCustomToken(
-    FcmTokenDto fcmToken,
-    String privateKey,
-  );
+  Future<String> generateCustomToken(FcmTokenDto fcmToken, String privateKey);
 
   /// Generates a JWT for authenticating as a service account, with optional email impersonation.
   Future<String> generateServiceAccountJwt(

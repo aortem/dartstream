@@ -51,14 +51,14 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
           const SnackBar(content: Text('Token refresh requested')),
         );
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Token refresh failed: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Token refresh failed: $e')));
       }
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No user signed in')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No user signed in')));
     }
   }
 
@@ -71,9 +71,7 @@ class _IdTokenChangedScreenState extends State<IdTokenChangedScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('ID Token Monitor'),
-      ),
+      appBar: AppBar(title: const Text('ID Token Monitor')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

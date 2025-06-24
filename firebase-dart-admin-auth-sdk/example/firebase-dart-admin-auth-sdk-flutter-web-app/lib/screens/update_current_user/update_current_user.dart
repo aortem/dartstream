@@ -32,11 +32,11 @@ class UpdateUserScreenState extends State<UpdateUserScreen> {
         if (user != null) {
           FirebaseApp.firebaseAuth
               ?.updateUserInformation(user.uid, user.idToken!, {
-            'email': _emailController.text,
-            'phoneNumber': _phoneNumberController.text,
-            'password': _passwordController.text,
-            'displayName': _displayNameController.text,
-          });
+                'email': _emailController.text,
+                'phoneNumber': _phoneNumberController.text,
+                'password': _passwordController.text,
+                'displayName': _displayNameController.text,
+              });
 
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('User details updated successfully!')),
@@ -44,9 +44,9 @@ class UpdateUserScreenState extends State<UpdateUserScreen> {
           Navigator.pop(context);
         }
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update user: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to update user: $e')));
       }
     }
   }

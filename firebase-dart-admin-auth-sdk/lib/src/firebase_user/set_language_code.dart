@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import '../../firebase_dart_admin_auth_sdk.dart';
 
-
 /// A service class for managing a user's language preferences in Firestore.
 ///
 /// This class provides functionality for setting and retrieving a user's language preference from Firestore.
@@ -36,12 +35,22 @@ class LanguageService {
   /// Returns a [Future<void>] indicating the completion of the operation. If successful, the language preference
   /// is updated; otherwise, an error message is logged.
 
-  Future<String?> setLanguagePreference(String userId, String tokenId, String languageCode, String databaseName) async {
+  Future<String?> setLanguagePreference(
+    String userId,
+    String tokenId,
+    String languageCode,
+    String databaseName,
+  ) async {
     try {
       // Construct the URL to update the user's document in Firestore
-      final url = 'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
+      final url =
+          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
       // Prepare the body of the request with the new language code
-      final body = jsonEncode({"fields": {"languageCode": {"stringValue": languageCode}}});
+      final body = jsonEncode({
+        "fields": {
+          "languageCode": {"stringValue": languageCode},
+        },
+      });
       // Send a PATCH request to Firestore with the necessary headers and body
       final response = await http.patch(
         Uri.parse(url),
@@ -53,7 +62,7 @@ class LanguageService {
       );
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
-        return  'Language preference set successfully.';
+        return 'Language preference set successfully.';
       } else {
         return response.body;
       }

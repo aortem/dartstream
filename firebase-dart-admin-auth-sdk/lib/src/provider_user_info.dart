@@ -78,12 +78,12 @@ class ProviderUserInfo {
   /// Map<String, dynamic> jsonData = userInfo.toJson();
   /// ```
   Map<String, dynamic> toJson() => {
-        'providerId': providerId,
-        'displayName': displayName,
-        'photoUrl': photoUrl,
-        'federatedId': federatedId,
-        'email': email,
-        'rawId': rawId,
-        'screenName': screenName,
-      };
+    'providerId': providerId,
+    'displayName': displayName,
+    'photoUrl': photoUrl,
+    'federatedId': federatedId,
+    'email': email,
+    'rawId': rawId,
+    'screenName': screenName,
+  };
 }

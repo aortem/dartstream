@@ -25,10 +25,7 @@ class PasswordResetEmailService {
           if (auth.accessToken != null)
             'Authorization': 'Bearer ${auth.accessToken}',
         },
-        body: json.encode({
-          'requestType': 'PASSWORD_RESET',
-          'email': email,
-        }),
+        body: json.encode({'requestType': 'PASSWORD_RESET', 'email': email}),
       );
 
       if (response.statusCode != 200) {

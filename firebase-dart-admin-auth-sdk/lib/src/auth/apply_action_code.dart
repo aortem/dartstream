@@ -27,12 +27,7 @@ class ApplyActionCode {
   /// - [FirebaseAuthException] if the action code application fails.
   Future<bool> applyActionCode(String actionCode) async {
     try {
-      await auth.performRequest(
-        'update',
-        {
-          'oobCode': actionCode,
-        },
-      );
+      await auth.performRequest('update', {'oobCode': actionCode});
       return true;
     } catch (e) {
       print('Apply action code failed: $e');

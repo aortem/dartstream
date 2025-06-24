@@ -3,23 +3,32 @@ class Window {
   ///open
   dynamic open(String url, String target, [String? features]) {
     throw UnsupportedError(
-        'Window.open is only supported on the web platform.');
+      'Window.open is only supported on the web platform.',
+    );
   }
 
   ///alert
 
-  void addEventListener(String type, Function listener,
-      [bool useCapture = false]) {
+  void addEventListener(
+    String type,
+    Function listener, [
+    bool useCapture = false,
+  ]) {
     throw UnsupportedError(
-        'Window.addEventListener is only supported on the web platform.');
+      'Window.addEventListener is only supported on the web platform.',
+    );
   }
 
   ///removeEventListener
 
-  void removeEventListener(String type, Function listener,
-      [bool useCapture = false]) {
+  void removeEventListener(
+    String type,
+    Function listener, [
+    bool useCapture = false,
+  ]) {
     throw UnsupportedError(
-        'Window.removeEventListener is only supported on the web platform.');
+      'Window.removeEventListener is only supported on the web platform.',
+    );
   }
 }
 

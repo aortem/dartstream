@@ -99,8 +99,9 @@ class _CheckActionCodeScreenState extends State<CheckActionCodeScreen> {
             const SizedBox(height: 32),
             TextField(
               controller: _linkController,
-              decoration:
-                  const InputDecoration(labelText: 'Password Reset Link'),
+              decoration: const InputDecoration(
+                labelText: 'Password Reset Link',
+              ),
               maxLines: 3,
             ),
             const SizedBox(height: 16),

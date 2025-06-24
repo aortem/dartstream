@@ -25,10 +25,7 @@ class ConfirmPasswordResetService {
           if (auth.accessToken != null)
             'Authorization': 'Bearer ${auth.accessToken}',
         },
-        body: json.encode({
-          'oobCode': oobCode,
-          'newPassword': newPassword,
-        }),
+        body: json.encode({'oobCode': oobCode, 'newPassword': newPassword}),
       );
 
       if (response.statusCode != 200) {

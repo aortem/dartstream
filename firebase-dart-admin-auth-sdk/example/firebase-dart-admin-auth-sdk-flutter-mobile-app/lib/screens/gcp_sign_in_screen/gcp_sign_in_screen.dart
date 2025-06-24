@@ -19,9 +19,7 @@ class _GCPSignInScreenState extends State<GCPSignInScreen> {
       create: (context) => GCPSignInViewModel(),
       child: Consumer<GCPSignInViewModel>(
         builder: (context, value, child) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Sign In with GCP'),
-          ),
+          appBar: AppBar(title: const Text('Sign In with GCP')),
           body: Center(
             child: SingleChildScrollView(
               padding: 20.horizontal,
@@ -32,10 +30,7 @@ class _GCPSignInScreenState extends State<GCPSignInScreen> {
                   20.vSpace,
                   const Text(
                     'Sign in with your Google Account',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   20.vSpace,

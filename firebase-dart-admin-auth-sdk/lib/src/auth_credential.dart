@@ -27,7 +27,7 @@ class EmailAuthCredential extends AuthCredential {
   ///
   /// Sets the [providerId] to 'password'.
   EmailAuthCredential({required this.email, required this.password})
-      : super('password');
+    : super('password');
 }
 
 /// Represents phone-based authentication credentials.
@@ -46,7 +46,7 @@ class PhoneAuthCredential extends AuthCredential {
   ///
   /// Sets the [providerId] to 'phone'.
   PhoneAuthCredential({required this.verificationId, required this.smsCode})
-      : super('phone');
+    : super('phone');
 }
 
 /// Represents OAuth authentication credentials, typically used for third-party

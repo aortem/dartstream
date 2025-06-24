@@ -89,7 +89,8 @@ class UserCredential {
 
     return UserCredential(
       user: User.fromJson(
-          json), // Assumes `User.fromJson` is defined in the 'user.dart' file
+        json,
+      ), // Assumes `User.fromJson` is defined in the 'user.dart' file
       additionalUserInfo: json['additionalUserInfo'] != null
           ? AdditionalUserInfo.fromJson(json['additionalUserInfo'])
           : null,

@@ -28,10 +28,9 @@ void main() {
   });
 }
 
-
 // 3️⃣ Service class to wrap your API
 class ApiService {
-//  final _auth = FirebaseAuth.instance;
+  //  final _auth = FirebaseAuth.instance;
   final _baseUrl = 'https://YOUR_CLOUD_RUN_URL.a.run.app';
 
   /// Get the current user’s ID token (forceRefresh: true if expired)
@@ -42,3 +41,4 @@ class ApiService {
     }
     return await user.getIdToken();
   }
+}

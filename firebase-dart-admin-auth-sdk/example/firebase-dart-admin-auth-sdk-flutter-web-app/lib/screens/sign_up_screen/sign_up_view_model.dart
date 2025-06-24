@@ -21,8 +21,8 @@ class SignUpViewModel extends ChangeNotifier {
     try {
       setLoading(true);
 
-      UserCredential? userCredential =
-          await _auth.createUserWithEmailAndPassword(email, password);
+      UserCredential? userCredential = await _auth
+          .createUserWithEmailAndPassword(email, password);
 
       BotToast.showText(text: '${userCredential.user.email} just signed up');
       onSuccess();

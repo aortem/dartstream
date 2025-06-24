@@ -30,9 +30,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
         builder: (context, value, child) => Scaffold(
           appBar: AppBar(
             centerTitle: true,
-            title: const Text(
-              'Update Profile',
-            ),
+            title: const Text('Update Profile'),
           ),
           body: Center(
             child: SingleChildScrollView(

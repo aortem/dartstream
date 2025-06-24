@@ -10,11 +10,7 @@ class AdditionalUserInfo {
   final Map<String, dynamic>? profile;
 
   ///additional info
-  AdditionalUserInfo({
-    required this.isNewUser,
-    this.providerId,
-    this.profile,
-  });
+  AdditionalUserInfo({required this.isNewUser, this.providerId, this.profile});
 
   ///factory
   factory AdditionalUserInfo.fromJson(Map<String, dynamic> json) {

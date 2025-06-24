@@ -129,13 +129,16 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _currentUser = user;
       if (user != null) {
-        user.getIdToken(true).then((idToken) {
-          setState(() {});
-        }).catchError((error) {
-          if (kDebugMode) {
-            print("Error fetching token: $error");
-          }
-        });
+        user
+            .getIdToken(true)
+            .then((idToken) {
+              setState(() {});
+            })
+            .catchError((error) {
+              if (kDebugMode) {
+                print("Error fetching token: $error");
+              }
+            });
       } else {}
     });
   }
@@ -152,9 +155,9 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _isConnectedToEmulator = true;
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Connected to Auth Emulator')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Connected to Auth Emulator')));
   }
 
   @override
@@ -166,17 +169,11 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (context, value, child) => Scaffold(
           appBar: AppBar(
             leading: Text(value.displayName),
-            title: const Text(
-              'Test App',
-            ),
+            title: const Text('Test App'),
             actions: [
               if (value.displayImage != null && value.displayImage!.isNotEmpty)
-                Text(
-                  value.displayImage.toString(),
-                ),
-              Text(
-                "No of linked providers ${value.numberOfLinkedProviders}",
-              )
+                Text(value.displayImage.toString()),
+              Text("No of linked providers ${value.numberOfLinkedProviders}"),
             ],
           ),
           body: SingleChildScrollView(
@@ -188,10 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const VerifyBeforeEmailUpdate(),
-                      )),
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const VerifyBeforeEmailUpdate(),
+                    ),
+                  ),
                   title: "Verify Before Update Email",
                 ),
                 10.vSpace,
@@ -219,22 +217,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   loading: value.verificationLoading,
-                  onTap: () => value.sendEmailVerificationCode(
-                    () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const ApplyActionCodeScreen(),
-                        ),
-                      );
-                    },
-                  ),
+                  onTap: () => value.sendEmailVerificationCode(() {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ApplyActionCodeScreen(),
+                      ),
+                    );
+                  }),
                   title: "Send Verification Email",
                 ),
                 10.vSpace,
-                ActionTile(
-                  onTap: () {},
-                  title: "Send Password Reset Email",
-                ),
+                ActionTile(onTap: () {}, title: "Send Password Reset Email"),
                 10.vSpace,
                 ActionTile(
                   loading: value.loading,
@@ -259,9 +252,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       final currentUser = firebaseApp.getCurrentUser();
 
                       if (currentUser == null) {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const SignUpScreen(),
-                        ));
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const SignUpScreen(),
+                          ),
+                        );
                         BotToast.showText(text: 'User is Signout');
                       } else {
                         log('No user is currently signed in.');
@@ -292,9 +287,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     final currentUser = firebaseApp.getCurrentUser();
 
                     if (currentUser == null) {
-                      Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const SignUpScreen(),
-                      ));
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const SignUpScreen(),
+                        ),
+                      );
                       BotToast.showText(text: 'User is deleted');
                     } else {
                       log('No user is currently signed in.');
@@ -305,18 +302,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const VerifyIdTokenScreen(),
-                    ));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const VerifyIdTokenScreen(),
+                      ),
+                    );
                   },
                   title: "Verify ID Token",
                 ),
                 10.vSpace,
                 ActionTile(
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const LinkWithCredentials(),
-                    ));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const LinkWithCredentials(),
+                      ),
+                    );
                   },
                   title: "Link with credientials",
                 ),
@@ -349,8 +350,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
-                    var tokenId =
-                        await FirebaseApp.firebaseAuth?.getIdTokenResult();
+                    var tokenId = await FirebaseApp.firebaseAuth
+                        ?.getIdTokenResult();
 
                     if (kDebugMode) {
                       print("token result  $tokenId");
@@ -370,9 +371,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 10.vSpace,
                 ActionTile(
                   onTap: () async {
-                    Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => const ParseActionUrl(),
-                    ));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ParseActionUrl(),
+                      ),
+                    );
                   },
                   title: "Parse Action Code Url",
                 ),
@@ -392,7 +395,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     FirebaseApp.firebaseAuth?.setLanguageCodeMethod(
-                        'en', 'firebasdartadminauthsdk');
+                      'en',
+                      'firebasdartadminauthsdk',
+                    );
 
                     // log("token result  $tokenId");
                   },
@@ -414,8 +419,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ActionTile(
                   onTap: () async {
                     // var tokenId=
-                    FirebaseApp.firebaseAuth
-                        ?.getLanguageCodeMethod('firebasdartadminauthsdk');
+                    FirebaseApp.firebaseAuth?.getLanguageCodeMethod(
+                      'firebasdartadminauthsdk',
+                    );
 
                     // log("token result  $tokenId");
                   },
@@ -435,8 +441,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) =>
-                              const FetchSignInMethodsScreen()),
+                        builder: (context) => const FetchSignInMethodsScreen(),
+                      ),
                     );
                   },
                   title: "Fetch Sign-In Methods for Email",
@@ -456,7 +462,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const CreateUserScreen()),
+                        builder: (context) => const CreateUserScreen(),
+                      ),
                     );
                   },
                   title: "Create User with Email and Password",

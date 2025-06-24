@@ -6,6 +6,7 @@ class PopupRedirectResolverIO implements PopupRedirectResolver {
   @override
   Future<Map<String, dynamic>?> resolvePopup(String authUrl) async {
     throw UnimplementedError(
-        'PopupRedirectResolver.resolvePopup() is not implemented for IO platforms.');
+      'PopupRedirectResolver.resolvePopup() is not implemented for IO platforms.',
+    );
   }
 }

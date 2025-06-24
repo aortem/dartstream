@@ -6,11 +6,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 class HomeScreenViewModel extends ChangeNotifier {
   HomeScreenViewModel() {
-    _googleSignIn.onCurrentUserChanged.listen(
-      (event) async {
-        signInAccount = event;
-      },
-    );
+    _googleSignIn.onCurrentUserChanged.listen((event) async {
+      signInAccount = event;
+    });
 
     refreshUser();
   }

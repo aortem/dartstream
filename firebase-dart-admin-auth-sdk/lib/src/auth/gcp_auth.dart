@@ -24,10 +24,7 @@ class GCPAuth {
       }
 
       // First get OAuth token using client credentials
-      final tokenUrl = Uri.https(
-        'oauth2.googleapis.com',
-        '/token',
-      );
+      final tokenUrl = Uri.https('oauth2.googleapis.com', '/token');
 
       final tokenResponse = await auth.httpClient.post(
         tokenUrl,
@@ -37,9 +34,7 @@ class GCPAuth {
           'client_secret': clientSecret,
           'scope': 'https://www.googleapis.com/auth/cloud-platform',
         },
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       );
 
       if (tokenResponse.statusCode != 200) {

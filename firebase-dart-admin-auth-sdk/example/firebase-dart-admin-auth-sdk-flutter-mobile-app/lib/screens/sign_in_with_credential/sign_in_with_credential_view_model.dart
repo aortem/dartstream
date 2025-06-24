@@ -18,9 +18,7 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     'https://www.googleapis.com/auth/contacts.readonly',
   ];
 
-  late final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: scopes,
-  );
+  late final GoogleSignIn _googleSignIn = GoogleSignIn(scopes: scopes);
 
   bool loading = false;
   void setLoading(bool load) {
@@ -57,8 +55,8 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
   }
 
   Future<void> loginWithFacebook(BuildContext context) async {
-    final LoginResult result =
-        await FacebookAuth.instance.login(); // Trigger the sign-in flow
+    final LoginResult result = await FacebookAuth.instance
+        .login(); // Trigger the sign-in flow
     log("12345result $result");
     if (result.status == LoginStatus.success) {
       final AccessToken accessToken = result.accessToken!;
@@ -66,20 +64,25 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
       log('Facebook Access Token: ${accessToken.token}');
       try {
         var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
-            'http://localhost', accessToken.token, 'facebook.com');
+          'http://localhost',
+          accessToken.token,
+          'facebook.com',
+        );
 
         var user1 = await FirebaseApp.firebaseAuth?.signInWithRedirect(
-            'http://localhost', accessToken.token, 'facebook.com');
+          'http://localhost',
+          accessToken.token,
+          'facebook.com',
+        );
 
         BotToast.showText(text: '${user?.user.email} just linked in');
         BotToast.showText(text: '${user1?.user.email} just linked in11');
 
         if (user1 != null) {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ));
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
         }
       } catch (e) {
         BotToast.showText(text: e.toString());
@@ -98,9 +101,7 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     scope: 'openid profile offline_access',
     navigatorKey: navigatorKey,
     loader: const SizedBox(),
-    appBar: AppBar(
-      title: const Text('AAD OAuth Demo'),
-    ),
+    appBar: AppBar(title: const Text('AAD OAuth Demo')),
     onPageFinished: (String url) {
       log('onPageFinished: $url');
     },
@@ -118,10 +119,14 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
     var accessToken = await oauth.getAccessToken();
     if (accessToken != null) {
       ScaffoldMessenger.of(context).hideCurrentSnackBar();
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text(accessToken)));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(accessToken)));
       var user1 = await FirebaseApp.firebaseAuth?.signInWithRedirect(
-          'http://localhost', accessToken, 'microsoft.com');
+        'http://localhost',
+        accessToken,
+        'microsoft.com',
+      );
 
       BotToast.showText(text: '${user1?.user.email} just linked in');
     }
@@ -132,13 +137,17 @@ class SignInWithCredentialViewModel extends ChangeNotifier {
   }
 
   void showMessage(String text, BuildContext context) {
-    var alert = AlertDialog(content: Text(text), actions: <Widget>[
-      TextButton(
+    var alert = AlertDialog(
+      content: Text(text),
+      actions: <Widget>[
+        TextButton(
           child: const Text('Ok'),
           onPressed: () {
             Navigator.pop(context);
-          })
-    ]);
+          },
+        ),
+      ],
+    );
     showDialog(context: context, builder: (BuildContext context) => alert);
   }
 }

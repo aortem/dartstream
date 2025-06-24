@@ -65,26 +65,34 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                           ),
                           12.vSpace,
                           _buildInfoRow(
-                              'UID', viewModel.redirectResult!.user!.uid),
-                          8.vSpace,
-                          _buildInfoRow('Email',
-                              viewModel.redirectResult!.user!.email ?? 'N/A'),
+                            'UID',
+                            viewModel.redirectResult!.user!.uid,
+                          ),
                           8.vSpace,
                           _buildInfoRow(
-                              'Display Name',
-                              viewModel.redirectResult!.user!.displayName ??
-                                  'N/A'),
+                            'Email',
+                            viewModel.redirectResult!.user!.email ?? 'N/A',
+                          ),
+                          8.vSpace,
+                          _buildInfoRow(
+                            'Display Name',
+                            viewModel.redirectResult!.user!.displayName ??
+                                'N/A',
+                          ),
                           if (viewModel.redirectResult!.user!.photoURL !=
                               null) ...[
                             8.vSpace,
-                            _buildInfoRow('Photo URL',
-                                viewModel.redirectResult!.user!.photoURL!),
+                            _buildInfoRow(
+                              'Photo URL',
+                              viewModel.redirectResult!.user!.photoURL!,
+                            ),
                           ],
                           8.vSpace,
                           _buildInfoRow(
-                              'Email Verified',
-                              viewModel.redirectResult!.user!.emailVerified
-                                  .toString()),
+                            'Email Verified',
+                            viewModel.redirectResult!.user!.emailVerified
+                                .toString(),
+                          ),
                         ],
                       ),
                     ),
@@ -106,25 +114,27 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                             ),
                             12.vSpace,
                             _buildInfoRow(
-                                'Provider ID',
-                                viewModel
-                                    .redirectResult!.credential!.providerId),
+                              'Provider ID',
+                              viewModel.redirectResult!.credential!.providerId,
+                            ),
                             if (viewModel.redirectResult!.credential
                                 is OAuthCredential) ...[
                               8.vSpace,
                               _buildInfoRow(
-                                  'Access Token',
-                                  (viewModel.redirectResult!.credential
-                                              as OAuthCredential)
-                                          .accessToken ??
-                                      'N/A'),
+                                'Access Token',
+                                (viewModel.redirectResult!.credential
+                                            as OAuthCredential)
+                                        .accessToken ??
+                                    'N/A',
+                              ),
                               8.vSpace,
                               _buildInfoRow(
-                                  'Sign-in Method',
-                                  (viewModel.redirectResult!.credential
-                                              as OAuthCredential)
-                                          .signInMethod ??
-                                      'redirect'),
+                                'Sign-in Method',
+                                (viewModel.redirectResult!.credential
+                                            as OAuthCredential)
+                                        .signInMethod ??
+                                    'redirect',
+                              ),
                             ],
                           ],
                         ),
@@ -147,17 +157,25 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                             ),
                             12.vSpace,
                             _buildInfoRow(
-                                'Is New User',
-                                viewModel.redirectResult!.additionalUserInfo!
-                                    .isNewUser
-                                    .toString()),
+                              'Is New User',
+                              viewModel
+                                  .redirectResult!
+                                  .additionalUserInfo!
+                                  .isNewUser
+                                  .toString(),
+                            ),
                             8.vSpace,
                             _buildInfoRow(
-                                'Provider ID',
-                                viewModel.redirectResult!.additionalUserInfo!
-                                        .providerId ??
-                                    'N/A'),
-                            if (viewModel.redirectResult!.additionalUserInfo!
+                              'Provider ID',
+                              viewModel
+                                      .redirectResult!
+                                      .additionalUserInfo!
+                                      .providerId ??
+                                  'N/A',
+                            ),
+                            if (viewModel
+                                    .redirectResult!
+                                    .additionalUserInfo!
                                     .profile !=
                                 null) ...[
                               8.vSpace,
@@ -166,13 +184,20 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                                 style: TextStyle(fontWeight: FontWeight.bold),
                               ),
                               4.vSpace,
-                              ...viewModel.redirectResult!.additionalUserInfo!
-                                  .profile!.entries
-                                  .map((e) => Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8, top: 4),
-                                        child: Text('${e.key}: ${e.value}'),
-                                      )),
+                              ...viewModel
+                                  .redirectResult!
+                                  .additionalUserInfo!
+                                  .profile!
+                                  .entries
+                                  .map(
+                                    (e) => Padding(
+                                      padding: const EdgeInsets.only(
+                                        left: 8,
+                                        top: 4,
+                                      ),
+                                      child: Text('${e.key}: ${e.value}'),
+                                    ),
+                                  ),
                             ],
                           ],
                         ),
@@ -193,8 +218,10 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
                             ),
                           ),
                           12.vSpace,
-                          _buildInfoRow('Operation Type',
-                              viewModel.redirectResult!.operationType ?? 'N/A'),
+                          _buildInfoRow(
+                            'Operation Type',
+                            viewModel.redirectResult!.operationType ?? 'N/A',
+                          ),
                         ],
                       ),
                     ),
@@ -221,17 +248,10 @@ class _GetRedirectResultScreenState extends State<GetRedirectResultScreen> {
           width: 120,
           child: Text(
             label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
-        Expanded(
-          child: Text(
-            value,
-            softWrap: true,
-          ),
-        ),
+        Expanded(child: Text(value, softWrap: true)),
       ],
     );
   }

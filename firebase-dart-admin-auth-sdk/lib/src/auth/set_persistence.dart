@@ -46,7 +46,11 @@ class PersistenceService {
   /// Throws:
   /// - [FirebaseAuthException] if the request to update the persistence field in Firestore fails.
   Future<void> setPersistence(
-      String userId, String tokenId, String persistenceType, String databaseName) async {
+    String userId,
+    String tokenId,
+    String persistenceType,
+    String databaseName,
+  ) async {
     try {
       // Construct the Firestore document URL using the provided databaseName
       final url =
@@ -55,8 +59,8 @@ class PersistenceService {
       // Prepare the request body with the persistence type
       final body = jsonEncode({
         "fields": {
-          "persistence": {"stringValue": persistenceType}
-        }
+          "persistence": {"stringValue": persistenceType},
+        },
       });
 
       // Send the PATCH request to Firestore to update the persistence field for the user
@@ -64,7 +68,8 @@ class PersistenceService {
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer $tokenId', // Authorization header using the tokenId
+          'Authorization':
+              'Bearer $tokenId', // Authorization header using the tokenId
         },
         body: body,
       );
@@ -75,7 +80,9 @@ class PersistenceService {
         print('Persistence set to $persistenceType for user $userId');
       } else {
         // Log an error if the update request failed
-        print('Failed to set persistence: ${response.statusCode} ${response.body}');
+        print(
+          'Failed to set persistence: ${response.statusCode} ${response.body}',
+        );
       }
     } catch (e) {
       // Catch any errors and log detailed error information for debugging

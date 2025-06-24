@@ -50,7 +50,7 @@ class _SignInWithPhoneNumberScreenState
                     onTap: model.loading || model.codeSent
                         ? () {}
                         : () =>
-                            model.sendVerificationCode(_phoneController.text),
+                              model.sendVerificationCode(_phoneController.text),
                     title: 'Send Verification Code',
                     loading: model.loading && !model.codeSent,
                   ),
@@ -66,17 +66,14 @@ class _SignInWithPhoneNumberScreenState
                     Button(
                       onTap: model.loading
                           ? () {}
-                          : () => model.verifyCode(
-                                _smsCodeController.text,
-                                () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            const HomeScreen()),
-                                  );
-                                },
-                              ),
+                          : () => model.verifyCode(_smsCodeController.text, () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomeScreen(),
+                                ),
+                              );
+                            }),
                       title: 'Verify Code',
                       loading: model.loading && model.codeSent,
                     ),

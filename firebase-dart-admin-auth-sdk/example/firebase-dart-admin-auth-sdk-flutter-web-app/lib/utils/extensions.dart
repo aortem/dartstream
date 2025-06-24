@@ -10,21 +10,14 @@ extension NumExtension on num {
   }
 
   EdgeInsets get all {
-    return EdgeInsets.symmetric(
-      horizontal: toDouble(),
-      vertical: toDouble(),
-    );
+    return EdgeInsets.symmetric(horizontal: toDouble(), vertical: toDouble());
   }
 
   SizedBox get hSpace {
-    return SizedBox(
-      width: toDouble(),
-    );
+    return SizedBox(width: toDouble());
   }
 
   SizedBox get vSpace {
-    return SizedBox(
-      height: toDouble(),
-    );
+    return SizedBox(height: toDouble());
   }
 }

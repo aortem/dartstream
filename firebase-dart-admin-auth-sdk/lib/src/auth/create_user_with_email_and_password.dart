@@ -47,10 +47,7 @@ class CreateUserWithEmailAndPasswordService {
       profile: null,
     );
 
-    final credential = EmailAuthCredential(
-      email: email,
-      password: password,
-    );
+    final credential = EmailAuthCredential(email: email, password: password);
 
     return UserCredential(
       user: user,

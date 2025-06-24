@@ -18,11 +18,7 @@ class SignInWithPopupScreen extends StatefulWidget {
 
 class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'profile',
-      'openid',
-    ],
+    scopes: ['email', 'profile', 'openid'],
   );
 
   bool isLoading = false;
@@ -107,16 +103,13 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
             }
             try {
               final provider = GoogleAuthProvider();
-              final userCredential =
-                  await FirebaseApp.firebaseAuth?.signInWithPopup(
-                provider,
-                token.access_token ?? "",
-              );
+              final userCredential = await FirebaseApp.firebaseAuth
+                  ?.signInWithPopup(provider, token.access_token ?? "");
 
               if (userCredential != null) {
                 BotToast.showText(
-                    text:
-                        '${userCredential.user.email} signed in successfully');
+                  text: '${userCredential.user.email} signed in successfully',
+                );
 
                 if (mounted) {
                   Navigator.pushReplacement(
@@ -151,15 +144,13 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
 
         try {
           final provider = GoogleAuthProvider();
-          final userCredential =
-              await FirebaseApp.firebaseAuth?.signInWithPopup(
-            provider,
-            googleAuth.accessToken ?? "",
-          );
+          final userCredential = await FirebaseApp.firebaseAuth
+              ?.signInWithPopup(provider, googleAuth.accessToken ?? "");
 
           if (userCredential != null) {
             BotToast.showText(
-                text: '${userCredential.user.email} signed in successfully');
+              text: '${userCredential.user.email} signed in successfully',
+            );
 
             if (mounted) {
               Navigator.pushReplacement(
@@ -186,9 +177,7 @@ class _SignInWithPopupScreenState extends State<SignInWithPopupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In with Popup'),
-      ),
+      appBar: AppBar(title: const Text('Sign In with Popup')),
       body: Center(
         child: isLoading
             ? const CircularProgressIndicator()

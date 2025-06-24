@@ -170,10 +170,10 @@ class User {
       providerUserInfo: json['providerUserInfo'] == null
           ? null
           : json['providerUserInfo'] != null
-              ? (json['providerUserInfo'] as List)
-                  .map((e) => ProviderUserInfo.fromJson(e))
-                  .toList()
-              : null,
+          ? (json['providerUserInfo'] as List)
+                .map((e) => ProviderUserInfo.fromJson(e))
+                .toList()
+          : null,
       validSince: json['validSince'] == null
           ? null
           : DateTime?.fromMillisecondsSinceEpoch(

@@ -34,9 +34,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
   void initState() {
     super.initState();
     // Initialize the view model with Firebase Auth instance
-    _viewModel = AppleSignInViewModel(
-      auth: context.read<FirebaseAuth>(),
-    );
+    _viewModel = AppleSignInViewModel(auth: context.read<FirebaseAuth>());
   }
 
   /// Handles the Apple Sign-In process using the provided token
@@ -63,10 +61,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
       );
     } finally {
       if (mounted) setState(() => _loading = false);
@@ -77,9 +72,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
   Future<void> _launchWebView() async {
     final idToken = await Navigator.push<String>(
       context,
-      MaterialPageRoute(
-        builder: (context) => const AppleWebViewAuth(),
-      ),
+      MaterialPageRoute(builder: (context) => const AppleWebViewAuth()),
     );
 
     if (idToken != null && mounted) {
@@ -95,9 +88,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In with Apple'),
-      ),
+      appBar: AppBar(title: const Text('Sign In with Apple')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -117,10 +108,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
             // Manual token input section
             const Text(
               'Manual Token Input',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
 
@@ -154,10 +142,7 @@ class _AppleSignInScreenState extends State<AppleSignInScreen> {
               'Note: You can either use the WebView sign-in button above '
               'to get the token automatically, or manually input an Apple '
               'ID token for testing purposes.',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 12,
-              ),
+              style: TextStyle(color: Colors.grey, fontSize: 12),
             ),
           ],
         ),

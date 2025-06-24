@@ -36,13 +36,19 @@ void main() async {
 
       // Method 1: Using service account impersonation for GCP
       await FirebaseApp.initializeAppWithServiceAccountImpersonationGCP(
-        gcpAccessToken: 'gcp-access-token', // Replace with your GCP access token
-        impersonatedEmail: 'account-to-be-impersonated', // Replace with the target service account email
+        gcpAccessToken:
+            'gcp-access-token', // Replace with your GCP access token
+        impersonatedEmail:
+            'account-to-be-impersonated', // Replace with the target service account email
       );
 
       // Alternatively, if you want to initialize with a local service account file, you might do:
-       String serviceAccountContent = await rootBundle.loadString('assets/service_account.json');
-       await FirebaseApp.initializeAppWithServiceAccount(serviceAccountContent: serviceAccountContent);
+      String serviceAccountContent = await rootBundle.loadString(
+        'assets/service_account.json',
+      );
+      await FirebaseApp.initializeAppWithServiceAccount(
+        serviceAccountContent: serviceAccountContent,
+      );
 
       auth = FirebaseApp.instance.getAuth();
       debugPrint('Firebase initialized for Mobile.');
@@ -52,12 +58,7 @@ void main() async {
     debugPrint('Firebase Auth instance obtained.');
 
     // Wrap the app with Provider
-    runApp(
-      Provider<FirebaseAuth>.value(
-        value: auth,
-        child: const MyApp(),
-      ),
-    );
+    runApp(Provider<FirebaseAuth>.value(value: auth, child: const MyApp()));
   } catch (e, stackTrace) {
     debugPrint('Error initializing Firebase: $e');
     debugPrint('StackTrace: $stackTrace');
@@ -78,9 +79,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Wrap SplashScreen with Builder to ensure proper context
-      home: Builder(
-        builder: (context) => const SplashScreen(),
-      ),
+      home: Builder(builder: (context) => const SplashScreen()),
     );
   }
 }

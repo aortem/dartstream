@@ -33,18 +33,16 @@ class CustomTokenAuth {
     try {
       log('Signing in with custom token');
 
-      final response = await auth.performRequest(
-        'signInWithCustomToken',
-        {
-          'token': token,
-          'returnSecureToken': true,
-        },
-      );
+      final response = await auth.performRequest('signInWithCustomToken', {
+        'token': token,
+        'returnSecureToken': true,
+      });
 
       if (response.statusCode != 200) {
         throw FirebaseAuthException(
-            code: 'invalid-custom-token',
-            message: 'The custom token format is incorrect or expired');
+          code: 'invalid-custom-token',
+          message: 'The custom token format is incorrect or expired',
+        );
       }
 
       final userData = response.body;
@@ -76,8 +74,9 @@ class CustomTokenAuth {
     } catch (e) {
       log('Custom token sign in error: $e');
       throw FirebaseAuthException(
-          code: 'custom-token-error',
-          message: 'Failed to sign in with custom token: ${e.toString()}');
+        code: 'custom-token-error',
+        message: 'Failed to sign in with custom token: ${e.toString()}',
+      );
     }
   }
 }

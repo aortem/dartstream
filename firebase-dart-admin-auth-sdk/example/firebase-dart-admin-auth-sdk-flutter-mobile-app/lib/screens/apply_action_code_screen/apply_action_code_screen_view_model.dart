@@ -11,7 +11,9 @@ class ApplyActionCodeScreenViewModel extends ChangeNotifier {
   }
 
   Future<void> applyActionCode(
-      String actionCode, VoidCallback onSuccess) async {
+    String actionCode,
+    VoidCallback onSuccess,
+  ) async {
     try {
       setLoading(true);
 

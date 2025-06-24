@@ -17,11 +17,7 @@ class LinkWithCredentials extends StatefulWidget {
 
 class _LinkWithCredentialsState extends State<LinkWithCredentials> {
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'profile',
-      'openid',
-    ],
+    scopes: ['email', 'profile', 'openid'],
   );
   // static const clientId = 'YOUR_MICROSOFT_CLIENT_ID';
   // // The redirect URI registered in Azure
@@ -49,7 +45,10 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
       log('ID Token: ${googleAuth.idToken}');
       try {
         var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
-            'http://localhost', googleAuth.accessToken ?? "", 'google.com');
+          'http://localhost',
+          googleAuth.accessToken ?? "",
+          'google.com',
+        );
 
         BotToast.showText(text: 'Account linked ');
         log("message$user");
@@ -65,8 +64,8 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
   }
 
   Future<void> loginWithFacebook() async {
-    final LoginResult result =
-        await FacebookAuth.instance.login(); // Trigger the sign-in flow
+    final LoginResult result = await FacebookAuth.instance
+        .login(); // Trigger the sign-in flow
 
     if (result.status == LoginStatus.success) {
       final AccessToken accessToken = result.accessToken!;
@@ -74,16 +73,18 @@ class _LinkWithCredentialsState extends State<LinkWithCredentials> {
       log('Facebook Access Token: ${accessToken.token}');
       try {
         var user = await FirebaseApp.firebaseAuth?.linkAccountWithCredientials(
-            'http://localhost', accessToken.token, 'facebook.com');
+          'http://localhost',
+          accessToken.token,
+          'facebook.com',
+        );
 
         BotToast.showText(text: '${user?.user.email} just linked in');
 
         if (user != null) {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const HomeScreen(),
-              ));
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
         }
       } catch (e) {
         BotToast.showText(text: e.toString());

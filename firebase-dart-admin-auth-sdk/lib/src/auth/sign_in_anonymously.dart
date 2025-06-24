@@ -35,7 +35,8 @@ class FirebaseSignInAnonymously {
       // Send the request to Firebase Authentication to sign up the user anonymously
       final response = await auth.performRequest('signUp', {
         // 'idToken': idToken,  // No idToken required for anonymous sign-in
-        'returnSecureToken': true,  // Request to return a secure token for the anonymous user
+        'returnSecureToken':
+            true, // Request to return a secure token for the anonymous user
       });
 
       // Check if the sign-in request was successful (status code 200)

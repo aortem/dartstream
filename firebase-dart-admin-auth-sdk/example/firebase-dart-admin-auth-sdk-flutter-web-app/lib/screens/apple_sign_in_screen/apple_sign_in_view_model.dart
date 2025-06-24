@@ -5,8 +5,10 @@ class AppleSignInViewModel {
 
   AppleSignInViewModel({required this.auth});
 
-  Future<UserCredential> signInWithApple(String idToken,
-      {String? nonce}) async {
+  Future<UserCredential> signInWithApple(
+    String idToken, {
+    String? nonce,
+  }) async {
     if (idToken.isEmpty) {
       throw FirebaseAuthException(
         code: 'invalid-id-token',

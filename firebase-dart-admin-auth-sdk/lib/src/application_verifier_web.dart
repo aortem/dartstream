@@ -19,15 +19,18 @@ class RecaptchaVerifierWeb implements RecaptchaVerifier {
 
     js.context.callMethod('grecaptcha.ready', [
       () {
-        js.context.callMethod('grecaptcha.execute', [
-          siteKey,
-          {'action': 'submit'}
-        ]).then((token) {
-          completer.complete(token as String);
-        }).catchError((error) {
-          completer.completeError(error);
-        });
-      }
+        js.context
+            .callMethod('grecaptcha.execute', [
+              siteKey,
+              {'action': 'submit'},
+            ])
+            .then((token) {
+              completer.complete(token as String);
+            })
+            .catchError((error) {
+              completer.completeError(error);
+            });
+      },
     ]);
 
     return completer.future;

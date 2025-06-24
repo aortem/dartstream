@@ -33,16 +33,15 @@ class GetAdditionalUserInfo {
   ///   information or if the provided ID token is invalid.
   Future<User> getAdditionalUserInfo(String? idToken) async {
     try {
-      assert(idToken != null,
-          'Id token cannot be null'); // Ensure idToken is not null
+      assert(
+        idToken != null,
+        'Id token cannot be null',
+      ); // Ensure idToken is not null
 
       // Request additional user information from Firebase
-      final response = await auth.performRequest(
-        'lookup',
-        {
-          "idToken": idToken,
-        },
-      );
+      final response = await auth.performRequest('lookup', {
+        "idToken": idToken,
+      });
 
       // Parse the response body and create a User object from the data
       User user = User.fromJson((response.body['users'] as List)[0]);

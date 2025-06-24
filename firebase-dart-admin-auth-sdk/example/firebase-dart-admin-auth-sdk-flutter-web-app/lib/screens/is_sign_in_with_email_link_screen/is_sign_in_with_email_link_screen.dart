@@ -34,8 +34,9 @@ class _IsSignInWithEmailLinkScreenState
           children: [
             TextField(
               controller: _linkController,
-              decoration:
-                  const InputDecoration(labelText: 'Email Sign-In Link'),
+              decoration: const InputDecoration(
+                labelText: 'Email Sign-In Link',
+              ),
             ),
             const SizedBox(height: 16),
             ElevatedButton(

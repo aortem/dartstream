@@ -19,10 +19,9 @@ class ActionTile extends StatelessWidget {
       child: Container(
         padding: 10.all,
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.purple,
-            )),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.purple),
+        ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -33,10 +32,7 @@ class ActionTile extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 : Text(title),
-            const Icon(
-              Icons.arrow_forward_ios,
-              color: Colors.purple,
-            ),
+            const Icon(Icons.arrow_forward_ios, color: Colors.purple),
           ],
         ),
       ),

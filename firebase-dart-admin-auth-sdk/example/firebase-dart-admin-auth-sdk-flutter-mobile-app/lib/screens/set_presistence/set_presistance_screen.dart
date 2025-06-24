@@ -20,41 +20,44 @@ class _PersistenceSelectorDropdownState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Center(
-      child: DropdownButton<String>(
-        value: _selectedPersistence,
-        hint: const Text('Choose Persistence Option'),
-        onChanged: (String? newValue) async {
-          setState(() {
-            _selectedPersistence = newValue;
-          });
-          if (newValue != null) {
-            if (_selectedPersistence != null) {
-              try {
-                await FirebaseApp.firebaseAuth?.setPresistanceMethod(
-                    _selectedPersistence!, 'firebasdartadminauthsdk');
-                //  log("response of pressitance $response");
-              } catch (e) {
-                log("response of pressitance $e");
+      body: Center(
+        child: DropdownButton<String>(
+          value: _selectedPersistence,
+          hint: const Text('Choose Persistence Option'),
+          onChanged: (String? newValue) async {
+            setState(() {
+              _selectedPersistence = newValue;
+            });
+            if (newValue != null) {
+              if (_selectedPersistence != null) {
+                try {
+                  await FirebaseApp.firebaseAuth?.setPresistanceMethod(
+                    _selectedPersistence!,
+                    'firebasdartadminauthsdk',
+                  );
+                  //  log("response of pressitance $response");
+                } catch (e) {
+                  log("response of pressitance $e");
+                }
               }
             }
-          }
-        },
-        items: const [
-          DropdownMenuItem(
-            value: FirebasePersistence.local,
-            child: Text('Local'),
-          ),
-          DropdownMenuItem(
-            value: FirebasePersistence.session,
-            child: Text('Session'),
-          ),
-          DropdownMenuItem(
-            value: FirebasePersistence.none,
-            child: Text('None'),
-          ),
-        ],
+          },
+          items: const [
+            DropdownMenuItem(
+              value: FirebasePersistence.local,
+              child: Text('Local'),
+            ),
+            DropdownMenuItem(
+              value: FirebasePersistence.session,
+              child: Text('Session'),
+            ),
+            DropdownMenuItem(
+              value: FirebasePersistence.none,
+              child: Text('None'),
+            ),
+          ],
+        ),
       ),
-    ));
+    );
   }
 }

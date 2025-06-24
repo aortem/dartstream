@@ -34,7 +34,10 @@ class LinkWithCredientialClass {
   /// - A [UserCredential] object that contains the updated user data if the request is successful.
   /// - `null` if the request fails or an error occurs.
   Future<UserCredential?> linkWithCrediential(
-      String redirectUri, String idToken, String providerId) async {
+    String redirectUri,
+    String idToken,
+    String providerId,
+  ) async {
     try {
       // Log the input parameters for debugging purposes
       log("ID Token: $idToken");
@@ -51,9 +54,10 @@ class LinkWithCredientialClass {
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, dynamic>{
-          'postBody': 'access_token=$idToken&providerId=$providerId',  // The credentials to link
-          'requestUri': redirectUri,  // The URI for the response
-          'returnSecureToken': true,  // Request a new secure token
+          'postBody':
+              'access_token=$idToken&providerId=$providerId', // The credentials to link
+          'requestUri': redirectUri, // The URI for the response
+          'returnSecureToken': true, // Request a new secure token
         }),
       );
 

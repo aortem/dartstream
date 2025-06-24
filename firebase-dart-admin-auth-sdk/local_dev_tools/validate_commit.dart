@@ -12,8 +12,11 @@ void main(List<String> args) {
   }
 
   // Run dart format
-  final formatResult =
-      Process.runSync('dart', ['format', '--set-exit-if-changed', '.']);
+  final formatResult = Process.runSync('dart', [
+    'format',
+    '--set-exit-if-changed',
+    '.',
+  ]);
   if (formatResult.exitCode != 0) {
     print('❌ Dart format failed. Please format your code.');
     exit(1);

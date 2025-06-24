@@ -37,7 +37,7 @@ class UseDeviceLanguageService {
 
       // The body of the request containing the user's ID token (or UID).
       final body = {
-        'idToken': userId,  // The ID token of the user to look up.
+        'idToken': userId, // The ID token of the user to look up.
       };
 
       // Perform the request to Firebase Authentication to get user information.
@@ -75,8 +75,9 @@ class UseDeviceLanguageService {
 
       // Throw a FirebaseAuthException if the operation fails.
       throw FirebaseAuthException(
-        code: 'use-device-language-error',  // Custom error code for this action.
-        message: 'Failed to set device language.',  // Error message explaining the failure.
+        code: 'use-device-language-error', // Custom error code for this action.
+        message:
+            'Failed to set device language.', // Error message explaining the failure.
       );
     }
 

@@ -48,9 +48,9 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
     try {
       await widget.auth.signOut();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Sign out failed: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Sign out failed: $e')));
     }
   }
 
@@ -63,9 +63,7 @@ class _AuthStateTestScreenState extends State<AuthStateTestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Auth State Monitor'),
-      ),
+      appBar: AppBar(title: const Text('Auth State Monitor')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(

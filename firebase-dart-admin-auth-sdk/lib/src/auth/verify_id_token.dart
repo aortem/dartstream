@@ -19,8 +19,12 @@ class VerifyIdTokenService {
 
   void _debugLog(String message, {Object? error, StackTrace? stackTrace}) {
     if (isDebugMode) {
-      developer.log('[TokenVerification] $message',
-          error: error, stackTrace: stackTrace, name: 'TokenVerification');
+      developer.log(
+        '[TokenVerification] $message',
+        error: error,
+        stackTrace: stackTrace,
+        name: 'TokenVerification',
+      );
     }
   }
 
@@ -34,7 +38,9 @@ class VerifyIdTokenService {
       if (tokenParts.length != 3) {
         _debugLog('Invalid token structure - expected 3 parts');
         throw FirebaseAuthException(
-            code: 'invalid-token', message: 'Token must be a valid JWT');
+          code: 'invalid-token',
+          message: 'Token must be a valid JWT',
+        );
       }
 
       // Decode and validate payload
@@ -46,14 +52,18 @@ class VerifyIdTokenService {
           'https://securetoken.google.com/${auth.projectId}') {
         _debugLog('Invalid token issuer');
         throw FirebaseAuthException(
-            code: 'invalid-issuer', message: 'Token has invalid issuer');
+          code: 'invalid-issuer',
+          message: 'Token has invalid issuer',
+        );
       }
 
       // Validate audience
       if (payload['aud'] != auth.projectId) {
         _debugLog('Invalid token audience');
         throw FirebaseAuthException(
-            code: 'invalid-audience', message: 'Token has invalid audience');
+          code: 'invalid-audience',
+          message: 'Token has invalid audience',
+        );
       }
 
       // Validate timing
@@ -61,14 +71,18 @@ class VerifyIdTokenService {
       if (payload['exp'] < now) {
         _debugLog('Token has expired');
         throw FirebaseAuthException(
-            code: 'token-expired', message: 'Token has expired');
+          code: 'token-expired',
+          message: 'Token has expired',
+        );
       }
 
       // Validate subject and user ID
       if (payload['sub'] == null || payload['user_id'] == null) {
         _debugLog('Missing required claims');
         throw FirebaseAuthException(
-            code: 'invalid-claims', message: 'Token missing required claims');
+          code: 'invalid-claims',
+          message: 'Token missing required claims',
+        );
       }
 
       // Validate Firebase specific claims
@@ -76,7 +90,9 @@ class VerifyIdTokenService {
       if (firebase == null || firebase is! Map<String, dynamic>) {
         _debugLog('Missing or invalid Firebase claims');
         throw FirebaseAuthException(
-            code: 'invalid-claims', message: 'Token missing Firebase claims');
+          code: 'invalid-claims',
+          message: 'Token missing Firebase claims',
+        );
       }
 
       _debugLog('Token validation successful');
@@ -90,13 +106,14 @@ class VerifyIdTokenService {
         'picture': payload['picture'],
         'auth_time': payload['auth_time'],
         'firebase': firebase,
-        'claims': payload
+        'claims': payload,
       };
     } catch (e, stackTrace) {
       _debugLog('Token verification failed', error: e, stackTrace: stackTrace);
       throw FirebaseAuthException(
-          code: 'token-verification-failed',
-          message: 'Failed to verify token: ${e.toString()}');
+        code: 'token-verification-failed',
+        message: 'Failed to verify token: ${e.toString()}',
+      );
     }
   }
 
@@ -106,10 +123,15 @@ class VerifyIdTokenService {
       final decoded = utf8.decode(base64Url.decode(normalized));
       return json.decode(decoded) as Map<String, dynamic>;
     } catch (e, stackTrace) {
-      _debugLog('Failed to decode token part',
-          error: e, stackTrace: stackTrace);
+      _debugLog(
+        'Failed to decode token part',
+        error: e,
+        stackTrace: stackTrace,
+      );
       throw FirebaseAuthException(
-          code: 'invalid-token-format', message: 'Invalid token format');
+        code: 'invalid-token-format',
+        message: 'Invalid token format',
+      );
     }
   }
 }

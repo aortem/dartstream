@@ -38,9 +38,8 @@ class _SetLanguageCodeScreenState extends State<SetLanguageCodeScreen> {
                   ),
                   20.vSpace,
                   Button(
-                    onTap: () => value.setLanguageCode(
-                      _languageCodeController.text,
-                    ),
+                    onTap: () =>
+                        value.setLanguageCode(_languageCodeController.text),
                     loading: value.loading,
                     title: 'Set Language Code',
                   ),

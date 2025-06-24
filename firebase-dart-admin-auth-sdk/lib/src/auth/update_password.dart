@@ -24,10 +24,7 @@ class UpdatePassword {
   ///
   /// Throws:
   /// - [FirebaseAuthException] if the request to update the password fails.
-  Future<User> updatePassword(
-    String newPassword,
-    String? idToken,
-  ) async {
+  Future<User> updatePassword(String newPassword, String? idToken) async {
     try {
       // Validate the parameters: ensure newPassword is not empty and idToken is not null.
       assert(newPassword.isNotEmpty, 'New password cannot be empty');
@@ -38,7 +35,7 @@ class UpdatePassword {
         "idToken": idToken, // The Firebase ID token of the user.
         "password": newPassword, // The new password to set.
         "returnSecureToken":
-            true // Return a secure token after the password change.
+            true, // Return a secure token after the password change.
       });
 
       // Parse the response to get the updated user object.

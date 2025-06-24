@@ -22,7 +22,7 @@ class MultiFactorResolverScreenState extends State<MultiFactorResolverScreen> {
     try {
       final mockError = multi_factor.MultiFactorError(
         hints: [
-          multi_factor.MultiFactorInfo(factorId: 'phone', displayName: 'Phone')
+          multi_factor.MultiFactorInfo(factorId: 'phone', displayName: 'Phone'),
         ],
         session: multi_factor.MultiFactorSession(id: 'mock-session-id'),
       );
@@ -42,15 +42,17 @@ class MultiFactorResolverScreenState extends State<MultiFactorResolverScreen> {
 
     try {
       final mockAssertion = multi_factor.MultiFactorAssertion(
-          factorId: 'phone', secret: '123456');
+        factorId: 'phone',
+        secret: '123456',
+      );
       final userCredential = await resolver!.resolveSignIn(mockAssertion);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Signed in as: ${userCredential.user?.email}')),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to resolve sign-in: $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Failed to resolve sign-in: $e')));
     }
   }
 

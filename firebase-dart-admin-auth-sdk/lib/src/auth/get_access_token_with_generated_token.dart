@@ -24,8 +24,10 @@ class GetAccessTokenWithGeneratedTokenImplementation
   /// Throws:
   /// - [FirebaseAuthException] if the request fails or if the response is not successful.
   @override
-  Future<String> getAccessTokenWithGeneratedToken(String jwt,
-      {String? targetServiceAccountEmail}) async {
+  Future<String> getAccessTokenWithGeneratedToken(
+    String jwt, {
+    String? targetServiceAccountEmail,
+  }) async {
     try {
       // Create an HTTP client to make the request
       http.Client client = http.Client();
@@ -43,8 +45,7 @@ class GetAccessTokenWithGeneratedTokenImplementation
       // Check if the response status code is 200 (OK)
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
-        return responseData[
-            'access_token']; // Return the access token from the response
+        return responseData['access_token']; // Return the access token from the response
       } else {
         // If the response status is not 200, throw an error
         throw Exception('Failed to obtain access token');
@@ -81,8 +82,10 @@ class GetAccessTokenWithGcpTokenImplementation
   /// Throws:
   /// - [FirebaseAuthException] if the request fails or if the response is not successful.
   @override
-  Future<String> getAccessTokenWithGeneratedToken(String gcpAccessToken,
-      {String? targetServiceAccountEmail}) async {
+  Future<String> getAccessTokenWithGeneratedToken(
+    String gcpAccessToken, {
+    String? targetServiceAccountEmail,
+  }) async {
     try {
       // Create an HTTP client to make the request
       http.Client client = http.Client();
@@ -90,13 +93,14 @@ class GetAccessTokenWithGcpTokenImplementation
       // Sending the POST request to OAuth2 endpoint with JWT assertion
       final response = await client.post(
         Uri.parse(
-            'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$targetServiceAccountEmail:generateAccessToken'),
+          'https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/$targetServiceAccountEmail:generateAccessToken',
+        ),
         headers: {
           'Authorization': 'Bearer $gcpAccessToken',
           'Content-Type': 'application/json',
         },
         body: jsonEncode({
-          'scope': ['https://www.googleapis.com/auth/firebase']
+          'scope': ['https://www.googleapis.com/auth/firebase'],
         }),
       );
 
@@ -104,8 +108,7 @@ class GetAccessTokenWithGcpTokenImplementation
       if (response.statusCode == 200) {
         final responseData = json.decode(response.body);
 
-        return responseData[
-            'accessToken']; // Return the access token from the response
+        return responseData['accessToken']; // Return the access token from the response
       } else {
         // If the response status is not 200, throw an error
         throw Exception('Failed to obtain access token');
@@ -135,6 +138,8 @@ abstract class GetAccessTokenWithGeneratedToken {
   ///
   /// Returns:
   /// - A [Future] that resolves to the access token string if the request is successful.
-  Future<String> getAccessTokenWithGeneratedToken(String jwt,
-      {String? targetServiceAccountEmail});
+  Future<String> getAccessTokenWithGeneratedToken(
+    String jwt, {
+    String? targetServiceAccountEmail,
+  });
 }

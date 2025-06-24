@@ -47,9 +47,7 @@ class _VerifyIdTokenScreenState extends State<VerifyIdTokenScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Verify ID Token'),
-      ),
+      appBar: AppBar(title: const Text('Verify ID Token')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -101,15 +99,23 @@ class _VerifyIdTokenScreenState extends State<VerifyIdTokenScreen> {
                       _buildInfoRow('User ID', _verifiedData!['localId']),
                       _buildInfoRow('Email', _verifiedData!['email']),
                       _buildInfoRow(
-                          'Display Name', _verifiedData!['displayName']),
-                      _buildInfoRow('Email Verified',
-                          _verifiedData!['emailVerified'].toString()),
+                        'Display Name',
+                        _verifiedData!['displayName'],
+                      ),
+                      _buildInfoRow(
+                        'Email Verified',
+                        _verifiedData!['emailVerified'].toString(),
+                      ),
                       _buildInfoRow('Created At', _verifiedData!['createdAt']),
                       _buildInfoRow(
-                          'Last Login', _verifiedData!['lastLoginAt']),
+                        'Last Login',
+                        _verifiedData!['lastLoginAt'],
+                      ),
                       if (_verifiedData!['phoneNumber']?.isNotEmpty ?? false)
                         _buildInfoRow(
-                            'Phone Number', _verifiedData!['phoneNumber']),
+                          'Phone Number',
+                          _verifiedData!['phoneNumber'],
+                        ),
                       const SizedBox(height: 8),
                       if (_verifiedData!['providerUserInfo'].isNotEmpty) ...[
                         const Text(
@@ -143,13 +149,8 @@ class _VerifyIdTokenScreenState extends State<VerifyIdTokenScreen> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            '$label: ',
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          Expanded(
-            child: Text(value),
-          ),
+          Text('$label: ', style: const TextStyle(fontWeight: FontWeight.bold)),
+          Expanded(child: Text(value)),
         ],
       ),
     );

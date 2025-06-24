@@ -34,7 +34,9 @@ class FirebaseBeforeAuthStateChangeService {
   ///
   /// Throws a [FirebaseAuthException] if any step in the process fails.
   Future<void> beforeAuthStateChange(
-      String authToken, String refreshToken) async {
+    String authToken,
+    String refreshToken,
+  ) async {
     try {
       // Step 1: Intercept or log the current authentication state (before changing it)
       print("Intercepting current auth state...");
@@ -53,7 +55,8 @@ class FirebaseBeforeAuthStateChangeService {
       } else {
         final responseBody = json.decode(response.body);
         print(
-            "Failed to change auth state: ${responseBody['error']['message']}");
+          "Failed to change auth state: ${responseBody['error']['message']}",
+        );
       }
     } catch (e) {
       print('Failed Before Auth State Changed: $e');
@@ -92,7 +95,9 @@ class FirebaseBeforeAuthStateChangeService {
   ///
   /// Throws an exception if the HTTP request fails.
   Future<http.Response> _refreshAuthToken(
-      String authToken, String refreshToken) async {
+    String authToken,
+    String refreshToken,
+  ) async {
     String url = 'https://identitytoolkit.googleapis.com/v1/token';
 
     url = '$url?key=${auth.apiKey}';

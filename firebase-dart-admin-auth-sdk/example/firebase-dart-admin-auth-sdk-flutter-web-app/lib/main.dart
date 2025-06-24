@@ -87,12 +87,7 @@ void main() async {
     debugPrint('Firebase Auth instance obtained.');
     auth = FirebaseApp.instance.getAuth();
     // Wrap the app with Provider
-    runApp(
-      Provider<FirebaseAuth>.value(
-        value: auth,
-        child: const MyApp(),
-      ),
-    );
+    runApp(Provider<FirebaseAuth>.value(value: auth, child: const MyApp()));
   } catch (e, stackTrace) {
     debugPrint('Error initializing Firebase: $e');
     debugPrint('StackTrace: $stackTrace');
@@ -113,9 +108,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       // Wrap SplashScreen with Builder to ensure proper context
-      home: Builder(
-        builder: (context) => const SplashScreen(),
-      ),
+      home: Builder(builder: (context) => const SplashScreen()),
     );
   }
 }

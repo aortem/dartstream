@@ -25,33 +25,32 @@ class SignInWithCredential extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                    onPressed: () {
-                      value.signInWithGoogle(
-                        () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          ),
+                  onPressed: () {
+                    value.signInWithGoogle(
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomeScreen(),
                         ),
-                      );
-                    },
-                    child: const Text("Sign In With Google")),
-                const SizedBox(
-                  height: 20,
+                      ),
+                    );
+                  },
+                  child: const Text("Sign In With Google"),
                 ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                    onPressed: () {
-                      value.loginWithFacebook(context);
-                    },
-                    child: const Text("Sign In With Facebook")),
-                const SizedBox(
-                  height: 20,
+                  onPressed: () {
+                    value.loginWithFacebook(context);
+                  },
+                  child: const Text("Sign In With Facebook"),
                 ),
+                const SizedBox(height: 20),
                 ElevatedButton(
-                    onPressed: () {
-                      value.signInWithMicrosoft(kIsWeb ? true : false, context);
-                    },
-                    child: const Text("Sign In With Microsoft"))
+                  onPressed: () {
+                    value.signInWithMicrosoft(kIsWeb ? true : false, context);
+                  },
+                  child: const Text("Sign In With Microsoft"),
+                ),
               ],
             ),
           ),

@@ -137,6 +137,37 @@ validate_dart_sdk_version:
   rules:
     - when: always
 
+validate_format:
+  stage: validate
+  image: dart:stable
+  script:
+    - echo "🔍 Fetching Dart deps…"
+    - dart pub get
+
+    # if you have a Flutter example, fetch its deps too:
+    - |
+      if [ -d example/firebase-dart-admin-auth-sdk-flutter-mobile-app ]; then
+        echo "🔍 Fetching Flutter example deps…"
+        cd example/firebase-dart-admin-auth-sdk-flutter-mobile-app
+        flutter pub get
+        cd - >/dev/null
+      fi
+
+    - echo "🔧 Running pub.dev/Pana–style format check…"
+    # silent check, exit code tells us pass/fail
+    - dart format --output=none --set-exit-if-changed .
+    - |
+      if [ $? -ne 0 ]; then
+        echo "❌ Formatting issues detected! Listing files that need formatting:"
+        # now show exactly which files are out of line
+        dart format --dry-run .
+        exit 1
+      else
+        echo "✅ All Dart files are properly formatted."
+      fi
+  rules:
+    - when: always
+
 analyze_main:
   stage: analyze
   image: dart:stable

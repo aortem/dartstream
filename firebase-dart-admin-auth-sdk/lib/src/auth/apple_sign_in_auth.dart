@@ -10,15 +10,15 @@ class AppleSignInAuth {
   AppleSignInAuth(this.auth);
 
   ///sign in apple
-  Future<UserCredential> signInWithApple(String idToken,
-      {String? nonce}) async {
+  Future<UserCredential> signInWithApple(
+    String idToken, {
+    String? nonce,
+  }) async {
     try {
       final url = Uri.https(
         'identitytoolkit.googleapis.com',
         '/v1/accounts:signInWithIdp',
-        {
-          if (auth.apiKey != 'your_api_key') 'key': auth.apiKey,
-        },
+        {if (auth.apiKey != 'your_api_key') 'key': auth.apiKey},
       );
 
       final requestBody = {

@@ -30,7 +30,9 @@ abstract class AuthBase {
   /// performRequest('update', {'oobCode': 'someCode'});
   /// ```
   Future<HttpResponse> performRequest(
-      String endpoint, Map<String, dynamic> body) {
+    String endpoint,
+    Map<String, dynamic> body,
+  ) {
     return auth.performRequest(endpoint, body);
   }
 }

@@ -41,12 +41,14 @@ class _AppleWebViewAuthState extends State<AppleWebViewAuth> {
         ),
       )
       ..loadRequest(
-        Uri.parse('https://appleid.apple.com/auth/authorize?'
-            'response_type=id_token&'
-            'client_id=YOUR_SERVICES_ID&' // Replace with your Apple Services ID
-            'redirect_uri=${Uri.encodeComponent("https://your-firebase-project.firebaseapp.com/__/auth/handler")}&'
-            'scope=email%20name&'
-            'response_mode=fragment'),
+        Uri.parse(
+          'https://appleid.apple.com/auth/authorize?'
+          'response_type=id_token&'
+          'client_id=YOUR_SERVICES_ID&' // Replace with your Apple Services ID
+          'redirect_uri=${Uri.encodeComponent("https://your-firebase-project.firebaseapp.com/__/auth/handler")}&'
+          'scope=email%20name&'
+          'response_mode=fragment',
+        ),
       );
   }
 
@@ -63,10 +65,7 @@ class _AppleWebViewAuthState extends State<AppleWebViewAuth> {
       body: Stack(
         children: [
           WebViewWidget(controller: _controller),
-          if (_loading)
-            const Center(
-              child: CircularProgressIndicator(),
-            ),
+          if (_loading) const Center(child: CircularProgressIndicator()),
         ],
       ),
     );

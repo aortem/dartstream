@@ -11,7 +11,8 @@ class MultiFactorService {
 
   ///multi factor resolver
   Future<MultiFactorResolver> getMultiFactorResolver(
-      MultiFactorError error) async {
+    MultiFactorError error,
+  ) async {
     try {
       // In a real implementation, you'd interact with Firebase here
       return MultiFactorResolver(
@@ -40,14 +41,18 @@ class MultiFactorResolver {
   final FirebaseAuth auth;
 
   ///multi-factor-resolver
-  MultiFactorResolver(
-      {required this.hints, required this.session, required this.auth});
+  MultiFactorResolver({
+    required this.hints,
+    required this.session,
+    required this.auth,
+  });
 
   ///resolve sign in
   Future<UserCredential> resolveSignIn(MultiFactorAssertion assertion) async {
     // In a real implementation, you'd send the assertion to Firebase here
     return UserCredential(
-        user: User(uid: 'mock-uid', email: 'mock@example.com'));
+      user: User(uid: 'mock-uid', email: 'mock@example.com'),
+    );
   }
 }
 

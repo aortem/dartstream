@@ -11,20 +11,16 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    Future.delayed(const Duration(seconds: 3)).then(
-      (value) {
-        splashScreen();
-      },
-    );
+    Future.delayed(const Duration(seconds: 3)).then((value) {
+      splashScreen();
+    });
     super.initState();
   }
 
   void splashScreen() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const SignUpScreen(),
-      ),
+      MaterialPageRoute(builder: (context) => const SignUpScreen()),
     );
   }
 
@@ -39,10 +35,10 @@ class _SplashScreenState extends State<SplashScreen> {
           child: Text(
             'SAMPLE APP',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20,
-                ),
+              color: Colors.white,
+              fontWeight: FontWeight.w900,
+              fontSize: 20,
+            ),
           ),
         ),
       ),

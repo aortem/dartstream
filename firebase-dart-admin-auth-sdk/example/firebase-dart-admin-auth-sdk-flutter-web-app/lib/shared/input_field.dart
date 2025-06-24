@@ -24,10 +24,7 @@ class InputField extends StatelessWidget {
       obscureText: obscure ?? false,
       // obscureText: obscureText,
       keyboardType: textInputType,
-      decoration: InputDecoration(
-        hintText: hint,
-        labelText: label,
-      ),
+      decoration: InputDecoration(hintText: hint, labelText: label),
     );
   }
 }

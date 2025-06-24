@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import '../../firebase_dart_admin_auth_sdk.dart';
+
 /// A service class for retrieving the language preference of a user from Firestore.
 ///
 /// This service uses Firebase Firestore to fetch the user's language preference stored in the Firestore database.
@@ -20,6 +21,7 @@ class LanguageGetService {
   ///
   /// - [auth]: The FirebaseAuth instance used for authentication.
   LanguageGetService({required this.auth});
+
   /// Retrieves the language preference of a specific user from Firestore.
   ///
   /// This method fetches the user's language preference by querying Firestore for the user's document
@@ -35,16 +37,22 @@ class LanguageGetService {
   ///
   /// If the retrieval is unsuccessful, the error is logged, and the method returns null.
 
-  Future<String?> getLanguagePreference(String userId, String tokenId, String databaseName) async {
+  Future<String?> getLanguagePreference(
+    String userId,
+    String tokenId,
+    String databaseName,
+  ) async {
     try {
       // Construct the URL to query Firestore for the user's document using their userId and databaseName
-      final url = 'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
+      final url =
+          'https://firestore.googleapis.com/v1/projects/${auth.projectId}/databases/$databaseName/documents/users/$userId';
       // Send an HTTP GET request to Firestore with the necessary authorization token in the header
 
       final response = await http.get(
         Uri.parse(url),
         headers: {
-          'Authorization': 'Bearer $tokenId', // Authorization header with the Firebase token
+          'Authorization':
+              'Bearer $tokenId', // Authorization header with the Firebase token
         },
       );
       // If the response status is 200 (OK), parse the response body
@@ -52,7 +60,8 @@ class LanguageGetService {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseBody = jsonDecode(response.body);
         // Extract the language code from the response body
-        final languageCode = responseBody['fields']['languageCode']['stringValue'];
+        final languageCode =
+            responseBody['fields']['languageCode']['stringValue'];
         return languageCode;
       } else {
         // If the request fails, log the response body and return null

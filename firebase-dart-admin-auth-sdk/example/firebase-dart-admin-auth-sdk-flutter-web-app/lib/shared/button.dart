@@ -16,18 +16,14 @@ class Button extends StatelessWidget {
     return MaterialButton(
       onPressed: onTap,
       color: Colors.purple,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       textColor: Colors.white,
       textTheme: ButtonTextTheme.normal,
       child: loading
           ? const SizedBox(
               height: 15,
               width: 15,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
+              child: CircularProgressIndicator(color: Colors.white),
             )
           : Text(title ?? ''),
     );

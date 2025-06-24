@@ -34,14 +34,15 @@ class FirebaseDeleteUser {
     // Construct the URL for the Firebase Authentication API endpoint to delete a user
 
     final url = Uri.parse(
-        'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${auth.apiKey}');
+      'https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${auth.apiKey}',
+    );
 
     try {
       // Send an HTTP POST request to Firebase Authentication to delete the user
       final response = await http.post(
         url,
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
         }, // Set content type to JSON
         body: jsonEncode({
           'idToken': idToken, // The Firebase ID token of the user

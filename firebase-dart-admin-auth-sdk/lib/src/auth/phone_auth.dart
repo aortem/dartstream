@@ -17,8 +17,10 @@ class PhoneAuth {
     ApplicationVerifier appVerifier,
   ) async {
     try {
-      final verificationId =
-          await _sendVerificationCode(phoneNumber, appVerifier);
+      final verificationId = await _sendVerificationCode(
+        phoneNumber,
+        appVerifier,
+      );
       return ConfirmationResult(
         verificationId: verificationId,
         confirm: (String smsCode) => _confirmCode(verificationId, smsCode),
@@ -63,7 +65,9 @@ class PhoneAuth {
   }
 
   Future<UserCredential> _confirmCode(
-      String verificationId, String smsCode) async {
+    String verificationId,
+    String smsCode,
+  ) async {
     final url = Uri.https(
       'identitytoolkit.googleapis.com',
       '/v1/accounts:signInWithPhoneNumber',
@@ -77,10 +81,7 @@ class PhoneAuth {
         if (_auth.accessToken != null)
           'Authorization': 'Bearer ${_auth.accessToken}',
       },
-      body: json.encode({
-        'sessionInfo': verificationId,
-        'code': smsCode,
-      }),
+      body: json.encode({'sessionInfo': verificationId, 'code': smsCode}),
     );
 
     if (response.statusCode != 200) {

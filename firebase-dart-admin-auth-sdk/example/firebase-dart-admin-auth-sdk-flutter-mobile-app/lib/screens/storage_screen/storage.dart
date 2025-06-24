@@ -24,7 +24,8 @@ class _StorageExampleState extends State<StorageExample> {
         fileBytes = kIsWeb
             ? result.files.single.bytes
             : await result.files.single.readStream!.toList().then(
-                (parts) => Uint8List.fromList(parts.expand((x) => x).toList()));
+                (parts) => Uint8List.fromList(parts.expand((x) => x).toList()),
+              );
         fileName = result.files.single.name;
         setState(() {});
       } else {
@@ -65,9 +66,7 @@ class _StorageExampleState extends State<StorageExample> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Firebase Storage Example'),
-      ),
+      appBar: AppBar(title: const Text('Firebase Storage Example')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

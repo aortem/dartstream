@@ -22,9 +22,7 @@ class SendSignInWithEmailLinkScreenViewModel extends ChangeNotifier {
     try {
       setLoading(true);
 
-      await _firebaseSdk?.sendSignInLinkToEmail(
-        email,
-      );
+      await _firebaseSdk?.sendSignInLinkToEmail(email);
 
       BotToast.showText(text: 'Sign in link sent to $email');
     } catch (e) {
@@ -35,16 +33,22 @@ class SendSignInWithEmailLinkScreenViewModel extends ChangeNotifier {
   }
 
   Future<void> signInWithEmailLink(
-      String email, String emailLink, VoidCallback onSuccess) async {
+    String email,
+    String emailLink,
+    VoidCallback onSuccess,
+  ) async {
     try {
       setSigningIn(true);
 
-      final userCredential =
-          await _firebaseSdk?.signInWithEmailLink(email, emailLink);
+      final userCredential = await _firebaseSdk?.signInWithEmailLink(
+        email,
+        emailLink,
+      );
 
       if (userCredential != null) {
         BotToast.showText(
-            text: 'Signed in successfully: ${userCredential.user.email}');
+          text: 'Signed in successfully: ${userCredential.user.email}',
+        );
         onSuccess();
       } else {
         BotToast.showText(text: 'Failed to sign in');

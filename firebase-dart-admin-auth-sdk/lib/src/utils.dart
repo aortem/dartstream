@@ -107,7 +107,8 @@ String generateUid() {
   }
 
   // Set the version (UUIDv4)
-  String uuid = '${generateRandomHex(8)}-'
+  String uuid =
+      '${generateRandomHex(8)}-'
       '${generateRandomHex(4)}-'
       '4${generateRandomHex(3)}-' // UUID version 4
       '${(random.nextInt(16) & 0x3 | 0x8).toRadixString(16)}${generateRandomHex(3)}-' // Variant

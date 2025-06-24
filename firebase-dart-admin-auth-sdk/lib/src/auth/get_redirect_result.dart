@@ -36,14 +36,14 @@ class GetRedirectResultService {
         'credential': {
           'providerId': 'google.com',
           'accessToken': token,
-          'signInMethod': 'redirect'
+          'signInMethod': 'redirect',
         },
         'additionalUserInfo': {
           'isNewUser': false,
           'providerId': 'google.com',
-          'profile': null
+          'profile': null,
         },
-        'operationType': 'signIn'
+        'operationType': 'signIn',
       };
     } catch (e) {
       log('Error in getRedirectResult: $e' as num);

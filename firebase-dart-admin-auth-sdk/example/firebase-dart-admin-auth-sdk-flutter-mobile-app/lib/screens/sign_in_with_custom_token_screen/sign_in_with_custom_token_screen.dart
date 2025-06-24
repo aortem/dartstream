@@ -43,9 +43,7 @@ class _SignInWithCustomTokenScreenState
       create: (context) => SignInWithCustomTokenViewModel(),
       child: Consumer<SignInWithCustomTokenViewModel>(
         builder: (context, value, child) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Sign In with Custom Token'),
-          ),
+          appBar: AppBar(title: const Text('Sign In with Custom Token')),
           body: Center(
             child: SingleChildScrollView(
               padding: 20.horizontal,
@@ -55,9 +53,11 @@ class _SignInWithCustomTokenScreenState
                 children: [
                   SwitchListTile(
                     title: const Text('Use Custom UID'),
-                    subtitle: Text(_useCustomUid
-                        ? 'Enter your own UID'
-                        : 'Using auto-generated UID'),
+                    subtitle: Text(
+                      _useCustomUid
+                          ? 'Enter your own UID'
+                          : 'Using auto-generated UID',
+                    ),
                     value: _useCustomUid,
                     onChanged: value.loading
                         ? null

@@ -33,16 +33,20 @@ class OAuthSelectionScreen extends StatelessWidget {
                         title: const Text('Google'),
                         onTap: () {
                           Navigator.of(context).pop();
-                          _selectProvider(context,
-                              'https://accounts.google.com/o/oauth2/auth');
+                          _selectProvider(
+                            context,
+                            'https://accounts.google.com/o/oauth2/auth',
+                          );
                         },
                       ),
                       ListTile(
                         title: const Text('Facebook'),
                         onTap: () {
                           Navigator.of(context).pop();
-                          _selectProvider(context,
-                              'https://www.facebook.com/v10.0/dialog/oauth');
+                          _selectProvider(
+                            context,
+                            'https://www.facebook.com/v10.0/dialog/oauth',
+                          );
                         },
                       ),
                       ListTile(
@@ -50,7 +54,9 @@ class OAuthSelectionScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pop();
                           _selectProvider(
-                              context, 'https://providerx.com/oauth2/auth');
+                            context,
+                            'https://providerx.com/oauth2/auth',
+                          );
                         },
                       ),
                     ],

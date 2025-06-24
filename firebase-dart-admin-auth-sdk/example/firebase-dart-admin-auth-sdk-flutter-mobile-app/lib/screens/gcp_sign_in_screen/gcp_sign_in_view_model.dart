@@ -6,10 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 class GCPSignInViewModel extends ChangeNotifier {
   bool loading = false;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
-    scopes: [
-      'email',
-      'https://www.googleapis.com/auth/cloud-platform',
-    ],
+    scopes: ['email', 'https://www.googleapis.com/auth/cloud-platform'],
   );
 
   void setLoading(bool load) {

@@ -41,9 +41,7 @@ class FirebaseParseUrlLink {
       final url = 'parseCode';
 
       // Request body containing the oobCode
-      final body = {
-        'oobCode': oobCode,
-      };
+      final body = {'oobCode': oobCode};
 
       // Send the request to Firebase Authentication's backend service
       final response = await auth.performRequest(url, body);

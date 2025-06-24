@@ -45,10 +45,11 @@ class _VerifyBeforeEmailUpdateState extends State<VerifyBeforeEmailUpdate> {
                   Button(
                     onTap: () async => value.verifyBeforeEmailUpdate(
                       _verifyPasswordRestController.text,
-                      onFinished: () =>
-                          Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ApplyActionCodeScreen(),
-                      )),
+                      onFinished: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const ApplyActionCodeScreen(),
+                        ),
+                      ),
                     ),
                     title: 'Verify new email',
                     loading: value.loading,

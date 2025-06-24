@@ -29,18 +29,13 @@ class _FetchSignInMethodsScreenState extends State<FetchSignInMethodsScreen> {
       create: (context) => FetchSignInMethodsViewModel(),
       child: Consumer<FetchSignInMethodsViewModel>(
         builder: (context, viewModel, child) => Scaffold(
-          appBar: AppBar(
-            title: const Text('Fetch Sign-In Methods'),
-          ),
+          appBar: AppBar(title: const Text('Fetch Sign-In Methods')),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                InputField(
-                  controller: _emailController,
-                  label: 'Email',
-                ),
+                InputField(controller: _emailController, label: 'Email'),
                 20.vSpace,
                 Button(
                   onTap: () =>

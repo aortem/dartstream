@@ -32,20 +32,26 @@ class UpdateCurrentUser {
   ///
   /// Throws:
   /// - [FirebaseAuthException] if the update fails, providing a code and message to describe the error.
-  Future<void> updateCurrentUser(String userId, String idToken,
-      [Map<String, dynamic>? userData]) async {
+  Future<void> updateCurrentUser(
+    String userId,
+    String idToken, [
+    Map<String, dynamic>? userData,
+  ]) async {
     try {
       // Construct the request body with the user ID token and ID
       final Map<String, dynamic> requestBody = {
-        'idToken': idToken,  // The ID token used to authenticate the user
-        'localId': userId,    // The UID of the user whose profile is being updated
-        'returnSecureToken': true,  // Flag to return a new secure token after update
+        'idToken': idToken, // The ID token used to authenticate the user
+        'localId': userId, // The UID of the user whose profile is being updated
+        'returnSecureToken':
+            true, // Flag to return a new secure token after update
       };
 
       // If user data is provided, include it in the request body
       log("User data to update: $userData");
       if (userData != null) {
-        requestBody.addAll(userData);  // Merge the optional user data into the request body
+        requestBody.addAll(
+          userData,
+        ); // Merge the optional user data into the request body
       }
 
       // The Firebase Authentication endpoint to update user details
@@ -61,8 +67,10 @@ class UpdateCurrentUser {
         // If the update fails, log the error response and throw an exception
         log('Update failed: ${response.body}');
         throw FirebaseAuthException(
-          code: 'update-current-user-error',  // Custom error code for update failure
-          message: 'Failed to update current user. ${response.body}',  // Error message
+          code:
+              'update-current-user-error', // Custom error code for update failure
+          message:
+              'Failed to update current user. ${response.body}', // Error message
         );
       }
     } catch (e) {
@@ -71,8 +79,8 @@ class UpdateCurrentUser {
 
       // Throw a FirebaseAuthException if the update operation fails
       throw FirebaseAuthException(
-        code: 'update-current-user-error',  // Custom error code
-        message: 'Failed to update current user.',  // Error message
+        code: 'update-current-user-error', // Custom error code
+        message: 'Failed to update current user.', // Error message
       );
     }
   }

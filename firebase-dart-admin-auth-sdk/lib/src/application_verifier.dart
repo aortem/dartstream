@@ -24,7 +24,8 @@ class RecaptchaVerifier implements ApplicationVerifier {
   @override
   Future<String> verify() async {
     throw UnimplementedError(
-        'RecaptchaVerifier.verify() must be implemented by a platform-specific class.');
+      'RecaptchaVerifier.verify() must be implemented by a platform-specific class.',
+    );
   }
 }
 

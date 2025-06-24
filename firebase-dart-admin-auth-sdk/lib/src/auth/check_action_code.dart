@@ -25,9 +25,7 @@ class CheckActionCodeService {
           if (auth.accessToken != null)
             'Authorization': 'Bearer ${auth.accessToken}',
         },
-        body: json.encode({
-          'oobCode': code,
-        }),
+        body: json.encode({'oobCode': code}),
       );
 
       if (response.statusCode != 200) {
@@ -64,10 +62,8 @@ class ActionCodeInfo {
   factory ActionCodeInfo.fromJson(Map<String, dynamic> json) {
     return ActionCodeInfo(
       operation: json['requestType'],
-      data: {
-        'email': json['email'],
-        'newEmail': json['newEmail'],
-      }..removeWhere((key, value) => value == null),
+      data: {'email': json['email'], 'newEmail': json['newEmail']}
+        ..removeWhere((key, value) => value == null),
     );
   }
 }

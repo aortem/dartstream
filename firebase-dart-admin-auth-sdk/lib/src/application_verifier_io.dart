@@ -14,6 +14,7 @@ class RecaptchaVerifierIO implements RecaptchaVerifier {
   @override
   Future<String> verify() async {
     throw UnimplementedError(
-        'RecaptchaVerifier.verify() is not implemented for IO platforms.');
+      'RecaptchaVerifier.verify() is not implemented for IO platforms.',
+    );
   }
 }

@@ -31,7 +31,10 @@ class SignInWithRedirectService {
   ///
   /// Returns a [UserCredential] object on success, or `null` if the sign-in fails.
   Future<UserCredential?> signInWithRedirect(
-      String redirectUri, String idToken, String providerId) async {
+    String redirectUri,
+    String idToken,
+    String providerId,
+  ) async {
     try {
       // Firebase REST API URL for signing in with an identity provider
       String url =

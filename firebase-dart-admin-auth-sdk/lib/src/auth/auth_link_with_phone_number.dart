@@ -63,7 +63,10 @@ class FirebasePhoneNumberLink {
   /// [phoneNumber] is the phone number to be linked.
   /// [verificationCode] is the SMS code that was sent to the user's phone.
   Future<void> linkPhoneNumber(
-      String idToken, String phoneNumber, String verificationCode) async {
+    String idToken,
+    String phoneNumber,
+    String verificationCode,
+  ) async {
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:update?key=${auth.apiKey}';
     final response = await http.post(
