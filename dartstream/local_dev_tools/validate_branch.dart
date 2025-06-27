@@ -15,17 +15,20 @@ void main(List<String> args) {
   print('Branch name: $branchName');
 
   final validBranches = RegExp(r'^(qa|beta|main)$');
-  final validFeatureBranch =
-      RegExp(r'^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$');
+  final validFeatureBranch = RegExp(
+    r'^(feat|fix|hotfix|chore|test|refactor|release|docs)/[a-z0-9_-]+$',
+  );
 
   if (validBranches.hasMatch(branchName) ||
       validFeatureBranch.hasMatch(branchName)) {
     print('✅ Branch name is valid.');
   } else {
     print(
-        '❌ Branch name does not follow the required convention: <type>/<branch-name>');
+      '❌ Branch name does not follow the required convention: <type>/<branch-name>',
+    );
     print(
-        'Valid types: feat, fix, hotfix, chore, test, refactor, release, qa, beta, main');
+      'Valid types: feat, fix, hotfix, chore, test, refactor, release, qa, beta, main',
+    );
     exit(1);
   }
 }

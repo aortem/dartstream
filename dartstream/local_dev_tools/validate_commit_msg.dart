@@ -10,7 +10,8 @@ void main(List<String> args) {
 
   final commitMessage = File(args[0]).readAsStringSync();
   final regex = RegExp(
-      r'^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$');
+    r'^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$',
+  );
 
   if (!regex.hasMatch(commitMessage)) {
     print('❌ Commit message does not follow the required format.');

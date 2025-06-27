@@ -25,11 +25,11 @@ validate_branch_name:
 
       if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
         echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
-      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release)/[a-z0-9_-]+$"; then
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|docs)/[a-z0-9_-]+$"; then
         echo "✅ Branch name follows naming convention: $BRANCH_NAME."
       else
         echo "❌ Invalid branch name: $BRANCH_NAME."
-        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, development, qa, beta, main."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, docs, development, qa, beta, main."
         exit 1
       fi
   rules:
@@ -48,11 +48,11 @@ validate_commit_messages:
       if [ -n "$CI_MERGE_REQUEST_IID" ]; then
         echo "Merge request detected. Allowing merge commit messages..."
         MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
-        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
         COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
       else
         echo "Standard pipeline detected. Enforcing strict commit message validation..."
-        REGEX="^(feat|fix|hotfix|chore|test|refactor|release)(\([a-z0-9_-]+\))?: .{1,72}$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
         COMBINED_REGEX="$REGEX"
       fi
 
