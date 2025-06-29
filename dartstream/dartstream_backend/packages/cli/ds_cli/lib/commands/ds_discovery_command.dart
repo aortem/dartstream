@@ -66,24 +66,22 @@ class DSDiscoveryCommand extends Command {
     }
 
     // Fall back to argument 0 if provided, even if it doesn't exist
-    extensionsDirectory ??=
-        args.isNotEmpty
-            ? args[0]
-            : p.normalize(
-              p.join(
-                scriptDir,
-                '..',
-                'dartstream_backend',
-                'packages',
-                'standard',
-                'standard_extensions',
-              ),
-            );
+    extensionsDirectory ??= args.isNotEmpty
+        ? args[0]
+        : p.normalize(
+            p.join(
+              scriptDir,
+              '..',
+              'dartstream_backend',
+              'packages',
+              'standard',
+              'standard_extensions',
+            ),
+          );
 
-    final registryFile =
-        args.length > 1
-            ? args[1]
-            : p.normalize(p.join(scriptDir, '..', 'dartstream_registry.json'));
+    final registryFile = args.length > 1
+        ? args[1]
+        : p.normalize(p.join(scriptDir, '..', 'dartstream_registry.yaml'));
 
     print('Starting extension discovery...');
     print('- Extensions directory: $extensionsDirectory');

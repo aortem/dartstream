@@ -42,19 +42,17 @@ class DSListExtensionsCommand extends Command {
     final args = argResults?.arguments ?? [];
     // Resolve extensions directory relative to this script
     final scriptDir = p.dirname(Platform.script.toFilePath());
-    final extensionsDirectory =
-        args.isNotEmpty
-            ? args[0]
-            : p.normalize(
-              p.join(
-                scriptDir,
-                '../dartstream_backend/packages/standard/extensions',
-              ),
-            );
-    final registryFile =
-        args.length > 1
-            ? args[1]
-            : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
+    final extensionsDirectory = args.isNotEmpty
+        ? args[0]
+        : p.normalize(
+            p.join(
+              scriptDir,
+              '../dartstream_backend/packages/standard/extensions',
+            ),
+          );
+    final registryFile = args.length > 1
+        ? args[1]
+        : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
 
     final levelFilter = argResults?['level'] as String;
     final includeInactive = argResults?['inactive'] as bool;
@@ -151,8 +149,9 @@ class DSListExtensionsCommand extends Command {
     if (core.isNotEmpty) {
       print('\n=== Core Extensions ===');
       for (final ext in core) {
-        final active =
-            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
+        final active = activeExtensions.contains(ext.name)
+            ? '(ACTIVE)'
+            : '(INACTIVE)';
         print('- ${ext.name} ${ext.version} $active');
         print('  Description: ${ext.description}');
       }
@@ -161,10 +160,12 @@ class DSListExtensionsCommand extends Command {
     if (extended.isNotEmpty) {
       print('\n=== Extended Features ===');
       for (final ext in extended) {
-        final active =
-            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
-        final core =
-            ext.coreExtension != null ? 'for ${ext.coreExtension}' : '';
+        final active = activeExtensions.contains(ext.name)
+            ? '(ACTIVE)'
+            : '(INACTIVE)';
+        final core = ext.coreExtension != null
+            ? 'for ${ext.coreExtension}'
+            : '';
         print('- ${ext.name} ${ext.version} $active $core');
         print('  Description: ${ext.description}');
       }
@@ -173,8 +174,9 @@ class DSListExtensionsCommand extends Command {
     if (thirdParty.isNotEmpty) {
       print('\n=== Third-Party Enhancements ===');
       for (final ext in thirdParty) {
-        final active =
-            activeExtensions.contains(ext.name) ? '(ACTIVE)' : '(INACTIVE)';
+        final active = activeExtensions.contains(ext.name)
+            ? '(ACTIVE)'
+            : '(INACTIVE)';
         print('- ${ext.name} ${ext.version} $active');
         print('  Description: ${ext.description}');
       }
@@ -189,21 +191,21 @@ class DSListExtensionsCommand extends Command {
     bool includeInactive,
   ) {
     final result = {
-      'extensions':
-          extensions
-              .where(
-                (ext) => includeInactive || activeExtensions.contains(ext.name),
-              )
-              .map(
-                (ext) => {
-                  ...ext.toJson(),
-                  'active': activeExtensions.contains(ext.name),
-                },
-              )
-              .toList(),
+      'extensions': extensions
+          .where(
+            (ext) => includeInactive || activeExtensions.contains(ext.name),
+          )
+          .map(
+            (ext) => {
+              ...ext.toJson(),
+              'active': activeExtensions.contains(ext.name),
+            },
+          )
+          .toList(),
       'totalCount': extensions.length,
-      'activeCount':
-          extensions.where((ext) => activeExtensions.contains(ext.name)).length,
+      'activeCount': extensions
+          .where((ext) => activeExtensions.contains(ext.name))
+          .length,
     };
 
     print(result);

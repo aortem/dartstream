@@ -36,7 +36,7 @@ class DSDisableExtensionCommand extends Command {
       p.join(scriptDir, '../dartstream_backend/packages/standard/extensions'),
     );
     final registryFile = p.normalize(
-      p.join(scriptDir, '../dartstream_registry.json'),
+      p.join(scriptDir, '../dartstream_registry.yaml'),
     );
 
     print('Disabling extension: $extensionName');
@@ -54,10 +54,9 @@ class DSDisableExtensionCommand extends Command {
       registry.discoverExtensions();
 
       // Check if the extension exists and is active
-      final extension =
-          registry.extensions
-              .where((ext) => ext.name == extensionName)
-              .firstOrNull;
+      final extension = registry.extensions
+          .where((ext) => ext.name == extensionName)
+          .firstOrNull;
 
       if (extension == null) {
         print('Error: Extension "$extensionName" not found.');
@@ -71,10 +70,9 @@ class DSDisableExtensionCommand extends Command {
 
       // Check for dependent extensions if not forcing
       if (!forceDisable && extension.level == ExtensionLevel.core) {
-        final dependentExtensions =
-            registry.extendedFeatures
-                .where((ext) => ext.coreExtension == extensionName)
-                .toList();
+        final dependentExtensions = registry.extendedFeatures
+            .where((ext) => ext.coreExtension == extensionName)
+            .toList();
 
         if (dependentExtensions.isNotEmpty) {
           print(

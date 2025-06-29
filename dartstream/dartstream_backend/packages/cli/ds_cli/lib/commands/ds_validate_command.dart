@@ -36,19 +36,17 @@ class DSValidateCommand extends Command {
     final args = argResults?.arguments ?? [];
     // Resolve extensions directory relative to this script
     final scriptDir = p.dirname(Platform.script.toFilePath());
-    final extensionsDirectory =
-        args.isNotEmpty
-            ? args[0]
-            : p.normalize(
-              p.join(
-                scriptDir,
-                '../dartstream_backend/packages/standard/extensions',
-              ),
-            );
-    final registryFile =
-        args.length > 1
-            ? args[1]
-            : p.normalize(p.join(scriptDir, '../dartstream_registry.json'));
+    final extensionsDirectory = args.isNotEmpty
+        ? args[0]
+        : p.normalize(
+            p.join(
+              scriptDir,
+              '../dartstream_backend/packages/standard/extensions',
+            ),
+          );
+    final registryFile = args.length > 1
+        ? args[1]
+        : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
 
     final levelFilter = argResults?['level'] as String;
     final strictMode = argResults?['strict'] as bool;

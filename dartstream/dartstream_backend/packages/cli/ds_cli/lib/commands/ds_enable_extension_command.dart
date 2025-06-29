@@ -37,7 +37,7 @@ class DSEnableExtensionCommand extends Command {
       p.join(scriptDir, '../dartstream_backend/packages/standard/extensions'),
     );
     final registryFile = p.normalize(
-      p.join(scriptDir, '../dartstream_registry.json'),
+      p.join(scriptDir, '../dartstream_registry.yaml'),
     );
 
     print('Enabling extension: $extensionName');
@@ -55,24 +55,21 @@ class DSEnableExtensionCommand extends Command {
       registry.discoverExtensions();
 
       // Check if the extension exists
-      final extension =
-          registry.extensions
-              .where((ext) => ext.name == extensionName)
-              .firstOrNull;
+      final extension = registry.extensions
+          .where((ext) => ext.name == extensionName)
+          .firstOrNull;
 
       if (extension == null) {
         print('Error: Extension "$extensionName" not found.');
 
         // Suggest similar extensions
-        final similarExtensions =
-            registry.extensions
-                .where(
-                  (ext) => ext.name.toLowerCase().contains(
-                    extensionName.toLowerCase(),
-                  ),
-                )
-                .map((ext) => ext.name)
-                .toList();
+        final similarExtensions = registry.extensions
+            .where(
+              (ext) =>
+                  ext.name.toLowerCase().contains(extensionName.toLowerCase()),
+            )
+            .map((ext) => ext.name)
+            .toList();
 
         if (similarExtensions.isNotEmpty) {
           print('\nDid you mean one of these?');
