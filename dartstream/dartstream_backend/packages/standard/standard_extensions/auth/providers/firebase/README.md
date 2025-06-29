@@ -20,7 +20,7 @@ dependencies:
 
    # Firebase Admin Auth SDK
 
-   firebase_dart_admin_auth_sdk: ^0.0.1  
+   firebase_dart_admin_auth_sdk: ^0.0.2  
 
    # Base authentication package
 
