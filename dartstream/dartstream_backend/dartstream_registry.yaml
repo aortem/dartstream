@@ -1,0 +1,71 @@
+## registry.yaml
+
+lastUpdated: "2025-04-09T19:20:38.251464"
+
+extensions:
+  - name: intellitoggle
+    display_name: IntelliToggle
+    version: 0.0.1
+    description: Integration with Go Feature Flag.
+    dependencies:
+      - core >=0.0.1
+      - feature_flags >=0.0.1
+    entry_point: lib/ds_go_feature_flag.dart
+    level: thirdParty
+
+  - name: firebase_database
+    display_name: FirebaseDatabase
+    version: 0.0.1
+    description: Firebase Firestore database provider for DartStream
+    dependencies:
+      - core >=0.0.1
+      - auth >=0.0.1
+    entry_point: lib/ds_firebase_database.dart
+    level: core
+
+  - name: sql_database
+    display_name: SQLDatabase
+    version: 0.0.1
+    description: SQL database providers (PostgreSQL and MySQL) for DartStream
+    dependencies:
+      - core >=0.0.1
+    entry_point: lib/ds_sql_database.dart
+    level: core
+
+  - name: database
+    display_name: Database
+    version: 0.1.0
+    description: Unified DB interface for multiple providers
+    dependencies:
+      - core >=0.0.1
+    entry_point: lib/ds_database_base_export.dart
+    level: core
+
+  - name: amazon_auth
+    display_name: AmazonAuth
+    version: 0.0.1
+    description: Cognito authentication provider for DartStream
+    dependencies:
+      - auth >=0.0.1
+    entry_point: lib/ds_cognito_auth_provider.dart
+    level: core
+
+  - name: google_auth_provider
+    display_name: GoogleAuth
+    version: 0.0.1
+    description: Google authentication provider for DartStream.
+    dependencies:
+      - auth >=0.0.1
+    entry_point: lib/ds_firebase_auth_provider.dart
+    level: core
+
+  - name: azure_auth_provider
+    display_name: AzureAuth
+    version: 0.0.1
+    description: Azure AD authentication provider for DartStream.
+    dependencies:
+      - auth >=0.0.1
+    entry_point: lib/ds_azure_ad_b2c_auth_provider.dart
+    level: core
+
+activeExtensions: []

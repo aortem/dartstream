@@ -1,4 +1,4 @@
-name: "GoogleAuth"
+name: "google_auth_provider"
 version: "0.0.1"
 description: "Google authentication provider for Dartstream."
 dependencies:
