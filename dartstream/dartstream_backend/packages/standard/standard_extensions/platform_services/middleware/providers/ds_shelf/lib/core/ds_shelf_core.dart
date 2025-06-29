@@ -1,53 +1,47 @@
-// Import Top Level Package
-import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
-import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
+// lib/src/core/ds_shelf_core.dart
 
-//Import other core packages
+import 'package:ds_shelf/ds_shelf.dart' as shelf;
+import 'package:shelf_router/shelf_router.dart';
 
+/// Core DSL for building a ds_shelf-powered server with middleware and routing.
 class DSShelfCore {
   final List<shelf.Middleware> _middlewares = [];
   final Router _router = Router();
 
-  // Common server configurations can be initialized here
-
+  /// Initialize core middleware and server configurations.
   DSShelfCore() {
-    // Initialize core middleware and configurations that every server will use
     _setupCoreMiddleware();
+    _configureCoreRoutes();
   }
 
-  // A method for adding middleware to the server. This could be used by subclasses or during server setup.
+  /// Adds a middleware to the pipeline.
   void addMiddleware(shelf.Middleware middleware) {
     _middlewares.add(middleware);
   }
 
-  // Method to get the composed handler with all middleware and routes configured
+  /// Composed handler with all registered middleware and routes.
   shelf.Handler get handler {
-    final pipeline = _middlewares.fold(
-      shelf.Pipeline(),
-      (shelf.Pipeline pipeline, middleware) =>
-          pipeline.addMiddleware(middleware),
-    );
-
+    var pipeline = shelf.Pipeline();
+    for (final mw in _middlewares) {
+      pipeline = pipeline.addMiddleware(mw);
+    }
     return pipeline.addHandler(_router);
   }
 
-  // Setup core middleware that all servers will use, such as logging requests.
+  /// Default core middleware (e.g. logging).
   void _setupCoreMiddleware() {
     addMiddleware(shelf.logRequests());
   }
 
-  // Method to configure common routes or utilities that every server might need
+  /// Default core routes (e.g. health-check).
   void _configureCoreRoutes() {
-    // For example, a health check endpoint
     _router.get('/health', (shelf.Request request) {
       return shelf.Response.ok('OK');
     });
-
-    // Additional core configurations...
   }
 
-  // Utility method to easily add routes from subclasses or during initialization
-  void addRoute(String path, shelf.Handler handler) {
-    _router.add('GET', path, handler);
+  /// Utility to register a GET route easily.
+  void addGetRoute(String path, shelf.Handler handler) {
+    _router.get(path, handler);
   }
 }
