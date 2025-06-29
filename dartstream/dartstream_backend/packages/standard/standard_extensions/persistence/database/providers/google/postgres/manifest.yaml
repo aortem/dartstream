@@ -1,4 +1,4 @@
-name: "GooglePostgreSQLDatabase"
+name: "ds_google_postgres_database"
 version: "0.1.0"
 description: "PostgreSQL database provider for DartStream using Google Cloud SQL"
 level: "core"

@@ -1,4 +1,4 @@
-name: "GoogleFirebaseDatabase"
+name: "ds_google_firebase_database"
 version: "0.1.0"
 description: "Firebase Firestore database provider for DartStream"
 level: "core"
