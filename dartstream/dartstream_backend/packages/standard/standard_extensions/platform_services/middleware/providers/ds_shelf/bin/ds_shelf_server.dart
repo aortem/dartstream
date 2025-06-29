@@ -1,44 +1,34 @@
-// Import Top Level Package
-import 'package:ds_shelf/ds_shelf.dart' as shelf; //Coverage for shelf
-import 'package:ds_shelf/ds_shelf.dart'; //Coverage for other packages
+// bin/ds_shelf_server.dart
 
-// Import other necessary utilities or configurations
+import 'dart:io';
+import 'package:ds_shelf/ds_shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:shelf_router/shelf_router.dart';
 
-class DSShelfServer extends DSShelfCore {
-  // List of middlewares to apply to the server.
-  final List<shelf.Middleware> _middlewares = [];
+/// The entry point for your ds_shelf-powered server.
+void main(List args) async {
+  // 1) Load configuration (e.g. ALLOWED_ORIGINS from .env)
+  final config = AppConfig.load();
 
-  // Initial setup for router or any server-level configurations
-  final Router _router = Router();
+  // 2) Build your router
+  final router = Router()
+    ..get('/', (Request req) => Response.ok('Welcome to ds_shelf!'))
+  // Add more routes here, or mount external routers:
+  // ..mount('/api', yourApiRouter)
+  ;
 
-  // Method to add middleware
-  void addMiddleware(shelf.Middleware middleware) {
-    _middlewares.add(middleware);
-  }
+  // 3) Create a pipeline with CORS and logging
+  final handler = Pipeline()
+      .addMiddleware(dsShelfCorsMiddleware(checker: config.originChecker))
+      .addMiddleware(logRequests()) // from package:shelf
+      .addHandler(router);
 
-  // Initialize and configure the server with default or added middleware
-  shelf.Handler initializeServer() {
-    // Apply all added middleware to the pipeline
-    var pipeline = shelf.Pipeline();
-    for (var middleware in _middlewares) {
-      pipeline = pipeline.addMiddleware(middleware);
-    }
+  // 4) Start the HTTP server
+  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  final server = await shelf_io.serve(handler, InternetAddress.anyIPv4, port);
 
-    // Default middleware could be added here as well
-
-    // Configure router with routes
-    _configureRoutes(_router);
-
-    // Combine middleware and router
-    return pipeline.addHandler(_router);
-  }
-
-  // Example route configuration
-  void _configureRoutes(Router router) {
-    router.get('/', (shelf.Request request) {
-      return shelf.Response.ok('Hello, DS Shelf!');
-    });
-
-    // More route configurations
-  }
+  print(
+    '🚀 Server listening on http://'
+    '${server.address.host}:${server.port}',
+  );
 }

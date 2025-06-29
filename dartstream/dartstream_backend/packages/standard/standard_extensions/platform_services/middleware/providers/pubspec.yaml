@@ -1,13 +1,14 @@
-name: ds_middlearee
-description: "Amazon authentication provider for Dartstream."
-version: "0.0.1-pre"
+#This pubspec file imports is used for any authentication framework features.
+#This works for both mobile and web.
+name: ds_middleware
+description: Base package for DartStream authentication, including foundational classes and interfaces.
+version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
-publish_to: none # Mark the package as non-publishable for local testing:
-
 environment:
- sdk: ^3.7.2
+ sdk: ^3.8.1
 
 resolution: workspace
 
-entry_point: "lib/amazon_auth_provider.dart"
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
