@@ -52,7 +52,8 @@ workspace:
   - packages/standard/standard_extensions/platform_services/feature_flags/base
   - packages/standard/standard_extensions/platform_services/feature_flags/providers
   - packages/standard/standard_extensions/platform_services/middleware/base
-  - packages/standard/standard_extensions/platform_services/middleware/providers
+  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
+  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
