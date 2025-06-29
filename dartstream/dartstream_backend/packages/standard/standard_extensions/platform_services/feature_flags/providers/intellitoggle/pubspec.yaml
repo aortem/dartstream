@@ -1,5 +1,5 @@
-name: go_feature_flag_provider
-description: Provides an integration with Go Feature Flag, enabling Dartstream to manage and evaluate feature flags dynamically.
+name: ds_intellitoggle_provider
+description: Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
