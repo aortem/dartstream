@@ -1,7 +1,7 @@
 // lib/src/config/app_config.dart
 
 import 'package:dotenv/dotenv.dart';
-import '../cors/ds_shelf_origin_checker.dart';
+import '../../extensions/cors/ds_shelf_origin_checker.dart';
 
 /// Holds global settings loaded from your environment.
 class AppConfig {
