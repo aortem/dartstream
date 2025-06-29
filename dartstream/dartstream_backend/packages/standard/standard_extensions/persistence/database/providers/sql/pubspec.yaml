@@ -12,4 +12,4 @@ dependencies:
   mysql1: ^0.20.0
   ds_database_base:
     path: ../../base
-  ds_standard_features: ^0.0.1-pre+11
+  ds_standard_features: ^0.0.4

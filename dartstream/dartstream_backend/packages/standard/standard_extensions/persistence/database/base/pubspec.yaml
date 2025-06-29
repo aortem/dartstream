@@ -9,4 +9,4 @@ environment:
 resolution: workspace
 
 dependencies:
-  ds_standard_features: ^0.0.1-pre+11
+  ds_standard_features: ^0.0.4

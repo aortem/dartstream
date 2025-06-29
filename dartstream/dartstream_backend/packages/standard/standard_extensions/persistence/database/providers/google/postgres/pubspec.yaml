@@ -13,4 +13,4 @@ dependencies:
   postgres: ^3.5.5
   ds_database_base:
     path: ../../../base
-  ds_standard_features: ^0.0.1-pre+11
+  ds_standard_features: ^0.0.4
