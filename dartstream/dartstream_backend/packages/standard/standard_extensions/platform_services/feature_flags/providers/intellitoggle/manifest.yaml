@@ -1,4 +1,4 @@
-name: intellitoggle
+name: ds_intellitoggle_provider
 version: "0.0.1-pre+1"
 description: Integration with Intellitoggle.
 dependencies:

@@ -65,8 +65,8 @@ extensions:
     entry_point: 'ds_postgres_database.dart'
     level: core
 
-  - name: intellitoggle
-    display_name: intellitoggle
+  - name: ds_intellitoggle_provider
+    display_name: ds_intellitoggle_provider
     version: 0.0.1-pre+1
     description: 'Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.'
     dependencies:
