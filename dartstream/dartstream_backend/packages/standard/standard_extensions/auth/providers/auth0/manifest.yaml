@@ -1,0 +1,6 @@
+name: ds_auth0_auth_provider
+version: "0.0.1"
+description: "Auth0 authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_firebase_auth_provider.dart"
