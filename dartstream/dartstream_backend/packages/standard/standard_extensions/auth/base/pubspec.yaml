@@ -11,6 +11,5 @@ resolution: workspace
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-  firebase_dart_admin_auth_sdk: ^0.0.1
+#  Add or remove the supported Auth SDK providers as needed (ie. firebase_dart_admin_auth_sdk: ^latest)
 
-# STANDARD PACKAGES - Built By The Dart Team
