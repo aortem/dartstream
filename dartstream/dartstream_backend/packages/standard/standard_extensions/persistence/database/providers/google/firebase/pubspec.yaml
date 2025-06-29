@@ -1,6 +1,6 @@
 name: ds_google_firebase_database
 description: Firebase Firestore database provider for DartStream.
-version: 0.1.0
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none
 

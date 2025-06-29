@@ -1,6 +1,6 @@
 name: ds_google_mysql_database
 description: MySQL database provider for DartStream using Google Cloud SQL.
-version: 0.1.0
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none
 
