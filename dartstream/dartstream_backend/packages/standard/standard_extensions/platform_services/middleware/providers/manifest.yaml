@@ -1,0 +1,3 @@
+# This is the custom metadata file for the platform_services system
+# This tells our build tooling tool which providers exist.
+# In this instance we have ds_shelf and ds_middleware
