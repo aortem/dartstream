@@ -37,15 +37,6 @@ extensions:
     entry_point: 'lib/ds_firebase_auth_provider.dart'
     level: thirdParty
 
-  - name: Database
-    display_name: Database
-    version: 0.1.0
-    description: 'Base package for DartStream database providers, including foundational interfaces and management classes.'
-    dependencies:
-      - Core >=0.0.1
-    entry_point: 'ds_database_base_export.dart'
-    level: core
-
   - name: ds_google_firebase_database
     display_name: ds_google_firebase_database
     version: 0.1.0
@@ -74,12 +65,12 @@ extensions:
     entry_point: 'ds_postgres_database.dart'
     level: core
 
-  - name: go_feature_flag
-    display_name: go_feature_flag
+  - name: intellitoggle
+    display_name: intellitoggle
     version: 0.0.1-pre+1
     description: 'Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.'
     dependencies:
       - Core >= 0.0.1
       - FeatureFlags >= 0.0.1
-    entry_point: 'lib/ds_go_feature_flag.dart'
+    entry_point: 'lib/ds_intellitoggle.dart'
     level: thirdParty
