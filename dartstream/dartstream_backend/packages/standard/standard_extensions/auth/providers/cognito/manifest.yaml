@@ -1,5 +1,5 @@
 name: "AmazonAuth"
-version: "0.0.1"
+version: "0.0.1-pre"
 description: "Google authentication provider for Dartstream."
 dependencies:
   - "Auth >=0.0.1"

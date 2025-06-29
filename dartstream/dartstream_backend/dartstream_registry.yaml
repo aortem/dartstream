@@ -39,7 +39,7 @@ extensions:
 
   - name: ds_google_firebase_database
     display_name: ds_google_firebase_database
-    version: 0.1.0
+    version: 0.0.1
     description: 'Firebase Firestore database provider for DartStream.'
     dependencies:
       - Core >=0.0.1
@@ -49,7 +49,7 @@ extensions:
 
   - name: ds_google_mysql_database
     display_name: ds_google_mysql_database
-    version: 0.1.0
+    version: 0.0.1
     description: 'MySQL database provider for DartStream using Google Cloud SQL.'
     dependencies:
       - Core >=0.0.1
@@ -58,7 +58,7 @@ extensions:
 
   - name: ds_google_postgres_database
     display_name: ds_google_postgres_database
-    version: 0.1.0
+    version: 0.0.1
     description: 'PostgreSQL database provider for DartStream using Google Cloud SQL.'
     dependencies:
       - Core >=0.0.1

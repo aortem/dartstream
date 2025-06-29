@@ -1,6 +1,6 @@
 name: ds_database_base
 description: Base package for DartStream database providers, including foundational interfaces and management classes.
-version: 0.1.0
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:

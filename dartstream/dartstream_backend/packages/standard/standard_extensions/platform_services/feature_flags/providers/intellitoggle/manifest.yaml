@@ -1,5 +1,5 @@
 name: intellitoggle
-version: 0.0.1
+version: "0.0.1-pre+1"
 description: Integration with Intellitoggle.
 dependencies:
   - Core >= 0.0.1
