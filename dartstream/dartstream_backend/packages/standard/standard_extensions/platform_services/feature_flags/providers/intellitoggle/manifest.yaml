@@ -1,6 +1,6 @@
 name: go_feature_flag
 version: 0.0.1
-description: Integration with Go Feature Flag.
+description: Integration with Intellitoggle.
 dependencies:
   - Core >= 0.0.1
   - FeatureFlags >= 0.0.1

@@ -6,7 +6,7 @@ extensions:
   - name: intellitoggle
     display_name: IntelliToggle
     version: 0.0.1
-    description: Integration with Go Feature Flag.
+    description: Integration with Intellitoggle.
     dependencies:
       - core >=0.0.1
       - feature_flags >=0.0.1
