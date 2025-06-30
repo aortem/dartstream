@@ -4,116 +4,116 @@ stages:
 release:
   stage: release
   image: alpine:latest
+
+  # Install bash, git, curl, jq, etc.
   before_script:
     - apk add --no-cache bash curl git jq findutils
+
+    # Pull full dev branch + tags so 'git describe' and ls-remote work
+    - git fetch origin development:development --prune --unshallow --tags
+
   script:
     - |
-      bash -c '
       set -e
       echo "Using bash version: $BASH_VERSION"
+      echo "Project root: $CI_PROJECT_DIR"
 
-      # 0) Fetch full history, branch & tags
-      git fetch origin development:development --prune --unshallow --tags
-
-      # Debug: show latest local tag
-      LATEST_LOCAL_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "(none)")
-      echo "Latest local Git tag: $LATEST_LOCAL_TAG"
-
-      # Debug: show latest remote tag on origin
-      LATEST_REMOTE_TAG=$(git ls-remote --tags origin | tail -1 | awk "{print \$2}" | sed "s@refs/tags/@@")
-      echo "Latest remote Git tag on origin: $LATEST_REMOTE_TAG"
-
+      # 1) Find every directory with a pubspec.yaml
       PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
       echo "Found candidate project directories:"
       echo "$PROJECT_DIRS"
 
-      ROOT_DIR=$(pwd)
-
+      # 2) Loop and process each one
       for dir in $PROJECT_DIRS; do
+        echo
         echo "=========================================="
-        echo "Processing directory: ${dir}"
+        echo "🔍 Processing directory: ${dir}"
 
-        # 1) Ensure CHANGELOG.md exists
+        # must have a CHANGELOG.md
         if [ ! -f "${dir}/CHANGELOG.md" ]; then
-          echo "  → CHANGELOG.md not found in ${dir}, skipping."
+          echo "  → No CHANGELOG.md found in ${dir}, skipping."
           continue
-        fi
-
-        # 2) Debug: show raw diff against development
-        echo "  → Raw git-diff output:"
-        git diff --name-only origin/development HEAD
-
-        # 3) Only proceed if pubspec.yaml or CHANGELOG.md changed here
-        CHANGED=$(git diff --name-only origin/development HEAD \
-                  | sed 's#^\./##' \
-                  | grep -E "^${dir#./}/(pubspec.yaml|CHANGELOG.md)$" || true)
-        if [ -z "$CHANGED" ]; then
-          echo "  → No pubspec.yaml or CHANGELOG.md changes in ${dir}, skipping."
-          continue
-        else
-          echo "  → Detected changes in:"
-          echo "$CHANGED"
         fi
 
         cd "${dir}"
-        echo "Current working directory: $(pwd)"
-        ls -la
+        echo "  • CWD: $(pwd)"
 
-        # 4) Read version & build tag
-        VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //; s/[[:space:]]//g")
-        TAG="v$VERSION"
-        echo "Version from pubspec.yaml: $VERSION"
+        # pubspec version
+        VERSION=$(grep "^version:" pubspec.yaml \
+                    | sed "s/version:[[:space:]]*//" \
+                    | tr -d '[:space:]')
+        echo "  • Version (pubspec): $VERSION"
 
-        # 5) Skip if remote already has this tag
-        if git ls-remote --exit-code --tags origin "$TAG" &>/dev/null; then
-          echo "  → Tag $TAG already exists on origin, skipping."
-          cd "$ROOT_DIR" || exit 1
-          continue
-        fi
+        # CHANGELOG header
+        CHANGELOG_VERSION=$(grep -m1 "^## " CHANGELOG.md \
+                            | sed "s/^## *//; s/ .*//")
+        echo "  • Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        # 6) Check pub.dev latest
-        PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
-        PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
-        PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
-        if echo "$PUB_RESPONSE" | jq empty 2>/dev/null; then
-          PUB_DEV_LATEST=$(echo "$PUB_RESPONSE" | jq -r ".latest.version")
+        # pub.dev lookup
+        PUB_NAME=$(grep "^name:" pubspec.yaml | sed "s/name:[[:space:]]*//")
+        PUB_API="https://pub.dev/api/packages/${PUB_NAME}"
+        PUB_JSON=$(curl --silent --fail "$PUB_API" || echo "")
+        if echo "$PUB_JSON" | jq empty 2>/dev/null; then
+          PUB_DEV_LATEST=$(echo "$PUB_JSON" | jq -r ".latest.version")
         else
+          echo "  ⚠️ pub.dev lookup failed or package not published"
           PUB_DEV_LATEST="none"
         fi
-        echo "Latest on pub.dev: $PUB_DEV_LATEST"
+        echo "  • Latest on pub.dev: $PUB_DEV_LATEST"
 
-        if [ "$VERSION" = "$PUB_DEV_LATEST" ]; then
-          echo "  → Version $VERSION already published, skipping."
-          cd "$ROOT_DIR" || exit 1
+        # latest GitLab Release tag
+        LATEST_RELEASE=$(curl --silent \
+            --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
+            "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" \
+            | jq -r ".[0].tag_name")
+        echo "  • Latest GitLab Release: $LATEST_RELEASE"
+
+        # latest local Git tag
+        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+        echo "  • Latest Git tag: $LATEST_TAG"
+
+        # decide: only release if pubspec version is new relative to both
+        if [ "v$VERSION" != "$LATEST_TAG" ] && \
+           { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
+          echo "  ✅ New version detected. Proceeding with auto-release."
+        else
+          echo "  ℹ️ Version not bumped or already published."
+          echo "  • Git diff since $LATEST_TAG:"
+          git diff --stat "$LATEST_TAG" HEAD || true
+          cd "$CI_PROJECT_DIR"
           continue
         fi
 
-        # 7) Configure Git, tag & push
+        # git config & push
         git config --global user.email "${_GIT_USER}"
-        git config --global user.name "${_GIT_USER}"
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
+        git config --global user.name  "${_GIT_USER}"
+        git remote set-url origin \
+          https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
 
-        echo "Creating Git tag: $TAG"
+        TAG="v$VERSION"
+        echo "  • Creating Git tag $TAG"
         git tag "$TAG"
-        echo "Pushing Git tag $TAG to origin"
+        echo "  • Pushing tag to origin"
         git push origin "$TAG"
 
-        # 8) Release notes & GitLab release
-        RELEASE_NOTES=$(awk "/^## \\[$VERSION\\]/ {flag=1; next} /^## / {if(flag){exit}} flag" CHANGELOG.md)
-        echo "Release notes:"
-        echo "$RELEASE_NOTES"
+        # extract release notes from CHANGELOG.md
+        RELEASE_NOTES=$(awk "/^## \\[$VERSION\\]/ {flag=1; next} /^## / {if(flag) exit} flag" CHANGELOG.md)
+        echo "  • Release notes:\n$RELEASE_NOTES"
 
-        curl --request POST \
+        # GitLab Release
+        echo "  • Creating GitLab release for $TAG"
+        curl -s --request POST \
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           --data "name=Release $TAG" \
           --data "tag_name=$TAG" \
           --data-urlencode "description=${RELEASE_NOTES}" \
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 
-        cd "$ROOT_DIR" || exit 1
+        # back to root
+        cd "$CI_PROJECT_DIR"
       done
 
-      echo "All directories processed."
-      '
+      echo
+      echo "✅ All directories processed."
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
