@@ -1,13 +1,13 @@
 // lib/src/cors/ds_origin_checker.dart
 
 /// A function that returns true if a given origin is allowed.
-typedef DsOriginChecker = bool Function(String origin);
+typedef DsShelfOriginChecker = bool Function(String origin);
 
 /// Allows any origin.
-bool dsOriginAllowAll(String origin) => true;
+bool dsShelfOriginAllowAll(String origin) => true;
 
 /// Allows only the exact strings or regex patterns in [allowed].
-DsOriginChecker dsOriginOneOf(List<String> allowed) {
+DsShelfOriginChecker dsShelfOriginOneOf(List<String> allowed) {
   return (origin) {
     for (final pattern in allowed) {
       if (pattern.startsWith('^') || pattern.contains(r'\.')) {

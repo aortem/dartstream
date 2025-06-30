@@ -18,7 +18,7 @@ Map<String, List<String>> _buildPreflightHeaders(String origin) {
 
 /// Generates a CORS preflight (OPTIONS) [Response] using default headers.
 Response dsShelfCorsPreflightResponse(Request request) {
-  final origin = request.headers[dsOriginHeader];
+  final origin = request.headers[dsShelfOriginHeader];
   if (origin == null) {
     // No Origin header → not a valid CORS preflight
     return Response(400, body: 'Missing Origin header');

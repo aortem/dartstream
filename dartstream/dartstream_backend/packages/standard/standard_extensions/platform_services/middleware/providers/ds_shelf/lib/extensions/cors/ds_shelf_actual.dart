@@ -9,8 +9,8 @@ Map<String, List<String>> _buildActualHeaders(String origin) {
     dsAccessControlAllowOrigin: [origin],
     dsAccessControlExposeHeaders: [''],
     dsAccessControlAllowCredentials: ['true'],
-    dsAccessControlAllowHeaders: [dsDefaultAllowHeaders.join(',')],
-    dsAccessControlAllowMethods: [dsDefaultAllowMethods.join(',')],
+    dsAccessControlAllowHeaders: [dsShelfDefaultAllowHeaders.join(',')],
+    dsAccessControlAllowMethods: [dsShelfDefaultAllowMethods.join(',')],
     dsVary: ['Origin'],
   };
 }

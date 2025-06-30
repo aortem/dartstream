@@ -14,7 +14,7 @@ Middleware dsShelfCorsMiddleware({
 }) {
   return (Handler inner) {
     return (Request request) async {
-      final origin = request.headers[dsOriginHeader];
+      final origin = request.headers[dsShelfOriginHeader];
       if (origin == null || !checker(origin)) {
         // Not a CORS request or origin disallowed: pass through
         return inner(request);
