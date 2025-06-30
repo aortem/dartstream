@@ -10,8 +10,8 @@ environment:
 resolution: workspace
 
 dependencies:
-  cloud_firestore: ^4.8.0
-  firebase_core: ^2.13.0
+ # cloud_firestore: ^4.8.0
+ # firebase_core: ^2.13.0
   logging: ^1.2.0
   ds_database_base:
     path: ../../../base

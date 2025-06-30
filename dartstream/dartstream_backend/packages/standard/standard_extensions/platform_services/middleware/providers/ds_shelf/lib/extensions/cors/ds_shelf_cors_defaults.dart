@@ -10,7 +10,7 @@ const dsAccessControlMaxAge = 'Access-Control-Max-Age';
 const dsVary = 'Vary';
 
 /// The HTTP request header key for the Origin
-const dsOriginHeader = 'origin';
+const dsShelfOriginHeader = 'origin';
 
 /// Default list of request headers to allow
 const dsShelfDefaultAllowHeaders = [
