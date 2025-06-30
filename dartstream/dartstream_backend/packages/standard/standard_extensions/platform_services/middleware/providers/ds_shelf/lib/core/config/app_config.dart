@@ -5,10 +5,10 @@ import '../../extensions/cors/ds_shelf_origin_checker.dart';
 class AppConfig {
   /// A list of allowed CORS origins.
   final List<String> _allowedOrigins;
-  final DsOriginChecker originChecker;
+  final DsShelfOriginChecker originChecker;
 
   AppConfig._(this._allowedOrigins)
-    : originChecker = dsOriginOneOf(_allowedOrigins);
+    : originChecker = dsShelfOriginOneOf(_allowedOrigins);
 
   /// Loads ALLOWED_ORIGINS from .env as a comma-separated list.
   factory AppConfig.load() {
