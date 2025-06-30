@@ -12,8 +12,16 @@ release:
       set -e
       echo "Using bash version: $BASH_VERSION"
 
-      # Ensure we have the remote branch and full history
+      # 0) Fetch full history, branch & tags
       git fetch origin development:development --prune --unshallow --tags
+
+      # Debug: show latest local tag
+      LATEST_LOCAL_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "(none)")
+      echo "Latest local Git tag: $LATEST_LOCAL_TAG"
+
+      # Debug: show latest remote tag on origin
+      LATEST_REMOTE_TAG=$(git ls-remote --tags origin | tail -1 | awk "{print \$2}" | sed "s@refs/tags/@@")
+      echo "Latest remote Git tag on origin: $LATEST_REMOTE_TAG"
 
       PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
       echo "Found candidate project directories:"
@@ -31,11 +39,11 @@ release:
           continue
         fi
 
-        # 2) Debug: show raw diff
+        # 2) Debug: show raw diff against development
         echo "  → Raw git-diff output:"
         git diff --name-only origin/development HEAD
 
-        # 3) Only proceed if pubspec.yaml or CHANGELOG.md changed in this package
+        # 3) Only proceed if pubspec.yaml or CHANGELOG.md changed here
         CHANGED=$(git diff --name-only origin/development HEAD \
                   | sed 's#^\./##' \
                   | grep -E "^${dir#./}/(pubspec.yaml|CHANGELOG.md)$" || true)
@@ -47,24 +55,23 @@ release:
           echo "$CHANGED"
         fi
 
-        # Enter the package directory
         cd "${dir}"
         echo "Current working directory: $(pwd)"
         ls -la
 
-        # 4) Read version and construct tag
+        # 4) Read version & build tag
         VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //; s/[[:space:]]//g")
         TAG="v$VERSION"
         echo "Version from pubspec.yaml: $VERSION"
 
-        # 5) Skip if tag already exists on origin
-        if git ls-remote --exit-code --tags origin "$TAG" &> /dev/null; then
+        # 5) Skip if remote already has this tag
+        if git ls-remote --exit-code --tags origin "$TAG" &>/dev/null; then
           echo "  → Tag $TAG already exists on origin, skipping."
           cd "$ROOT_DIR" || exit 1
           continue
         fi
 
-        # 6) Compare against pub.dev latest
+        # 6) Check pub.dev latest
         PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
         PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
@@ -81,7 +88,7 @@ release:
           continue
         fi
 
-        # 7) Configure Git and push tag
+        # 7) Configure Git, tag & push
         git config --global user.email "${_GIT_USER}"
         git config --global user.name "${_GIT_USER}"
         git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
@@ -91,7 +98,7 @@ release:
         echo "Pushing Git tag $TAG to origin"
         git push origin "$TAG"
 
-        # 8) Extract release notes and create GitLab release
+        # 8) Release notes & GitLab release
         RELEASE_NOTES=$(awk "/^## \\[$VERSION\\]/ {flag=1; next} /^## / {if(flag){exit}} flag" CHANGELOG.md)
         echo "Release notes:"
         echo "$RELEASE_NOTES"
@@ -103,7 +110,6 @@ release:
           --data-urlencode "description=${RELEASE_NOTES}" \
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 
-        # Return to repo root
         cd "$ROOT_DIR" || exit 1
       done
 
