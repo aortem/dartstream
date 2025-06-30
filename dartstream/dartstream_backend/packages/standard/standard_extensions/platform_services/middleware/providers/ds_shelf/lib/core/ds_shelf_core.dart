@@ -1,6 +1,7 @@
 // lib/src/core/ds_shelf_core.dart
 
-import 'package:ds_shelf/ds_shelf.dart' as shelf;
+//import 'package:ds_shelf/ds_shelf.dart' as shelf;
+import '../ds_shelf.dart' as shelf;
 import 'package:shelf_router/shelf_router.dart';
 
 /// Core DSL for building a ds_shelf-powered server with middleware and routing.

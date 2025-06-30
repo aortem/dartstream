@@ -1,11 +1,10 @@
-// lib/core/config/app_config.dart
-
 import 'package:dotenv/dotenv.dart';
 import '../../extensions/cors/ds_shelf_origin_checker.dart';
 
 /// Holds global settings loaded from your environment.
 class AppConfig {
-  final List _allowedOrigins;
+  /// A list of allowed CORS origins.
+  final List<String> _allowedOrigins;
   final DsOriginChecker originChecker;
 
   AppConfig._(this._allowedOrigins)
@@ -20,6 +19,8 @@ class AppConfig {
         .map((s) => s.trim())
         .where((s) => s.isNotEmpty)
         .toList();
-    return AppConfig._(origins);
+    // Ensure type safety: List<String>
+    final List<String> parsedOrigins = origins.cast<String>();
+    return AppConfig._(parsedOrigins);
   }
 }
