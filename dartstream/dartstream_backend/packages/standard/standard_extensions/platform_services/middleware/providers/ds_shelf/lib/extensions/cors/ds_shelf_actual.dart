@@ -16,6 +16,6 @@ Map<String, List<String>> _buildActualHeaders(String origin) {
 }
 
 /// Applies CORS headers to a non-OPTIONS [response] using the given [origin].
-Response dsCorsApplyActual(Response response, String origin) {
+Response dsShelfCorsApplyActual(Response response, String origin) {
   return response.change(headers: _buildActualHeaders(origin));
 }

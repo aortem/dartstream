@@ -9,15 +9,15 @@ Map<String, List<String>> _buildPreflightHeaders(String origin) {
     dsAccessControlAllowOrigin: [origin],
     dsAccessControlExposeHeaders: [''],
     dsAccessControlAllowCredentials: ['true'],
-    dsAccessControlAllowHeaders: [dsDefaultAllowHeaders.join(',')],
-    dsAccessControlAllowMethods: [dsDefaultAllowMethods.join(',')],
+    dsAccessControlAllowHeaders: [dsShelfDefaultAllowHeaders.join(',')],
+    dsAccessControlAllowMethods: [dsShelfDefaultAllowMethods.join(',')],
     dsAccessControlMaxAge: ['86400'],
     dsVary: ['Origin'],
   };
 }
 
 /// Generates a CORS preflight (OPTIONS) [Response] using default headers.
-Response dsCorsPreflightResponse(Request request) {
+Response dsShelfCorsPreflightResponse(Request request) {
   final origin = request.headers[dsOriginHeader];
   if (origin == null) {
     // No Origin header → not a valid CORS preflight

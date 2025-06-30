@@ -9,7 +9,9 @@ import 'ds_shelf_actual.dart';
 /// CORS middleware: handles preflight and adds CORS headers to actual requests.
 ///
 /// [checker] determines if an incoming Origin is allowed.
-Middleware dsCorsMiddleware({DsOriginChecker checker = dsOriginAllowAll}) {
+Middleware dsShelfCorsMiddleware({
+  DsShelfOriginChecker checker = dsShelfOriginAllowAll,
+}) {
   return (Handler inner) {
     return (Request request) async {
       final origin = request.headers[dsOriginHeader];
@@ -19,11 +21,11 @@ Middleware dsCorsMiddleware({DsOriginChecker checker = dsOriginAllowAll}) {
       }
       if (request.method == 'OPTIONS') {
         // Preflight request
-        return dsCorsPreflightResponse(request);
+        return dsShelfCorsPreflightResponse(request);
       }
       // Actual request
       final response = await inner(request);
-      return dsCorsApplyActual(response, origin);
+      return dsShelfCorsApplyActual(response, origin);
     };
   };
 }

@@ -13,7 +13,7 @@ const dsVary = 'Vary';
 const dsOriginHeader = 'origin';
 
 /// Default list of request headers to allow
-const dsDefaultAllowHeaders = [
+const dsShelfDefaultAllowHeaders = [
   'accept',
   'accept-encoding',
   'authorization',
@@ -24,7 +24,7 @@ const dsDefaultAllowHeaders = [
 ];
 
 /// Default list of HTTP methods to allow
-const dsDefaultAllowMethods = [
+const dsShelfDefaultAllowMethods = [
   'DELETE',
   'GET',
   'OPTIONS',
