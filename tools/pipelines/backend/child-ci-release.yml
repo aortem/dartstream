@@ -12,10 +12,9 @@ release:
       set -e
       echo "Using bash version: $BASH_VERSION"
 
-      # Fetch full history and remote branch for reliable diffs
+      # Ensure we have the remote branch and full history
       git fetch origin development:development --prune --unshallow --tags
 
-      # Find all package roots by locating pubspec.yaml files
       PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
       echo "Found candidate project directories:"
       echo "$PROJECT_DIRS"
@@ -26,15 +25,20 @@ release:
         echo "=========================================="
         echo "Processing directory: ${dir}"
 
-        # 1) Ensure a CHANGELOG.md exists
+        # 1) Ensure CHANGELOG.md exists
         if [ ! -f "${dir}/CHANGELOG.md" ]; then
           echo "  → CHANGELOG.md not found in ${dir}, skipping."
           continue
         fi
 
-        # 2) Only proceed if pubspec.yaml or CHANGELOG.md changed in this branch
+        # 2) Debug: show raw diff
+        echo "  → Raw git-diff output:"
+        git diff --name-only origin/development HEAD
+
+        # 3) Only proceed if pubspec.yaml or CHANGELOG.md changed in this package
         CHANGED=$(git diff --name-only origin/development HEAD \
-                  | grep -E "^${dir}/(pubspec.yaml|CHANGELOG.md)$" || true)
+                  | sed 's#^\./##' \
+                  | grep -E "^${dir#./}/(pubspec.yaml|CHANGELOG.md)$" || true)
         if [ -z "$CHANGED" ]; then
           echo "  → No pubspec.yaml or CHANGELOG.md changes in ${dir}, skipping."
           continue
@@ -43,24 +47,24 @@ release:
           echo "$CHANGED"
         fi
 
-        # Enter package directory
+        # Enter the package directory
         cd "${dir}"
         echo "Current working directory: $(pwd)"
         ls -la
 
-        # 3) Read version and construct tag
+        # 4) Read version and construct tag
         VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //; s/[[:space:]]//g")
         TAG="v$VERSION"
         echo "Version from pubspec.yaml: $VERSION"
 
-        # 4) Skip if tag already exists on origin
+        # 5) Skip if tag already exists on origin
         if git ls-remote --exit-code --tags origin "$TAG" &> /dev/null; then
           echo "  → Tag $TAG already exists on origin, skipping."
           cd "$ROOT_DIR" || exit 1
           continue
         fi
 
-        # 5) Compare against pub.dev latest
+        # 6) Compare against pub.dev latest
         PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
         PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
@@ -77,24 +81,21 @@ release:
           continue
         fi
 
-        # 6) Configure Git user and remote for tagging
+        # 7) Configure Git and push tag
         git config --global user.email "${_GIT_USER}"
         git config --global user.name "${_GIT_USER}"
         git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
 
-        # 7) Create and push tag
         echo "Creating Git tag: $TAG"
         git tag "$TAG"
         echo "Pushing Git tag $TAG to origin"
         git push origin "$TAG"
 
-        # 8) Extract release notes from CHANGELOG.md
+        # 8) Extract release notes and create GitLab release
         RELEASE_NOTES=$(awk "/^## \\[$VERSION\\]/ {flag=1; next} /^## / {if(flag){exit}} flag" CHANGELOG.md)
         echo "Release notes:"
         echo "$RELEASE_NOTES"
 
-        # 9) Create GitLab release
-        echo "Creating GitLab release for tag $TAG"
         curl --request POST \
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           --data "name=Release $TAG" \
