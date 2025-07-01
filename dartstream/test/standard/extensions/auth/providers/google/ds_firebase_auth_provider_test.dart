@@ -1,20 +1,19 @@
 import 'package:test/test.dart';
-import '../../../../../../dartstream_backend/packages/standard/extensions/auth/providers/google/lib/ds_firebase_auth_provider.dart';
+import '../../../../../../dartstream_backend/packages/standard/standard_extensions/auth/providers/firebase/lib/ds_firebase_auth_provider.dart';
+import '../../../../../../dartstream_backend/packages/standard/standard_extensions/auth/base/lib/ds_auth_provider.dart';
 
 void main() {
   group('DSFirebaseAuthProvider Tests', () {
-    late DSFirebaseAuthProvider firebaseAuthProvider;
-
-    setUp(() {
+    late DSFirebaseAuthProvider firebaseAuthProvider;    setUp(() {
       firebaseAuthProvider = DSFirebaseAuthProvider(
         projectId: 'test_project',
         privateKeyPath: 'test_key.json',
+        apiKey: 'test_api_key',
       );
-    });
-
-    test('Initialization', () {
+    });    test('Initialization', () {
       expect(firebaseAuthProvider.projectId, equals('test_project'));
       expect(firebaseAuthProvider.privateKeyPath, equals('test_key.json'));
+      expect(firebaseAuthProvider.apiKey, equals('test_api_key'));
     });
 
     test('Sign In', () async {

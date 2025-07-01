@@ -52,6 +52,80 @@ class DSSessionManager {
   Future<void> clearSessions() async {
     _activeSessions.clear();
   }
+
+  /// Gets all active sessions for monitoring
+  List<DSSession> getActiveSessions() {
+    return _activeSessions.values
+        .where((session) => !session.isExpired)
+        .toList();
+  }
+
+  /// Gets session count for a user
+  int getSessionCount(String userId) {
+    return _activeSessions.values
+        .where((session) => session.userId == userId && !session.isExpired)
+        .length;
+  }
+
+  /// Validates session by device ID
+  Future<bool> isValidSession(String userId, String deviceId) async {
+    final session = _activeSessions[userId];
+    return session != null && 
+           session.deviceId == deviceId && 
+           !session.isExpired;
+  }
+
+  /// Extends session duration
+  Future<DSSession> extendSession(String userId, {Duration? additionalTime}) async {
+    final existing = _activeSessions[userId];
+    if (existing == null) {
+      throw SessionNotFoundException('No session found for user: $userId');
+    }
+
+    final newExpiration = existing.expiresAt.add(
+      additionalTime ?? const Duration(hours: 1)
+    );
+
+    final extendedSession = DSSession(
+      userId: userId,
+      deviceId: existing.deviceId,
+      createdAt: existing.createdAt,
+      expiresAt: newExpiration,
+    );
+
+    _activeSessions[userId] = extendedSession;
+    return extendedSession;
+  }
+
+  /// Cleanup expired sessions
+  Future<void> cleanupExpiredSessions() async {
+    final expiredKeys = <String>[];
+    _activeSessions.forEach((key, session) {
+      if (session.isExpired) {
+        expiredKeys.add(key);
+      }
+    });
+
+    for (final key in expiredKeys) {
+      _activeSessions.remove(key);
+    }
+  }
+
+  /// Gets session analytics
+  Map<String, dynamic> getSessionAnalytics() {
+    final totalSessions = _activeSessions.length;
+    final activeSessions = _activeSessions.values
+        .where((session) => !session.isExpired)
+        .length;
+    final expiredSessions = totalSessions - activeSessions;
+
+    return {
+      'totalSessions': totalSessions,
+      'activeSessions': activeSessions,
+      'expiredSessions': expiredSessions,
+      'lastCleanup': DateTime.now().toIso8601String(),
+    };
+  }
 }
 
 class DSSession {

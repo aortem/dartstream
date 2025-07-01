@@ -23,12 +23,16 @@ class DSAuthManager {
       print('DSAuthManager: $message');
     }
   }
-
-  /// Register a provider dynamically
+  /// Register a provider dynamically with metadata
   static void registerProvider(
-      String name, DSAuthProvider provider, DSAuthProviderMetadata metadata) {
+      String name, DSAuthProvider provider, [DSAuthProviderMetadata? metadata]) {
+    if (_registeredProviders.containsKey(name)) {
+      throw ArgumentError('Provider already registered: $name');
+    }
     _registeredProviders[name] = provider;
-    _providerMetadata[name] = metadata;
+    if (metadata != null) {
+      _providerMetadata[name] = metadata;
+    }
     log('Registered provider: $name');
   }
 

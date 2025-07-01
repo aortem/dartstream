@@ -9,6 +9,9 @@ import '../../../../../dartstream_backend/packages/standard/extensions/auth/base
 
 class MockAuthProvider implements DSAuthProvider {
   @override
+  Future<void> initialize(Map<String, dynamic> config) async {}
+
+  @override
   Future<void> signIn(String username, String password) async {}
 
   @override
@@ -21,9 +24,29 @@ class MockAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<bool> verifyToken(String token) async {
+  Future<bool> verifyToken([String? token]) async {
     return token == 'valid_token';
   }
+
+  @override
+  Future<String> refreshToken(String refreshToken) async {
+    return 'new_token';
+  }
+
+  @override
+  Future<DSAuthUser> getCurrentUser() async {
+    return DSAuthUser(
+        id: 'current_user', email: 'current@example.com', displayName: 'Current User');
+  }
+
+  @override
+  Future<void> createAccount(String email, String password, {String? displayName}) async {}
+
+  @override
+  Future<void> onLoginSuccess(DSAuthUser user) async {}
+
+  @override
+  Future<void> onLogout() async {}
 }
 
 void main() {
@@ -43,12 +66,10 @@ void main() {
     test('Sign In Through Manager', () async {
       final authManager = DSAuthManager('MockProvider');
       await authManager.signIn('test_user', 'test_password');
-    });
-
-    test('Unregistered Provider Throws Error', () {
+    });    test('Unregistered Provider Throws Error', () {
       expect(
         () => DSAuthManager('UnknownProvider'),
-        throwsA(isA<UnsupportedError>()),
+        throwsA(isA<DSAuthError>()),
       );
     });
 

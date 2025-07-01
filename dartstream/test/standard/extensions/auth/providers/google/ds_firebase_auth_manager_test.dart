@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import '../../../../../../dartstream_backend/packages/standard/extensions/auth/base/lib/ds_auth_manager.dart';
-import '../../../../../../dartstream_backend/packages/standard/extensions/auth/providers/google/lib/ds_firebase_auth_provider.dart';
+import '../../../../../../dartstream_backend/packages/standard/standard_extensions/auth/base/lib/ds_auth_manager.dart';
+import '../../../../../../dartstream_backend/packages/standard/standard_extensions/auth/providers/firebase/lib/ds_firebase_auth_provider.dart';
 
 void main() {
   group('DSFirebaseAuthProvider Integration Tests', () {
