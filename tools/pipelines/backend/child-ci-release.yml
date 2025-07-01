@@ -42,8 +42,20 @@ release:
                             | sed "s/^## *//; s/ .*//")
         echo "  • Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        PUB_NAME=$(grep "^name:" pubspec.yaml | sed "s/name:[[:space:]]*//")
+        # robustly get the package name (allow indentation, strip quotes & CRs)
+        PUB_NAME=$(grep "^[[:space:]]*name:" pubspec.yaml \
+                   | head -n1 \
+                   | sed "s/.*name:[[:space:]]*//" \
+                   | tr -d '"' \
+                   | tr -d '\r')
         echo "  • Package name: $PUB_NAME"
+
+        # if we still don't have a name, bail out
+        if [ -z "$PUB_NAME" ]; then
+          echo "  → Could not determine package name, skipping."
+          cd "$CI_PROJECT_DIR"
+          continue
+        fi
 
         PUB_API="https://pub.dev/api/packages/${PUB_NAME}"
         PUB_JSON=$(curl --silent --fail "$PUB_API" || echo "")
