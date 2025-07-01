@@ -1,9 +1,9 @@
 # Changelog
 
-## 0.0.1-pre+5
+## 0.0.1
 
 - add CORS to the shelf package
-- cleanup shelf depen
+- cleanup shelf dependencies
 
 ## 0.0.1-pre+4
 
