@@ -7,6 +7,9 @@ class AppConfig {
   final List<String> _allowedOrigins;
   final DsShelfOriginChecker originChecker;
 
+  /// Exposes the parsed origins if you ever need them directly:
+  List<String> get allowedOrigins => List.unmodifiable(_allowedOrigins);
+
   AppConfig._(this._allowedOrigins)
     : originChecker = dsShelfOriginOneOf(_allowedOrigins);
 
