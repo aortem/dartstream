@@ -24,7 +24,10 @@ dependencies:
   # Note: shelf_router_generator and shelf_packages_handler are not direct dependencies
   # They might be part of your dev_dependencies for code generation or testing.
 
+#------------------ENVIRONMENT VARIABLES - For convenience------------------------
+  dotenv: ^4.2.0
+
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-
+  ds_tools_testing: ^0.0.4
 
