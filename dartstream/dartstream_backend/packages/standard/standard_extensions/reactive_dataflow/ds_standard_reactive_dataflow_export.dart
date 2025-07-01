@@ -4,4 +4,4 @@ library ds_standard__brian_to_name;
 //------------------ IMPORTS ---------------------------------
 
 //Export our Standard Libraries
-export './lifecycle/base/ds_lifecycle_hooks.dart';
+export 'lifecycle/base/lib/src/ds_lifecycle_hooks.dart';
