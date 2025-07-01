@@ -1,3 +1,7 @@
-# This is the custom metadata file for the platform_services system
-# This tells our build tooling tool which providers exist.
-# In this instance we have ds_shelf and ds_middleware
+name: ds_shelf
+version: "0.0.1"
+description: Integration with Intellitoggle.
+dependencies:
+  - Core >= 0.0.1
+  - FeatureFlags >= 0.0.1
+entry_point: lib/ds_intellitoggle.dart

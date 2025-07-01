@@ -1,5 +1,5 @@
 name: ds_auth0_auth_provider
-version: "0.0.1"
+version: "0.0.1-pre"
 description: "Auth0 authentication provider for Dartstream."
 dependencies:
   - "Auth >=0.0.1"
