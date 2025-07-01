@@ -1,79 +1,134 @@
 # DartStream
 
-DartStream is a minimal, efficient, and scalable server-side framework designed for the Dart programming language. Inspired by the simplicity and flexibility of other frameworks like Dartfrog and Alfred, DartStream offers a streamlined approach to building server-side applications, making it an ideal choice for developers looking to leverage Dart's capabilities.
+## DS Standard Packages
 
-## Features
+DS Standard packages allow you to utilize core dart features maintained by the Dart team.  The depdendencies remain largely unmodified.  Dartstream extends the built-in classes and methods, therefore allowing developers the greatest composition flexibility when building their applications.
 
-- **Minimalistic Design**: Focus on what's necessary, making it perfect for both beginners and experienced developers.
-- **Scalability**: Designed to support applications as they grow in complexity and user base.
-- **Flexibility**: Easy to extend and customize to fit your specific needs.
-- **Performance**: Optimized for speed and efficiency, enabling high-performance applications.
+---
 
-## Available Versions
+## Shelf Middleware Integration
 
-DartStream is available in three versions to cater to different needs and scales:
+DartStream provides a set of reusable Shelf middleware out of the box, so you can compose logging, CORS, authentication, rate-limiting, and more in a familiar pipeline style. Simply wire them into your `DSShelfCore` (or plain `Pipeline`) in the order that makes sense for your app.
 
-1. **Free - Open Source Version**: Fully functional and open for modification, perfect for individual developers and small projects.
-2. **Hosted Framework**: Similar to Laravel Vapor, this provides a managed, hosted environment, removing the need for server management.
-3. **Aortem - SAAS Version**: Offers additional features and dedicated support, ideal for enterprise-level applications.
+### Available Middleware
 
-## Documentation
+| Middleware         | Import Path                                       | Description                                                  |
+| ------------------ | ------------------------------------------------- | ------------------------------------------------------------ |
+| **Logging**        | `package:ds_shelf_core/ds_shelf_core.dart`        | `logRequests()` logs each request path, method, and timing.  |
+| **CORS**           | `package:your_package/extensions/cors.dart`       | `dsOriginOneOf(origins)` only allows cross-origins you list. |
+| **API-Key Auth**   | `package:your_package/extensions/auth.dart`       | `apiKeyAuth(headerName, validator)` validates API keys.      |
+| **Rate Limiting**  | `package:your_package/extensions/rate_limit.dart` | `rateLimit(perMinute)` caps requests per client/IP.          |
+| **Custom Headers** | `package:your_package/extensions/utilities.dart`  | Helpers for injecting or sanitizing headers.                 |
 
-For detailed guides, API references, and example projects, visit our [DartStream Documentation](#). Start building with DartStream today and take advantage of its robust features and elegant syntax.
+> *Note: replace `your_package` with your actual package name.*
 
-## Examples
+### Quickstart
 
-Explore the `/examples` directory in this repository to find sample applications demonstrating DartStream's capabilities in real-world scenarios.
+```dart
+import 'dart:io';
+import 'package:ds_shelf/ds_shelf.dart'      as shelf;
+import 'package:shelf_router/shelf_router.dart';
+import 'package:your_package/config/app_config.dart';
+import 'package:your_package/extensions/cors.dart';
+import 'package:your_package/extensions/auth.dart';
+import 'package:your_package/extensions/rate_limit.dart';
+import 'package:your_package/core/ds_shelf_core.dart';
 
-## Contributing
+Future<void> main() async {
+  // 1️⃣ Load your app config (e.g. ALLOWED_ORIGINS, API_KEYs)
+  final config = AppConfig.load();
 
-We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
+  // 2️⃣ Initialize the core server
+  final server = DSShelfCore();
 
-## Support Tiers
+  // 3️⃣ Add middleware in the recommended order:
+  server.addMiddleware(shelf.logRequests());                          // Logging
+  server.addMiddleware(cors(originChecker: config.originChecker));   // CORS
+  server.addMiddleware(
+    apiKeyAuth(
+      headerName: 'x-api-key',
+      validate: (key) => key == config.expectedApiKey,
+    ),
+  );                                                                 // API-Key auth
+  server.addMiddleware(rateLimit(perMinute: 60));                    // Rate limiting
 
-DartStream offers various support tiers for our open-source products:
+  // 4️⃣ Register application routes
+  server.addGetRoute('/health', (req) => shelf.Response.ok('OK'));
+  server.addGetRoute('/users/<id>', (req, String id) {
+    // … your handler …
+  });
 
-- **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $15/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
-- **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
-- **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
+  // 5️⃣ Start listening
+  final handler = server.handler;
+  final port    = int.parse(Platform.environment['PORT'] ?? '8080');
+  await shelf.serve(handler, InternetAddress.anyIPv4, port);
+  print('🚀 Listening on port $port');
+}
+```
 
-Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
+### Configuration Options
 
-### Community Support
-- Free support provided by the DartStream community.
+* **CORS**
 
-### Standard Support
-- $15/month.
-- 10 business days (Monday - Friday) Initial Response Service Level Agreement (IRSLA).
-- [Subscribe](https://buy.stripe.com/bIYcPL615erv3y8001)
-- **Features**:
-  - Unlimited Support Tickets with Guaranteed RSLA.
-  - One Open/Active Ticket at a time. 
+  ```dart
+  /// Only allow requests from these origins:
+  final origins = ['https://foo.com', 'https://bar.com'];
+  final checker = dsOriginOneOf(origins);
+  server.addMiddleware(cors(originChecker: checker));
+  ```
+* **API-Key Auth**
 
-### Enhanced Support
-- $100/month - Billed Annually.
-- 72-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/bIY9Dz759abf5Gg4gi)
-- **Features**:
-  - Everything in Standard Support.
-  - Access to Roadmap.
-  - Feature Request Upvoting (Priority feature request).
-  - One Open/Active Ticket at a time.
+  ```dart
+  server.addMiddleware(apiKeyAuth(
+    headerName: 'x-api-key',         // header to read
+    validate: (key) => key == '…',   // your custom validator
+    onUnauthorized: (req) => shelf.Response.forbidden('Invalid key'),
+  ));
+  ```
+* **Rate Limiting**
 
-### Enterprise Support
-- $999/month - Billed Annually
-- 24-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
-- **Features**:
-  - Everything in Enhanced Support.
-  - Early Access to new features.
-  - Access to our network channels.
-  - Monthly access to Development/Partner Calls.
-  - Access to Partner/Reseller/Channel Program.
-  - Option to include Logo on the Open Source website.
+  ```dart
+  // max 100 requests per minute per client IP
+  server.addMiddleware(rateLimit(perMinute: 100));
+  ```
 
-To choose a support tier, click on one of the options above.
+### Best Practices
+
+1. **Order matters**
+
+   * Log first, so you capture all traffic.
+   * Apply CORS before any auth checks.
+   * Auth early, to reject unauthorized requests ASAP.
+   * Rate limits after auth, so you can give stricter caps to anonymous clients.
+
+2. **Grouping & Reuse**
+
+   * Factor common pipelines into a helper:
+
+     ```dart
+     Pipeline defaultPipeline(AppConfig config) {
+       return Pipeline()
+         .addMiddleware(logRequests())
+         .addMiddleware(cors(originChecker: config.originChecker))
+         .addMiddleware(apiKeyAuth(...))
+         .addMiddleware(rateLimit(perMinute: 60));
+     }
+     ```
+
+3. **Error Handling**
+
+   * Provide clear `onUnauthorized` and `onLimitExceeded` handlers to return JSON or custom error pages.
+   * Wrap downstream handler in a `try/catch` middleware if you need centralized error logging.
+
+With these building blocks, you can mix-and-match Shelf middleware to secure, monitor, and scale your DartStream-powered server.
+
+---
+
+## Package Conflicts and Aliases
+
+In some cases, core dart package have naming conflicts (ie. same method, classname).  For some packages, we build wrappers and use the DS prefix to avoid those conflicts.  
+
+In other cases, where may avoid using a package altogether.  We will keep the documentation up to date as often as possible.
 
 ## Licensing
 
