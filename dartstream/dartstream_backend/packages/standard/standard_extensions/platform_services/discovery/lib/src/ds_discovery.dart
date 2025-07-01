@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:yaml/yaml.dart';
-import '../../reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
+import 'package:ds_lifecycle_base/main.dart';
 
 /// Extension level enumeration to classify extension types
 enum ExtensionLevel { core, extended, thirdParty }

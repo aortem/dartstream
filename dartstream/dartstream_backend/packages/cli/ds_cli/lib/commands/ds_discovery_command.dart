@@ -1,8 +1,8 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
-import '../../dartstream_backend/packages/standard/standard_extensions/platform_services/discovery/ds_discovery.dart';
-import '../../dartstream_backend/packages/standard/standard_extensions/reactive_dataflow/lifecycle/base/ds_lifecycle_hooks.dart';
+import 'package:ds_discovery_provider/main.dart';
+import 'package:ds_lifecycle_base/main.dart';
 
 /// CLI Command for Dartstream to discover and manage extensions dynamically.
 class DSDiscoveryCommand extends Command {

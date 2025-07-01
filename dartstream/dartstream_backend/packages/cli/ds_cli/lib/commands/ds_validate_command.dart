@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
-import '../../dartstream_backend/packages/standard/standard_extensions/platform_services/discovery/ds_discovery.dart';
+import 'package:ds_discovery_provider/main.dart';
 
 /// CLI Command for validating extensions.
 class DSValidateCommand extends Command {
