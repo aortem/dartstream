@@ -25,7 +25,7 @@ Future<void> main() async {
 ## The Manifest highlights the features and packages that are supported by the framework.
 ## To register your own extensions, you'll need to add them to the list.
 ## We support "Core" and "thirdParty" Packages.
-## Core packages have first class framework support.  Third Party packages are added as a convience, however first class suppot is not guaranted.
+## Core packages have first class framework support.  Third Party packages are added as a convenience, however first class suppot is not guaranted.
 
 lastUpdated: "$now"
 
