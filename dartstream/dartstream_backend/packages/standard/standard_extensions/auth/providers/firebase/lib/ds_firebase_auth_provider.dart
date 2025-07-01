@@ -240,23 +240,24 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       return false;
     }
   }
-
   /// Refreshes an authentication token
   ///
-  /// [token] - The refresh token to use
+  /// [refreshToken] - The refresh token to use
   /// Returns a new access token
   /// Throws exception if refresh fails
   @override
-  Future<String> refreshToken(String token) async {
+  Future<String> refreshToken(String refreshToken) async {
     try {
-      final response = await _auth.performRequest(
-          'token', {'grant_type': 'refresh_token', 'refresh_token': token});
-
-      if (response.statusCode != 200) {
-        throw Exception('Failed to refresh token');
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
       }
 
-      return response.body['access_token'] as String;
+      // Get a fresh token from the current user
+      final token = await user.getIdToken(true); // force refresh
+      await _tokenManager.refreshToken(user.uid, token);
+      
+      return token;
     } catch (e) {
       throw DSFirebaseErrorMapper.mapError(e);
     }
@@ -279,11 +280,139 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
     // Handle successful logout
   }
 
-  /// Generates a unique device identifier for session management
+  /// Sends a password reset email to the user
   ///
-  /// Returns a timestamp-based unique identifier
-  String _generateDeviceId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
+  /// [email] - Email address to send reset link to
+  /// Throws [DSAuthError] if operation fails
+  Future<void> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email);
+      print('Password reset email sent to: $email');
+    } catch (e) {
+      print('Error sending password reset email: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Sends email verification to the current user
+  ///
+  /// Throws [DSAuthError] if no user is signed in or operation fails
+  Future<void> sendEmailVerification() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      await user.sendEmailVerification();
+      print('Email verification sent to: ${user.email}');
+    } catch (e) {
+      print('Error sending email verification: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Checks if the current user's email is verified
+  ///
+  /// Returns true if email is verified, false otherwise
+  /// Throws [DSAuthError] if no user is signed in
+  Future<bool> isEmailVerified() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      return user.emailVerified;
+    } catch (e) {
+      print('Error checking email verification: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Updates the current user's password
+  ///
+  /// [newPassword] - The new password
+  /// Throws [DSAuthError] if no user is signed in or operation fails
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      await user.updatePassword(newPassword);
+      print('Password updated successfully');
+    } catch (e) {
+      print('Error updating password: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Updates the current user's email address
+  ///
+  /// [newEmail] - The new email address
+  /// Throws [DSAuthError] if no user is signed in or operation fails
+  Future<void> updateEmail(String newEmail) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      await user.updateEmail(newEmail);
+      print('Email updated successfully to: $newEmail');
+    } catch (e) {
+      print('Error updating email: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Updates the current user's profile information
+  ///
+  /// [displayName] - New display name (optional)
+  /// [photoURL] - New photo URL (optional)
+  /// Throws [DSAuthError] if no user is signed in or operation fails
+  Future<void> updateProfile({String? displayName, String? photoURL}) async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      if (displayName != null) {
+        user.displayName = displayName;
+      }
+      
+      if (photoURL != null) {
+        user.photoURL = photoURL;
+      }
+      
+      print('Profile updated successfully');
+    } catch (e) {
+      print('Error updating profile: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
+  }
+
+  /// Deletes the current user account
+  ///
+  /// Throws [DSAuthError] if no user is signed in or operation fails
+  Future<void> deleteUser() async {
+    try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No user is currently signed in');
+      }
+      
+      await _tokenManager.removeToken(user.uid);
+      await _sessionManager.removeSession(user.uid);
+      await user.delete();
+      print('User account deleted successfully');
+    } catch (e) {
+      print('Error deleting user account: $e');
+      throw DSFirebaseErrorMapper.mapError(e);
+    }
   }
 
   /// Handles various authentication events from Firebase

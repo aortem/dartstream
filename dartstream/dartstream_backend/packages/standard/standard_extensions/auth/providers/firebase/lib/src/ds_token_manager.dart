@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 /// Manages authentication tokens for the Firebase provider
 class DSTokenManager {
   // Store tokens with expiration
@@ -35,6 +37,76 @@ class DSTokenManager {
   /// Clears all stored tokens
   Future<void> clearTokens() async {
     _tokens.clear();
+  }
+
+  /// Gets all active tokens for debugging purposes
+  Map<String, String> getActiveTokens() {
+    final activeTokens = <String, String>{};
+    _tokens.forEach((userId, tokenInfo) {
+      if (tokenInfo.isValid) {
+        activeTokens[userId] = tokenInfo.token;
+      }
+    });
+    return activeTokens;
+  }
+
+  /// Validates a Firebase JWT token structure
+  bool isFirebaseToken(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return false;
+      
+      // Try to decode the header and payload
+      final header = json.decode(utf8.decode(base64Url.decode(parts[0])));
+      final payload = json.decode(utf8.decode(base64Url.decode(parts[1])));
+      
+      // Check for Firebase-specific claims
+      return header['alg'] != null && 
+             payload['iss'] != null && 
+             payload['aud'] != null &&
+             payload['exp'] != null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /// Gets token expiration time
+  DateTime? getTokenExpiration(String token) {
+    try {
+      final parts = token.split('.');
+      if (parts.length != 3) return null;
+      
+      final payload = json.decode(utf8.decode(base64Url.decode(parts[1])));
+      final exp = payload['exp'] as int?;
+      
+      if (exp != null) {
+        return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
+      }
+    } catch (e) {
+      // Token parsing failed
+    }
+    return null;
+  }
+
+  /// Checks if token is expired
+  bool isTokenExpired(String token) {
+    final expiration = getTokenExpiration(token);
+    if (expiration == null) return true;
+    return DateTime.now().isAfter(expiration);
+  }
+
+  /// Cleans up expired tokens automatically
+  Future<void> cleanupExpiredTokens() async {
+    final expiredKeys = <String>[];
+    _tokens.forEach((userId, tokenInfo) {
+      if (!tokenInfo.isValid) {
+        expiredKeys.add(userId);
+      }
+    });
+    
+    for (final key in expiredKeys) {
+      _tokens.remove(key);
+    }
   }
 
   /// Validates a token format and expiration
