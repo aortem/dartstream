@@ -10,6 +10,43 @@ lastUpdated: "2025-04-09T19:20:38.251464"
 
 extensions:
 
+  - name: ds_google_firebase_database
+    display_name: ds_google_firebase_database
+    version: 0.0.1
+    description: 'Firebase Firestore database provider for DartStream.'
+    dependencies:
+      - Core >=0.0.1
+      - Auth >=0.0.1
+    entry_point: 'ds_firebase_database.dart'
+    level: core
+
+  - name: ds_google_postgres_database
+    display_name: ds_google_postgres_database
+    version: 0.0.1
+    description: 'PostgreSQL database provider for DartStream using Google Cloud SQL.'
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'ds_postgres_database.dart'
+    level: core
+
+  - name: ds_google_mysql_database
+    display_name: ds_google_mysql_database
+    version: 0.0.1
+    description: 'MySQL database provider for DartStream using Google Cloud SQL.'
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'ds_mysql_database.dart'
+    level: core
+
+  - name: google_auth_provider
+    display_name: google_auth_provider
+    version: 0.0.1
+    description: 'Google authentication provider for Dartstream.'
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_firebase_auth_provider.dart'
+    level: thirdParty
+
   - name: ds_auth0_auth_provider
     display_name: ds_auth0_auth_provider
     version: 0.0.1-pre
@@ -37,57 +74,20 @@ extensions:
     entry_point: 'lib/ds_azure_ad_b2c_auth_provider.dart'
     level: thirdParty
 
-  - name: google_auth_provider
-    display_name: google_auth_provider
-    version: 0.0.1
-    description: 'Google authentication provider for Dartstream.'
-    dependencies:
-      - Auth >=0.0.1
-    entry_point: 'lib/ds_firebase_auth_provider.dart'
-    level: thirdParty
-
-  - name: ds_google_firebase_database
-    display_name: ds_google_firebase_database
-    version: 0.0.1
-    description: 'Firebase Firestore database provider for DartStream.'
-    dependencies:
-      - Core >=0.0.1
-      - Auth >=0.0.1
-    entry_point: 'ds_firebase_database.dart'
-    level: core
-
-  - name: ds_google_mysql_database
-    display_name: ds_google_mysql_database
-    version: 0.0.1
-    description: 'MySQL database provider for DartStream using Google Cloud SQL.'
-    dependencies:
-      - Core >=0.0.1
-    entry_point: 'ds_mysql_database.dart'
-    level: core
-
-  - name: ds_google_postgres_database
-    display_name: ds_google_postgres_database
-    version: 0.0.1
-    description: 'PostgreSQL database provider for DartStream using Google Cloud SQL.'
-    dependencies:
-      - Core >=0.0.1
-    entry_point: 'ds_postgres_database.dart'
-    level: core
-
-  - name: ds_intellitoggle_provider
-    display_name: ds_intellitoggle_provider
-    version: 0.0.1-pre+1
-    description: 'Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.'
+  - name: ds_shelf
+    display_name: ds_shelf
+    version: 0.0.1-pre+4
+    description: 'Core Shelf Components Within Larger DartStream Ecosystem.'
     dependencies:
       - Core >= 0.0.1
       - FeatureFlags >= 0.0.1
     entry_point: 'lib/ds_intellitoggle.dart'
     level: thirdParty
 
-  - name: ds_shelf
-    display_name: ds_shelf
-    version: 0.0.1
-    description: 'Core Shelf Components Within Larger DartStream Ecosystem.'
+  - name: ds_intellitoggle_provider
+    display_name: ds_intellitoggle_provider
+    version: 0.0.1-pre+1
+    description: 'Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.'
     dependencies:
       - Core >= 0.0.1
       - FeatureFlags >= 0.0.1

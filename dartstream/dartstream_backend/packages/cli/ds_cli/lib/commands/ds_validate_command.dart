@@ -48,8 +48,8 @@ class DSValidateCommand extends Command {
         ? args[1]
         : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
 
-    final levelFilter = argResults?['level'] as String;
-    final strictMode = argResults?['strict'] as bool;
+    final levelFilter = argResults?['level'] as String?;
+    final strictMode = argResults?['strict'] as bool? ?? false;
 
     print('Validating extensions...');
     print('- Extensions directory: $extensionsDirectory');
