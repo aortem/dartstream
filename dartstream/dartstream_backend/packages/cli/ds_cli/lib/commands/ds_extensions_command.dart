@@ -4,7 +4,7 @@ import 'package:args/command_runner.dart';
 import 'package:ds_discovery_provider/main.dart';
 
 /// CLI Command for listing all registered extensions.
-class DSListExtensionsCommand extends Command {
+class DSExtensionsCommand extends Command {
   @override
   final name = 'extensions';
 
@@ -12,7 +12,7 @@ class DSListExtensionsCommand extends Command {
   final description = 'Lists all discovered and registered extensions.';
 
   /// Constructor for initializing the list command.
-  DSListExtensionsCommand() {
+  DSExtensionsCommand() {
     argParser.addOption(
       'level',
       abbr: 'l',
@@ -54,9 +54,9 @@ class DSListExtensionsCommand extends Command {
         ? args[1]
         : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
 
-    final levelFilter = argResults?['level'] as String;
-    final includeInactive = argResults?['inactive'] as bool;
-    final jsonOutput = argResults?['json'] as bool;
+    final levelFilter = argResults?['level'] as String?;
+    final includeInactive = argResults?['inactive'] as bool? ?? false;
+    final jsonOutput = argResults?['json'] as bool? ?? false;
 
     print('Listing extensions from the registry...');
     print('- Extensions directory: $extensionsDirectory');
