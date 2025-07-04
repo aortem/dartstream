@@ -94,6 +94,7 @@ release:
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
           --data "name=Release v$VERSION" \
           --data "tag_name=v$VERSION" \
+          --data "ref=v$VERSION" \
           --data-urlencode "description=${RELEASE_NOTES}" \
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 
