@@ -1,6 +1,6 @@
 name: ds_cognito_auth_provider
 description: "Amazon authentication provider for Dartstream."
-version: "0.0.1-pre"
+version: "0.0.1-pre+1"
 repository: https://github.com/aortem/dartstream
 
 publish_to: none # Mark the package as non-publishable for local testing:
