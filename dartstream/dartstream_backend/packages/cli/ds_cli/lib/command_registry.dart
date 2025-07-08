@@ -1,7 +1,7 @@
 // DESCRIPTION: Registry mapping CLI commands to their handler functions.
 // ============================
 
-import 'package:ds_cli/commands/ds_list_command.dart';
+import 'package:dartstream/commands/ds_list_command.dart';
 
 import 'commands/ds_init_command.dart';
 import 'commands/ds_configure_command.dart';
