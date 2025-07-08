@@ -323,20 +323,322 @@ await auth0Provider.refreshToken('refresh_token_here');
 
 ---
 
+## AWS Cognito Authentication
+
+AWS Cognito provides secure, scalable authentication and user management for web and mobile applications. DartStream's Cognito provider offers seamless integration with AWS Cognito User Pools.
+
+### Cognito Setup
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+
+// Create Cognito Auth Provider
+final cognitoProvider = DSCognitoAuthProvider(
+  userPoolId: 'us-east-1_abc123def',
+  clientId: 'your-cognito-client-id',
+  region: 'us-east-1',
+  clientSecret: 'your-client-secret', // Optional
+  identityPoolId: 'us-east-1:12345678-1234-1234-1234-123456789012', // Optional
+);
+
+// Initialize the provider
+await cognitoProvider.initialize({
+  'userPoolId': 'us-east-1_abc123def',
+  'clientId': 'your-cognito-client-id',
+  'region': 'us-east-1',
+});
+
+// Register with DartStream
+DSAuthManager.registerProvider('cognito', cognitoProvider);
+final authManager = DSAuthManager('cognito');
+```
+
+### Cognito Usage Examples
+
+#### Basic Authentication Flow
+
+```dart
+// Create a new user account
+try {
+  await authManager.createAccount(
+    'user@example.com',
+    'SecurePassword123!',
+    displayName: 'John Doe',
+  );
+  print('Account created successfully!');
+  
+  // Confirm email with verification code
+  await cognitoProvider.confirmEmail('user@example.com', '123456');
+  print('Email confirmed!');
+} catch (e) {
+  print('Account creation failed: $e');
+}
+
+// Sign in
+try {
+  await authManager.signIn('user@example.com', 'SecurePassword123!');
+  
+  final user = await authManager.getCurrentUser();
+  print('Welcome ${user.displayName}!');
+  print('User ID: ${user.id}');
+  print('Email verified: ${user.customAttributes?['email_verified']}');
+} catch (e) {
+  print('Sign in failed: $e');
+}
+
+// Sign out
+await authManager.signOut();
+print('Signed out successfully');
+```
+
+#### Password Management
+
+```dart
+// Send password reset email
+await cognitoProvider.sendPasswordResetEmail('user@example.com');
+print('Password reset email sent');
+
+// Update password (when signed in)
+await cognitoProvider.updatePassword('NewSecurePassword123!');
+print('Password updated successfully');
+```
+
+#### User Profile Management
+
+```dart
+// Update user profile
+await cognitoProvider.updateProfile(
+  displayName: 'John Smith',
+  photoURL: 'https://example.com/avatar.jpg',
+);
+
+// Update email address
+await cognitoProvider.updateEmail('newemail@example.com');
+
+// Update custom user attributes
+await cognitoProvider.updateUserAttributes({
+  'given_name': 'John',
+  'family_name': 'Smith',
+  'phone_number': '+1234567890',
+  'custom:department': 'Engineering',
+});
+
+// Check email verification status
+final isEmailVerified = await cognitoProvider.isEmailVerified();
+if (!isEmailVerified) {
+  await cognitoProvider.sendEmailVerification();
+  print('Email verification sent');
+}
+```
+
+#### Token Management
+
+```dart
+// Verify token
+final isValid = await authManager.verifyToken();
+print('Token is valid: $isValid');
+
+// Refresh token
+try {
+  final newToken = await authManager.refreshToken('refresh_token_here');
+  print('Token refreshed: $newToken');
+} catch (e) {
+  print('Token refresh failed: $e');
+}
+```
+
+#### Advanced User Management
+
+```dart
+// Get user by ID
+final user = await authManager.getUser('cognito|user-id-here');
+print('User found: ${user.email}');
+
+// Delete user account
+await cognitoProvider.deleteUser();
+print('User account deleted');
+```
+
+### Cognito Configuration
+
+#### Environment Variables
+
+```bash
+# AWS Cognito Configuration
+COGNITO_USER_POOL_ID=us-east-1_abc123def
+COGNITO_CLIENT_ID=your-cognito-client-id
+COGNITO_CLIENT_SECRET=your-client-secret
+COGNITO_REGION=us-east-1
+COGNITO_IDENTITY_POOL_ID=us-east-1:12345678-1234-1234-1234-123456789012
+
+# Optional: AWS Credentials (if using real AWS services)
+AWS_ACCESS_KEY_ID=your-access-key
+AWS_SECRET_ACCESS_KEY=your-secret-key
+AWS_REGION=us-east-1
+```
+
+#### Cognito User Pool Setup
+
+1. **Create User Pool**
+   ```bash
+   aws cognito-idp create-user-pool \
+     --pool-name "dartstream-users" \
+     --policies PasswordPolicy='{MinimumLength=8,RequireUppercase=true,RequireLowercase=true,RequireNumbers=true,RequireSymbols=true}' \
+     --auto-verified-attributes email \
+     --username-attributes email
+   ```
+
+2. **Create User Pool Client**
+   ```bash
+   aws cognito-idp create-user-pool-client \
+     --user-pool-id us-east-1_abc123def \
+     --client-name "dartstream-client" \
+     --generate-secret \
+     --explicit-auth-flows ADMIN_NO_SRP_AUTH USER_PASSWORD_AUTH
+   ```
+
+3. **Configure Verification**
+   ```bash
+   aws cognito-idp update-user-pool \
+     --user-pool-id us-east-1_abc123def \
+     --verification-message-template \
+     'EmailMessage="Please verify your email with code {####}",EmailSubject="Verify your email"'
+   ```
+
+### Cognito Features
+
+#### Standard Authentication Features
+- **User Registration** - Create accounts with email/password
+- **User Authentication** - Secure sign-in/sign-out
+- **Email Verification** - Confirm user email addresses
+- **Password Reset** - Reset forgotten passwords
+- **Password Updates** - Change passwords for signed-in users
+- **Profile Management** - Update user profiles and attributes
+- **User Deletion** - Remove user accounts
+
+#### Token Management
+- **JWT Tokens** - Secure JSON Web Token handling
+- **Token Validation** - Verify token authenticity and expiration
+- **Token Refresh** - Refresh expired access tokens
+- **Session Management** - Track user sessions across devices
+
+#### Cognito-Specific Features
+- **User Pools** - Scalable user directory service
+- **Identity Pools** - Federated identity management (optional)
+- **Multi-Factor Authentication** - Enhanced security (configurable)
+- **Custom Attributes** - Store additional user data
+- **User Groups** - Organize users by roles/permissions
+- **Lambda Triggers** - Custom authentication flows
+- **Social Providers** - Facebook, Google, Amazon, Apple integration
+- **SAML/OIDC** - Enterprise identity provider federation
+
+#### Error Handling
+- **Comprehensive Error Mapping** - AWS Cognito errors to DartStream errors
+- **Rate Limiting** - Handle AWS API rate limits gracefully
+- **Network Resilience** - Retry logic for network failures
+- **Validation** - Input validation and sanitization
+
+#### Event System
+- **Authentication Events** - Login/logout event hooks
+- **User Events** - Account creation, deletion, updates
+- **Token Events** - Token refresh and validation events
+- **Custom Event Handling** - Extensible event system
+
+### Production Considerations
+
+#### Security Best Practices
+
+```dart
+// Enable MFA
+await cognitoProvider.enableMFA(
+  type: 'SMS', // or 'TOTP'
+  phoneNumber: '+1234567890',
+);
+
+// Set password policy
+await cognitoProvider.updateUserPool({
+  'PasswordPolicy': {
+    'MinimumLength': 12,
+    'RequireUppercase': true,
+    'RequireLowercase': true,
+    'RequireNumbers': true,
+    'RequireSymbols': true,
+  }
+});
+
+// Configure account lockout
+await cognitoProvider.updateUserPool({
+  'AccountRecoverySetting': {
+    'RecoveryMechanisms': [
+      {'Name': 'verified_email', 'Priority': 1},
+      {'Name': 'verified_phone_number', 'Priority': 2},
+    ]
+  }
+});
+```
+
+#### Monitoring and Analytics
+
+```dart
+// Enable detailed logging
+DSAuthManager.enableDebugging = true;
+
+// Custom event tracking
+cognitoProvider.onLoginSuccess = (user) async {
+  // Track successful logins
+  analytics.track('user_login', {
+    'user_id': user.id,
+    'provider': 'cognito',
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+
+cognitoProvider.onLogout = () async {
+  // Track user logout
+  analytics.track('user_logout', {
+    'provider': 'cognito',
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+```
+
+#### Environment Setup
+
+```dart
+// Development environment
+final cognitoProvider = DSCognitoAuthProvider(
+  userPoolId: 'us-east-1_dev123',
+  clientId: 'dev-client-id',
+  region: 'us-east-1',
+);
+
+// Production environment
+final cognitoProvider = DSCognitoAuthProvider(
+  userPoolId: 'us-east-1_prod456',
+  clientId: 'prod-client-id',
+  region: 'us-east-1',
+  clientSecret: Platform.environment['COGNITO_CLIENT_SECRET'],
+);
+```
+
+---
+
 ## Choosing the Right Provider
 
-### Firebase vs Auth0 Comparison
+### Firebase vs Auth0 vs Cognito Comparison
 
-| Feature | Firebase | Auth0 | Best For |
-|---------|----------|-------|----------|
-| **Setup Complexity** | Simple | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps |
-| **Pricing** | Pay-as-you-grow | Tiered pricing | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs |
-| **Customization** | Limited | Extensive | Firebase: Standard flows<br>Auth0: Custom authentication |
-| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | Firebase: General use<br>Auth0: Regulated industries |
-| **Social Providers** | Google ecosystem focus | 30+ providers | Firebase: Google integration<br>Auth0: Multi-provider |
-| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise |
-| **Multi-tenant Support** | Manual implementation | Built-in | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS |
-| **API Management** | Separate Firebase products | Integrated | Firebase: Simple APIs<br>Auth0: Complex API ecosystems |
+| Feature | Firebase | Auth0 | Cognito | Best For |
+|---------|----------|-------|---------|----------|
+| **Setup Complexity** | Simple | Moderate | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps<br>Cognito: AWS-integrated apps |
+| **Pricing** | Pay-as-you-grow | Tiered pricing | Pay-per-usage | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs<br>Cognito: AWS ecosystem apps |
+| **Customization** | Limited | Extensive | High (Lambda triggers) | Firebase: Standard flows<br>Auth0: Custom authentication<br>Cognito: AWS-native customization |
+| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | AWS compliance (SOC, PCI DSS, HIPAA) | Firebase: General use<br>Auth0: Regulated industries<br>Cognito: AWS compliance needs |
+| **Social Providers** | Google ecosystem focus | 30+ providers | Major providers + SAML/OIDC | Firebase: Google integration<br>Auth0: Multi-provider<br>Cognito: Enterprise federation |
+| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Advanced (User Pools, Identity Pools) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise<br>Cognito: AWS enterprise |
+| **Multi-tenant Support** | Manual implementation | Built-in | User Groups + Lambda | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS<br>Cognito: AWS multi-tenant |
+| **API Management** | Separate Firebase products | Integrated | AWS API Gateway integration | Firebase: Simple APIs<br>Auth0: Complex API ecosystems<br>Cognito: AWS API ecosystem |
+| **Scalability** | High | Very High | Very High (AWS scale) | Firebase: Google scale<br>Auth0: Global scale<br>Cognito: AWS global scale |
+| **AWS Integration** | None | Limited | Native | Firebase: Non-AWS apps<br>Auth0: Multi-cloud<br>Cognito: AWS-first applications |
 
 ### When to Use Firebase
 
@@ -360,6 +662,20 @@ await auth0Provider.refreshToken('refresh_token_here');
 - Integration with existing enterprise systems
 - Regulatory compliance (HIPAA, SOC2, GDPR)
 
+### When to Use Cognito
+
+**Choose Cognito when you need:**
+- Deep AWS ecosystem integration
+- Serverless application architecture
+- Cost-effective scaling with AWS pricing
+- Lambda-based custom authentication flows
+- Identity and access management (IAM) integration
+- Federated identity with enterprise providers
+- Mobile app authentication with AWS services
+- Compliance with AWS security standards
+- Integration with AWS API Gateway and other AWS services
+- Multi-region deployment capabilities
+
 ---
 
 ## Framework Integration
@@ -378,6 +694,12 @@ await DSFlutterMobileCore.initialize(
 // Or initialize with Auth0
 await DSFlutterMobileCore.initialize(
   defaultAuthProvider: 'auth0',
+  enableLogging: true,
+);
+
+// Or initialize with Cognito
+await DSFlutterMobileCore.initialize(
+  defaultAuthProvider: 'cognito',
   enableLogging: true,
 );
 ```
