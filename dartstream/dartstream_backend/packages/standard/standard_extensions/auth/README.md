@@ -623,22 +623,405 @@ final cognitoProvider = DSCognitoAuthProvider(
 
 ---
 
+## Microsoft EntraID (Azure AD B2C) Authentication
+
+Microsoft EntraID (formerly Azure AD B2C) provides enterprise-grade identity and access management with comprehensive support for B2C, B2B, and enterprise scenarios. DartStream's EntraID provider offers seamless integration with Azure AD B2C for secure, scalable authentication.
+
+### EntraID Setup
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+
+// Create EntraID Auth Provider
+final entraidProvider = DSEntraIDAuthProvider(
+  tenantId: 'your-tenant-id',
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  userFlowName: 'B2C_1_signupsignin', // Optional: default user flow
+  policyName: 'B2C_1_signupsignin', // Optional: policy name
+  domain: 'your-tenant.b2clogin.com', // Optional: custom domain
+);
+
+// Initialize the provider
+await entraidProvider.initialize({
+  'tenantId': 'your-tenant-id',
+  'clientId': 'your-client-id',
+  'clientSecret': 'your-client-secret',
+  'userFlowName': 'B2C_1_signupsignin',
+});
+
+// Register with DartStream
+DSAuthManager.registerProvider('entraid', entraidProvider);
+final authManager = DSAuthManager('entraid');
+```
+
+### EntraID Usage Examples
+
+#### Basic Authentication Flow
+
+```dart
+// Create a new user account
+try {
+  await authManager.createAccount(
+    'user@company.com',
+    'SecurePassword123!',
+    displayName: 'Jane Smith',
+  );
+  print('Account created successfully!');
+} catch (e) {
+  print('Account creation failed: $e');
+}
+
+// Sign in with user flow
+try {
+  await authManager.signIn('user@company.com', 'SecurePassword123!');
+  
+  final user = await authManager.getCurrentUser();
+  print('Welcome ${user.displayName}!');
+  print('User ID: ${user.id}');
+  print('Email: ${user.email}');
+  print('Email verified: ${user.customAttributes?['email_verified']}');
+} catch (e) {
+  print('Sign in failed: $e');
+}
+
+// Sign out
+await authManager.signOut();
+print('Signed out successfully');
+```
+
+#### User Flow Authentication
+
+```dart
+// Sign in with specific user flow
+await entraidProvider.signInWithUserFlow(
+  'user@company.com',
+  'SecurePassword123!',
+  userFlowName: 'B2C_1_signupsignin',
+);
+
+// Sign up with user flow
+await entraidProvider.signUpWithUserFlow(
+  'newuser@company.com',
+  'SecurePassword123!',
+  displayName: 'New User',
+  userFlowName: 'B2C_1_signupsignin',
+);
+
+// Password reset flow
+await entraidProvider.initiatePasswordResetFlow(
+  'user@company.com',
+  userFlowName: 'B2C_1_password_reset',
+);
+```
+
+#### Profile Management
+
+```dart
+// Update user profile
+await entraidProvider.updateProfile(
+  displayName: 'Jane Doe-Smith',
+  photoURL: 'https://company.com/avatars/jane.jpg',
+);
+
+// Update profile with custom attributes
+await entraidProvider.updateProfile(
+  displayName: 'Jane Smith',
+  customAttributes: {
+    'extension_Department': 'Engineering',
+    'extension_JobTitle': 'Senior Developer',
+    'extension_Location': 'Seattle',
+  },
+);
+
+// Profile edit flow
+await entraidProvider.initiateProfileEditFlow(
+  userFlowName: 'B2C_1_profile_edit',
+);
+```
+
+#### Token Management
+
+```dart
+// Verify Azure AD B2C token
+final isValid = await authManager.verifyToken();
+print('Token is valid: $isValid');
+
+// Refresh token
+try {
+  final newToken = await authManager.refreshToken('refresh_token_here');
+  print('Token refreshed successfully');
+} catch (e) {
+  print('Token refresh failed: $e');
+}
+
+// Get token claims
+final user = await authManager.getCurrentUser();
+final claims = user.customAttributes?['token_claims'] as Map<String, dynamic>?;
+print('Token claims: $claims');
+```
+
+#### Advanced User Management
+
+```dart
+// Get user by Azure AD B2C object ID
+final user = await authManager.getUser('azure-ad-object-id');
+print('User found: ${user.email}');
+
+// Update user email
+await entraidProvider.updateEmail('newemail@company.com');
+
+// Update user password
+await entraidProvider.updatePassword('NewSecurePassword123!');
+
+// Send password reset email
+await entraidProvider.sendPasswordResetEmail('user@company.com');
+
+// Delete user account
+await entraidProvider.deleteUser();
+print('User account deleted');
+```
+
+### EntraID Configuration
+
+#### Environment Variables
+
+```bash
+# Azure AD B2C Configuration
+ENTRAID_TENANT_ID=your-tenant-id
+ENTRAID_CLIENT_ID=your-client-id
+ENTRAID_CLIENT_SECRET=your-client-secret
+ENTRAID_USER_FLOW_NAME=B2C_1_signupsignin
+ENTRAID_POLICY_NAME=B2C_1_signupsignin
+ENTRAID_DOMAIN=your-tenant.b2clogin.com
+
+# Optional: Custom domain and settings
+ENTRAID_CUSTOM_DOMAIN=login.company.com
+ENTRAID_SCOPE=openid profile email offline_access
+```
+
+#### Azure AD B2C Setup
+
+1. **Create Azure AD B2C Tenant**
+   ```bash
+   # Create B2C tenant in Azure Portal
+   az ad b2c tenant create \
+     --resource-group "dartstream-rg" \
+     --name "dartstream-b2c" \
+     --country-code "US" \
+     --display-name "DartStream B2C"
+   ```
+
+2. **Register Application**
+   ```bash
+   # Register app in B2C tenant
+   az ad app create \
+     --display-name "dartstream-app" \
+     --web-redirect-uris "https://your-app.com/callback" \
+     --required-resource-accesses @manifest.json
+   ```
+
+3. **Create User Flows**
+   ```bash
+   # Create sign-up/sign-in user flow
+   az ad b2c user-flow create \
+     --name "B2C_1_signupsignin" \
+     --type "signUpOrSignIn" \
+     --identity-providers "LocalAccount" \
+     --user-attributes "displayName,email"
+   ```
+
+4. **Configure Custom Policies** (Advanced)
+   ```xml
+   <!-- Custom policy for advanced scenarios -->
+   <TrustFrameworkPolicy>
+     <BasePolicy>
+       <TenantId>your-tenant.onmicrosoft.com</TenantId>
+       <PolicyId>B2C_1A_TrustFrameworkExtensions</PolicyId>
+     </BasePolicy>
+   </TrustFrameworkPolicy>
+   ```
+
+### EntraID Features
+
+#### Standard Authentication Features
+- **User Registration** - Create B2C user accounts
+- **User Authentication** - Secure sign-in with Azure AD B2C
+- **User Flows** - Pre-built authentication experiences
+- **Custom Policies** - Advanced authentication customization
+- **Password Reset** - Self-service password reset
+- **Profile Management** - Update user profiles and attributes
+- **Email Verification** - Verify user email addresses
+- **User Deletion** - Remove user accounts
+
+#### Token Management
+- **JWT Tokens** - Azure AD B2C JWT token handling
+- **Token Validation** - Verify token authenticity and claims
+- **Token Refresh** - Refresh expired access tokens
+- **Claims Processing** - Extract and process token claims
+- **Scope Management** - Handle OAuth2 scopes
+
+#### EntraID-Specific Features
+- **User Flows** - Sign-up/sign-in, password reset, profile edit flows
+- **Custom Policies** - Advanced authentication scenarios
+- **Identity Providers** - Google, Facebook, Twitter, LinkedIn integration
+- **Multi-Factor Authentication** - SMS, email, authenticator apps
+- **Conditional Access** - Risk-based authentication policies
+- **Custom Attributes** - Store additional user data
+- **Localization** - Multi-language authentication experiences
+- **Custom Branding** - Customize login pages and flows
+- **API Management** - Integration with Azure API Management
+- **Enterprise Integration** - SAML, OIDC, Active Directory federation
+
+#### B2C-Specific Capabilities
+- **Consumer Identity** - Optimized for customer-facing applications
+- **Social Identity Providers** - 30+ social login options
+- **Local Accounts** - Email/password and username accounts
+- **Phone Authentication** - SMS-based verification
+- **Age Gating** - Age verification and parental consent
+- **Terms of Service** - Legal agreement acceptance
+- **GDPR Compliance** - Data protection and privacy controls
+- **Audit Logging** - Comprehensive authentication audit trails
+
+#### Event System
+- **Authentication Events** - Login/logout event hooks
+- **User Flow Events** - User flow completion and abandonment
+- **Policy Events** - Custom policy execution events
+- **Token Events** - Token issuance and refresh events
+- **Error Events** - Authentication error handling
+- **Custom Event Handling** - Extensible event system
+
+### Production Considerations
+
+#### Security Best Practices
+
+```dart
+// Configure secure authentication
+final entraidProvider = DSEntraIDAuthProvider(
+  tenantId: 'your-tenant-id',
+  clientId: 'your-client-id',
+  clientSecret: Platform.environment['ENTRAID_CLIENT_SECRET'],
+  userFlowName: 'B2C_1_signupsignin',
+  securitySettings: {
+    'requireMFA': true,
+    'sessionTimeout': 3600,
+    'maxLoginAttempts': 5,
+  },
+);
+
+// Enable conditional access
+await entraidProvider.configureConditionalAccess({
+  'riskBasedAccess': true,
+  'deviceCompliance': true,
+  'locationRestrictions': ['US', 'CA'],
+});
+
+// Custom password policy
+await entraidProvider.configurePasswordPolicy({
+  'minimumLength': 12,
+  'requireUppercase': true,
+  'requireLowercase': true,
+  'requireNumbers': true,
+  'requireSymbols': true,
+  'preventCommonPasswords': true,
+});
+```
+
+#### Monitoring and Analytics
+
+```dart
+// Enable detailed logging
+DSAuthManager.enableDebugging = true;
+
+// Custom event tracking
+entraidProvider.onLoginSuccess = (user) async {
+  // Track successful B2C logins
+  analytics.track('user_login', {
+    'user_id': user.id,
+    'provider': 'entraid',
+    'user_flow': 'B2C_1_signupsignin',
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+
+entraidProvider.onUserFlowComplete = (flowName, user) async {
+  // Track user flow completions
+  analytics.track('user_flow_complete', {
+    'user_id': user.id,
+    'flow_name': flowName,
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+
+entraidProvider.onPasswordReset = (email) async {
+  // Track password reset events
+  analytics.track('password_reset', {
+    'email': email,
+    'provider': 'entraid',
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+```
+
+#### Multi-tenant Configuration
+
+```dart
+// Configure for multiple B2C tenants
+final entraidProvider = DSEntraIDAuthProvider(
+  tenantId: Platform.environment['ENTRAID_TENANT_ID'],
+  clientId: Platform.environment['ENTRAID_CLIENT_ID'],
+  clientSecret: Platform.environment['ENTRAID_CLIENT_SECRET'],
+  multiTenantSettings: {
+    'enableTenantDiscovery': true,
+    'defaultTenant': 'primary-tenant',
+    'tenantMappings': {
+      'company1.com': 'tenant1-b2c',
+      'company2.com': 'tenant2-b2c',
+    },
+  },
+);
+```
+
+#### Environment Setup
+
+```dart
+// Development environment
+final entraidProvider = DSEntraIDAuthProvider(
+  tenantId: 'dev-tenant-id',
+  clientId: 'dev-client-id',
+  clientSecret: 'dev-client-secret',
+  userFlowName: 'B2C_1_dev_signupsignin',
+  domain: 'dev-tenant.b2clogin.com',
+);
+
+// Production environment
+final entraidProvider = DSEntraIDAuthProvider(
+  tenantId: Platform.environment['ENTRAID_TENANT_ID'],
+  clientId: Platform.environment['ENTRAID_CLIENT_ID'],
+  clientSecret: Platform.environment['ENTRAID_CLIENT_SECRET'],
+  userFlowName: 'B2C_1_signupsignin',
+  domain: Platform.environment['ENTRAID_DOMAIN'],
+);
+```
+
+---
+
 ## Choosing the Right Provider
 
-### Firebase vs Auth0 vs Cognito Comparison
+### Firebase vs Auth0 vs Cognito vs EntraID Comparison
 
-| Feature | Firebase | Auth0 | Cognito | Best For |
-|---------|----------|-------|---------|----------|
-| **Setup Complexity** | Simple | Moderate | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps<br>Cognito: AWS-integrated apps |
-| **Pricing** | Pay-as-you-grow | Tiered pricing | Pay-per-usage | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs<br>Cognito: AWS ecosystem apps |
-| **Customization** | Limited | Extensive | High (Lambda triggers) | Firebase: Standard flows<br>Auth0: Custom authentication<br>Cognito: AWS-native customization |
-| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | AWS compliance (SOC, PCI DSS, HIPAA) | Firebase: General use<br>Auth0: Regulated industries<br>Cognito: AWS compliance needs |
-| **Social Providers** | Google ecosystem focus | 30+ providers | Major providers + SAML/OIDC | Firebase: Google integration<br>Auth0: Multi-provider<br>Cognito: Enterprise federation |
-| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Advanced (User Pools, Identity Pools) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise<br>Cognito: AWS enterprise |
-| **Multi-tenant Support** | Manual implementation | Built-in | User Groups + Lambda | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS<br>Cognito: AWS multi-tenant |
-| **API Management** | Separate Firebase products | Integrated | AWS API Gateway integration | Firebase: Simple APIs<br>Auth0: Complex API ecosystems<br>Cognito: AWS API ecosystem |
-| **Scalability** | High | Very High | Very High (AWS scale) | Firebase: Google scale<br>Auth0: Global scale<br>Cognito: AWS global scale |
-| **AWS Integration** | None | Limited | Native | Firebase: Non-AWS apps<br>Auth0: Multi-cloud<br>Cognito: AWS-first applications |
+| Feature | Firebase | Auth0 | Cognito | EntraID | Best For |
+|---------|----------|-------|---------|---------|----------|
+| **Setup Complexity** | Simple | Moderate | Moderate | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps<br>Cognito: AWS-integrated apps<br>EntraID: Microsoft ecosystem |
+| **Pricing** | Pay-as-you-grow | Tiered pricing | Pay-per-usage | Azure pricing model | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs<br>Cognito: AWS ecosystem apps<br>EntraID: Microsoft enterprise |
+| **Customization** | Limited | Extensive | High (Lambda triggers) | High (Custom policies) | Firebase: Standard flows<br>Auth0: Custom authentication<br>Cognito: AWS-native customization<br>EntraID: Microsoft customization |
+| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | AWS compliance (SOC, PCI DSS, HIPAA) | Microsoft compliance (SOC, ISO, HIPAA) | Firebase: General use<br>Auth0: Regulated industries<br>Cognito: AWS compliance needs<br>EntraID: Microsoft compliance |
+| **Social Providers** | Google ecosystem focus | 30+ providers | Major providers + SAML/OIDC | 30+ providers + Microsoft ecosystem | Firebase: Google integration<br>Auth0: Multi-provider<br>Cognito: Enterprise federation<br>EntraID: Microsoft + social |
+| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Advanced (User Pools, Identity Pools) | Comprehensive (B2B, B2C, enterprise) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise<br>Cognito: AWS enterprise<br>EntraID: Microsoft enterprise |
+| **Multi-tenant Support** | Manual implementation | Built-in | User Groups + Lambda | Built-in B2C multi-tenant | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS<br>Cognito: AWS multi-tenant<br>EntraID: Microsoft multi-tenant |
+| **API Management** | Separate Firebase products | Integrated | AWS API Gateway integration | Azure API Management integration | Firebase: Simple APIs<br>Auth0: Complex API ecosystems<br>Cognito: AWS API ecosystem<br>EntraID: Azure API ecosystem |
+| **Scalability** | High | Very High | Very High (AWS scale) | Very High (Azure scale) | Firebase: Google scale<br>Auth0: Global scale<br>Cognito: AWS global scale<br>EntraID: Microsoft global scale |
+| **Microsoft Integration** | None | Limited | Limited | Native | Firebase: Non-Microsoft apps<br>Auth0: Multi-cloud<br>Cognito: AWS-first applications<br>EntraID: Microsoft-first applications |
 
 ### When to Use Firebase
 
@@ -676,6 +1059,22 @@ final cognitoProvider = DSCognitoAuthProvider(
 - Integration with AWS API Gateway and other AWS services
 - Multi-region deployment capabilities
 
+### When to Use EntraID
+
+**Choose EntraID when you need:**
+- Microsoft ecosystem integration (Office 365, Azure, etc.)
+- Azure AD B2C for consumer-facing applications
+- Enterprise identity management with Azure AD
+- Advanced user flows and custom policies
+- Microsoft compliance and security standards
+- Integration with Microsoft Graph API
+- Multi-tenant B2C applications
+- Custom branding and localization
+- Social identity providers with Microsoft focus
+- Conditional access and risk-based authentication
+- Integration with Azure services and APIs
+- GDPR compliance and data residency in Microsoft regions
+
 ---
 
 ## Framework Integration
@@ -702,6 +1101,12 @@ await DSFlutterMobileCore.initialize(
   defaultAuthProvider: 'cognito',
   enableLogging: true,
 );
+
+// Or initialize with EntraID
+await DSFlutterMobileCore.initialize(
+  defaultAuthProvider: 'entraid',
+  enableLogging: true,
+);
 ```
 
 ### Flutter Web Integration
@@ -725,6 +1130,8 @@ await DSBackendCore.initialize(
   authProviders: {
     'firebase': firebaseProvider,
     'auth0': auth0Provider,
+    'cognito': cognitoProvider,
+    'entraid': entraidProvider,
   },
   defaultAuthProvider: 'firebase',
 );
@@ -789,6 +1196,150 @@ Future<void> migrateFromAuth0ToFirebase(String userId) async {
   
   // Migrate custom data
   // ... migration logic ...
+}
+```
+
+### EntraID Migration Examples
+
+```dart
+// Migrate from EntraID to other providers
+Future<void> migrateFromEntraID(String userId, String targetProvider) async {
+  // Get EntraID user data
+  final entraidAuth = DSAuthManager('entraid');
+  final entraidUser = await entraidAuth.getUser(userId);
+  
+  // Create user in target provider
+  final targetAuth = DSAuthManager(targetProvider);
+  await targetAuth.createAccount(
+    entraidUser.email,
+    'temporary-password', // Force password reset
+    displayName: entraidUser.displayName,
+  );
+  
+  // Migrate custom attributes
+  if (entraidUser.customAttributes != null) {
+    // Convert EntraID custom attributes to target provider format
+    final migratedAttributes = convertEntraIDAttributes(
+      entraidUser.customAttributes!,
+      targetProvider,
+    );
+    
+    // Update user with migrated attributes
+    await targetAuth.updateProfile(
+      displayName: entraidUser.displayName,
+      customAttributes: migratedAttributes,
+    );
+  }
+  
+  print('User $userId migrated from EntraID to $targetProvider');
+}
+
+// Migrate to EntraID from other providers
+Future<void> migrateToEntraID(String userId, String sourceProvider) async {
+  // Get source provider user data
+  final sourceAuth = DSAuthManager(sourceProvider);
+  final sourceUser = await sourceAuth.getUser(userId);
+  
+  // Create EntraID user with user flow
+  final entraidAuth = DSAuthManager('entraid');
+  final entraidProvider = entraidAuth.provider as DSEntraIDAuthProvider;
+  
+  await entraidProvider.signUpWithUserFlow(
+    sourceUser.email,
+    'temporary-password',
+    displayName: sourceUser.displayName,
+    userFlowName: 'B2C_1_signupsignin',
+  );
+  
+  // Migrate custom attributes to EntraID format
+  if (sourceUser.customAttributes != null) {
+    final entraidAttributes = convertToEntraIDAttributes(
+      sourceUser.customAttributes!,
+      sourceProvider,
+    );
+    
+    await entraidProvider.updateProfile(
+      displayName: sourceUser.displayName,
+      customAttributes: entraidAttributes,
+    );
+  }
+  
+  print('User $userId migrated from $sourceProvider to EntraID');
+}
+
+// Helper function to convert attributes
+Map<String, dynamic> convertEntraIDAttributes(
+  Map<String, dynamic> attributes,
+  String targetProvider,
+) {
+  final converted = <String, dynamic>{};
+  
+  for (final entry in attributes.entries) {
+    final key = entry.key;
+    final value = entry.value;
+    
+    // Convert EntraID extension attributes
+    if (key.startsWith('extension_')) {
+      final attributeName = key.substring(10); // Remove 'extension_' prefix
+      
+      switch (targetProvider) {
+        case 'firebase':
+          converted[attributeName.toLowerCase()] = value;
+          break;
+        case 'auth0':
+          converted['user_metadata.$attributeName'] = value;
+          break;
+        case 'cognito':
+          converted['custom:$attributeName'] = value;
+          break;
+        default:
+          converted[attributeName] = value;
+      }
+    } else {
+      converted[key] = value;
+    }
+  }
+  
+  return converted;
+}
+
+Map<String, dynamic> convertToEntraIDAttributes(
+  Map<String, dynamic> attributes,
+  String sourceProvider,
+) {
+  final converted = <String, dynamic>{};
+  
+  for (final entry in attributes.entries) {
+    final key = entry.key;
+    final value = entry.value;
+    
+    // Convert to EntraID extension attributes
+    switch (sourceProvider) {
+      case 'firebase':
+        converted['extension_$key'] = value;
+        break;
+      case 'auth0':
+        if (key.startsWith('user_metadata.')) {
+          final attributeName = key.substring(14); // Remove 'user_metadata.' prefix
+          converted['extension_$attributeName'] = value;
+        } else {
+          converted['extension_$key'] = value;
+        }
+        break;
+      case 'cognito':
+        if (key.startsWith('custom:')) {
+          final attributeName = key.substring(7); // Remove 'custom:' prefix
+          converted['extension_$attributeName'] = value;
+        } else {
+          converted['extension_$key'] = value;
+        }
+        break;
+      default:
+        converted['extension_$key'] = value;
+    }
+  }
+  
+  return converted;
 }
 ```
 
@@ -860,6 +1411,67 @@ Future<void> migrateFromAuth0ToFirebase(String userId) async {
    audience: 'https://your-api.com'
    ```
 
+#### Cognito Issues
+
+1. **User Pool configuration**
+   ```dart
+   // Wrong - incorrect region format
+   region: 'us-east-1a'
+   
+   // Correct - use region name only
+   region: 'us-east-1'
+   ```
+
+2. **Client secret handling**
+   ```dart
+   // Wrong - client secret required but not provided
+   clientSecret: null
+   
+   // Correct - provide client secret for backend apps
+   clientSecret: 'your-client-secret'
+   ```
+
+#### EntraID Issues
+
+1. **Tenant configuration**
+   ```dart
+   // Wrong - using full domain
+   tenantId: 'your-tenant.onmicrosoft.com'
+   
+   // Correct - use tenant ID only
+   tenantId: 'your-tenant-id'
+   ```
+
+2. **User flow configuration**
+   ```dart
+   // Wrong - missing B2C_ prefix
+   userFlowName: 'signupsignin'
+   
+   // Correct - include B2C_ prefix
+   userFlowName: 'B2C_1_signupsignin'
+   ```
+
+3. **Domain configuration**
+   ```dart
+   // Wrong - using old domain format
+   domain: 'your-tenant.onmicrosoft.com'
+   
+   // Correct - use B2C login domain
+   domain: 'your-tenant.b2clogin.com'
+   ```
+
+4. **Custom policy issues**
+   ```dart
+   // Wrong - mixing user flows with custom policies
+   userFlowName: 'B2C_1_signupsignin'
+   policyName: 'B2C_1A_TrustFrameworkExtensions'
+   
+   // Correct - use either user flows OR custom policies
+   userFlowName: 'B2C_1_signupsignin' // For user flows
+   // OR
+   policyName: 'B2C_1A_TrustFrameworkExtensions' // For custom policies
+   ```
+
 #### General Issues
 
 1. **Import errors**
@@ -919,9 +1531,38 @@ Future<void> testProvider(String providerName) async {
   }
 }
 
+// Test specific provider features
+Future<void> testEntraIDFeatures() async {
+  try {
+    final authManager = DSAuthManager('entraid');
+    final entraidProvider = authManager.provider as DSEntraIDAuthProvider;
+    
+    print('Testing EntraID user flows...');
+    
+    // Test user flow methods
+    await entraidProvider.initiatePasswordResetFlow(
+      'test@example.com',
+      userFlowName: 'B2C_1_password_reset',
+    );
+    print('Password reset flow test: PASSED');
+    
+    await entraidProvider.initiateProfileEditFlow(
+      userFlowName: 'B2C_1_profile_edit',
+    );
+    print('Profile edit flow test: PASSED');
+    
+    print('EntraID features test completed');
+  } catch (e) {
+    print('EntraID features test failed: $e');
+  }
+}
+
 // Run tests
 await testProvider('firebase');
 await testProvider('auth0');
+await testProvider('cognito');
+await testProvider('entraid');
+await testEntraIDFeatures();
 ```
 
 ---

@@ -288,7 +288,7 @@ void main() {
       final currentUser = await mockProvider.getCurrentUser();
       expect(currentUser.email, equals('test@example.com'));
       expect(currentUser.displayName, equals('Test User'));
-      expect(currentUser.customAttributes['provider'], equals('entraid'));
+      expect(currentUser.customAttributes?['provider'], equals('entraid'));
 
       // Verify token
       final isValid = await mockProvider.verifyToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.test');
@@ -493,8 +493,8 @@ void main() {
       expect(providers, contains('entraid'));
 
       final metadata = DSAuthManager.getProviderMetadata('entraid');
-      expect(metadata.type, equals('EntraID'));
-      expect(metadata.clientId, equals('test-client-id'));
+      expect(metadata?.type, equals('EntraID'));
+      expect(metadata?.clientId, equals('test-client-id'));
     });
   });
 }
