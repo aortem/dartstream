@@ -1,0 +1,6 @@
+name: ds_shelf
+version: "0.0.1-pre+4"
+description: Integration with Intellitoggle.
+dependencies:
+  - Core >= 0.0.1
+entry_point: lib/ds_intellitoggle.dart

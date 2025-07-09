@@ -1,17 +1,141 @@
 stages:
-  - triggers
+  - setup
+  - validation
+  - analyze_sample_apps
+  - backend_unit
+  - backend_integration
+  - backend_full_lifecycle
+  - frontend
+  - release
 
+# The pipeline covers a series of triggers to ensure full testing and coverage
 
-conditional_development:
-  stage: triggers
-  trigger:
-    include: tools/pipelines/child-ci-development.yml
+# Debug Stage
+debug_merge_request:
+  stage: setup
+  script:
+    - echo "Basic Merge Request Variables..." 
+    - echo "CI_MERGE_REQUEST_IID is '$CI_MERGE_REQUEST_IID'"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME is $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME is $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_EVENT_TYPE is $CI_MERGE_REQUEST_EVENT_TYPE"
+    
+    - echo "Commit Information Variables..."
+    - echo "CI_COMMIT_REF_NAME is $CI_COMMIT_REF_NAME"
+    - echo "CI_COMMIT_BRANCH is $CI_COMMIT_BRANCH"
+    - echo "CI_COMMIT_MESSAGE is $CI_COMMIT_MESSAGE" 
+
+    - echo "Determining branch name..."
+    - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
+    - echo "Branch name determined $BRANCH_NAME"
+
+    - echo "Pipeline Metadata..."
+    - echo "CI_PIPELINE_SOURCE is $CI_PIPELINE_SOURCE"
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "development" || $CI_COMMIT_BRANCH == "development"
+    - if: '$CI_PIPELINE_SOURCE'  # Forces execution in ALL scenarios
+      when: always
 
-conditional_production:
-  stage: triggers
+# Validate Conditional Triggers
+validation_trigger:
+  stage: validation
   trigger:
-    include: tools/pipelines/child-ci-production.yml
+    include: tools/pipelines/backend/child-ci-setup-validation.yml
   rules:
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "main" || $CI_COMMIT_BRANCH == "main"
+    # Condition 1: Branch is not main, qa, or development
+    - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
+      when: always
+
+    # Condition 2: Triggered by a push event
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+      when: always
+
+    # Condition 3: Triggered by a merge request event (source branch is not "development")
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "development"'
+      when: always
+
+    # Condition 4: Triggered by a merge request event (source branch is "development", "qa", or "main")
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
+      when: always
+
+    # Fallback: Skip if no condition matches
+    - when: never
+
+# Analyze Conditional Triggers
+analyze_flutter_mobile:
+  stage: analyze_sample_apps
+  trigger:
+    include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
+  needs:
+    - job: validation_trigger
+  rules:
+    # Always runs after validation trigger
+    - when: always
+
+    
+# Unit Tests for Backend (Dev)
+# unit_test_dev:
+#  stage: backend_unit
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-unit-tests-dev.yml
+
+# Release Triggers
+gitlab_github_release:
+  stage: release
+  trigger:
+    include: tools/pipelines/backend/child-ci-release.yml
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "development"'
+      when: always
+
+# Integration Tests for Backend (Dev)
+# integration_test_dev:
+#  stage: backend_integration
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
+
+# Full Lifecycle Tests for Backend (Dev)
+#full_lifecycle_dev:
+#  stage: backend_full_lifecycle
+#  trigger:
+#    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
+
+# Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
+# dart_web_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
+
+# flutter_desktop_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
+
+# flutter_games_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
+
+# flutter_mobile_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
+
+# flutter_web_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
+
+# react_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
+
+# svelte_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
+
+# vue_integration_test_dev:
+#   stage: frontend
+#   trigger:
+#     include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml

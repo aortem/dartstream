@@ -1,0 +1,15 @@
+name: ds_auth_base
+description: Base package for DartStream authentication, including foundational classes and interfaces.
+version: 0.0.1-pre+1
+repository: https://github.com/aortem/dartstream
+
+environment:
+ sdk: ^3.8.1 
+
+resolution: workspace
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+#  Add or remove the supported Auth SDK providers as needed (ie. firebase_dart_admin_auth_sdk: ^latest)
+

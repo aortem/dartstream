@@ -1,7 +1,32 @@
-library ds_standard_overrides;
+/// Export file for Flutter Web Overrides
+/// Provides centralized exports for all override-related components
 
-// Export standard overrides module
+library ds_standard_web_overrides;
+
+// Export main overrides implementation
 export 'ds_standard_web_overrides.dart';
 
+// Export override implementations
+export 'ds_standard_web_overrides.dart'
+    show
+        DSStandardWebOverrides,
+        WebStorageOverride,
+        WebNavigationOverride,
+        WebUIOverrides;
 
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Export provider interfaces
+export 'ds_standard_web_overrides.dart'
+    show StorageProvider, NavigationProvider;
+
+// Export Flutter types needed by overrides
+export 'package:flutter/material.dart'
+    show
+        BuildContext,
+        WidgetBuilder,
+        Widget,
+        Navigator,
+        CircularProgressIndicator,
+        Center,
+        ScaffoldMessenger,
+        SnackBar,
+        Text;

@@ -1,9 +1,0 @@
-name: ds_melos
-version: 0.0.1
-description: A package for DartStream project-wide Melos configurations and scripts.
-packages:
-  - dartstream/backend/packages/**  # Glob pattern to include all packages under "packages"
-ignore:
-  - "**/node_modules/**"
-  - "**/.dart_tool/**"
-  - "**/build/**"

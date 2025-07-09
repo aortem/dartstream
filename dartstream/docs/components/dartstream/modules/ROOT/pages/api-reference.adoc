@@ -1,0 +1,4 @@
+= Welcome to Intellitoggle Docs
+:page-layout: default
+
+This is the introduction to your Intelliotggle project.

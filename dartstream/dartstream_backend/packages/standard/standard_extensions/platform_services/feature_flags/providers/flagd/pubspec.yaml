@@ -1,0 +1,16 @@
+name: ds_flagd_provider
+description: Provides an integration with Flagd, enabling Dartstream to manage and evaluate feature flags dynamically.
+version: 0.0.1-pre+1
+repository: https://github.com/aortem/dartstream
+
+publish_to: none # Mark the package as non-publishable for local testing:
+
+environment:
+ sdk: ^3.8.1
+
+resolution: workspace
+
+dependencies:
+  http: ^1.2.2
+  ds_feature_flags_base:
+    path: ../../base
