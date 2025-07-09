@@ -1,3 +1,7 @@
+/* Sync the manifest with the pubspec.yaml so the version
+ and naming conventions stay aligned. Manfifest files control package registration
+*/
+
 import 'dart:io';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
