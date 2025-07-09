@@ -1,0 +1,7 @@
+name: "ds_google_postgres_database"
+version: "0.0.1"
+description: "PostgreSQL database provider for DartStream using Google Cloud SQL"
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "ds_postgres_database.dart"

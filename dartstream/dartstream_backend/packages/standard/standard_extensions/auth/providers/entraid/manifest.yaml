@@ -1,0 +1,6 @@
+name: "AzureAuth"
+version: "0.0.1-pre"
+description: "Azure authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_azure_ad_b2c_auth_provider.dart"

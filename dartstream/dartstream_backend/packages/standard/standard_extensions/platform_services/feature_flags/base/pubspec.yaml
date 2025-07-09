@@ -1,0 +1,18 @@
+#This pubspec file imports is used for any authentication framework features.
+#This works for both mobile and web.
+name: ds_feature_flags_base
+description: Base package for DartStream authentication, including foundational classes and interfaces.
+version: 0.0.1-pre+1
+repository: https://github.com/aortem/dartstream
+
+environment:
+ sdk: ^3.8.1
+
+resolution: workspace
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+
+
+
+# STANDARD PACKAGES - Built By The Dart Team

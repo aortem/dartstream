@@ -1,4 +1,0 @@
-# melos_managed_dependency_overrides: ds_tools_testing
-dependency_overrides:
-  ds_tools_testing:
-    path: ../ds_tools/testing

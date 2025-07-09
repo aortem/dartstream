@@ -1,0 +1,8 @@
+name: "ds_google_firebase_database"
+version: "0.0.1"
+description: "Firebase Firestore database provider for DartStream"
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+  - "Auth >=0.0.1"
+entry_point: "ds_firebase_database.dart"

@@ -5,7 +5,7 @@ version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ">=3.4.0 <4.0.0"
+ sdk: ^3.8.1
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -18,7 +18,7 @@ dependencies:
 # Custom Middleware Import // Off By Default
 
 # STANDARD FEATURES
-#  ds_standard_features: ^0.0.1-pre+5
+#  ds_standard_features: ^0.0.4
 
 # Database
   sqlite3: ^2.4.2 #Local database development - No driver

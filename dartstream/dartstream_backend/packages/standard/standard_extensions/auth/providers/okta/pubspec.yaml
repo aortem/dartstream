@@ -1,0 +1,17 @@
+name: ds_okta_auth_provider
+description: Fingerprint authentication provider for Dartstream.
+version: 0.0.1-pre
+repository: https://github.com/aortem/dartstream
+
+publish_to: none # Mark the package as non-publishable for local testing:
+
+environment:
+ sdk: ^3.8.1
+
+resolution: workspace
+
+dependencies:
+  firebase_dart_admin_auth_sdk: ^0.0.2
+  ds_auth_base:
+    path: ../../base
+  ds_standard_features: ^0.0.4

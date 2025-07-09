@@ -1,0 +1,200 @@
+stages:
+  - validate
+  - analyze
+
+# Debug Stage
+debug_merge_request:
+  stage: validate
+  script:
+    - echo "Debugging merge request..."
+    - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "Determining branch name..."
+    - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
+    - echo "Branch name determined $BRANCH_NAME"
+
+
+validate_branch_name:
+  stage: validate
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|beta|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|docs)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, docs, development, qa, beta, main."
+        exit 1
+      fi
+  rules:
+   - when: always
+
+validate_commit_messages:
+  stage: validate
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="$REGEX"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
+    - when: always
+
+validate_dart_sdk_version:
+  stage: validate
+  image: alpine:latest
+  needs:
+    - validate_commit_messages
+  script:
+    - echo "Validating Dart SDK versions in all pubspec.yaml files..."
+    - apk add --no-cache grep
+    - cd dartstream/dartstream_backend
+
+    # Find all pubspec.yaml files (recursively, all levels)
+    - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
+    - echo "Found the following pubspec.yaml files:"
+    - echo "$PUBSPEC_FILES"
+
+    # Define the minimum required Dart SDK version
+    - MINIMUM_VERSION="3.8.1"
+    - ALL_VALID="true"
+
+    # Iterate over each pubspec.yaml file
+    - |
+      for PUBSPEC in $PUBSPEC_FILES; do
+        echo "Checking $PUBSPEC..."
+
+        # Extract the Dart SDK version
+        SDK_VERSION=$(grep -m 1 -Po '(?<=sdk:\s\^)[0-9]+\.[0-9]+\.[0-9]+' "$PUBSPEC" || echo "not_found")
+        echo "Extracted Dart SDK version from $PUBSPEC: $SDK_VERSION"
+
+        # Validate the extracted version
+        if [ "$SDK_VERSION" = "not_found" ]; then
+          echo "❌ Failed to extract Dart SDK version from $PUBSPEC. Ensure the file contains a valid 'sdk' entry."
+          ALL_VALID="false"
+          continue
+        fi
+
+        # Compare the version
+        if [[ $(echo -e "${SDK_VERSION}\n${MINIMUM_VERSION}" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+          echo "❌ Dart SDK version in $PUBSPEC must be at least $MINIMUM_VERSION, found $SDK_VERSION"
+          ALL_VALID="false"
+        else
+          echo "✅ Dart SDK version in $PUBSPEC is satisfactory: $SDK_VERSION"
+        fi
+      done
+
+    # Exit with failure if any pubspec.yaml file has an invalid version
+    - |
+      if [ "$ALL_VALID" != "true" ]; then
+        echo "❌ One or more pubspec.yaml files have an invalid Dart SDK version."
+        exit 1
+      else
+        echo "✅ All pubspec.yaml files have a valid Dart SDK version."
+      fi
+  rules:
+    - when: always
+
+analyze_main:
+  stage: analyze
+  image: dart:stable
+  needs: 
+    - validate_commit_messages
+  script:
+    - echo "Analyzing all lib folders in the project..."
+
+    # Install dependencies for all projects
+    - echo "Running 'dart pub get' for all projects with pubspec.yaml..."
+    - find . -name "pubspec.yaml" -execdir dart pub get \;
+
+    # Find all lib/ folders in the project
+    - LIB_FOLDERS=$(find . -type d -name "lib")
+    - echo "Found the following lib folders:"
+    - echo "$LIB_FOLDERS"
+
+    # Initialize counters for issues
+    - TOTAL_INFO=0
+    - TOTAL_WARNINGS=0
+    - TOTAL_ERRORS=0
+
+    # Analyze each lib folder and collect issues
+    - |
+      for LIB_FOLDER in $LIB_FOLDERS; do
+        echo "Analyzing $LIB_FOLDER...";
+        dart analyze "$LIB_FOLDER" > "$LIB_FOLDER/analysis_report.txt" 2> "$LIB_FOLDER/error_log.txt" || true;
+
+        # Filter and categorize issues
+        grep -i "info" "$LIB_FOLDER/analysis_report.txt" > "$LIB_FOLDER/info_issues.txt" || true;
+        grep -i "warning" "$LIB_FOLDER/analysis_report.txt" > "$LIB_FOLDER/warning_issues.txt" || true;
+        grep -i "error" "$LIB_FOLDER/analysis_report.txt" > "$LIB_FOLDER/error_issues.txt" || true;
+
+        # Summarize issues
+        info_count=$(wc -l < "$LIB_FOLDER/info_issues.txt" || echo 0);
+        warning_count=$(wc -l < "$LIB_FOLDER/warning_issues.txt" || echo 0);
+        error_count=$(wc -l < "$LIB_FOLDER/error_issues.txt" || echo 0);
+
+        TOTAL_INFO=$((TOTAL_INFO + info_count));
+        TOTAL_WARNINGS=$((TOTAL_WARNINGS + warning_count));
+        TOTAL_ERRORS=$((TOTAL_ERRORS + error_count));
+
+        echo "Issues for $LIB_FOLDER:";
+        echo "  Info: $info_count";
+        echo "  Warnings: $warning_count";
+        echo "  Errors: $error_count";
+      done;
+
+    # Output overall summary
+    - |
+      echo "Overall Summary:";
+      echo "  Total Info Issues: $TOTAL_INFO";
+      echo "  Total Warning Issues: $TOTAL_WARNINGS";
+      echo "  Total Error Issues: $TOTAL_ERRORS";
+
+    # Check for outdated dependencies across the project
+    - echo "Checking for outdated dependencies in all projects...";
+    - dart pub outdated || true;
+
+  artifacts:
+    paths:
+      - "**/lib/info_issues.txt"
+      - "**/lib/warning_issues.txt"
+      - "**/lib/error_issues.txt"
+    expire_in: 1h
+  rules:
+    - when: always
+

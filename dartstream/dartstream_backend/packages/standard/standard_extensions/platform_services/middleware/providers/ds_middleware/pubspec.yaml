@@ -1,0 +1,19 @@
+name: ds_middleware
+description: DartStream Middleware.  Use as the secondary option to Shelf Middleware.
+version: 0.0.1-pre
+repository: https://github.com/aortem/dartstream
+
+environment:
+ sdk: ^3.8.1
+ 
+resolution: workspace
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+  ds_standard_features: ^0.0.4
+  ds_tools_testing: ^0.0.1-pre+2
+#  ds_tools_general: ^0.0.1-pre
+  
+
+# Dev dependencies are added in sections alphabetically and according to features.
+dev_dependencies:

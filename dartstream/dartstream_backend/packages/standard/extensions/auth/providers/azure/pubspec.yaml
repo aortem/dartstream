@@ -1,6 +1,0 @@
-Name: "AzureAuth"
-version: "1.0.0"
-description: "Amazon authentication provider for Dartstream."
-dependencies:
-  - "Auth >=1.0.0"
-entry_point: "lib/amazon_auth_provider.dart"
