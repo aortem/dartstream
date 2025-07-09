@@ -50,7 +50,13 @@ class DSAuthManager {
     log('Unregistered provider: $name');
   }
 
-  DSAuthProviderMetadata? getProviderMetadata(String providerName) {
+  /// Get list of registered provider names
+  static List<String> getRegisteredProviders() {
+    return _registeredProviders.keys.toList();
+  }
+
+  /// Get provider metadata by provider name
+  static DSAuthProviderMetadata? getProviderMetadata(String providerName) {
     return _providerMetadata[providerName];
   }
 
