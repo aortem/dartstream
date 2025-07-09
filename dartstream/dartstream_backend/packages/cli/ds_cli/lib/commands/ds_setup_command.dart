@@ -12,23 +12,32 @@ class DSSetupCommand extends Command {
 
   @override
   void run() {
+    this.execute();
+  }
+
+  void execute({String Function()? readLineCallback}) {
     print('Setting up project components...');
 
     // Middleware Selection
     stdout.write('Choose middleware (1. Dartstream, 2. Shelf, 3. Custom): ');
-    var middlewareChoice = stdin.readLineSync();
+
+    var read = readLineCallback ?? stdin.readLineSync;
+
+    var middlewareChoice = read();
     var middleware = _parseMiddleware(middlewareChoice);
 
     // CI/CD Tool Selection
     stdout.write(
-        'Choose CI/CD tool (1. GitHub Actions, 2. GitLab CI, 3. Custom Script): ');
-    var ciCdChoice = stdin.readLineSync();
+      'Choose CI/CD tool (1. GitHub Actions, 2. GitLab CI, 3. Custom Script): ',
+    );
+    var ciCdChoice = read();
     var ciCdTool = _parseCiCdTool(ciCdChoice);
 
     // Custom Tools Selection
-    stdout
-        .write('Select tools (1. Security, 2. Performance, 3. Integrations): ');
-    var toolsChoice = stdin.readLineSync()?.split(',').map(_parseTool).toList();
+    stdout.write(
+      'Select tools (1. Security, 2. Performance, 3. Integrations): ',
+    );
+    var toolsChoice = read()?.split(',').map(_parseTool).toList();
 
     print("Middleware: $middleware");
     print("CI/CD: $ciCdTool");

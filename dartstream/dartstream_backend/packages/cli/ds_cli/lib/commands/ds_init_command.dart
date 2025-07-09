@@ -12,14 +12,21 @@ class DSInitCommand extends Command {
 
   @override
   void run() {
+    this.execute();
+  }
+
+  void execute({String Function()? readLineCallback}) {
     print('Initializing project...');
     // Collect project name
     stdout.write('Enter project name: ');
-    var projectName = stdin.readLineSync() ?? 'Dartstream Project';
+
+    var read = readLineCallback ?? stdin.readLineSync;
+
+    var projectName = read() ?? 'Dartstream Project';
 
     // Collect project type
     stdout.write('Select version (1. Beta, 2. Stable): ');
-    var versionChoice = stdin.readLineSync();
+    var versionChoice = read();
     var projectType = versionChoice == '1' ? 'Beta' : 'Stable';
 
     // Initialize project configuration (pseudo-code)
