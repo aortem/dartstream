@@ -1,17 +1,24 @@
 //import 'package:ds_custom_middleware/ds_custom_middleware.dart';
 
-import 'dart:io';
+// import 'dart:io';
 import 'dart:async';
-import 'dart:math';
+// import 'dart:math';
 import 'package:test/test.dart';
-import 'package:ds_tools_testing/ds_tools_testing.dart';
-import 'package:dartstream/commands/ds_init_command.dart';
-import 'package:dartstream/commands/ds_list_command.dart';
-import 'package:dartstream/commands/ds_setup_command.dart';
-import 'package:dartstream/commands/ds_validate_command.dart';
-import 'package:dartstream/commands/ds_extensions_command.dart';
-import 'package:dartstream/commands/ds_configure_command.dart';
-import 'package:dartstream/commands/ds_discovery_command.dart';
+// import 'package:ds_tools_testing/ds_tools_testing.dart';
+// import 'package:dartstream/commands/lib/ds_init_command.dart';
+// import 'package:dartstream/commands/lib/ds_list_command.dart';
+// import 'package:dartstream/commands/lib/ds_setup_command.dart';
+// import 'package:dartstream/commands/lib/ds_validate_command.dart';
+// import 'package:dartstream/commands/lib/ds_extensions_command.dart';
+// import 'package:dartstream/commands/lib/ds_configure_command.dart';
+// import 'package:dartstream/commands/lib/ds_discovery_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_init_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_list_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_setup_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_validate_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_extensions_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_configure_command.dart';
+import '../../dartstream_backend/packages/cli/ds_cli/lib/commands/ds_discovery_command.dart';
 
 void main() {
   group('Dartstream CLI tests', () {
