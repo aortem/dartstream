@@ -59,7 +59,7 @@ dependencies:
   # auth0_dart_auth_sdk: ^0.0.1          # For Auth0 (when available)
   
   # Framework features
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.0.7
 ```
 
 ### Basic Setup

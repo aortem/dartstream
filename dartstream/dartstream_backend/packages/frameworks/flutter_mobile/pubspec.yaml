@@ -12,6 +12,6 @@ environment:
 dependencies:
 
 # STANDARD PACKAGES - Built By The Dart Team
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.0.7
 
   
