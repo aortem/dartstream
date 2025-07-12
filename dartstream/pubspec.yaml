@@ -18,9 +18,3 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
-
-# CLI
-  cli_util: ^0.4.1
-#TBD
-  lints: ^4.0.0 #Included In ds_standard_features
-  test: ^1.25.5
