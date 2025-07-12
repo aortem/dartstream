@@ -1,8 +1,15 @@
 # DartStream
 
-## DS Standard Packages
+## DS Auth Base Package
 
-DS Standard packages allow you to utilize core dart features maintained by the Dart team.  The depdendencies remain largely unmodified.  Dartstream extends the built-in classes and methods, therefore allowing developers the greatest composition flexibility when building their applications.
+This package is designed to support the integration of authnetication providers. 
+
+The **DS Auth Base** package is the foundational layer for all DartStream authentication integrations. It defines the common interfaces, manager logic, and export entrypoint that every provider package builds upon, so you can swap or extend providers without rewriting your app’s authentication core.
+
+**Key components**  
+- **`ds_auth_base_export.dart`** – Re-exports the base interfaces and manager.  
+- **`DSAuthProvider`** – Abstract interface all providers must implement (`initialize`, `signIn`, `signOut`, etc.).  
+- **`DSAuthManager`** – Central registry and runtime selector for whichever provider you choose.DS 
 
 ---
 
