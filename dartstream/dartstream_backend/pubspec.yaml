@@ -14,16 +14,54 @@
 
 name: ds_dartstream
 publish_to: none
-description: A starting point for Dart libraries or applications.
-version: 0.0.1-pre+3
+description: A meta-package that bundles all DartStream framework modules
+  tooling, standard engine, auth providers, persistence, feature flags, etc.
+version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ^3.8.1
 
-dependency_overrides:
-  fake_async: 1.3.2
-  async: 2.12.0
+dependencies:
+  # core tooling
+  ds_tooling:           ^0.0.1
+
+  # standard engine
+  ds_standard_engine:   ^0.0.6
+
+  # auth extensions
+  ds_auth_base:         ^0.0.3
+  ds_auth_auth0:        ^0.0.2
+  ds_auth_cognito:      ^0.0.2
+  ds_auth_entraid:      ^0.0.1
+  ds_auth_fingerprint:  ^0.0.1
+  ds_auth_firebase:     ^0.0.2
+  ds_auth_magic:        ^0.0.1
+  ds_auth_okta:         ^0.0.1
+  ds_auth_ping:         ^0.0.1
+  ds_auth_stytch:       ^0.0.1
+  ds_auth_transmit:     ^0.0.1
+
+  # persistence - database providers
+  ds_db_base:           ^0.0.1
+  ds_db_firebase:       ^0.0.1
+  ds_db_mysql:          ^0.0.1
+  ds_db_postgres:       ^0.0.1
+
+  # persistence - storage providers
+  ds_storage_aws:       ^0.0.1
+  ds_storage_gcp:       ^0.0.1
+
+  # feature-flags
+  ds_ff_base:           ^0.0.1
+  ds_ff_flagd:          ^0.0.1
+  ds_ff_intellitoggle:  ^0.0.1
+
+  # reactive dataflow, etc.
+  ds_dataflow_base:        ^0.0.1
+  ds_dataflow_websocket:   ^0.0.1
+  ds_dataflow_broker_base: ^0.0.1
+
 
 workspace:
   - packages/tooling
