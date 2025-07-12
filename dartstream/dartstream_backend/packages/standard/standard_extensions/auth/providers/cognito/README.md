@@ -22,7 +22,7 @@ Add the Cognito provider to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ds_auth_base:
+  # ds_auth_base:
     path: ../auth/base
   ds_cognito_auth_provider:
     path: ../auth/providers/cognito
@@ -33,7 +33,7 @@ dependencies:
 ### Basic Setup
 
 ```dart
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
 
 // Create and initialize the provider

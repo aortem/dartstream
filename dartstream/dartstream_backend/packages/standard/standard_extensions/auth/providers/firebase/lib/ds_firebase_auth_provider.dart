@@ -1,5 +1,5 @@
 // Import base authentication interfaces and types from DartStream core
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 // Import Firebase SDK for authentication functionality
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
@@ -82,9 +82,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       _tokenManager = DSTokenManager();
       _sessionManager = DSSessionManager();
 
-      _eventHandler = DSFirebaseEventHandler(
-        onEvent: _handleAuthEvent,
-      );
+      _eventHandler = DSFirebaseEventHandler(onEvent: _handleAuthEvent);
       _eventHandler.initialize(_auth);
 
       _isInitialized = true;
@@ -119,11 +117,13 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
         deviceId: _generateDeviceId(),
       );
 
-      await onLoginSuccess(DSAuthUser(
-        id: user.uid,
-        email: user.email ?? '',
-        displayName: user.displayName ?? '',
-      ));
+      await onLoginSuccess(
+        DSAuthUser(
+          id: user.uid,
+          email: user.email ?? '',
+          displayName: user.displayName ?? '',
+        ),
+      );
     } catch (e) {
       print('Original signIn error: $e');
       throw DSFirebaseErrorMapper.mapError(e);
@@ -151,8 +151,11 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
 
   /// creates a new user account with email and password
   @override
-  Future<void> createAccount(String email, String password,
-      {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     try {
       print('Attempting to create account for email: $email');
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -240,6 +243,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       return false;
     }
   }
+
   /// Refreshes an authentication token
   ///
   /// [refreshToken] - The refresh token to use
@@ -256,7 +260,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       // Get a fresh token from the current user
       final token = await user.getIdToken(true); // force refresh
       await _tokenManager.refreshToken(user.uid, token);
-      
+
       return token;
     } catch (e) {
       throw DSFirebaseErrorMapper.mapError(e);
@@ -303,7 +307,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       await user.sendEmailVerification();
       print('Email verification sent to: ${user.email}');
     } catch (e) {
@@ -322,7 +326,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       return user.emailVerified;
     } catch (e) {
       print('Error checking email verification: $e');
@@ -340,7 +344,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       await user.updatePassword(newPassword);
       print('Password updated successfully');
     } catch (e) {
@@ -359,7 +363,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       await user.updateEmail(newEmail);
       print('Email updated successfully to: $newEmail');
     } catch (e) {
@@ -379,15 +383,15 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       if (displayName != null) {
         user.displayName = displayName;
       }
-      
+
       if (photoURL != null) {
         user.photoURL = photoURL;
       }
-      
+
       print('Profile updated successfully');
     } catch (e) {
       print('Error updating profile: $e');
@@ -404,7 +408,7 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       if (user == null) {
         throw Exception('No user is currently signed in');
       }
-      
+
       await _tokenManager.removeToken(user.uid);
       await _sessionManager.removeSession(user.uid);
       await user.delete();

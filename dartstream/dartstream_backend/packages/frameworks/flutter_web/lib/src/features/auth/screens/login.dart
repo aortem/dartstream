@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -68,9 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('DartStream Auth Demo'),
-      ),
+      appBar: AppBar(title: const Text('DartStream Auth Demo')),
       body: Center(
         child: Card(
           margin: const EdgeInsets.all(32),
@@ -149,8 +147,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(width: 8),
                         TextButton(
                           onPressed: () {
-                            FocusScope.of(context)
-                                .unfocus(); // Ensure focus is cleared
+                            FocusScope.of(
+                              context,
+                            ).unfocus(); // Ensure focus is cleared
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (context) => RegisterScreen(

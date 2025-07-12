@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:google_auth_provider/ds_firebase_auth_export.dart';
 import 'core/ds_standard_web_core.dart';
@@ -97,10 +97,7 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
       // Initialize core last
       await _core?.initialize(
         config: {
-          'auth': {
-            'provider': firebaseProvider,
-            'manager': _authManager,
-          },
+          'auth': {'provider': firebaseProvider, 'manager': _authManager},
           'sessionTimeout': AppConfig.sessionTimeout.inSeconds,
           'debug': AppConfig.enableDebugLogging,
         },

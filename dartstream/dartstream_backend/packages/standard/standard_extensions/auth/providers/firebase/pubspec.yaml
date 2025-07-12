@@ -12,8 +12,8 @@ resolution: workspace
 
 dependencies:
   firebase_dart_admin_auth_sdk: ^0.0.2
-  ds_auth_base:
-    path: ../../base
+  # ds_auth_base:
+    # path: ../../base
   ds_standard_features: ^0.0.7
 
 

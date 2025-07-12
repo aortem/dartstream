@@ -8,7 +8,7 @@
   # 🔹 Note: 
     # The workspace: key is currently only recognized by experimental tooling or for organizational clarity. 
     # Dart’s official tooling does not yet support it. 
-    # Provided here for documentation or internal tooling reference however dart pubc won’t act on it natively.
+    # Provided here for documentation or internal tooling reference however dart pub won’t act on it natively.
   # [DartCodeAI](https://dartcodeai.com) will be integrated in a future state.   
 
 
@@ -16,7 +16,7 @@ name: ds_dartstream
 publish_to: none
 description: A meta-package that bundles all DartStream framework modules
   tooling, standard engine, auth providers, persistence, feature flags, etc.
-version: 0.0.1-pre
+version: 0.0.1-pre+4
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -24,81 +24,81 @@ environment:
 
 dependencies:
   # core tooling
-  ds_tooling:           ^0.0.1
+#   ds_tooling:           ^0.0.1
 
-  # standard engine
-  ds_standard_engine:   ^0.0.6
+#   # standard engine
+#   ds_standard_engine:   ^0.0.6
 
-  # auth extensions
-  ds_auth_base:         ^0.0.3
-  ds_auth_auth0:        ^0.0.2
-  ds_auth_cognito:      ^0.0.2
-  ds_auth_entraid:      ^0.0.1
-  ds_auth_fingerprint:  ^0.0.1
-  ds_auth_firebase:     ^0.0.2
-  ds_auth_magic:        ^0.0.1
-  ds_auth_okta:         ^0.0.1
-  ds_auth_ping:         ^0.0.1
-  ds_auth_stytch:       ^0.0.1
-  ds_auth_transmit:     ^0.0.1
+#   # auth extensions
+#   # ds_auth_base:         ^0.0.3
+#   ds_auth_auth0:        ^0.0.2
+#   ds_auth_cognito:      ^0.0.2
+#   ds_auth_entraid:      ^0.0.1
+#   ds_auth_fingerprint:  ^0.0.1
+#   ds_auth_firebase:     ^0.0.2
+#   ds_auth_magic:        ^0.0.1
+#   ds_auth_okta:         ^0.0.1
+#   ds_auth_ping:         ^0.0.1
+#   ds_auth_stytch:       ^0.0.1
+#   ds_auth_transmit:     ^0.0.1
 
-  # persistence - database providers
-  ds_db_base:           ^0.0.1
-  ds_db_firebase:       ^0.0.1
-  ds_db_mysql:          ^0.0.1
-  ds_db_postgres:       ^0.0.1
+#   # persistence - database providers
+#   ds_db_base:           ^0.0.1
+#   ds_db_firebase:       ^0.0.1
+#   ds_db_mysql:          ^0.0.1
+#   ds_db_postgres:       ^0.0.1
 
-  # persistence - storage providers
-  ds_storage_aws:       ^0.0.1
-  ds_storage_gcp:       ^0.0.1
+#   # persistence - storage providers
+#   ds_storage_aws:       ^0.0.1
+#   ds_storage_gcp:       ^0.0.1
 
-  # feature-flags
-  ds_ff_base:           ^0.0.1
-  ds_ff_flagd:          ^0.0.1
-  ds_ff_intellitoggle:  ^0.0.1
+#   # feature-flags
+#   ds_ff_base:           ^0.0.1
+#   ds_ff_flagd:          ^0.0.1
+#   ds_ff_intellitoggle:  ^0.0.1
 
-  # reactive dataflow, etc.
-  ds_dataflow_base:        ^0.0.1
-  ds_dataflow_websocket:   ^0.0.1
-  ds_dataflow_broker_base: ^0.0.1
+#   # reactive dataflow, etc.
+#   ds_dataflow_base:        ^0.0.1
+#   ds_dataflow_websocket:   ^0.0.1
+# #  ds_dataflow_broker_base: ^0.0.1
 
 
-workspace:
-  - packages/tooling
-  - packages/standard/standard_engine/
-  - packages/standard/standard_extensions/auth/base
-  - packages/standard/standard_extensions/auth/providers/auth0
-  - packages/standard/standard_extensions/auth/providers/cognito
-  - packages/standard/standard_extensions/auth/providers/entraid
-  - packages/standard/standard_extensions/auth/providers/fingerprint
-  - packages/standard/standard_extensions/auth/providers/firebase
-  - packages/standard/standard_extensions/auth/providers/magic
-  - packages/standard/standard_extensions/auth/providers/okta
-  - packages/standard/standard_extensions/auth/providers/ping
-  - packages/standard/standard_extensions/auth/providers/stytch
-  - packages/standard/standard_extensions/auth/providers/transmit
-  - packages/standard/standard_extensions/persistence/database/base
-  - packages/standard/standard_extensions/persistence/database/providers/google/firebase
-  - packages/standard/standard_extensions/persistence/database/providers/google/mysql
-  - packages/standard/standard_extensions/persistence/database/providers/google/postgres
-  - packages/standard/standard_extensions/persistence/logging/base
-  - packages/standard/standard_extensions/persistence/logging/providers
-  - packages/standard/standard_extensions/persistence/storage/base
-  - packages/standard/standard_extensions/persistence/storage/providers/aws
-  - packages/standard/standard_extensions/persistence/storage/providers/gcp
-  - packages/standard/standard_extensions/platform_services/discovery/
-  - packages/standard/standard_extensions/platform_services/feature_flags/base
-  - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
-  - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
-  - packages/standard/standard_extensions/platform_services/middleware/base
-  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
-  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers  
-  - packages/standard/standard_extensions/reactive_dataflow/events/base
-  - packages/standard/standard_extensions/reactive_dataflow/events/providers
-  - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 
-  - packages/standard/standard_extensions/reactive_dataflow/notifications/base
-  - packages/standard/standard_extensions/reactive_dataflow/notifications/providers
+# workspace:
+#   - packages/tooling
+#   - packages/standard/standard_engine/
+#   - packages/standard/standard_extensions/auth/base
+#   - packages/standard/standard_extensions/auth/providers/auth0
+#   - packages/standard/standard_extensions/auth/providers/cognito
+#   - packages/standard/standard_extensions/auth/providers/entraid
+#   - packages/standard/standard_extensions/auth/providers/fingerprint
+#   - packages/standard/standard_extensions/auth/providers/firebase
+#   - packages/standard/standard_extensions/auth/providers/magic
+#   - packages/standard/standard_extensions/auth/providers/okta
+#   - packages/standard/standard_extensions/auth/providers/ping
+#   - packages/standard/standard_extensions/auth/providers/stytch
+#   - packages/standard/standard_extensions/auth/providers/transmit
+#   - packages/standard/standard_extensions/persistence/database/base
+#   - packages/standard/standard_extensions/persistence/database/providers/google/firebase
+#   - packages/standard/standard_extensions/persistence/database/providers/google/mysql
+#   - packages/standard/standard_extensions/persistence/database/providers/google/postgres
+#   - packages/standard/standard_extensions/persistence/logging/base
+#   - packages/standard/standard_extensions/persistence/logging/providers
+#   - packages/standard/standard_extensions/persistence/storage/base
+#   - packages/standard/standard_extensions/persistence/storage/providers/aws
+#   - packages/standard/standard_extensions/persistence/storage/providers/gcp
+#   - packages/standard/standard_extensions/platform_services/discovery/
+#   - packages/standard/standard_extensions/platform_services/feature_flags/base
+#   - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
+#   - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
+#   - packages/standard/standard_extensions/platform_services/middleware/base
+#   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
+#   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
+#   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
+#   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/
+#   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
+#   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers  
+#   - packages/standard/standard_extensions/reactive_dataflow/events/base
+#   - packages/standard/standard_extensions/reactive_dataflow/events/providers
+#   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 
+#   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
+#   - packages/standard/standard_extensions/reactive_dataflow/notifications/providers

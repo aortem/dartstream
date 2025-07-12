@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-// Mock implementations for Auth0 testing - these would normally come from ds_auth_base package
+// Mock implementations for Auth0 testing - these would normally come from # ds_auth_base package
 
 /// Interface for all Auth Providers
 abstract class DSAuthProvider {
@@ -11,7 +11,11 @@ abstract class DSAuthProvider {
   Future<bool> verifyToken([String? token]);
   Future<String> refreshToken(String refreshToken);
   Future<DSAuthUser> getCurrentUser();
-  Future<void> createAccount(String email, String password, {String? displayName});
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  });
   Future<void> onLoginSuccess(DSAuthUser user) async {}
   Future<void> onLogout() async {}
 }
@@ -31,7 +35,8 @@ class DSAuthUser {
   });
 
   @override
-  String toString() => 'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
+  String toString() =>
+      'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
 }
 
 /// Auth Error class
@@ -72,13 +77,18 @@ class DSAuthManager {
   }
 
   Future<DSAuthUser> getCurrentUser() => _provider.getCurrentUser();
-  Future<void> createAccount(String email, String password, {String? displayName}) =>
-      _provider.createAccount(email, password, displayName: displayName);
-  Future<void> signIn(String username, String password) => _provider.signIn(username, password);
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) => _provider.createAccount(email, password, displayName: displayName);
+  Future<void> signIn(String username, String password) =>
+      _provider.signIn(username, password);
   Future<void> signOut() => _provider.signOut();
   Future<DSAuthUser> getUser(String userId) => _provider.getUser(userId);
   Future<bool> verifyToken([String? token]) => _provider.verifyToken(token);
-  Future<String> refreshToken(String refreshToken) => _provider.refreshToken(refreshToken);
+  Future<String> refreshToken(String refreshToken) =>
+      _provider.refreshToken(refreshToken);
 }
 
 /// Standalone Auth0 Provider Implementation
@@ -110,7 +120,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
   @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
-    
+
     if (_passwords[username] == password) {
       _currentUser = _users[username];
       _tokens[username] = _generateJWT(username);
@@ -147,13 +157,17 @@ class StandaloneAuth0Provider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
-    
+
     if (_users.containsKey(email)) {
       throw DSAuthError('Auth0 user already exists');
     }
-    
+
     final user = DSAuthUser(
       id: 'auth0|${email.replaceAll('@', '_').replaceAll('.', '_')}',
       email: email,
@@ -167,7 +181,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
         'login_count': 0,
       },
     );
-    
+
     _users[email] = user;
     _passwords[email] = password;
     print('Auth0 account created for: $email');
@@ -176,7 +190,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
   @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
-    
+
     // Mock JWT validation for Auth0
     if (token.startsWith('eyJ') && token.contains('.')) {
       final email = _currentUser?.email;
@@ -192,7 +206,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
     if (_currentUser == null) {
       throw DSAuthError('No Auth0 user signed in');
     }
-    
+
     // Mock refresh token for Auth0
     if (refreshToken.startsWith('auth0_refresh_')) {
       // Add a small delay to ensure different timestamp
@@ -201,7 +215,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
       _tokens[_currentUser!.email] = newToken;
       return newToken;
     }
-    
+
     throw DSAuthError('Invalid Auth0 refresh token');
   }
 
@@ -210,7 +224,7 @@ class StandaloneAuth0Provider implements DSAuthProvider {
     // Update login stats
     if (user.customAttributes != null) {
       user.customAttributes!['last_login'] = DateTime.now().toIso8601String();
-      user.customAttributes!['login_count'] = 
+      user.customAttributes!['login_count'] =
           (user.customAttributes!['login_count'] ?? 0) + 1;
     }
     print('Auth0 login success hook called for: ${user.email}');
@@ -228,7 +242,10 @@ class StandaloneAuth0Provider implements DSAuthProvider {
 
   String base64Encode(String input) {
     // Simple base64 encoding simulation
-    return input.replaceAll(' ', '').replaceAll('@', 'AT').replaceAll('.', 'DOT');
+    return input
+        .replaceAll(' ', '')
+        .replaceAll('@', 'AT')
+        .replaceAll('.', 'DOT');
   }
 }
 
@@ -303,10 +320,7 @@ void main() {
         await authManager.signOut();
 
         // Verify signed out
-        expect(
-          () => authManager.getCurrentUser(),
-          throwsA(isA<DSAuthError>()),
-        );
+        expect(() => authManager.getCurrentUser(), throwsA(isA<DSAuthError>()));
       });
     });
 
@@ -337,7 +351,9 @@ void main() {
         expect(originalToken, isNotNull);
 
         // Refresh token
-        final newToken = await authManager.refreshToken('auth0_refresh_token_123');
+        final newToken = await authManager.refreshToken(
+          'auth0_refresh_token_123',
+        );
         expect(newToken, isNotNull);
         expect(newToken, startsWith('eyJ'));
         expect(newToken, isNot(equals(originalToken)));
@@ -355,10 +371,14 @@ void main() {
         final invalidToken1 = await authManager.verifyToken('invalid_token');
         expect(invalidToken1, isFalse);
 
-        final invalidToken2 = await authManager.verifyToken('eyJ.invalid.format');
+        final invalidToken2 = await authManager.verifyToken(
+          'eyJ.invalid.format',
+        );
         expect(invalidToken2, isFalse);
 
-        final invalidToken3 = await authManager.verifyToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.wrong_payload');
+        final invalidToken3 = await authManager.verifyToken(
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.wrong_payload',
+        );
         expect(invalidToken3, isFalse);
       });
     });
@@ -390,10 +410,7 @@ void main() {
       });
 
       test('Operations Without Authentication', () async {
-        expect(
-          () => authManager.getCurrentUser(),
-          throwsA(isA<DSAuthError>()),
-        );
+        expect(() => authManager.getCurrentUser(), throwsA(isA<DSAuthError>()));
 
         expect(
           () => authManager.refreshToken('some_refresh_token'),
@@ -423,10 +440,7 @@ void main() {
         await auth0Provider.onLogout();
 
         // Should be logged out
-        expect(
-          () => authManager.getCurrentUser(),
-          throwsA(isA<DSAuthError>()),
-        );
+        expect(() => authManager.getCurrentUser(), throwsA(isA<DSAuthError>()));
       });
     });
 

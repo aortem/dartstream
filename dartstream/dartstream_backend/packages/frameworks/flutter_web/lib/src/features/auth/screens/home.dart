@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 
 class HomeScreen extends StatelessWidget {
   final DSAuthUser user;
@@ -21,9 +21,7 @@ class HomeScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              e is DSAuthError ? e.message : e.toString(),
-            ),
+            content: Text(e is DSAuthError ? e.message : e.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -57,27 +55,15 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   const Text(
                     'Authentication Successful!',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 32),
-                  _UserInfoRow(
-                    label: 'User ID:',
-                    value: user.id,
-                  ),
+                  _UserInfoRow(label: 'User ID:', value: user.id),
                   const SizedBox(height: 8),
-                  _UserInfoRow(
-                    label: 'Email:',
-                    value: user.email,
-                  ),
+                  _UserInfoRow(label: 'Email:', value: user.email),
                   const SizedBox(height: 8),
-                  _UserInfoRow(
-                    label: 'Display Name:',
-                    value: user.displayName,
-                  ),
+                  _UserInfoRow(label: 'Display Name:', value: user.displayName),
                   if (user.customAttributes != null) ...[
                     const SizedBox(height: 16),
                     const Text(
@@ -111,27 +97,16 @@ class _UserInfoRow extends StatelessWidget {
   final String label;
   final String value;
 
-  const _UserInfoRow({
-    required this.label,
-    required this.value,
-  });
+  const _UserInfoRow({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
+        Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
         const SizedBox(width: 8),
-        Expanded(
-          child: Text(
-            value,
-            softWrap: true,
-          ),
-        ),
+        Expanded(child: Text(value, softWrap: true)),
       ],
     );
   }

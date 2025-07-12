@@ -1,4 +1,4 @@
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 
 /// Maps Auth0 errors to DartStream errors
 class DSAuth0ErrorMapper {
@@ -31,7 +31,7 @@ class DSAuth0ErrorMapper {
     // Handle HTTP errors from Auth0 API
     if (error is Exception) {
       final errorString = error.toString();
-      
+
       if (errorString.contains('401')) {
         return DSAuthError(
           'Authentication failed. Please check your credentials.',
@@ -62,7 +62,7 @@ class DSAuth0ErrorMapper {
     if (error is Map<String, dynamic>) {
       final errorCode = error['error'] as String?;
       final errorDescription = error['error_description'] as String?;
-      
+
       return DSAuthError(
         errorDescription ?? 'Auth0 error occurred',
         code: _mapAuth0ErrorCode(errorCode),

@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:# ds_auth_base/# ds_auth_base_export.dart';
 import 'screens/login.dart';
 import 'screens/home.dart';
 
 class AuthDemo extends StatefulWidget {
   final DSAuthManager authManager;
 
-  const AuthDemo({
-    super.key,
-    required this.authManager,
-  });
+  const AuthDemo({super.key, required this.authManager});
 
   @override
   State<AuthDemo> createState() => _AuthDemoState();
@@ -81,11 +78,7 @@ class _AuthDemoState extends State<AuthDemo> {
   @override
   Widget build(BuildContext context) {
     if (_loading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_error != null) {
