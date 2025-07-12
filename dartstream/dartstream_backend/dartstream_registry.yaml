@@ -12,7 +12,7 @@ extensions:
 
   - name: ds_auth0_auth_provider
     display_name: ds_auth0_auth_provider
-    version: 0.0.1-pre
+    version: 0.0.1-pre+1
     description: 'Auth0 authentication provider for Dartstream.'
     dependencies:
       - Auth >=0.0.1
