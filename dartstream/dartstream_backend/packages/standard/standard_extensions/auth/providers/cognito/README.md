@@ -33,7 +33,7 @@ dependencies:
 ### Basic Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
 
 // Create and initialize the provider

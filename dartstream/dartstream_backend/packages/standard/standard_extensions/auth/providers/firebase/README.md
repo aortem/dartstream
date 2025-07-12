@@ -139,7 +139,7 @@ The Firebase authentication provider is **100% complete and production-ready** w
 ### Complete Authentication Flow
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 import 'package:google_auth_provider/ds_firebase_auth_export.dart';
 
@@ -376,7 +376,7 @@ assert(identical(provider1, provider2)); // true
 3. **Import errors**
    ```dart
    // Ensure all packages are properly added to pubspec.yaml
-   import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+   import 'package:ds_auth_base/ds_auth_base_export.dart';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
    ```
 

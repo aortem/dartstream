@@ -1,4 +1,4 @@
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 /// Maps Auth0 errors to DartStream errors
 class DSAuth0ErrorMapper {

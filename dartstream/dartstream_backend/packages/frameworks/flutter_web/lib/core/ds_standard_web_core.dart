@@ -2,7 +2,7 @@
 /// Handles framework initialization, service registration, and lifecycle management.
 library;
 
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:flutter/material.dart';
 
 /// Core framework implementation for Flutter web platform.

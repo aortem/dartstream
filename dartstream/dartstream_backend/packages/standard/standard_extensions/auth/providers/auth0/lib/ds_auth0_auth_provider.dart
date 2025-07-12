@@ -1,5 +1,5 @@
 // Import base authentication interfaces and types from DartStream core
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 // Import Auth0 SDK for authentication functionality
 import 'dart:convert';
 import 'dart:io';

@@ -1,5 +1,5 @@
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 /// Maps Firebase Admin Auth errors to DartStream errors
 class DSFirebaseErrorMapper {

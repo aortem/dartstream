@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 class RegisterScreen extends StatefulWidget {
   final DSAuthManager authManager;

@@ -4,7 +4,7 @@
 /// for Flutter web usage.
 library;
 
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:flutter/material.dart';
 
 /// Core API interface for Flutter web implementations

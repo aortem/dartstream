@@ -1,4 +1,4 @@
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:ds_dartweb_framework_base/core/ds_standard_web_core.dart';
 //import 'package:ds_standard_features/ds_standard_features.dart';
 import 'package:flutter/material.dart';

@@ -34,7 +34,7 @@ dependencies:
 ## Quick Start
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:ds_entraid_auth_provider/ds_entraid_auth_provider.dart';
 
 // Create EntraID provider

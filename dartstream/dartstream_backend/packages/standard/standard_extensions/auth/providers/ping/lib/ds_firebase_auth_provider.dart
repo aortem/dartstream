@@ -1,5 +1,5 @@
 // Import base authentication interfaces and types from DartStream core
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 // Import Firebase SDK for authentication functionality
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 

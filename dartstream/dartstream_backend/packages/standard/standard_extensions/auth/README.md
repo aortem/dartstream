@@ -65,7 +65,7 @@ dependencies:
 ### Basic Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Register your chosen provider
 DSAuthManager.registerProvider('firebase', firebaseProvider);
@@ -85,7 +85,7 @@ Firebase Authentication provides a comprehensive authentication solution with bu
 ### Firebase Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 // Initialize Firebase App
@@ -200,7 +200,7 @@ Auth0 provides enterprise-grade authentication with advanced features for B2B ap
 ### Auth0 Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Create Auth0 Auth Provider
 final auth0Provider = DSAuth0AuthProvider(
@@ -330,7 +330,7 @@ AWS Cognito provides secure, scalable authentication and user management for web
 ### Cognito Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Create Cognito Auth Provider
 final cognitoProvider = DSCognitoAuthProvider(
@@ -630,7 +630,7 @@ Microsoft EntraID (formerly Azure AD B2C) provides enterprise-grade identity and
 ### EntraID Setup
 
 ```dart
-import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Create EntraID Auth Provider
 final entraidProvider = DSEntraIDAuthProvider(
@@ -1480,7 +1480,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    import 'package:firebase_auth/firebase_auth.dart'; // Client SDK
    
    // Correct imports for backend
-   import 'package:# ds_auth_base/# ds_auth_base_export.dart';
+   import 'package:ds_auth_base/ds_auth_base_export.dart';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
    ```
 
