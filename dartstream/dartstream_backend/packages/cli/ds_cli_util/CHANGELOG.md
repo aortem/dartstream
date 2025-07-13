@@ -1,9 +1,9 @@
 # Changelog
 
-## 0.0.1-pre
+## 0.0.2-pre+1
 
 ### Added
-- Initial release for the auth integration package providers.
+- Republishing release ds-cli-util.
 
 
 

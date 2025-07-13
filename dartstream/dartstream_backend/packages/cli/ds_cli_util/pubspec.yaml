@@ -3,7 +3,7 @@
 
 name: ds_cli_util
 description: Main Dartstream CLI.
-version: 0.0.1-pre+4
+version: 0.0.2-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -35,5 +35,5 @@ dev_dependencies:
   lints: ^4.0.0 #Included In ds_standard_features
 
 #Globally Activated Package
-executables:
-   ds: ds_cli
+#executables:
+#   ds: ds_cli
