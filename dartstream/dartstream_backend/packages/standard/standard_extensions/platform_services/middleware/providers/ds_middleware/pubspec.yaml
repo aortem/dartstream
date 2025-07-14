@@ -10,7 +10,7 @@ resolution: workspace
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.0.7
   ds_tools_testing: ^0.0.1-pre+2
 #  ds_tools_general: ^0.0.1-pre
   

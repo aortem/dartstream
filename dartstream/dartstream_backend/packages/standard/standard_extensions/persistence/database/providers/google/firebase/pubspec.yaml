@@ -15,4 +15,4 @@ dependencies:
   logging: ^1.2.0
   ds_database_base:
     path: ../../../base
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.0.7

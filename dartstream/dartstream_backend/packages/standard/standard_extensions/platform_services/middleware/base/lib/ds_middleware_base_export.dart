@@ -5,7 +5,7 @@
 - set the frontend-aware middleware to specify context 
 Use a single export file (ds_auth_export.dart) to simplify imports across the framework. */
 
-library ds_auth_base_export;
+library # ds_auth_base_export;
 
 export 'ds_middleware_provider.dart';
 export 'ds_middleware_manager.dart';

@@ -13,4 +13,4 @@ resolution: workspace
 dependencies:
   http: ^1.2.2
   ds_feature_flags_base:
-    path: ../../base
+    # path: ../../base

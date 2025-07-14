@@ -97,10 +97,7 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
       // Initialize core last
       await _core?.initialize(
         config: {
-          'auth': {
-            'provider': firebaseProvider,
-            'manager': _authManager,
-          },
+          'auth': {'provider': firebaseProvider, 'manager': _authManager},
           'sessionTimeout': AppConfig.sessionTimeout.inSeconds,
           'debug': AppConfig.enableDebugLogging,
         },

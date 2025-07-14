@@ -22,10 +22,7 @@ class DSFirebaseErrorMapper {
       final errorCode = _mapErrorCode(error.code);
       final errorMessage = _getErrorMessage(error.code);
 
-      return DSAuthError(
-        errorMessage,
-        code: int.tryParse(errorCode) ?? 0,
-      );
+      return DSAuthError(errorMessage, code: int.tryParse(errorCode) ?? 0);
     }
 
     // Handle unknown errors

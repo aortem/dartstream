@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-// Mock implementations for Cognito testing - these would normally come from ds_auth_base package
+// Mock implementations for Cognito testing - these would normally come from # ds_auth_base package
 
 /// Interface for all Auth Providers
 abstract class DSAuthProvider {
@@ -11,7 +11,11 @@ abstract class DSAuthProvider {
   Future<bool> verifyToken([String? token]);
   Future<String> refreshToken(String refreshToken);
   Future<DSAuthUser> getCurrentUser();
-  Future<void> createAccount(String email, String password, {String? displayName});
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  });
   Future<void> onLoginSuccess(DSAuthUser user) async {}
   Future<void> onLogout() async {}
 }
@@ -31,7 +35,8 @@ class DSAuthUser {
   });
 
   @override
-  String toString() => 'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
+  String toString() =>
+      'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
 }
 
 /// Auth Error class
@@ -61,7 +66,11 @@ class DSAuthManager {
     _provider = _registeredProviders[_providerName]!;
   }
 
-  static void registerProvider(String name, DSAuthProvider provider, [DSAuthProviderMetadata? metadata]) {
+  static void registerProvider(
+    String name,
+    DSAuthProvider provider, [
+    DSAuthProviderMetadata? metadata,
+  ]) {
     _registeredProviders[name] = provider;
     if (metadata != null) {
       _providerMetadata[name] = metadata;
@@ -80,7 +89,11 @@ class DSAuthManager {
     return _providerMetadata[providerName];
   }
 
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     if (enableDebugging) print('DSAuthManager: Creating new account...');
     await _provider.createAccount(email, password, displayName: displayName);
   }
@@ -161,7 +174,7 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
     if (_isInitialized) return;
-    
+
     // Mock initialization
     await Future.delayed(Duration(milliseconds: 100));
     _isInitialized = true;
@@ -171,8 +184,9 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw DSAuthError('Provider not initialized');
-    
-    if (!_credentials.containsKey(username) || _credentials[username] != password) {
+
+    if (!_credentials.containsKey(username) ||
+        _credentials[username] != password) {
       throw DSAuthError('Invalid credentials');
     }
 
@@ -219,9 +233,13 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     if (!_isInitialized) throw DSAuthError('Provider not initialized');
-    
+
     if (_users.containsKey(email)) {
       throw DSAuthError('User already exists');
     }
@@ -243,9 +261,11 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
 
     _users[email] = user;
     _credentials[email] = password;
-    _refreshTokens[email] = 'cognito_refresh_${DateTime.now().millisecondsSinceEpoch}';
+    _refreshTokens[email] =
+        'cognito_refresh_${DateTime.now().millisecondsSinceEpoch}';
     _emailVerifications[email] = false;
-    _confirmationCodes[email] = '${100000 + DateTime.now().millisecond % 900000}'; // 6-digit code
+    _confirmationCodes[email] =
+        '${100000 + DateTime.now().millisecond % 900000}'; // 6-digit code
 
     print('Standalone Cognito account created for: $email');
   }
@@ -253,9 +273,10 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
-    
+
     // Mock JWT validation
-    if (token.startsWith('cognito_') || (token.startsWith('eyJ') && token.split('.').length == 3)) {
+    if (token.startsWith('cognito_') ||
+        (token.startsWith('eyJ') && token.split('.').length == 3)) {
       return _currentUser != null;
     }
     return false;
@@ -264,7 +285,7 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   @override
   Future<String> refreshToken(String refreshToken) async {
     if (_currentUser == null) throw DSAuthError('No user signed in');
-    
+
     if (!refreshToken.startsWith('cognito_refresh_')) {
       throw DSAuthError('Invalid refresh token');
     }
@@ -294,7 +315,7 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
     }
 
     _emailVerifications[email] = true;
-    
+
     // Update user attributes
     final user = _users[email]!;
     final updatedUser = DSAuthUser(
@@ -327,18 +348,18 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
 
   Future<void> updateUserAttributes(Map<String, String> attributes) async {
     if (_currentUser == null) throw DSAuthError('No user signed in');
-    
+
     final user = _currentUser!;
     final updatedAttributes = {...user.customAttributes ?? {}, ...attributes};
     updatedAttributes['updated_at'] = DateTime.now().toIso8601String();
-    
+
     final updatedUser = DSAuthUser(
       id: user.id,
       email: user.email,
       displayName: user.displayName,
       customAttributes: updatedAttributes,
     );
-    
+
     _users[user.email] = updatedUser;
     _currentUser = updatedUser;
     print('Standalone Cognito user attributes updated');
@@ -346,19 +367,19 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
 
   Future<void> deleteUser() async {
     if (_currentUser == null) throw DSAuthError('No user signed in');
-    
+
     final email = _currentUser!.email;
     _users.remove(email);
     _credentials.remove(email);
     _refreshTokens.remove(email);
     _emailVerifications.remove(email);
     _confirmationCodes.remove(email);
-    
+
     _currentUser = null;
     _accessToken = null;
     _refreshToken = null;
     _idToken = null;
-    
+
     print('Standalone Cognito user deleted');
   }
 }
@@ -405,7 +426,10 @@ void main() {
       );
 
       // Confirm email
-      await provider.confirmEmail('workflow@example.com', provider._confirmationCodes['workflow@example.com']!);
+      await provider.confirmEmail(
+        'workflow@example.com',
+        provider._confirmationCodes['workflow@example.com']!,
+      );
 
       // Sign in
       await authManager.signIn('workflow@example.com', 'Password123!');
@@ -435,53 +459,64 @@ void main() {
 
     test('Email Confirmation Workflow', () async {
       await authManager.createAccount('confirm@example.com', 'Password123!');
-      
+
       // Get confirmation code
-      final confirmationCode = provider._confirmationCodes['confirm@example.com']!;
-      
+      final confirmationCode =
+          provider._confirmationCodes['confirm@example.com']!;
+
       // Confirm email
       await provider.confirmEmail('confirm@example.com', confirmationCode);
-      
+
       // Sign in should now work
       await authManager.signIn('confirm@example.com', 'Password123!');
-      
+
       final user = await authManager.getCurrentUser();
       expect(user.customAttributes?['email_verified'], isTrue);
     });
 
     test('Password Reset Workflow', () async {
       await authManager.createAccount('reset@example.com', 'OldPassword123!');
-      await provider.confirmEmail('reset@example.com', provider._confirmationCodes['reset@example.com']!);
-      
+      await provider.confirmEmail(
+        'reset@example.com',
+        provider._confirmationCodes['reset@example.com']!,
+      );
+
       // Send password reset
       await provider.sendPasswordResetEmail('reset@example.com');
-      
+
       // Sign in
       await authManager.signIn('reset@example.com', 'OldPassword123!');
-      
+
       // Update password
       await provider.updatePassword('NewPassword123!');
-      
+
       // Sign out and sign in with new password
       await authManager.signOut();
       await authManager.signIn('reset@example.com', 'NewPassword123!');
-      
+
       final user = await authManager.getCurrentUser();
       expect(user.email, equals('reset@example.com'));
     });
 
     test('User Management', () async {
-      await authManager.createAccount('manage@example.com', 'Password123!', displayName: 'Manage User');
-      await provider.confirmEmail('manage@example.com', provider._confirmationCodes['manage@example.com']!);
+      await authManager.createAccount(
+        'manage@example.com',
+        'Password123!',
+        displayName: 'Manage User',
+      );
+      await provider.confirmEmail(
+        'manage@example.com',
+        provider._confirmationCodes['manage@example.com']!,
+      );
       await authManager.signIn('manage@example.com', 'Password123!');
-      
+
       // Update attributes
       await provider.updateUserAttributes({
         'given_name': 'Updated',
         'family_name': 'Manager',
         'phone_number': '+1234567890',
       });
-      
+
       final user = await authManager.getCurrentUser();
       expect(user.customAttributes?['given_name'], equals('Updated'));
       expect(user.customAttributes?['family_name'], equals('Manager'));
@@ -494,14 +529,17 @@ void main() {
         () => authManager.signIn('nonexistent@example.com', 'password'),
         throwsA(isA<DSAuthError>()),
       );
-      
+
       // Create account and try to sign in without email confirmation
-      await authManager.createAccount('unconfirmed@example.com', 'Password123!');
+      await authManager.createAccount(
+        'unconfirmed@example.com',
+        'Password123!',
+      );
       expect(
         () => authManager.signIn('unconfirmed@example.com', 'Password123!'),
         throwsA(isA<DSAuthError>()),
       );
-      
+
       // Try invalid confirmation code
       expect(
         () => provider.confirmEmail('unconfirmed@example.com', '000000'),
@@ -511,29 +549,37 @@ void main() {
 
     test('Token Management', () async {
       await authManager.createAccount('token@example.com', 'Password123!');
-      await provider.confirmEmail('token@example.com', provider._confirmationCodes['token@example.com']!);
+      await provider.confirmEmail(
+        'token@example.com',
+        provider._confirmationCodes['token@example.com']!,
+      );
       await authManager.signIn('token@example.com', 'Password123!');
-      
+
       // Test various token formats
       expect(await authManager.verifyToken('cognito_access_123456'), isTrue);
-      expect(await authManager.verifyToken('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.payload.signature'), isTrue);
+      expect(
+        await authManager.verifyToken(
+          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.payload.signature',
+        ),
+        isTrue,
+      );
       expect(await authManager.verifyToken('invalid_token'), isFalse);
       expect(await authManager.verifyToken(), isTrue); // Current user token
     });
 
     test('User Deletion', () async {
       await authManager.createAccount('delete@example.com', 'Password123!');
-      await provider.confirmEmail('delete@example.com', provider._confirmationCodes['delete@example.com']!);
+      await provider.confirmEmail(
+        'delete@example.com',
+        provider._confirmationCodes['delete@example.com']!,
+      );
       await authManager.signIn('delete@example.com', 'Password123!');
-      
+
       // Delete user
       await provider.deleteUser();
-      
+
       // Should no longer be signed in
-      expect(
-        () => authManager.getCurrentUser(),
-        throwsA(isA<DSAuthError>()),
-      );
+      expect(() => authManager.getCurrentUser(), throwsA(isA<DSAuthError>()));
     });
 
     test('Provider Configuration', () {
@@ -541,7 +587,10 @@ void main() {
       expect(provider.clientId, equals('standalone_client_id'));
       expect(provider.region, equals('us-east-1'));
       expect(provider.clientSecret, equals('standalone_client_secret'));
-      expect(provider.identityPoolId, equals('us-east-1:standalone-identity-pool'));
+      expect(
+        provider.identityPoolId,
+        equals('us-east-1:standalone-identity-pool'),
+      );
     });
   });
 }
