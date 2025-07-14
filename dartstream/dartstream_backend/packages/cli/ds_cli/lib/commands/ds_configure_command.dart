@@ -13,24 +13,33 @@ class DSConfigureCommand extends Command {
 
   @override
   void run() {
+    this.execute();
+  }
+
+  void execute({String Function()? readLineCallback}) {
     print('Configuring project...');
 
     // Cloud Vendor Selection
     stdout.write(
-        'Select cloud vendor (1. Google Cloud, 2. AWS, 3. Azure, 4. Local): ');
-    var vendorChoice = stdin.readLineSync();
+      'Select cloud vendor (1. Google Cloud, 2. AWS, 3. Azure, 4. Local): ',
+    );
+
+    var read = readLineCallback ?? stdin.readLineSync;
+    var vendorChoice = read();
     var cloudVendor = _parseCloudVendor(vendorChoice);
 
     // Framework Selection
     stdout.write(
-        'Select framework (1. Dart Web, 2. Flutter, 3. Vue.js, 4. Svelte): ');
-    var frameworkChoice = stdin.readLineSync();
+      'Select framework (1. Dart Web, 2. Flutter, 3. Vue.js, 4. Svelte): ',
+    );
+    var frameworkChoice = read();
     var framework = _parseFramework(frameworkChoice);
 
     // Authentication Selection
     stdout.write(
-        'Select authentication provider (1. Firebase, 2. AWS Cognito, 3. Azure AD): ');
-    var authChoice = stdin.readLineSync();
+      'Select authentication provider (1. Firebase, 2. AWS Cognito, 3. Azure AD): ',
+    );
+    var authChoice = read();
     var authProvider = _parseAuthProvider(authChoice);
 
     print('Configuration updated.');

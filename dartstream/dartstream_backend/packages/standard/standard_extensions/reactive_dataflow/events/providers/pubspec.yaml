@@ -1,5 +1,5 @@
-name: ds_events_provider
-description: "Amazon authentication provider for Dartstream."
+name: ds_eventarc_events_provider
+description: " Use Eventarc (with Pub/Sub) for a durable, schema-driven event bus."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 

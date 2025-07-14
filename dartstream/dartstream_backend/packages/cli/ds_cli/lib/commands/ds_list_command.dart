@@ -21,9 +21,8 @@ class DSListCommand extends Command {
   /// Constructor for initializing the list command.
   DSListCommand() {}
 
-  /// Executes the list extensions logic.
   @override
-  Future<void> run() async {
+  void run() {
     List<Command> items = [
       DSInitCommand(),
       DSConfigureCommand(),

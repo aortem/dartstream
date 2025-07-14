@@ -1,7 +1,7 @@
 #This pubspec file is used to import our standard features tooling.
 name: ds_cli
 description: Core Testing Components For Dartstream.
-version: 0.0.1
+version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 publish_to: none
 
@@ -16,4 +16,7 @@ dependencies:
     path: ../../standard/standard_extensions/reactive_dataflow/lifecycle/base
   ds_tools_testing: ^0.0.2
 
-entry_point: "./bin/ds_cli.dart"
+entry_point: "./bin/dartstream.dart"
+
+executables:
+  dartstream:

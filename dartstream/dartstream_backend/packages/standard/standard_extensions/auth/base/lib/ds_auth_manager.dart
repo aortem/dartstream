@@ -36,7 +36,27 @@ class DSAuthManager {
     log('Registered provider: $name');
   }
 
-  DSAuthProviderMetadata? getProviderMetadata(String providerName) {
+  /// Clear all registered providers (useful for testing)
+  static void clearProviders() {
+    _registeredProviders.clear();
+    _providerMetadata.clear();
+    log('Cleared all providers');
+  }
+
+  /// Unregister a specific provider (useful for testing)
+  static void unregisterProvider(String name) {
+    _registeredProviders.remove(name);
+    _providerMetadata.remove(name);
+    log('Unregistered provider: $name');
+  }
+
+  /// Get list of registered provider names
+  static List<String> getRegisteredProviders() {
+    return _registeredProviders.keys.toList();
+  }
+
+  /// Get provider metadata by provider name
+  static DSAuthProviderMetadata? getProviderMetadata(String providerName) {
     return _providerMetadata[providerName];
   }
 

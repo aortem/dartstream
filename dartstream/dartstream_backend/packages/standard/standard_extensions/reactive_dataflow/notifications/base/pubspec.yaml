@@ -1,5 +1,5 @@
 name: ds_notifications_base
-description: "Amazon authentication provider for Dartstream."
+description: "Base package for DartStream notifications, including foundational classes and interfaces.."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 

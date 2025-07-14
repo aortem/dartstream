@@ -1,3 +1,8 @@
+## 0.0.1-pre+4
+
+### Added
+- update tool and dartstream structure
+
 
 ## 0.0.1-pre+3
 

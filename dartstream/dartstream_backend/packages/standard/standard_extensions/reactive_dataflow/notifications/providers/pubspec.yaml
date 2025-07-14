@@ -1,4 +1,4 @@
-name: ds_notifications_provider
+name: ds_firebase_notifications_provider
 description: "Amazon authentication provider for Dartstream."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream

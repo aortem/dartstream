@@ -20,8 +20,7 @@ DartStream is a minimal, efficient, and scalable server-side framework designed 
 DartStream is available in three versions to cater to different needs and scales:
 
 1. **Free - Open Source Version**: Fully functional and open for modification, perfect for individual developers and small projects.
-2. **Hosted Framework**: Similar to Laravel Vapor, this provides a managed, hosted environment, removing the need for server management.
-3. **Aortem - SAAS Version**: Offers additional features and dedicated support, ideal for enterprise-level applications.
+2. **Aortem - SAAS Version**: Offers additional features and dedicated support, ideal for enterprise-level applications.
 
 ## Documentation
 
@@ -33,58 +32,30 @@ Explore the `/example` directory in this repository to find sample applications 
 
 ## Contributing
 
-We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
+We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide. Our team will review your pull request. Once approved, we will integrate your changes into our primary repository and push the mirrored changes on the main github branch.
 
-## Support Tiers
+## Support
 
-DartStream offers various support tiers for our open-source products:
-
-- **Community Support**: Free, community-driven support with no guaranteed response time.
-- **Standard Support**: $10/month with a two-week Initial Response Service Level Agreement (IRSLA), billed annually
-- **Premium Support**: $100/month with a 72-hour IRSLA, billed annually.
-- **Enterprise/Partner Support**: $999/month with a 24-hour IRSLA, billed annually.
-
-Each tier offers escalating levels of support, from community forums to direct access to the development team.  There is a limit of one active ticket per use for standard and premium support tickets.
-
-### Community Support
-- Free support provided by the DartStream community.
-
-### Standard Support
-- $15/month.
-- 10 business days (Monday - Friday) Initial Response Service Level Agreement (IRSLA).
-- [Subscribe](https://buy.stripe.com/bIYcPL615erv3y8001)
-- **Features**:
-  - Unlimited Support Tickets with Guaranteed RSLA.
-  - One Open/Active Ticket at a time. 
-
-### Enhanced Support
-- $100/month - Billed Annually.
-- 72-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/bIY9Dz759abf5Gg4gi)
-- **Features**:
-  - Everything in Standard Support.
-  - Access to Roadmap.
-  - Feature Request Upvoting (Priority feature request).
-  - One Open/Active Ticket at a time.
-
-### Enterprise Support
-- $999/month - Billed Annually
-- 24-hour IRSLA.
-- [Subscribe](https://buy.stripe.com/8wMg1X2OT97b7OoeUX)
-- **Features**:
-  - Everything in Enhanced Support.
-  - Early Access to new features.
-  - Access to our network channels.
-  - Monthly access to Development/Partner Calls.
-  - Access to Partner/Reseller/Channel Program.
-  - Option to include Logo on the Open Source website.
-
-To choose a support tier, click on one of the options above.
+For support across all Aortem open-source products, including this SDK, visit our [Support Page](https://aortem.io/support).
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+The **Dart5tream Framework** is licensed under a dual-license approach:
 
+1. **BSD-3 License**:
+   - Applies to all packages and libraries in the Dartstream Framework.
+   - Allows use, modification, and redistribution, provided that credit is given and compliance with the BSD-3 terms is maintained.
+   - Permits usage in open-source projects, applications, and private deployments.
+
+2. **Enhanced License Version 2 (ELv2)**:
+   - Applies to all use cases where Dartstream or its derivatives are offered as part of a **cloud service**.
+   - This ensures that Dartstream cannot be directly used by cloud providers to offer competing services without explicit permission.
+   - Example restricted use cases:
+     - Offering Dartstream as a managed cloud service.
+
+### **Summary**
+- You are free to use Dartstream in your applications, including open-source and commercial projects, as long as the Dartstream is not directly offered as part of a third-party cloud service.
+- For details, refer to the [LICENSE](LICENSE.md) file.
 
 ## Enhance with DartStream
 
