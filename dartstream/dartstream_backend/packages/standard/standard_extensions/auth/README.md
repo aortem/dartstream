@@ -1006,22 +1006,347 @@ final entraidProvider = DSEntraIDAuthProvider(
 
 ---
 
+## Okta Authentication
+
+Okta provides enterprise-grade identity and access management, offering comprehensive authentication, authorization, and user management capabilities with advanced security features, SSO, and multi-factor authentication.
+
+### Okta Setup
+
+#### 1. Add Dependencies
+
+```yaml
+dependencies:
+  okta_identity_dart_auth_sdk: ^1.0.0
+```
+
+#### 2. Configuration
+
+```dart
+import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/okta/lib/ds_okta_auth_provider.dart';
+
+final oktaProvider = DSOktaAuthProvider(
+  domain: 'your-okta-domain.okta.com',
+  clientId: 'your-client-id',
+  clientSecret: 'your-client-secret',
+  issuer: 'https://your-okta-domain.okta.com/oauth2/default',
+  redirectUri: 'https://yourapp.com/callback',
+);
+
+// Initialize authentication manager
+final authManager = DSAuthManager(oktaProvider);
+```
+
+### Okta Usage Examples
+
+#### Basic Authentication
+
+```dart
+// User registration
+final newUser = await authManager.registerUser(
+  email: 'user@example.com',
+  password: 'SecurePassword123!',
+  profile: {
+    'firstName': 'John',
+    'lastName': 'Doe',
+    'department': 'Engineering',
+  },
+);
+
+// User login
+final user = await authManager.loginUser(
+  email: 'user@example.com',
+  password: 'SecurePassword123!',
+);
+
+print('User logged in: ${user.email}');
+print('Groups: ${user.customClaims?['groups']}');
+
+// Password reset
+await authManager.resetPassword('user@example.com');
+
+// User logout
+await authManager.logoutUser();
+```
+
+#### Advanced User Management
+
+```dart
+// Get user profile with Okta groups
+final userProfile = await oktaProvider.getUserProfile('user-id');
+print('User groups: ${userProfile['groups']}');
+print('User status: ${userProfile['status']}');
+
+// Update user profile
+await oktaProvider.updateUserProfile('user-id', {
+  'profile': {
+    'title': 'Senior Engineer',
+    'department': 'Engineering',
+    'manager': 'manager-id',
+  },
+});
+
+// Manage user groups
+await oktaProvider.addUserToGroup('user-id', 'admin-group');
+await oktaProvider.removeUserFromGroup('user-id', 'temp-group');
+
+// List user's groups
+final userGroups = await oktaProvider.getUserGroups('user-id');
+```
+
+#### Single Sign-On (SSO)
+
+```dart
+// Initiate SAML SSO
+final ssoUrl = await oktaProvider.initiateSAMLSSO(
+  appId: 'your-saml-app-id',
+  relayState: '/dashboard',
+);
+
+// Initiate OIDC SSO
+final oidcUrl = await oktaProvider.initiateOIDCSSO(
+  scopes: ['openid', 'profile', 'email', 'groups'],
+  state: 'random-state-value',
+);
+
+// Process SSO callback
+final ssoResult = await oktaProvider.processSSOCallback(
+  code: 'authorization-code',
+  state: 'state-value',
+);
+```
+
+### Okta Configuration
+
+#### Environment Variables
+
+Create a `.env` file:
+
+```env
+OKTA_DOMAIN=your-okta-domain.okta.com
+OKTA_CLIENT_ID=your-client-id
+OKTA_CLIENT_SECRET=your-client-secret
+OKTA_ISSUER=https://your-okta-domain.okta.com/oauth2/default
+OKTA_REDIRECT_URI=https://yourapp.com/callback
+OKTA_API_TOKEN=your-api-token
+```
+
+#### Advanced Configuration
+
+```dart
+final oktaProvider = DSOktaAuthProvider(
+  domain: Platform.environment['OKTA_DOMAIN']!,
+  clientId: Platform.environment['OKTA_CLIENT_ID']!,
+  clientSecret: Platform.environment['OKTA_CLIENT_SECRET']!,
+  issuer: Platform.environment['OKTA_ISSUER']!,
+  redirectUri: Platform.environment['OKTA_REDIRECT_URI']!,
+  apiToken: Platform.environment['OKTA_API_TOKEN'],
+  scopes: ['openid', 'profile', 'email', 'groups'],
+  sessionSettings: {
+    'sessionTimeout': 3600,
+    'sessionMaxLifetime': 86400,
+    'requireFreshAuth': false,
+  },
+  securitySettings: {
+    'requireMFA': true,
+    'maxLoginAttempts': 5,
+    'lockoutDuration': 1800,
+  },
+);
+```
+
+### Okta Features
+
+#### User Management
+- **User Registration** - Create new user accounts
+- **User Authentication** - Email/password and SSO login
+- **Profile Management** - Update user profiles and attributes
+- **User Lifecycle** - Activate, suspend, and delete users
+- **Password Management** - Reset, change, and validate passwords
+- **User Search** - Find users by various criteria
+
+#### Group Management
+- **Group Operations** - Create, update, and delete groups
+- **Group Membership** - Add and remove users from groups
+- **Group Policies** - Assign policies to groups
+- **Nested Groups** - Support for hierarchical group structures
+- **Dynamic Groups** - Automatically assign users to groups
+- **Group Rules** - Automated group assignment based on criteria
+
+#### Multi-Factor Authentication
+- **SMS Authentication** - SMS-based verification
+- **Email Authentication** - Email-based verification
+- **Authenticator Apps** - TOTP-based authentication
+- **Push Notifications** - Okta Verify push notifications
+- **Hardware Tokens** - Support for hardware security keys
+- **Biometric Authentication** - Fingerprint and face recognition
+
+#### Okta-Specific Features
+- **Universal Directory** - Centralized user and group management
+- **Policy Engine** - Fine-grained access control policies
+- **API Access Management** - OAuth2 and OpenID Connect
+- **Lifecycle Management** - Automated user provisioning and deprovisioning
+- **Adaptive Authentication** - Risk-based authentication decisions
+- **Custom Attributes** - Store additional user metadata
+- **Webhooks** - Real-time event notifications
+- **Admin Console** - Web-based administration interface
+- **Reporting and Analytics** - Comprehensive audit trails and reports
+- **Integration Network** - 7,000+ pre-built integrations
+
+#### Enterprise Features
+- **Single Sign-On (SSO)** - SAML, OIDC, and WS-Federation
+- **Directory Integration** - Active Directory and LDAP sync
+- **API Security** - OAuth2 scopes and rate limiting
+- **Compliance** - SOC2, HIPAA, FedRAMP, and GDPR ready
+- **High Availability** - 99.99% uptime SLA
+- **Global Presence** - Data centers worldwide
+- **Enterprise Support** - 24/7 premium support options
+- **Advanced Lifecycle Management** - Automated workflows
+- **Identity Governance** - Access reviews and certifications
+- **Privileged Access** - Just-in-time access and elevation
+
+#### Event System
+- **Authentication Events** - Login/logout event hooks
+- **User Events** - User creation, update, and deletion events
+- **Group Events** - Group membership and policy changes
+- **Policy Events** - Policy evaluation and enforcement events
+- **Session Events** - Session creation, renewal, and termination
+- **Custom Event Handling** - Extensible webhook system
+
+### Production Considerations
+
+#### Security Best Practices
+
+```dart
+// Configure secure authentication
+final oktaProvider = DSOktaAuthProvider(
+  domain: Platform.environment['OKTA_DOMAIN']!,
+  clientId: Platform.environment['OKTA_CLIENT_ID']!,
+  clientSecret: Platform.environment['OKTA_CLIENT_SECRET']!,
+  issuer: Platform.environment['OKTA_ISSUER']!,
+  securitySettings: {
+    'requireMFA': true,
+    'sessionTimeout': 3600,
+    'maxLoginAttempts': 5,
+    'requireStrongPasswords': true,
+  },
+);
+
+// Enable adaptive authentication
+await oktaProvider.configureAdaptiveAuth({
+  'riskBasedAuth': true,
+  'deviceTrust': true,
+  'behaviorAnalysis': true,
+  'geofencing': ['US', 'CA'],
+});
+
+// Custom password policy
+await oktaProvider.configurePasswordPolicy({
+  'minimumLength': 12,
+  'requireUppercase': true,
+  'requireLowercase': true,
+  'requireNumbers': true,
+  'requireSymbols': true,
+  'excludeUsername': true,
+  'excludeCommonPasswords': true,
+});
+```
+
+#### Monitoring and Analytics
+
+```dart
+// Enable detailed logging
+DSAuthManager.enableDebugging = true;
+
+// Custom event tracking
+oktaProvider.onLoginSuccess = (user) async {
+  // Track successful Okta logins
+  analytics.track('user_login', {
+    'user_id': user.id,
+    'provider': 'okta',
+    'groups': user.customClaims?['groups'],
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+
+oktaProvider.onMFAChallenge = (userId, factorType) async {
+  // Track MFA events
+  analytics.track('mfa_challenge', {
+    'user_id': userId,
+    'factor_type': factorType,
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+
+oktaProvider.onPolicyEvaluation = (userId, policyResult) async {
+  // Track policy evaluations
+  analytics.track('policy_evaluation', {
+    'user_id': userId,
+    'policy_result': policyResult,
+    'timestamp': DateTime.now().toIso8601String(),
+  });
+};
+```
+
+#### Multi-Organization Configuration
+
+```dart
+// Configure for multiple Okta orgs
+final oktaProvider = DSOktaAuthProvider(
+  domain: Platform.environment['OKTA_DOMAIN']!,
+  clientId: Platform.environment['OKTA_CLIENT_ID']!,
+  clientSecret: Platform.environment['OKTA_CLIENT_SECRET']!,
+  multiOrgSettings: {
+    'enableOrgDiscovery': true,
+    'defaultOrg': 'primary-org',
+    'orgMappings': {
+      'company1.com': 'company1.okta.com',
+      'company2.com': 'company2.okta.com',
+    },
+  },
+);
+```
+
+#### Environment Setup
+
+```dart
+// Development environment
+final oktaProvider = DSOktaAuthProvider(
+  domain: 'dev-company.oktapreview.com',
+  clientId: 'dev-client-id',
+  clientSecret: 'dev-client-secret',
+  issuer: 'https://dev-company.oktapreview.com/oauth2/default',
+  apiToken: 'dev-api-token',
+);
+
+// Production environment
+final oktaProvider = DSOktaAuthProvider(
+  domain: Platform.environment['OKTA_DOMAIN']!,
+  clientId: Platform.environment['OKTA_CLIENT_ID']!,
+  clientSecret: Platform.environment['OKTA_CLIENT_SECRET']!,
+  issuer: Platform.environment['OKTA_ISSUER']!,
+  apiToken: Platform.environment['OKTA_API_TOKEN']!,
+);
+```
+
+---
+
 ## Choosing the Right Provider
 
-### Firebase vs Auth0 vs Cognito vs EntraID Comparison
+### Firebase vs Auth0 vs Cognito vs EntraID vs Okta Comparison
 
-| Feature | Firebase | Auth0 | Cognito | EntraID | Best For |
-|---------|----------|-------|---------|---------|----------|
-| **Setup Complexity** | Simple | Moderate | Moderate | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps<br>Cognito: AWS-integrated apps<br>EntraID: Microsoft ecosystem |
-| **Pricing** | Pay-as-you-grow | Tiered pricing | Pay-per-usage | Azure pricing model | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs<br>Cognito: AWS ecosystem apps<br>EntraID: Microsoft enterprise |
-| **Customization** | Limited | Extensive | High (Lambda triggers) | High (Custom policies) | Firebase: Standard flows<br>Auth0: Custom authentication<br>Cognito: AWS-native customization<br>EntraID: Microsoft customization |
-| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | AWS compliance (SOC, PCI DSS, HIPAA) | Microsoft compliance (SOC, ISO, HIPAA) | Firebase: General use<br>Auth0: Regulated industries<br>Cognito: AWS compliance needs<br>EntraID: Microsoft compliance |
-| **Social Providers** | Google ecosystem focus | 30+ providers | Major providers + SAML/OIDC | 30+ providers + Microsoft ecosystem | Firebase: Google integration<br>Auth0: Multi-provider<br>Cognito: Enterprise federation<br>EntraID: Microsoft + social |
-| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Advanced (User Pools, Identity Pools) | Comprehensive (B2B, B2C, enterprise) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise<br>Cognito: AWS enterprise<br>EntraID: Microsoft enterprise |
-| **Multi-tenant Support** | Manual implementation | Built-in | User Groups + Lambda | Built-in B2C multi-tenant | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS<br>Cognito: AWS multi-tenant<br>EntraID: Microsoft multi-tenant |
-| **API Management** | Separate Firebase products | Integrated | AWS API Gateway integration | Azure API Management integration | Firebase: Simple APIs<br>Auth0: Complex API ecosystems<br>Cognito: AWS API ecosystem<br>EntraID: Azure API ecosystem |
-| **Scalability** | High | Very High | Very High (AWS scale) | Very High (Azure scale) | Firebase: Google scale<br>Auth0: Global scale<br>Cognito: AWS global scale<br>EntraID: Microsoft global scale |
-| **Microsoft Integration** | None | Limited | Limited | Native | Firebase: Non-Microsoft apps<br>Auth0: Multi-cloud<br>Cognito: AWS-first applications<br>EntraID: Microsoft-first applications |
+| Feature | Firebase | Auth0 | Cognito | EntraID | Okta | Best For |
+|---------|----------|-------|---------|---------|------|----------|
+| **Setup Complexity** | Simple | Moderate | Moderate | Moderate | Moderate | Firebase: Quick prototypes<br>Auth0: Enterprise apps<br>Cognito: AWS-integrated apps<br>EntraID: Microsoft ecosystem<br>Okta: Enterprise identity |
+| **Pricing** | Pay-as-you-grow | Tiered pricing | Pay-per-usage | Azure pricing model | Per-user pricing | Firebase: Small to medium apps<br>Auth0: Predictable enterprise costs<br>Cognito: AWS ecosystem apps<br>EntraID: Microsoft enterprise<br>Okta: Enterprise SSO |
+| **Customization** | Limited | Extensive | High (Lambda triggers) | High (Custom policies) | Extensive (Workflows) | Firebase: Standard flows<br>Auth0: Custom authentication<br>Cognito: AWS-native customization<br>EntraID: Microsoft customization<br>Okta: Enterprise workflows |
+| **Compliance** | Basic | Advanced (SOC2, HIPAA, etc.) | AWS compliance (SOC, PCI DSS, HIPAA) | Microsoft compliance (SOC, ISO, HIPAA) | Enterprise compliance (SOC2, FedRAMP, HIPAA) | Firebase: General use<br>Auth0: Regulated industries<br>Cognito: AWS compliance needs<br>EntraID: Microsoft compliance<br>Okta: Government/enterprise |
+| **Social Providers** | Google ecosystem focus | 30+ providers | Major providers + SAML/OIDC | 30+ providers + Microsoft ecosystem | 30+ providers + enterprise focus | Firebase: Google integration<br>Auth0: Multi-provider<br>Cognito: Enterprise federation<br>EntraID: Microsoft + social<br>Okta: Enterprise + social |
+| **Enterprise Features** | Limited | Comprehensive (SSO, SAML, etc.) | Advanced (User Pools, Identity Pools) | Comprehensive (B2B, B2C, enterprise) | Best-in-class (Universal Directory, SSO) | Firebase: Consumer apps<br>Auth0: B2B/Enterprise<br>Cognito: AWS enterprise<br>EntraID: Microsoft enterprise<br>Okta: Enterprise leader |
+| **Multi-tenant Support** | Manual implementation | Built-in | User Groups + Lambda | Built-in B2C multi-tenant | Built-in org management | Firebase: Single tenant<br>Auth0: Multi-tenant SaaS<br>Cognito: AWS multi-tenant<br>EntraID: Microsoft multi-tenant<br>Okta: Enterprise multi-org |
+| **API Management** | Separate Firebase products | Integrated | AWS API Gateway integration | Azure API Management integration | API Access Management | Firebase: Simple APIs<br>Auth0: Complex API ecosystems<br>Cognito: AWS API ecosystem<br>EntraID: Azure API ecosystem<br>Okta: API-first enterprise |
+| **Scalability** | High | Very High | Very High (AWS scale) | Very High (Azure scale) | Very High (Enterprise scale) | Firebase: Google scale<br>Auth0: Global scale<br>Cognito: AWS global scale<br>EntraID: Microsoft global scale<br>Okta: Enterprise global scale |
+| **Microsoft Integration** | None | Limited | Limited | Native | Excellent (AD sync) | Firebase: Non-Microsoft apps<br>Auth0: Multi-cloud<br>Cognito: AWS-first applications<br>EntraID: Microsoft-first applications<br>Okta: Microsoft + multi-cloud |
+| **Identity Governance** | Basic | Limited | Limited | Good (Azure AD features) | Excellent (Identity Governance) | Firebase: Simple apps<br>Auth0: Basic governance<br>Cognito: AWS IAM integration<br>EntraID: Microsoft governance<br>Okta: Enterprise governance leader |
 
 ### When to Use Firebase
 
@@ -1073,6 +1398,25 @@ final entraidProvider = DSEntraIDAuthProvider(
 - Social identity providers with Microsoft focus
 - Conditional access and risk-based authentication
 - Integration with Azure services and APIs
+
+### When to Use Okta
+
+**Choose Okta when you need:**
+- Enterprise-grade identity and access management
+- Universal Directory for centralized user management
+- Advanced Single Sign-On (SSO) with 7,000+ integrations
+- Comprehensive Multi-Factor Authentication (MFA)
+- Identity governance and access certifications
+- Adaptive authentication and risk-based decisions
+- API Access Management with OAuth2/OIDC
+- Lifecycle management and automated provisioning
+- Compliance requirements (FedRAMP, SOC2, HIPAA)
+- Hybrid cloud and on-premises identity integration
+- Advanced reporting and analytics
+- Enterprise support and 99.99% uptime SLA
+- Integration with existing enterprise systems
+- Advanced policy engine and conditional access
+- Identity federation across multiple cloud providers
 - GDPR compliance and data residency in Microsoft regions
 
 ---
@@ -1343,6 +1687,223 @@ Map<String, dynamic> convertToEntraIDAttributes(
 }
 ```
 
+### Okta Migration Examples
+
+```dart
+// Migrate from Okta to other providers
+Future<void> migrateFromOkta(String userId, String targetProvider) async {
+  // Get Okta user data
+  final oktaAuth = DSAuthManager('okta');
+  final oktaUser = await oktaAuth.getUser(userId);
+  
+  // Create user in target provider
+  final targetAuth = DSAuthManager(targetProvider);
+  await targetAuth.createAccount(
+    oktaUser.email,
+    'temporary-password', // Force password reset
+    displayName: oktaUser.displayName,
+  );
+  
+  // Migrate Okta-specific attributes
+  if (oktaUser.customAttributes != null) {
+    final migratedAttributes = convertOktaAttributes(
+      oktaUser.customAttributes!,
+      targetProvider,
+    );
+    
+    // Update user with migrated attributes
+    await targetAuth.updateProfile(
+      displayName: oktaUser.displayName,
+      customAttributes: migratedAttributes,
+    );
+  }
+  
+  // Migrate group memberships
+  final oktaProvider = oktaAuth.provider as DSOktaAuthProvider;
+  final userGroups = await oktaProvider.getUserGroups(userId);
+  
+  // Convert groups to roles in target provider
+  for (final group in userGroups) {
+    await migrateGroupToRole(group, userId, targetProvider);
+  }
+  
+  print('User $userId migrated from Okta to $targetProvider');
+}
+
+// Migrate to Okta from other providers
+Future<void> migrateToOkta(String userId, String sourceProvider) async {
+  // Get source provider user data
+  final sourceAuth = DSAuthManager(sourceProvider);
+  final sourceUser = await sourceAuth.getUser(userId);
+  
+  // Create Okta user
+  final oktaAuth = DSAuthManager('okta');
+  final oktaProvider = oktaAuth.provider as DSOktaAuthProvider;
+  
+  await oktaProvider.registerUser(
+    sourceUser.email,
+    'temporary-password',
+    profile: {
+      'firstName': sourceUser.displayName?.split(' ').first ?? '',
+      'lastName': sourceUser.displayName?.split(' ').skip(1).join(' ') ?? '',
+      'email': sourceUser.email,
+    },
+  );
+  
+  // Migrate custom attributes to Okta profile
+  if (sourceUser.customAttributes != null) {
+    final oktaProfile = convertToOktaProfile(
+      sourceUser.customAttributes!,
+      sourceProvider,
+    );
+    
+    await oktaProvider.updateUserProfile(sourceUser.id, {
+      'profile': oktaProfile,
+    });
+  }
+  
+  // Migrate roles to Okta groups
+  await migrateRolesToOktaGroups(sourceUser, oktaProvider);
+  
+  print('User $userId migrated from $sourceProvider to Okta');
+}
+
+// Helper function to migrate groups to roles
+Future<void> migrateGroupToRole(
+  Map<String, dynamic> group,
+  String userId,
+  String targetProvider,
+) async {
+  final targetAuth = DSAuthManager(targetProvider);
+  
+  switch (targetProvider) {
+    case 'firebase':
+      // Firebase doesn't have built-in roles, use custom claims
+      await targetAuth.setCustomUserClaims(userId, {
+        'roles': [group['profile']['name']],
+      });
+      break;
+    case 'auth0':
+      // Create Auth0 role if it doesn't exist
+      final auth0Provider = targetAuth.provider as DSAuth0AuthProvider;
+      await auth0Provider.assignRoleToUser(userId, group['profile']['name']);
+      break;
+    case 'cognito':
+      // Add to Cognito group
+      final cognitoProvider = targetAuth.provider as DSCognitoAuthProvider;
+      await cognitoProvider.addUserToGroup(userId, group['profile']['name']);
+      break;
+    case 'entraid':
+      // Add to EntraID group
+      final entraidProvider = targetAuth.provider as DSEntraIDAuthProvider;
+      await entraidProvider.addUserToGroup(userId, group['profile']['name']);
+      break;
+  }
+}
+
+// Helper function to migrate roles to Okta groups
+Future<void> migrateRolesToOktaGroups(
+  DSUser user,
+  DSOktaAuthProvider oktaProvider,
+) async {
+  final roles = user.customClaims?['roles'] as List<String>?;
+  
+  if (roles != null) {
+    for (final role in roles) {
+      // Create group if it doesn't exist
+      await oktaProvider.createGroup({
+        'profile': {
+          'name': role,
+          'description': 'Migrated from previous provider',
+        },
+      });
+      
+      // Add user to group
+      await oktaProvider.addUserToGroup(user.id, role);
+    }
+  }
+}
+
+// Helper function to convert Okta attributes
+Map<String, dynamic> convertOktaAttributes(
+  Map<String, dynamic> attributes,
+  String targetProvider,
+) {
+  final converted = <String, dynamic>{};
+  
+  for (final entry in attributes.entries) {
+    final key = entry.key;
+    final value = entry.value;
+    
+    switch (targetProvider) {
+      case 'firebase':
+        converted[key.toLowerCase()] = value;
+        break;
+      case 'auth0':
+        converted['user_metadata.$key'] = value;
+        break;
+      case 'cognito':
+        converted['custom:$key'] = value;
+        break;
+      case 'entraid':
+        converted['extension_$key'] = value;
+        break;
+      default:
+        converted[key] = value;
+    }
+  }
+  
+  return converted;
+}
+
+Map<String, dynamic> convertToOktaProfile(
+  Map<String, dynamic> attributes,
+  String sourceProvider,
+) {
+  final converted = <String, dynamic>{};
+  
+  for (final entry in attributes.entries) {
+    final key = entry.key;
+    final value = entry.value;
+    
+    // Convert from source provider to Okta profile format
+    switch (sourceProvider) {
+      case 'firebase':
+        converted[key] = value;
+        break;
+      case 'auth0':
+        if (key.startsWith('user_metadata.')) {
+          final attributeName = key.substring(14);
+          converted[attributeName] = value;
+        } else {
+          converted[key] = value;
+        }
+        break;
+      case 'cognito':
+        if (key.startsWith('custom:')) {
+          final attributeName = key.substring(7);
+          converted[attributeName] = value;
+        } else {
+          converted[key] = value;
+        }
+        break;
+      case 'entraid':
+        if (key.startsWith('extension_')) {
+          final attributeName = key.substring(10);
+          converted[attributeName] = value;
+        } else {
+          converted[key] = value;
+        }
+        break;
+      default:
+        converted[key] = value;
+    }
+  }
+  
+  return converted;
+}
+```
+
 ---
 
 ## Troubleshooting
@@ -1470,6 +2031,67 @@ Map<String, dynamic> convertToEntraIDAttributes(
    userFlowName: 'B2C_1_signupsignin' // For user flows
    // OR
    policyName: 'B2C_1A_TrustFrameworkExtensions' // For custom policies
+   ```
+
+#### Okta Issues
+
+1. **Domain configuration**
+   ```dart
+   // Wrong - missing domain or incorrect format
+   domain: 'your-okta-domain'
+   
+   // Correct - include full Okta domain
+   domain: 'your-okta-domain.okta.com'
+   ```
+
+2. **Issuer configuration**
+   ```dart
+   // Wrong - using domain instead of issuer
+   issuer: 'your-okta-domain.okta.com'
+   
+   // Correct - use OAuth2 authorization server issuer
+   issuer: 'https://your-okta-domain.okta.com/oauth2/default'
+   ```
+
+3. **API token issues**
+   ```dart
+   // Wrong - using client credentials for API calls
+   // API token is required for user management operations
+   
+   // Correct - provide API token for management operations
+   apiToken: Platform.environment['OKTA_API_TOKEN']
+   ```
+
+4. **Scope configuration**
+   ```dart
+   // Wrong - missing required scopes
+   scopes: ['openid']
+   
+   // Correct - include necessary scopes for your app
+   scopes: ['openid', 'profile', 'email', 'groups']
+   ```
+
+5. **Group membership issues**
+   ```dart
+   // Wrong - assuming automatic group assignment
+   final user = await oktaProvider.loginUser(email, password);
+   // user.groups may be empty without proper scope
+   
+   // Correct - explicitly request groups scope and check membership
+   scopes: ['openid', 'profile', 'email', 'groups']
+   final userGroups = await oktaProvider.getUserGroups(user.id);
+   ```
+
+6. **MFA enrollment**
+   ```dart
+   // Wrong - forcing MFA without proper enrollment
+   await oktaProvider.enforceMFA(userId, 'SMS');
+   
+   // Correct - check enrollment status first
+   final mfaStatus = await oktaProvider.getMFAStatus(userId);
+   if (mfaStatus['enrolled'] == false) {
+     await oktaProvider.enrollMFAFactor(userId, 'SMS');
+   }
    ```
 
 #### General Issues
