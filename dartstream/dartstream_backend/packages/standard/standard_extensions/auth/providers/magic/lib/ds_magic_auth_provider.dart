@@ -11,16 +11,20 @@ import 'src/ds_error_mapper.dart';
 // import 'src/ds_event_handlers.dart'; // Uncomment if Magic supports events
 
 /// Magic authentication provider implementation for DartStream.
+///
 /// This class integrates Magic Authentication with the DartStream framework
 /// by implementing the DSAuthProvider interface.
 ///
 /// Handles:
 /// - User authentication via Magic
-/// - Token management
+/// - Token management (DID tokens)
 /// - Session tracking
 /// - Error mapping
 class DSMagicAuthProvider implements DSAuthProvider {
+  /// Singleton instance
   static DSMagicAuthProvider? _instance;
+
+  /// Whether the provider is initialized
   bool _isInitialized = false;
 
   /// Magic publishable key
@@ -33,10 +37,16 @@ class DSMagicAuthProvider implements DSAuthProvider {
   late final DSSessionManager _sessionManager;
   // late final DSMagicEventHandler _eventHandler; // Uncomment if needed
 
+  /// Current authenticated user ID
   String? _currentUserId;
+
+  /// Current DID token
   String? _currentDIDToken;
 
   /// Factory method to create a new instance of the Magic authentication provider
+  ///
+  /// [publishableKey] - Magic publishable key
+  /// [secretKey] - Magic secret key
   factory DSMagicAuthProvider({
     required String publishableKey,
     required String secretKey,
@@ -54,13 +64,16 @@ class DSMagicAuthProvider implements DSAuthProvider {
   });
 
   /// Initializes the Magic authentication provider and its dependencies
+  ///
+  /// [config] - Configuration map containing provider settings
+  /// Throws [DSAuthError] if initialization fails
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
     if (_isInitialized) {
       print('Magic Auth Provider already initialized');
       return;
     }
-    // TODO: Optionally, validate keys or set up Magic REST endpoints
+    // Optionally, validate keys or set up Magic REST endpoints
     _tokenManager = DSTokenManager();
     _sessionManager = DSSessionManager();
     // _eventHandler = DSMagicEventHandler(onEvent: _handleAuthEvent); // Uncomment if needed
@@ -69,9 +82,13 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Signs in a user with email (Magic is passwordless)
+  ///
+  /// [email] - User's email address
+  /// [password] - Magic DID token (from frontend)
+  /// Throws [DSAuthError] if sign-in fails
   @override
   Future<void> signIn(String email, String password) async {
-    // Magic is passwordless; password param is ignored
+    // Magic is passwordless; password param is ignored except as DID token
     try {
       // 1. Trigger Magic link (handled on frontend, user receives email)
       // 2. Frontend receives DID token after user clicks link
@@ -107,6 +124,8 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Signs out the current user and cleans up sessions
+  ///
+  /// Throws [DSAuthError] if sign-out fails
   @override
   Future<void> signOut() async {
     try {
@@ -123,6 +142,11 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Creates a new user account (for Magic, this is just sign-in)
+  ///
+  /// [email] - User's email address
+  /// [password] - Magic DID token (from frontend)
+  /// [displayName] - Optional display name
+  /// Throws [DSAuthError] if account creation fails
   @override
   Future<void> createAccount(
     String email,
@@ -134,6 +158,8 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Gets the current authenticated user
+  ///
+  /// Returns [DSAuthUser] if signed in, otherwise throws [DSAuthError]
   @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUserId == null || _currentDIDToken == null) {
@@ -152,6 +178,9 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Retrieves a user by their ID
+  ///
+  /// [userId] - The unique identifier of the user
+  /// Throws [UnimplementedError] as Magic does not support direct lookup
   @override
   Future<DSAuthUser> getUser(String userId) async {
     // Magic does not provide direct user lookup by ID via public API
@@ -162,6 +191,9 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Verifies the validity of an authentication token
+  ///
+  /// [token] - The DID token to verify (optional, defaults to current)
+  /// Returns true if valid, false otherwise
   @override
   Future<bool> verifyToken([String? token]) async {
     final didToken = token ?? _currentDIDToken;
@@ -171,6 +203,9 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Refreshes an authentication token
+  ///
+  /// [refreshToken] - Not supported for Magic
+  /// Throws [UnimplementedError]
   @override
   Future<String> refreshToken(String refreshToken) async {
     // Magic tokens are short-lived; refresh by re-authenticating
@@ -181,6 +216,8 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   /// Handles successful login events
+  ///
+  /// [user] - The authenticated user information
   @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     // Optionally, handle post-login actions
@@ -192,7 +229,10 @@ class DSMagicAuthProvider implements DSAuthProvider {
     // Optionally, handle post-logout actions
   }
 
-  // Helper: Verify DID token with Magic API
+  /// Helper: Verify DID token with Magic API
+  ///
+  /// [didToken] - The DID token to verify
+  /// Returns user info map if valid, otherwise null
   Future<Map<String, dynamic>?> _verifyDIDTokenWithMagic(
     String didToken,
   ) async {
@@ -214,6 +254,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
     return null;
   }
 
+  /// Generates a unique device identifier for session management
   String _generateDeviceId() {
     return DateTime.now().millisecondsSinceEpoch.toString();
   }
