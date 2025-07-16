@@ -8,25 +8,63 @@
   # 🔹 Note: 
     # The workspace: key is currently only recognized by experimental tooling or for organizational clarity. 
     # Dart’s official tooling does not yet support it. 
-    # Provided here for documentation or internal tooling reference however dart pubc won’t act on it natively.
+    # Provided here for documentation or internal tooling reference however dart pub won’t act on it natively.
   # [DartCodeAI](https://dartcodeai.com) will be integrated in a future state.   
 
 
 name: ds_dartstream
-publish_to: none
-description: A starting point for Dart libraries or applications.
-version: 0.0.1-pre+3
+description: A meta-package that bundles all DartStream framework modules
+  tooling, standard engine, auth providers, persistence, feature flags, etc.
+version: 0.0.1-pre+4
 repository: https://github.com/aortem/dartstream
 
 environment:
  sdk: ^3.8.1
 
-dependency_overrides:
-  fake_async: 1.3.2
-  async: 2.12.0
+dependencies:
+
+# Manifest and Registry
+ yaml: ^3.1.3
+ path: ^1.9.1
+
+#   # standard engine
+#   ds_standard_engine:   ^0.0.6
+
+# auth extensions
+ ds_auth_base:            ^0.0.1-pre
+ ds_auth0_auth_provider:  ^0.0.1-pre
+# ds_auth_cognito:      ^0.0.2
+# ds_auth_entraid:      ^0.0.1
+# ds_auth_fingerprint:  ^0.0.1
+# ds_auth_firebase:     ^0.0.2
+# ds_auth_magic:        ^0.0.1
+# ds_auth_okta:         ^0.0.1
+# ds_auth_ping:         ^0.0.1
+# ds_auth_stytch:       ^0.0.1
+# ds_auth_transmit:     ^0.0.1
+
+#   # persistence - database providers
+#   ds_db_base:           ^0.0.1
+#   ds_db_firebase:       ^0.0.1
+#   ds_db_mysql:          ^0.0.1
+#   ds_db_postgres:       ^0.0.1
+
+#   # persistence - storage providers
+#   ds_storage_aws:       ^0.0.1
+#   ds_storage_gcp:       ^0.0.1
+
+#   # feature-flags
+#   ds_ff_base:           ^0.0.1
+#   ds_ff_flagd:          ^0.0.1
+#   ds_ff_intellitoggle:  ^0.0.1
+
+#   # reactive dataflow, etc.
+#   ds_dataflow_base:        ^0.0.1
+#   ds_dataflow_websocket:   ^0.0.1
+#   ds_dataflow_broker_base: ^0.0.1
+
 
 workspace:
-  - packages/tooling
   - packages/standard/standard_engine/
   - packages/standard/standard_extensions/auth/base
   - packages/standard/standard_extensions/auth/providers/auth0
