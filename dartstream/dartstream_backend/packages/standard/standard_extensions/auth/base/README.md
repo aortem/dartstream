@@ -2,7 +2,7 @@
 
 ## DS Auth Base Package
 
-This package is designed to support the integration of authnetication providers. 
+This package is designed to support the integration of authentication providers. 
 
 The **DS Auth Base** package is the foundational layer for all DartStream authentication integrations. It defines the common interfaces, manager logic, and export entrypoint that every provider package builds upon, so you can swap or extend providers without rewriting your app’s authentication core.
 
