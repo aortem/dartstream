@@ -22,7 +22,7 @@ Add the Cognito provider to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  # ds_auth_base:
+  ds_auth_base:
     path: ../auth/base
   ds_cognito_auth_provider:
     path: ../auth/providers/cognito

@@ -1,4 +1,4 @@
-// Common Interface for all Auth Providers
+// Interface for all Auth Providers
 
 /// Interface for all Auth Providers
 abstract class DSAuthProvider {
@@ -24,11 +24,8 @@ abstract class DSAuthProvider {
   Future<DSAuthUser> getCurrentUser();
 
   /// Creates a new user account with the given credentials
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  });
+  Future<void> createAccount(String email, String password,
+      {String? displayName});
 
   /// Lifecycle hooks
   Future<void> onLoginSuccess(DSAuthUser user) async {}

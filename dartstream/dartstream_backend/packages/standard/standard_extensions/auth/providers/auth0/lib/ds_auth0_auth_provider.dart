@@ -92,7 +92,9 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       _tokenManager = DSTokenManager();
       _sessionManager = DSSessionManager();
 
-      _eventHandler = DSAuth0EventHandler(onEvent: _handleAuthEvent);
+      _eventHandler = DSAuth0EventHandler(
+        onEvent: _handleAuthEvent,
+      );
       _eventHandler.initialize();
 
       _isInitialized = true;
@@ -125,9 +127,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       });
 
       if (response['error'] != null) {
-        throw DSAuthError(
-          response['error_description'] ?? 'Authentication failed',
-        );
+        throw DSAuthError(response['error_description'] ?? 'Authentication failed');
       }
 
       _accessToken = response['access_token'];
@@ -135,7 +135,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
       // Get user info with the access token
       final userInfo = await _getUserInfo(_accessToken!);
-
+      
       _currentUser = DSAuthUser(
         id: userInfo['sub'],
         email: userInfo['email'] ?? '',
@@ -175,7 +175,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       if (_currentUser != null) {
         await _tokenManager.removeToken(_currentUser!.id);
         await _sessionManager.removeSession(_currentUser!.id);
-
+        
         _eventHandler.emitEvent(DSAuthEventType.signedOut, {
           'userId': _currentUser!.id,
         });
@@ -184,7 +184,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       _currentUser = null;
       _accessToken = null;
       _refreshToken = null;
-
+      
       await onLogout();
       print('Successfully signed out');
     } catch (e) {
@@ -194,18 +194,15 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
   /// Creates a new user account with email and password
   @override
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  }) async {
+  Future<void> createAccount(String email, String password,
+      {String? displayName}) async {
     if (!_isInitialized) {
       throw DSAuthError('Provider not initialized');
     }
 
     try {
       print('Attempting to create account for email: $email');
-
+      
       final response = await _performAuth0Request('/dbconnections/signup', {
         'client_id': clientId,
         'email': email,
@@ -215,13 +212,11 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       });
 
       if (response['error'] != null) {
-        throw DSAuthError(
-          response['error_description'] ?? 'Account creation failed',
-        );
+        throw DSAuthError(response['error_description'] ?? 'Account creation failed');
       }
 
       print('User created successfully: $email');
-
+      
       // Auto sign-in after account creation
       await signIn(email, password);
       await signOut(); // Sign out immediately after creation
@@ -250,7 +245,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
       // If requesting different user, fetch from Auth0 Management API
       final userInfo = await _getUserFromManagementAPI(userId);
-
+      
       return DSAuthUser(
         id: userInfo['user_id'],
         email: userInfo['email'] ?? '',
@@ -296,9 +291,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       });
 
       if (response['error'] != null) {
-        throw DSAuthError(
-          response['error_description'] ?? 'Token refresh failed',
-        );
+        throw DSAuthError(response['error_description'] ?? 'Token refresh failed');
       }
 
       final newAccessToken = response['access_token'];
@@ -368,7 +361,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
     try {
       await _updateUserProfile({'email': newEmail});
-
+      
       // Update current user
       _currentUser = DSAuthUser(
         id: _currentUser!.id,
@@ -376,7 +369,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
         displayName: _currentUser!.displayName,
         customAttributes: _currentUser!.customAttributes,
       );
-
+      
       print('Email updated successfully to: $newEmail');
     } catch (e) {
       throw DSAuth0ErrorMapper.mapError(e);
@@ -395,7 +388,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       if (photoURL != null) updates['picture'] = photoURL;
 
       await _updateUserProfile(updates);
-
+      
       // Update current user
       _currentUser = DSAuthUser(
         id: _currentUser!.id,
@@ -406,7 +399,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
           if (photoURL != null) 'picture': photoURL,
         },
       );
-
+      
       print('Profile updated successfully');
     } catch (e) {
       throw DSAuth0ErrorMapper.mapError(e);
@@ -422,7 +415,7 @@ class DSAuth0AuthProvider implements DSAuthProvider {
     try {
       // Use Auth0 Management API to delete user
       await _deleteUserFromManagementAPI(_currentUser!.id);
-
+      
       // Clean up local state
       await signOut();
       print('User account deleted successfully');
@@ -435,20 +428,18 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
   /// Performs HTTP request to Auth0 API
   Future<Map<String, dynamic>> _performAuth0Request(
-    String endpoint,
-    Map<String, dynamic> body,
-  ) async {
+      String endpoint, Map<String, dynamic> body) async {
     final client = HttpClient();
     try {
       final uri = Uri.parse('https://$domain$endpoint');
       final request = await client.postUrl(uri);
-
+      
       request.headers.set('Content-Type', 'application/json');
       request.write(jsonEncode(body));
-
+      
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
-
+      
       return jsonDecode(responseBody) as Map<String, dynamic>;
     } finally {
       client.close();
@@ -461,12 +452,12 @@ class DSAuth0AuthProvider implements DSAuthProvider {
     try {
       final uri = Uri.parse('https://$domain/userinfo');
       final request = await client.getUrl(uri);
-
+      
       request.headers.set('Authorization', 'Bearer $accessToken');
-
+      
       final response = await request.close();
       final responseBody = await response.transform(utf8.decoder).join();
-
+      
       return jsonDecode(responseBody) as Map<String, dynamic>;
     } finally {
       client.close();
@@ -480,21 +471,19 @@ class DSAuth0AuthProvider implements DSAuthProvider {
       // For this mock implementation, we'll do basic checks
       final parts = token.split('.');
       if (parts.length != 3) return false;
-
+      
       // Decode payload
-      final payload =
-          jsonDecode(
-                utf8.decode(base64Url.decode(base64Url.normalize(parts[1]))),
-              )
-              as Map<String, dynamic>;
-
+      final payload = jsonDecode(
+        utf8.decode(base64Url.decode(base64Url.normalize(parts[1])))
+      ) as Map<String, dynamic>;
+      
       // Check expiration
       final exp = payload['exp'] as int?;
       if (exp != null) {
         final now = DateTime.now().millisecondsSinceEpoch ~/ 1000;
         return now < exp;
       }
-
+      
       return true;
     } catch (e) {
       return false;

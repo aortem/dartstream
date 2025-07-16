@@ -11,6 +11,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  auth0_dart_auth_sdk: ^0.0.1 # This SDK provides 95% of the features we need
-  ds_auth_base: ^0.0.1-pre
-  ds_standard_features: ^0.0.7
+  firebase_dart_admin_auth_sdk: ^0.0.2
+  ds_auth_base:
+    path: ../../base
+  ds_standard_features: ^0.0.4

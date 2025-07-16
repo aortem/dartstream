@@ -1,7 +1,7 @@
 #This pubspec file is used to import our standard features tooling.
-name: ds_cli
+name: dartstream
 description: Core Testing Components For Dartstream.
-version: 0.0.1-pre
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none
 

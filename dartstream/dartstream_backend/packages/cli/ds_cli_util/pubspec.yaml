@@ -1,9 +1,9 @@
 #This pubspec file is used for the Main Dartstream CLI
 #It pulls in both DS Shelf and DS Custom Middlewrae packages for the user to scaffold with.
 
-name: ds_cli_util
+name: ds_cli
 description: Main Dartstream CLI.
-version: 0.0.1-pre.1
+version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -20,7 +20,7 @@ dependencies:
 #  TBD: ^0.0.1
 
 # DS Standard Features
-  ds_standard_features: ^0.0.7
+  ds_standard_features: ^0.0.4
 
 # DS Tools Testing
   ds_tools_testing: ^0.0.1-pre
@@ -35,5 +35,5 @@ dev_dependencies:
   lints: ^4.0.0 #Included In ds_standard_features
 
 #Globally Activated Package
-#executables:
-#   ds: ds_cli
+executables:
+   ds: ds_cli

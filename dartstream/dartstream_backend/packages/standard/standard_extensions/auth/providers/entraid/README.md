@@ -23,7 +23,7 @@ Add the required dependencies to your `pubspec.yaml`:
 ```yaml
 dependencies:
   # Base authentication package
-  # ds_auth_base:
+  ds_auth_base:
     path: path/to/auth/base
   
   # EntraID provider
