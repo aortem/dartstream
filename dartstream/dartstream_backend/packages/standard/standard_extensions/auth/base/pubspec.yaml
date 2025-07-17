@@ -11,6 +11,5 @@ resolution: workspace
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-
 #  Add or remove the supported Auth SDK providers as needed (ie. firebase_dart_admin_auth_sdk: ^latest)
 

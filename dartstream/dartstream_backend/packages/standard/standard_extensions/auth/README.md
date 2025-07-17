@@ -51,7 +51,7 @@ Add the required dependencies to your `pubspec.yaml`:
 ```yaml
 dependencies:
   # Base authentication package
-  # ds_auth_base:
+  ds_auth_base:
     path: path/to/auth/base
   
   # Choose your authentication provider SDK
@@ -59,7 +59,7 @@ dependencies:
   # auth0_dart_auth_sdk: ^0.0.1          # For Auth0 (when available)
   
   # Framework features
-  ds_standard_features: ^0.0.7
+  ds_standard_features: ^0.0.4
 ```
 
 ### Basic Setup

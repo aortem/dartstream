@@ -82,7 +82,9 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
       _tokenManager = DSTokenManager();
       _sessionManager = DSSessionManager();
 
-      _eventHandler = DSFirebaseEventHandler(onEvent: _handleAuthEvent);
+      _eventHandler = DSFirebaseEventHandler(
+        onEvent: _handleAuthEvent,
+      );
       _eventHandler.initialize(_auth);
 
       _isInitialized = true;
@@ -117,13 +119,11 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
         deviceId: _generateDeviceId(),
       );
 
-      await onLoginSuccess(
-        DSAuthUser(
-          id: user.uid,
-          email: user.email ?? '',
-          displayName: user.displayName ?? '',
-        ),
-      );
+      await onLoginSuccess(DSAuthUser(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName ?? '',
+      ));
     } catch (e) {
       print('Original signIn error: $e');
       throw DSFirebaseErrorMapper.mapError(e);
@@ -151,11 +151,8 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
 
   /// creates a new user account with email and password
   @override
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  }) async {
+  Future<void> createAccount(String email, String password,
+      {String? displayName}) async {
     try {
       print('Attempting to create account for email: $email');
       final credential = await _auth.createUserWithEmailAndPassword(
@@ -252,10 +249,8 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   @override
   Future<String> refreshToken(String token) async {
     try {
-      final response = await _auth.performRequest('token', {
-        'grant_type': 'refresh_token',
-        'refresh_token': token,
-      });
+      final response = await _auth.performRequest(
+          'token', {'grant_type': 'refresh_token', 'refresh_token': token});
 
       if (response.statusCode != 200) {
         throw Exception('Failed to refresh token');

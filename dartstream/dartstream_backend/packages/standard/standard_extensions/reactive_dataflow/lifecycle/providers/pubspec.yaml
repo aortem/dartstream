@@ -1,5 +1,5 @@
-name: ds_google_cloud_workflows_lifecycle_provider
-description: "Covers orchestrating multi-step, stateful processes—everything from approval flows to long-running data pipelines"
+name: ds_lifecycle_provider
+description: "Amazon authentication provider for Dartstream."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 

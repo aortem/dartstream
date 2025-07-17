@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 
-// Mock implementations for EntraID testing - these would normally come from # ds_auth_base package
+// Mock implementations for EntraID testing - these would normally come from ds_auth_base package
 
 /// Interface for all Auth Providers
 abstract class DSAuthProvider {
@@ -11,11 +11,7 @@ abstract class DSAuthProvider {
   Future<bool> verifyToken([String? token]);
   Future<String> refreshToken(String refreshToken);
   Future<DSAuthUser> getCurrentUser();
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  });
+  Future<void> createAccount(String email, String password, {String? displayName});
   Future<void> onLoginSuccess(DSAuthUser user) async {}
   Future<void> onLogout() async {}
 }
@@ -35,8 +31,7 @@ class DSAuthUser {
   });
 
   @override
-  String toString() =>
-      'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
+  String toString() => 'DSAuthUser(id: $id, email: $email, displayName: $displayName)';
 }
 
 /// Auth Error class
@@ -77,18 +72,13 @@ class DSAuthManager {
   }
 
   Future<DSAuthUser> getCurrentUser() => _provider.getCurrentUser();
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  }) => _provider.createAccount(email, password, displayName: displayName);
-  Future<void> signIn(String username, String password) =>
-      _provider.signIn(username, password);
+  Future<void> createAccount(String email, String password, {String? displayName}) =>
+      _provider.createAccount(email, password, displayName: displayName);
+  Future<void> signIn(String username, String password) => _provider.signIn(username, password);
   Future<void> signOut() => _provider.signOut();
   Future<DSAuthUser> getUser(String userId) => _provider.getUser(userId);
   Future<bool> verifyToken([String? token]) => _provider.verifyToken(token);
-  Future<String> refreshToken(String refreshToken) =>
-      _provider.refreshToken(refreshToken);
+  Future<String> refreshToken(String refreshToken) => _provider.refreshToken(refreshToken);
 }
 
 /// Standalone EntraID Provider Implementation
@@ -172,11 +162,7 @@ class StandaloneEntraIDProvider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  }) async {
+  Future<void> createAccount(String email, String password, {String? displayName}) async {
     if (!_isInitialized) {
       throw DSAuthError('Provider not initialized');
     }
@@ -227,12 +213,12 @@ class StandaloneEntraIDProvider implements DSAuthProvider {
             orElse: () => MapEntry('', ''),
           )
           .key;
-
+      
       if (userEmail.isNotEmpty && _users.containsKey(userEmail)) {
         return true;
       }
     }
-
+    
     return false;
   }
 
@@ -267,10 +253,7 @@ class StandaloneEntraIDProvider implements DSAuthProvider {
     print('Password reset initiated for: $email');
   }
 
-  Future<void> updateUserProfile(
-    String userId,
-    Map<String, dynamic> updates,
-  ) async {
+  Future<void> updateUserProfile(String userId, Map<String, dynamic> updates) async {
     if (!_userAttributes.containsKey(userId)) {
       throw DSAuthError('User not found', code: 404);
     }
@@ -354,9 +337,7 @@ class StandaloneEntraIDProvider implements DSAuthProvider {
         'location': 'Seattle, WA',
       },
       {
-        'timestamp': DateTime.now()
-            .subtract(Duration(hours: 1))
-            .toIso8601String(),
+        'timestamp': DateTime.now().subtract(Duration(hours: 1)).toIso8601String(),
         'action': 'PROFILE_UPDATE',
         'userId': userId,
         'ipAddress': '127.0.0.1',
@@ -364,9 +345,7 @@ class StandaloneEntraIDProvider implements DSAuthProvider {
         'location': 'Seattle, WA',
       },
       {
-        'timestamp': DateTime.now()
-            .subtract(Duration(days: 1))
-            .toIso8601String(),
+        'timestamp': DateTime.now().subtract(Duration(days: 1)).toIso8601String(),
         'action': 'PASSWORD_CHANGE',
         'userId': userId,
         'ipAddress': '192.168.1.100',
@@ -546,14 +525,10 @@ void main() {
       expect(loginLog['userAgent'], isNotNull);
       expect(loginLog['location'], isNotNull);
 
-      final profileUpdateLog = logs.firstWhere(
-        (log) => log['action'] == 'PROFILE_UPDATE',
-      );
+      final profileUpdateLog = logs.firstWhere((log) => log['action'] == 'PROFILE_UPDATE');
       expect(profileUpdateLog['userId'], equals(user.id));
 
-      final passwordChangeLog = logs.firstWhere(
-        (log) => log['action'] == 'PASSWORD_CHANGE',
-      );
+      final passwordChangeLog = logs.firstWhere((log) => log['action'] == 'PASSWORD_CHANGE');
       expect(passwordChangeLog['userId'], equals(user.id));
     });
 
@@ -665,7 +640,10 @@ void main() {
       expect(() => DSAuthManager('entraid'), returnsNormally);
 
       // Test that unregistered provider throws error
-      expect(() => DSAuthManager('nonexistent'), throwsA(isA<DSAuthError>()));
+      expect(
+        () => DSAuthManager('nonexistent'),
+        throwsA(isA<DSAuthError>()),
+      );
 
       // Test auth manager delegates to provider correctly
       await authManager.createAccount(

@@ -1,5 +1,5 @@
-name: ds_socketio_websocket_provider
-description: "Socketio implementation for Dartstream."
+name: ds_websocket_provider
+description: "Amazon authentication provider for Dartstream."
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 

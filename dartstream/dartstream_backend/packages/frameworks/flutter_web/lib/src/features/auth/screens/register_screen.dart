@@ -4,7 +4,10 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 class RegisterScreen extends StatefulWidget {
   final DSAuthManager authManager;
 
-  const RegisterScreen({super.key, required this.authManager});
+  const RegisterScreen({
+    super.key,
+    required this.authManager,
+  });
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
@@ -61,7 +64,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Account')),
+      appBar: AppBar(
+        title: const Text('Create Account'),
+      ),
       body: Center(
         child: Card(
           margin: const EdgeInsets.all(32),
