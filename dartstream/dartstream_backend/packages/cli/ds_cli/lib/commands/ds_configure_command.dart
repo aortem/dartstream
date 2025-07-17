@@ -1,6 +1,7 @@
 // ds_commands/ds_configure_command.dart
-import 'package:args/command_runner.dart';
 import 'dart:io';
+import 'package:args/command_runner.dart';
+import 'package:ds_cli/utils/exports.dart';
 
 class DSConfigureCommand extends Command {
   @override
@@ -9,7 +10,32 @@ class DSConfigureCommand extends Command {
   final description =
       'Configure core project components like cloud provider and framework.';
 
-  DSConfigureCommand();
+  DSConfigureCommand() {
+    argParser.addOption(
+      'name',
+      abbr: 'n',
+      defaultsTo: '',
+      help: 'Specify the project name.',
+    );
+    argParser.addOption(
+      'framework',
+      abbr: 'f',
+      defaultsTo: '',
+      help: 'Specify the framework.',
+    );
+    argParser.addOption(
+      'vendor',
+      abbr: 'v',
+      defaultsTo: '',
+      help: 'Specify the cloud vendor.',
+    );
+    argParser.addOption(
+      'auth',
+      abbr: 'a',
+      defaultsTo: '',
+      help: 'Specify the authentication provider.',
+    );
+  }
 
   @override
   void run() {
@@ -19,28 +45,79 @@ class DSConfigureCommand extends Command {
   void execute({String Function()? readLineCallback}) {
     print('Configuring project...');
 
-    // Cloud Vendor Selection
-    stdout.write(
-      'Select cloud vendor (1. Google Cloud, 2. AWS, 3. Azure, 4. Local): ',
-    );
+    var name = argResults?['name'];
+    var frameworkChoice = argResults?['framework'];
+    var vendorChoice = argResults?['vendor'];
+    var authChoice = argResults?['auth'];
 
     var read = readLineCallback ?? stdin.readLineSync;
-    var vendorChoice = read();
+
+    if (name.isEmpty) {
+      stdout.write('Enter project name: ');
+      name = read();
+    }
+
+    if (name.isEmpty) {
+      print('Project name cannot be empty.');
+      return;
+    }
+
+    final projectDir = getProjectDir(name);
+
+    // Check if the directory already exists
+    if (!projectDir.existsSync()) {
+      print(
+        'Project directory "$name" does not exist. Please create it first.',
+      );
+      return;
+    }
+
+    if (vendorChoice.isEmpty) {
+      // Cloud Vendor Selection
+      stdout.write(
+        'Select cloud vendor (1. Google Cloud, 2. AWS, 3. Azure, 4. Local): ',
+      );
+
+      vendorChoice = read();
+    }
+
     var cloudVendor = _parseCloudVendor(vendorChoice);
 
-    // Framework Selection
-    stdout.write(
-      'Select framework (1. Dart Web, 2. Flutter, 3. Vue.js, 4. Svelte): ',
-    );
-    var frameworkChoice = read();
+    if (frameworkChoice.isEmpty) {
+      // Framework Selection
+      stdout.write(
+        'Select framework (1. Dart Web, 2. Flutter, 3. Vue.js, 4. Svelte): ',
+      );
+      frameworkChoice = read();
+    }
+
     var framework = _parseFramework(frameworkChoice);
 
-    // Authentication Selection
-    stdout.write(
-      'Select authentication provider (1. Firebase, 2. AWS Cognito, 3. Azure AD): ',
-    );
-    var authChoice = read();
+    if (authChoice.isEmpty) {
+      // Authentication Selection
+      stdout.write(
+        'Select authentication provider (1. Firebase, 2. AWS Cognito, 3. Azure AD): ',
+      );
+      authChoice = read();
+    }
+
     var authProvider = _parseAuthProvider(authChoice);
+
+    print('''
+
+This will be your new configuration:
+Cloud Vendor: $cloudVendor
+Framework: $framework
+Authentication Provider: $authProvider
+
+Do you want to proceed with these settings? Yes(Y) / No(N): ''');
+
+    var confirmation = read()?.toLowerCase();
+
+    if (confirmation != 'y') {
+      print('Configuration cancelled.');
+      return;
+    }
 
     print('Configuration updated.');
     // Save to config if applicable
