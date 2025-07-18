@@ -1,7 +1,6 @@
-import 'package:args/command_runner.dart';
 import 'dart:io';
-
-import 'package:ds_cli/utils/exports.dart';
+import 'package:args/command_runner.dart';
+import 'package:ds_cli_util/ds_cli_utils.dart';
 
 class DSInitCommand extends Command {
   @override
@@ -45,7 +44,11 @@ class DSInitCommand extends Command {
 
     if (name.isEmpty) {
       stdout.write('Enter project name: ');
-      name = read() ?? 'Dartstream Project';
+      name = read();
+
+      if (name.length == 0) {
+        name = 'Dartstream Project';
+      }
     }
 
     if (version.isEmpty) {

@@ -1,7 +1,7 @@
 // ds_commands/ds_configure_command.dart
 import 'dart:io';
 import 'package:args/command_runner.dart';
-import 'package:ds_cli/utils/exports.dart';
+import 'package:ds_cli_util/ds_cli_utils.dart';
 
 class DSConfigureCommand extends Command {
   @override
@@ -66,9 +66,7 @@ class DSConfigureCommand extends Command {
 
     // Check if the directory already exists
     if (!projectDir.existsSync()) {
-      print(
-        'Project directory "$name" does not exist. Please create it first.',
-      );
+      print('Project "$name" does not exist. Please initialize it first.');
       return;
     }
 
