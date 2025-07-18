@@ -1,6 +1,6 @@
-// ds_commands/ds_init_command.dart
-import 'package:args/command_runner.dart';
 import 'dart:io';
+import 'package:args/command_runner.dart';
+import 'package:ds_cli_util/ds_cli_utils.dart';
 
 class DSInitCommand extends Command {
   @override
@@ -8,7 +8,26 @@ class DSInitCommand extends Command {
   @override
   final description = 'Initialize a new Dartstream project.';
 
-  DSInitCommand();
+  DSInitCommand() {
+    argParser.addOption(
+      'name',
+      abbr: 'n',
+      defaultsTo: '',
+      help: 'Specify the project name.',
+    );
+    argParser.addOption(
+      'framework',
+      abbr: 'f',
+      defaultsTo: '',
+      help: 'Specify the framework.',
+    );
+    argParser.addOption(
+      'version',
+      abbr: 'v',
+      defaultsTo: '',
+      help: 'Specify the project version.',
+    );
+  }
 
   @override
   void run() {
@@ -17,23 +36,35 @@ class DSInitCommand extends Command {
 
   void execute({String Function()? readLineCallback}) {
     print('Initializing project...');
-    // Collect project name
-    stdout.write('Enter project name: ');
+
+    var name = argResults?['name'];
+    var version = argResults?['version'];
 
     var read = readLineCallback ?? stdin.readLineSync;
 
-    var projectName = read() ?? 'Dartstream Project';
+    if (name.isEmpty) {
+      stdout.write('Enter project name: ');
+      name = read();
 
-    // Collect project type
-    stdout.write('Select version (1. Beta, 2. Stable): ');
-    var versionChoice = read();
-    var projectType = versionChoice == '1' ? 'Beta' : 'Stable';
+      if (name.length == 0) {
+        name = 'Dartstream Project';
+      }
+    }
+
+    if (version.isEmpty) {
+      stdout.write('Select version (1. Beta, 2. Stable): ');
+      version = read();
+    }
+
+    var projectType = version == '1' ? 'Beta' : 'Stable';
 
     // Initialize project configuration (pseudo-code)
     // var config = ProjectConfig(projectName: projectName, projectType: projectType);
     // DartstreamCore core = DartstreamCore(config: config);
     // core.initializeCore();
 
-    print('Project "$projectName" initialized with version $projectType.');
+    createProject(name);
+
+    print('Project "$name" initialized with version $projectType.');
   }
 }
