@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 // import 'package:ds_tools_cli/ds_tools_cli.dart';
 
 Directory getProjectDir(String projectName) {
@@ -47,4 +48,30 @@ dependencies:
 dev_dependencies:
   test: ^1.25.5
 ''');
+}
+
+void saveConfiguration({
+  required String projectName,
+  required String vendorChoice,
+  required String frameworkChoice,
+  required String authChoice,
+  required String ciCdChoice,
+}) {
+  final configFile = File('${getProjectDir(projectName).path}/config.json');
+
+  print(configFile.existsSync());
+
+  if (!configFile.existsSync()) {
+    configFile.createSync();
+  }
+
+  final configData = JsonEncoder.withIndent('  ').convert({
+    'projectName': projectName,
+    'vendorChoice': vendorChoice,
+    'frameworkChoice': frameworkChoice,
+    'authChoice': authChoice,
+    'ciCdChoice': ciCdChoice,
+  });
+
+  configFile.writeAsStringSync(configData);
 }

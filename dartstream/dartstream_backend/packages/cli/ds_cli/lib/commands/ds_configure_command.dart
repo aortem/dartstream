@@ -35,6 +35,12 @@ class DSConfigureCommand extends Command {
       defaultsTo: '',
       help: 'Specify the authentication provider.',
     );
+    argParser.addOption(
+      'cicd',
+      abbr: 'c',
+      defaultsTo: '',
+      help: 'Specify the CI/CD tool.',
+    );
   }
 
   @override
@@ -49,6 +55,7 @@ class DSConfigureCommand extends Command {
     var frameworkChoice = argResults?['framework'];
     var vendorChoice = argResults?['vendor'];
     var authChoice = argResults?['auth'];
+    var ciCdChoice = argResults?['cicd'];
 
     var read = readLineCallback ?? stdin.readLineSync;
 
@@ -81,6 +88,16 @@ class DSConfigureCommand extends Command {
 
     var cloudVendor = _parseCloudVendor(vendorChoice);
 
+    // CI/CD Tool Selection
+    if (ciCdChoice.isEmpty) {
+      stdout.write(
+        'Choose CI/CD tool (1. GitHub Actions, 2. GitLab CI, 3. Custom Script): ',
+      );
+      ciCdChoice = read();
+    }
+
+    var ciCdTool = _parseCiCdTool(ciCdChoice);
+
     if (frameworkChoice.isEmpty) {
       // Framework Selection
       stdout.write(
@@ -107,6 +124,7 @@ This will be your new configuration:
 Cloud Vendor: $cloudVendor
 Framework: $framework
 Authentication Provider: $authProvider
+CI/CD tool: $ciCdTool
 
 Do you want to proceed with these settings? Yes(Y) / No(N): ''');
 
@@ -117,8 +135,28 @@ Do you want to proceed with these settings? Yes(Y) / No(N): ''');
       return;
     }
 
+    saveConfiguration(
+      projectName: name,
+      vendorChoice: vendorChoice,
+      frameworkChoice: frameworkChoice,
+      authChoice: authChoice,
+      ciCdChoice: ciCdChoice,
+    );
+
     print('Configuration updated.');
-    // Save to config if applicable
+  }
+
+  String _parseCiCdTool(String? choice) {
+    switch (choice) {
+      case '1':
+        return 'GitHub Actions';
+      case '2':
+        return 'GitLab CI';
+      case '3':
+        return 'Custom Script';
+      default:
+        return '';
+    }
   }
 
   String _parseCloudVendor(String? choice) {
