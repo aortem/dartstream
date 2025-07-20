@@ -137,11 +137,15 @@ Do you want to proceed with these settings? Yes(Y) / No(N): ''');
 
     saveConfiguration(
       projectName: name,
-      vendorChoice: vendorChoice,
-      frameworkChoice: frameworkChoice,
-      authChoice: authChoice,
-      ciCdChoice: ciCdChoice,
+      content: {
+        'vendorChoice': vendorChoice,
+        'frameworkChoice': frameworkChoice,
+        'authChoice': authChoice,
+        'ciCdChoice': ciCdChoice,
+      },
     );
+
+    generateCICDFiles(projectName: name, ciCdChoice: ciCdChoice);
 
     print('Configuration updated.');
   }
