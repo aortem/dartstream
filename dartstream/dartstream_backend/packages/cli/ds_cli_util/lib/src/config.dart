@@ -1,25 +1,26 @@
 import 'dart:io';
-import 'dart:convert';
+import 'package:yaml/yaml.dart';
+import 'package:yaml_writer/yaml_writer.dart';
+
 import './project.dart';
 
-void saveConfiguration({
-  required String projectName,
+void saveProjectConfig({
+  required String name,
   required Map<String, dynamic> content,
 }) {
-  final configFile = File('${getProjectDir(projectName).path}/config.json');
+  final configFile = File('${getProjectDir(name).path}/config.yaml');
 
-  var oldContent = <String, dynamic>{};
+  var oldContent = YamlMap();
 
   if (configFile.existsSync()) {
-    oldContent =
-        jsonDecode(configFile.readAsStringSync()) as Map<String, dynamic>;
+    oldContent = loadYaml(configFile.readAsStringSync());
   } else {
     configFile.createSync();
   }
 
-  var newContent = {...oldContent, ...content};
+  final yamlWriter = YamlWriter();
 
-  final configData = JsonEncoder.withIndent('  ').convert(newContent);
+  final yamlDocString = yamlWriter.write({...oldContent, ...content});
 
-  configFile.writeAsStringSync(configData);
+  configFile.writeAsStringSync(yamlDocString);
 }

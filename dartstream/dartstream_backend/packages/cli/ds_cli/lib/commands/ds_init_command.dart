@@ -63,7 +63,7 @@ class DSInitCommand extends Command {
     // DartstreamCore core = DartstreamCore(config: config);
     // core.initializeCore();
 
-    createProject(name);
+    createProject(name: name, version: version);
 
     print('Project "$name" initialized with version $projectType.');
   }

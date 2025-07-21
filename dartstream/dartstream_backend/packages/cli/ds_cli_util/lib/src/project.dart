@@ -1,20 +1,19 @@
 import 'dart:io';
+import 'package:ds_cli_util/ds_cli_utils.dart';
 
 Directory getProjectDir(String projectName) {
   return Directory(projectName);
 }
 
 // Creating the basic project structure
-void createProject(String projectName, {String? projectPath}) {
-  print('Creating DartStream project: $projectName');
+void createProject({required String name, required String version}) {
+  print('Creating DartStream project: $name');
 
-  final projectDir = getProjectDir(projectName);
+  final projectDir = getProjectDir(name);
 
   // Check if the directory already exists to avoid overwriting
   if (projectDir.existsSync()) {
-    print(
-      'A project named "$projectName" already exists in the current directory.',
-    );
+    print('A project named "$name" already exists in the current directory.');
     return;
   }
 
@@ -32,7 +31,7 @@ void main() {
 
   // Creating a pubspec.yaml file
   File('${projectDir.path}/pubspec.yaml').writeAsStringSync('''
-name: $projectName
+name: $name
 description: A new DartStream project created by DS CLI.
 version: 0.1.0
 
@@ -46,4 +45,6 @@ dependencies:
 dev_dependencies:
   test: ^1.25.5
 ''');
+
+  saveProjectConfig(name: name, content: {'name': name, 'version': version});
 }

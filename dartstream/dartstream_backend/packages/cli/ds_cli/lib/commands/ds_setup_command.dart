@@ -103,8 +103,8 @@ class DSSetupCommand extends Command {
 
     generateCICDFiles(projectName: name, ciCdChoice: ciCdChoice);
 
-    saveConfiguration(
-      projectName: name,
+    saveProjectConfig(
+      name: name,
       content: {
         'ciCdChoice': ciCdChoice,
         'middlewareChoice': middlewareChoice,

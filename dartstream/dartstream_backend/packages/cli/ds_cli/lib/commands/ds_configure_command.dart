@@ -135,8 +135,8 @@ Do you want to proceed with these settings? Yes(Y) / No(N): ''');
       return;
     }
 
-    saveConfiguration(
-      projectName: name,
+    saveProjectConfig(
+      name: name,
       content: {
         'vendorChoice': vendorChoice,
         'frameworkChoice': frameworkChoice,
