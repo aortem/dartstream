@@ -26,6 +26,7 @@ dependencies:
 
   #DS Tools CLI
   ds_tools_cli: ^0.0.1-pre+2
+  yaml_writer: ^2.1.0
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:

@@ -1,0 +1,42 @@
+# Name of the workflow
+name: Dart CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # Set up a specific version of Dart SDK
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: "stable" # You can specify a version like '2.19.0'
+
+      # Get Dart dependencies
+      - name: Install dependencies
+        run: dart pub get
+
+      # Run static analysis to check for errors, warnings, and lints
+      - name: Analyze project source
+        run: dart analyze
+
+      # Run tests
+      - name: Run tests
+        run: dart test
