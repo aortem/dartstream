@@ -14,7 +14,10 @@ dependencies:
     path: ../../standard/standard_extensions/platform_services/discovery
   ds_lifecycle_base:
     path: ../../standard/standard_extensions/reactive_dataflow/lifecycle/base
+  ds_cli_util:
+    path: ../ds_cli_util
   ds_tools_testing: ^0.0.2
+  yaml_writer: ^2.1.0
 
 entry_point: "./bin/dartstream.dart"
 
