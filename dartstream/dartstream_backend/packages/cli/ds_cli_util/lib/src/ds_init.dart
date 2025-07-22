@@ -31,7 +31,8 @@ class DSInitCommand extends Command {
     // Check if the directory already exists to avoid overwriting
     if (projectDir.existsSync()) {
       print(
-          'A project named "$projectName" already exists in the current directory.');
+        'A project named "$projectName" already exists in the current directory.',
+      );
       return;
     }
 
@@ -56,7 +57,7 @@ description: A new DartStream project created by DS CLI.
 version: 0.1.0
 
 environment:
-  sdk: ^3.8.1 # Adjust based on your compatibility
+  sdk: ^3.8.2 # Adjust based on your compatibility
 
 dependencies:
   # Add your project dependencies here, for example:
