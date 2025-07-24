@@ -1,7 +1,7 @@
 // Import base authentication interfaces and types from DartStream core
 import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_standard_features/ds_standard_features.dart' as http;
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 // TODO: If Magic releases a Dart SDK, import it here
 
 // Import local utility and handler implementations
