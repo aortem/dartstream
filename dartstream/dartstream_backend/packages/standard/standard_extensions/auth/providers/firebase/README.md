@@ -20,17 +20,15 @@ dependencies:
 
    # Firebase Admin Auth SDK
 
-   firebase_dart_admin_auth_sdk: ^0.0.2  
+   firebase_dart_admin_auth_sdk: ^0.0.4  
 
    # Base authentication package
 
-   ds_auth_base:
-   path: ../../base
+   ds_auth_base: ^0.0.1-pre
 
    # Framework features
 
-   ds_standard_features:
-   path: ^0.0.1-pre+11
+   ds_standard_features: ^0.0.8
 
 2. Configure Firebase:
 

@@ -24,8 +24,7 @@ dependencies:
   ds_auth_base: ^0.0.1-pre
 
   # Framework features
-  ds_standard_features:
-    path: ^0.0.7
+  ds_standard_features: ^0.0.8
 ```
 
 ## Usage
