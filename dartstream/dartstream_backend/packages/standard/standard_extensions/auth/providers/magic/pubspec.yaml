@@ -1,5 +1,5 @@
 name: ds_magic_provider
-description: Fingerprint authentication provider for Dartstream.
+description: DartStream package for Magic authentication provider.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
