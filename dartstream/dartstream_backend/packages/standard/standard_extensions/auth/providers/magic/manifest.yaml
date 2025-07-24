@@ -3,4 +3,4 @@ version: "0.0.1-pre"
 description: "magic authentication provider for Dartstream."
 dependencies:
   - "Auth >=0.0.1"
-entry_point: "lib/ds_magic_auth_provider`.dart"
+entry_point: "lib/ds_magic_auth_provider.dart"
