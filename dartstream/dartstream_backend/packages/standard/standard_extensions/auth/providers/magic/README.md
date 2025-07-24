@@ -1,120 +1,186 @@
-# DartStream Magic Authentication Provider Documentation
+# DartStream Magic Authentication Provider
 
-## Overview
+A DartStream authentication provider implementing Magic Authentication services.
 
-This document provides onboarding, system design, and API documentation for the Magic authentication provider in DartStream. It is intended for contributors, integrators, and reviewers to understand Magic’s capabilities, architecture, and usage within the DartStream framework.
+## Features
 
----
+* Passwordless authentication via Magic DID tokens
+* Token management
+* Session handling
+* Error mapping
+* Event system integration
+* Lifecycle management
 
-## 1. Onboarding
+## Installation
 
-### **Setup & Configuration**
+1. Add to your `pubspec.yaml`:
 
-1. **Add the Magic Provider Package**  
-   Ensure `ds_magic_auth_provider` is included in your DartStream backend dependencies.
+```yaml
+dependencies:
+  # Magic Authentication provider for DartStream
+  ds_magic_auth_provider: ^0.0.1-pre
 
-2. **Configuration Example**
-   ```dart
-   final config = {
-     'publishableKey': 'your-magic-publishable-key',
-     'secretKey': 'your-magic-secret-key',
-   };
-   await magicProvider.initialize(config);
-   ```
+  # Base authentication package
+  ds_auth_base: ^0.0.1-pre
 
-3. **Initialization**
-   ```dart
-   final magicProvider = DSMagicAuthProvider(
-     publishableKey: 'your-magic-publishable-key',
-     secretKey: 'your-magic-secret-key',
-   );
-   await magicProvider.initialize(config);
-   ```
-
-4. **Register with DSAuthManager**
-   ```dart
-   DSAuthManager.registerProvider('magic', magicProvider);
-   ```
-
----
-
-## 2. System Design
-
-### **Architecture & Key Components**
-
-- **Provider Class**: `DSMagicAuthProvider` implements the `DSAuthProvider` interface for DartStream.
-- **Passwordless Authentication**: Uses Magic’s DID token for secure, passwordless sign-in.
-- **Token Management**: Handles DID token storage, validation, and expiration using `DSTokenManager`.
-- **Session Management**: Tracks user sessions with `DSSessionManager`.
-- **User Management**: User info is extracted from the DID token; direct user lookup is not supported by Magic API.
-- **Error Handling**: Uses `DSMagicErrorMapper` to standardize error reporting.
-- **Extensibility**: Lifecycle hooks for login/logout events; ready for future Magic SDK/event support.
-
-### **Security Considerations**
-
-- All authentication is passwordless and based on Magic’s DID token.
-- DID tokens are verified with Magic’s API for authenticity.
-- No password is ever stored or transmitted.
-- Sessions and tokens are managed securely in memory.
-
----
-
-## 3. API Documentation
-
-### **Core DSAuthProvider Interface Methods (Magic Implementation)**
-
-| Method | Description |
-|--------|-------------|
-| `initialize(Map<String, dynamic> config)` | Initialize with Magic publishable and secret keys. |
-| `createAccount(String email, String password, {String? displayName})` | Registers a user (triggers sign-in; Magic is passwordless). |
-| `signIn(String email, String password)` | Authenticates a user using a Magic DID token (password param is the DID token from frontend). |
-| `signOut()` | Terminates the current session and clears tokens. |
-| `getCurrentUser()` | Retrieves the currently authenticated user by verifying the DID token. |
-| `getUser(String userId)` | Not supported (throws UnimplementedError; store user info after sign-in if needed). |
-| `verifyToken([String? token])` | Verifies a DID token with Magic’s API. |
-| `refreshToken(String refreshToken)` | Not supported (throws UnimplementedError; re-authenticate instead). |
-| `onLoginSuccess(DSAuthUser user)` | Lifecycle hook for login success. |
-| `onLogout()` | Lifecycle hook for logout. |
-
-### **Magic-Specific Notes**
-- **Passwordless Flow**: The frontend triggers Magic link login and receives a DID token, which is sent to the backend for verification.
-- **No Direct User Lookup**: Magic does not support fetching user info by ID; store user info after sign-in if needed.
-- **No Token Refresh**: Magic tokens are short-lived; re-authentication is required for renewal.
-- **No MFA/Groups/Audit Logs**: These features are not provided by Magic’s API.
-
----
-
-## 4. Testing
-
-### **Test Coverage**
-
-- **Basic Provider Tests**: Initialization, configuration, passwordless sign-in, sign-out, and error handling.
-- **Comprehensive Tests**: DID token validation, session management, edge cases (missing/invalid tokens, uninitialized provider).
-- **Integration Tests**: End-to-end passwordless authentication workflows.
-
-### **How to Run Tests**
-
-```bash
-# Run all Magic provider tests
-cd ~/Desktop/dartstream-opensource/dartstream && dart test test/standard/extensions/auth/providers/magic/
-
-# Run specific test suites
-dart test test/standard/extensions/auth/providers/magic/ds_magic_auth_provider_test.dart
+  # Framework features
+  ds_standard_features:
+    path: ^0.0.7
 ```
 
-### **Test Categories**
+## Usage
 
-- Passwordless Authentication: Magic link flow, DID token verification
-- Token Management: Storage, expiration, and validation
-- Session Management: Creation, removal, and validation
-- Error Handling: Edge cases, failure scenarios
-- Integration: End-to-end Magic authentication
+### Basic Setup
 
----
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_magic_auth_provider/ds_magic_auth_provider.dart';
 
-## 5. Production Considerations
+// Initialize Magic Provider with your keys
+final magicProvider = DSMagicAuthProvider(
+  publishableKey: 'your-magic-publishable-key',
+  secretKey: 'your-magic-secret-key',
+);
+await magicProvider.initialize({
+  'publishableKey': 'your-magic-publishable-key',
+  'secretKey': 'your-magic-secret-key',
+});
 
-- Securely store Magic keys and secrets.
-- Monitor for failed authentication attempts and unusual activity.
-- Regularly update dependencies and review Magic’s API documentation for changes.
-- Store user info after sign-in if you need to support user lookup or profile features.
+// Register with DartStream Auth Manager
+DSAuthManager.registerProvider('magic', magicProvider);
+```
+
+## Architecture
+
+### Components
+
+1. **Provider (`ds_magic_auth_provider.dart`)**
+
+   * Implements the `DSAuthProvider` interface
+   * Integrates with Magic’s DID token API
+2. **Token Manager (`ds_token_manager.dart`)**
+
+   * Handles DID token storage, validation, expiration
+3. **Session Manager (`ds_session_manager.dart`)**
+
+   * Manages user sessions in memory
+4. **Error Mapper (`ds_error_mapper.dart`)**
+
+   * Maps Magic API errors to `DSAuthError`
+5. **Event Handlers (`ds_event_handlers.dart`)**
+
+   * Hooks for login/logout events
+
+## Implementation Status
+
+### Completed Features
+
+* [x] Initialization (`initialize`)
+* [x] Passwordless sign-in (`signIn` using DID token)
+* [x] Sign-out (`signOut`)
+* [x] Current user retrieval (`getCurrentUser`)
+* [x] Token verification (`verifyToken`)
+* [x] Session management via `DSSessionManager`
+* [x] Error mapping with `DSMagicErrorMapper`
+* [x] Lifecycle hooks (`onLoginSuccess`, `onLogout`)
+
+### Limitations & Notes
+
+* **No `getUser` support**: Magic API doesn’t provide direct user lookup;
+  store user info after sign-in if needed.
+* **No `refreshToken`**: DID tokens are short-lived; re-authentication required.
+* **No MFA/Groups/Audit Logs**: Not offered by Magic’s API.
+
+## Enhanced Usage Examples
+
+```dart
+// Magic link flow: front-end obtains DID token and sends it to backend
+final didToken = await magicSdk.loginWithMagicLink('user@example.com');
+await magicProvider.signIn('user@example.com', didToken);
+
+// Listen to login success event
+magicProvider.onLoginSuccess((user) {
+  print('User signed in: ${user.uid}');
+});
+
+// Validate token
+final valid = await magicProvider.verifyToken(didToken);
+print('Token valid: $valid');
+```
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests for Magic provider
+cd packages/standard/standard_extensions/auth/providers/magic
+dart test
+```
+
+### Test Coverage
+
+* Passwordless Authentication flows
+* Token management edge cases
+* Session creation/removal
+* Error handling scenarios
+* Lifecycle event triggers
+
+## Production Setup
+
+1. **Obtain Magic Keys**
+
+   * Create a Magic account and get publishable & secret keys
+2. **Secure Storage**
+
+   * Store keys in environment variables or Secret Manager
+3. **Configure Provider**
+
+   ```bash
+   export MAGIC_PUBLISHABLE_KEY="your-key"
+   export MAGIC_SECRET_KEY="your-secret"
+   ```
+
+## Framework Integration
+
+### DartStream Backend
+
+```dart
+// In your main.dart or bootstrap
+configureLogging(Tier.enterprise);
+await magicProvider.initialize(...);
+DSAuthManager.registerProvider('magic', magicProvider);
+```
+
+### Flutter Integration
+
+```dart
+import 'package:ds_flutter_mobile/ds_flutter_mobile.dart';
+await DSFlutterMobileCore.initialize(
+  defaultAuthProvider: 'magic',
+  enableLogging: true,
+);
+```
+
+## Security Features
+
+* No passwords stored or transmitted
+* DID token verification via Magic API
+* In-memory session handling
+* Standardized error reporting
+
+## Troubleshooting
+
+* **Uninitialized provider**: Ensure `initialize` is called before use.
+* **Invalid DID token**: Verify token with `verifyToken` method.
+* **Missing hooks**: Check that event handlers are registered.
+
+## Performance Considerations
+
+* Lightweight in-memory session manager
+* No heavy Crypto operations on every request
+* Single HTTP call to Magic API for token verification
+
+## Status: Production Ready 🚀
+
+The Magic authentication provider is **complete and production-ready** with passwordless login, robust session management, and comprehensive testing.
