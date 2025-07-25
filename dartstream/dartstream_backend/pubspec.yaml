@@ -31,17 +31,17 @@ dependencies:
 #   ds_standard_engine:   ^0.0.6
 
 # auth extensions
- ds_auth_base:            ^0.0.1-pre
- ds_auth0_auth_provider:  ^0.0.1-pre
-# ds_auth_cognito:      ^0.0.2
-# ds_auth_entraid:      ^0.0.1
-# ds_auth_fingerprint:  ^0.0.1
-# ds_auth_firebase:     ^0.0.2
-# ds_auth_magic:        ^0.0.1
+ ds_auth_base:                  ^0.0.1-pre
+ ds_auth0_auth_provider:        ^0.0.1-pre
+# ds_auth_cognito:              ^0.0.1
+# ds_auth_entraid:              ^0.0.1
+# ds_auth_fingerprint:          ^0.0.1
+ ds_auth_firebase_provider:     ^0.0.1
+ ds_auth_magic_provider:        ^0.0.1-pre
 # ds_auth_okta:         ^0.0.1
 # ds_auth_ping:         ^0.0.1
 # ds_auth_stytch:       ^0.0.1
-# ds_auth_transmit:     ^0.0.1
+ ds_auth_transmit_provider:     ^0.0.1-pre
 
 #   # persistence - database providers
 #   ds_db_base:           ^0.0.1

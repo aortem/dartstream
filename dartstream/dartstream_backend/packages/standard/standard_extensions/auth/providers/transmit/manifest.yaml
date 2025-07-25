@@ -1,0 +1,6 @@
+name: ds_transmit_auth_provider
+version: "0.0.1-pre"
+description: "Transmit authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_transmit_auth_provider.dart"

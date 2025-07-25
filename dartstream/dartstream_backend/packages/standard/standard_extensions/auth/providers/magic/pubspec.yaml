@@ -1,5 +1,5 @@
 name: ds_magic_provider
-description: Fingerprint authentication provider for Dartstream.
+description: DartStream package for Magic authentication provider.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
@@ -11,7 +11,6 @@ environment:
 resolution: workspace
 
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.2
-  ds_auth_base:
-    path: ../../base
-  ds_standard_features: ^0.0.4
+  magic_dart_auth_sdk: ^0.0.1-pre+2
+  ds_auth_base: ^0.0.1-pre
+  ds_standard_features: ^0.0.8
