@@ -4,8 +4,6 @@ import 'package:dartstream_backend/packages/standard/standard_extensions/auth/pr
 import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/src/ds_session_manager.dart';
 import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/src/ds_error_mapper.dart';
 import 'package:dartstream_backend/packages/standard/standard_extensions/auth/base/lib/ds_auth_provider.dart';
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
 import 'dart:convert';
 
 void main() {
@@ -22,10 +20,29 @@ void main() {
       'publicAddress': '0x123',
     };
 
+    class TestMagicAuthProvider extends DSMagicAuthProvider {
+      final Map<String, dynamic>? Function(String)? verifyOverride;
+
+      TestMagicAuthProvider({
+        required String publishableKey,
+        required String secretKey,
+        this.verifyOverride,
+      }) : super(publishableKey: publishableKey, secretKey: secretKey);
+
+      @override
+      Future<Map<String, dynamic>?> _verifyDIDTokenWithMagic(String didToken) {
+        if (verifyOverride != null) {
+          return verifyOverride!(didToken);
+        }
+        return super._verifyDIDTokenWithMagic(didToken);
+      }
+    }
+
     setUp(() async {
-      provider = DSMagicAuthProvider(
+      provider = TestMagicAuthProvider(
         publishableKey: publishableKey,
         secretKey: secretKey,
+        verifyOverride: (_) => Future.value(testUserInfo),
       );
       await provider.initialize({});
     });
@@ -39,19 +56,6 @@ void main() {
     });
 
     test('signIn stores token and session on success', () async {
-      // Mock Magic API response
-      final mockClient = MockClient((request) async {
-        expect(request.headers['Authorization'], 'Bearer $testDIDToken');
-        return http.Response(jsonEncode({'data': testUserInfo}), 200);
-      });
-      // Inject mock client into provider
-      provider = DSMagicAuthProvider(
-        publishableKey: publishableKey,
-        secretKey: secretKey,
-      );
-      await provider.initialize({});
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
       await provider.signIn(testEmail, testDIDToken);
       final user = await provider.getCurrentUser();
       expect(user.id, testUserId);
@@ -67,8 +71,6 @@ void main() {
     });
 
     test('createAccount calls signIn', () async {
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
       await provider.createAccount(testEmail, testDIDToken);
       final user = await provider.getCurrentUser();
       expect(user.id, testUserId);
@@ -81,17 +83,20 @@ void main() {
     });
 
     test('verifyToken returns true for valid token', () async {
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
       provider._currentDIDToken = testDIDToken;
       final result = await provider.verifyToken();
       expect(result, isTrue);
     });
 
     test('verifyToken returns false for invalid token', () async {
-      provider._verifyDIDTokenWithMagic = (String didToken) async => null;
-      provider._currentDIDToken = testDIDToken;
-      final result = await provider.verifyToken();
+      final invalidProvider = TestMagicAuthProvider(
+        publishableKey: publishableKey,
+        secretKey: secretKey,
+        verifyOverride: (_) async => null,
+      );
+      await invalidProvider.initialize({});
+      invalidProvider._currentDIDToken = testDIDToken;
+      final result = await invalidProvider.verifyToken();
       expect(result, isFalse);
     });
 
@@ -118,7 +123,5 @@ void main() {
       await provider.onLoginSuccess(user);
       await provider.onLogout();
     });
-
-    // TODO: Add more comprehensive tests for error handling, edge cases, and session/token expiration
   });
 }
