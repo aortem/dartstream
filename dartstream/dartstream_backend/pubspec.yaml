@@ -37,11 +37,11 @@ dependencies:
 # ds_auth_entraid:              ^0.0.1
 # ds_auth_fingerprint:          ^0.0.1
  ds_auth_firebase_provider:     ^0.0.1
- ds_auth_magic_provider:        ^0.0.1-pre
+# ds_auth_magic_provider:        ^0.0.1-pre
 # ds_auth_okta:         ^0.0.1
 # ds_auth_ping:         ^0.0.1
 # ds_auth_stytch:       ^0.0.1
- ds_auth_transmit_provider:     ^0.0.1-pre
+# ds_auth_transmit_provider:     ^0.0.1-pre
 
 #   # persistence - database providers
 #   ds_db_base:           ^0.0.1
