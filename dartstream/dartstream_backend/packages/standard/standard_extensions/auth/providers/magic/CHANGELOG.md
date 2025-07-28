@@ -1,6 +1,7 @@
-## 0.0.1-pre+3
+## 0.0.1-pre+4
 
 ### Added
+- SDK implimentation instead of self built wrapper
 - Core implementation of `DSMagicAuthProvider` in `lib/`:
   - **Event handlers** (`lib/src/ds_event_handlers.dart`)
   - **Error mapping** (`lib/src/ds_error_mapper.dart`)
