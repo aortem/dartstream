@@ -9,6 +9,6 @@ environment:
 resolution: workspace
 
 dependencies:
-  transmit_dart_auth_sdk: ^0.0.1
+  transmit_dart_auth_sdk: ^0.0.2
   ds_auth_base: ^0.0.1-pre
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.0.8
