@@ -43,8 +43,8 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
       }
 
       final verificationResult = await _auth.verify(password);
-
       final visitorId = verificationResult['visitorId'];
+
       if (visitorId == null || visitorId.toString().isEmpty) {
         throw DSAuthError('Invalid fingerprint payload');
       }
@@ -112,9 +112,22 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
 
   @override
   Future<DSAuthUser> getUser(String userId) async {
-    throw UnimplementedError(
-      'getUser not supported by fingerprint verification provider.',
-    );
+    final storedToken = await _tokenManager.getToken(userId);
+    if (storedToken == null) {
+      throw DSAuthError('No token found for user: $userId');
+    }
+
+    try {
+      final verificationResult = await _auth.verify(storedToken);
+      return DSAuthUser(
+        id: verificationResult['visitorId'],
+        email: '',
+        displayName: verificationResult['ip'] ?? '',
+        customAttributes: verificationResult,
+      );
+    } catch (e) {
+      throw DSAuthError('Failed to fetch user via stored token');
+    }
   }
 
   @override
@@ -131,7 +144,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
 
   @override
   Future<String> refreshToken(String refreshToken) async {
-    throw UnimplementedError(
+    throw DSAuthError(
       'Fingerprint tokens are not refreshable. Re-authenticate.',
     );
   }
