@@ -1,4 +1,4 @@
-library ds_magic_auth_export;
+library ds_fingerprint_auth_export;
 
 export 'ds_fingerprint_auth_provider.dart';
 export 'src/ds_token_manager.dart';

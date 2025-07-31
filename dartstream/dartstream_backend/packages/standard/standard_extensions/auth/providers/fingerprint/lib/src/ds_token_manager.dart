@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-/// Manages authentication tokens for the Magic provider
+/// Manages authentication tokens for the Fingerprint provider
 class DSTokenManager {
   final Map<String, _TokenInfo> _tokens = {};
 

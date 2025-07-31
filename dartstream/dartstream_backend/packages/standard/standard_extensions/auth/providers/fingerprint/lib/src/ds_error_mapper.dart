@@ -1,7 +1,7 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
-/// Maps Magic Auth errors to DartStream errors
-class DSMagicErrorMapper {
+/// Maps Fingerprint Auth errors to DartStream errors
+class DSFingerprintErrorMapper {
   static DSAuthError mapError(dynamic error) {
     print('Mapping error: $error');
 

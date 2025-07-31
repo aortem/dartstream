@@ -67,7 +67,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
         ),
       );
     } catch (e) {
-      throw DSMagicErrorMapper.mapError(e);
+      throw DSFingerprintErrorMapper.mapError(e);
     }
   }
 
@@ -82,7 +82,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
       _currentFingerprintPayload = null;
       await onLogout();
     } catch (e) {
-      throw DSMagicErrorMapper.mapError(e);
+      throw DSFingerprintErrorMapper.mapError(e);
     }
   }
 

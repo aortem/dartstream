@@ -1,4 +1,4 @@
-/// Manages user sessions for the Magic provider
+/// Manages user sessions for the Fingerprint provider
 class DSSessionManager {
   final Map<String, DSSession> _activeSessions = {};
 
