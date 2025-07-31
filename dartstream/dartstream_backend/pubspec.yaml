@@ -35,7 +35,7 @@ dependencies:
  ds_auth0_auth_provider:        ^0.0.1-pre
 # ds_auth_cognito:              ^0.0.1
 # ds_auth_entraid:              ^0.0.1
-# ds_auth_fingerprint:          ^0.0.1
+# ds_fingerprint_auth_provider:  ^0.0.1-pre
  ds_firebase_auth_provider:     ^0.0.1-pre+1
 # ds_magic_auth_provider:        ^0.0.1-pre
 # ds_auth_okta:         ^0.0.1
