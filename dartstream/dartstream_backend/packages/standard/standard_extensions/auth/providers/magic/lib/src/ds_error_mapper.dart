@@ -16,19 +16,11 @@ class DSMagicErrorMapper {
       return DSAuthError(error);
     }
 
-<<<<<<< HEAD
     // Handle known SDK error types (optional extension point)
 
     // Fallback for unknown errors
     return DSAuthError(
       'An unexpected error occurred: ${error.toString()}',
-=======
-    // TODO: Handle Magic-specific error objects/codes here
-
-    // Handle unknown errors
-    return DSAuthError(
-      'An unexpected error occurred: {error.toString()}',
->>>>>>> main
       code: 500,
     );
   }
