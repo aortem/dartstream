@@ -2,6 +2,7 @@ import 'dart:convert';
 
 /// Manages authentication tokens for the Magic provider
 class DSTokenManager {
+<<<<<<< HEAD
   final Map<String, _TokenInfo> _tokens = {};
 
   Future<void> storeToken(String userId, String token, {int? expiresIn}) async {
@@ -12,6 +13,24 @@ class DSTokenManager {
     _tokens[userId] = _TokenInfo(token: token, expirationTime: expiry);
   }
 
+=======
+  // Store tokens with expiration
+  final Map<String, _TokenInfo> _tokens = {};
+
+  /// Stores a new token with expiration
+  Future<void> storeToken(
+    String userId,
+    String token, {
+    int expiresIn = 3600,
+  }) async {
+    _tokens[userId] = _TokenInfo(
+      token: token,
+      expirationTime: DateTime.now().add(Duration(seconds: expiresIn)),
+    );
+  }
+
+  /// Retrieves a valid token, returns null if expired
+>>>>>>> main
   Future<String?> getToken(String userId) async {
     final tokenInfo = _tokens[userId];
     if (tokenInfo != null && tokenInfo.isValid) {
@@ -20,22 +39,42 @@ class DSTokenManager {
     return null;
   }
 
+<<<<<<< HEAD
   Future<void> refreshToken(
     String userId,
     String newToken, {
     int? expiresIn,
+=======
+  /// Refreshes an existing token
+  Future<void> refreshToken(
+    String userId,
+    String newToken, {
+    int expiresIn = 3600,
+>>>>>>> main
   }) async {
     await storeToken(userId, newToken, expiresIn: expiresIn);
   }
 
+<<<<<<< HEAD
+=======
+  /// Removes a token
+>>>>>>> main
   Future<void> removeToken(String userId) async {
     _tokens.remove(userId);
   }
 
+<<<<<<< HEAD
+=======
+  /// Clears all stored tokens
+>>>>>>> main
   Future<void> clearTokens() async {
     _tokens.clear();
   }
 
+<<<<<<< HEAD
+=======
+  /// Gets all active tokens for debugging purposes
+>>>>>>> main
   Map<String, String> getActiveTokens() {
     final activeTokens = <String, String>{};
     _tokens.forEach((userId, tokenInfo) {
@@ -46,13 +85,21 @@ class DSTokenManager {
     return activeTokens;
   }
 
+<<<<<<< HEAD
+=======
+  /// Gets token expiration time (for JWT/DID tokens)
+>>>>>>> main
   DateTime? getTokenExpiration(String token) {
     try {
       final parts = token.split('.');
       if (parts.length != 3) return null;
+<<<<<<< HEAD
       final payload = json.decode(
         utf8.decode(base64Url.decode(base64.normalize(parts[1]))),
       );
+=======
+      final payload = json.decode(utf8.decode(base64Url.decode(parts[1])));
+>>>>>>> main
       final exp = payload['exp'] as int?;
       if (exp != null) {
         return DateTime.fromMillisecondsSinceEpoch(exp * 1000);
@@ -63,12 +110,20 @@ class DSTokenManager {
     return null;
   }
 
+<<<<<<< HEAD
+=======
+  /// Checks if token is expired
+>>>>>>> main
   bool isTokenExpired(String token) {
     final expiration = getTokenExpiration(token);
     if (expiration == null) return true;
     return DateTime.now().isAfter(expiration);
   }
 
+<<<<<<< HEAD
+=======
+  /// Cleans up expired tokens automatically
+>>>>>>> main
   Future<void> cleanupExpiredTokens() async {
     final expiredKeys = <String>[];
     _tokens.forEach((userId, tokenInfo) {
@@ -81,6 +136,10 @@ class DSTokenManager {
     }
   }
 
+<<<<<<< HEAD
+=======
+  /// Validates a token format and expiration (generic JWT/DID)
+>>>>>>> main
   bool isTokenValid(String token) {
     return token.isNotEmpty &&
         token.split('.').length == 3 &&

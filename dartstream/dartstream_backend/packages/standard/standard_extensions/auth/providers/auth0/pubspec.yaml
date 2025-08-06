@@ -9,6 +9,12 @@ environment:
 resolution: workspace
 
 dependencies:
+<<<<<<< HEAD
   auth0_dart_auth_sdk: ^0.0.1
   ds_auth_base: ^0.0.1-pre
   ds_standard_features: ^0.0.8
+=======
+  firebase_dart_admin_auth_sdk: ^0.0.2
+  ds_auth_base: ^0.0.1-pre
+  ds_standard_features: ^0.0.4
+>>>>>>> main
