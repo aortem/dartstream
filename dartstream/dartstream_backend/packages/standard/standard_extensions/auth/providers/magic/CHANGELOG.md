@@ -13,7 +13,7 @@
 - Added **LICENSE** (dual BSD‑3 + ELv2) for proper governance.
 
 ### Changed
-- Bumped Dart **SDK constraint** from `^3.8.1` to `^3.8.2`.
+- Bumped Dart **SDK constraint** from `^3.8.1` to `^3.8.3`.
 - Switched `ds_auth_base` dependency from a local path to version `^0.0.1-pre`.
 - Updated **package description** in `pubspec.yaml`.
 
