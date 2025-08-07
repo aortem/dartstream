@@ -15,7 +15,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
 
   late final DSTokenManager _tokenManager;
   late final DSSessionManager _sessionManager;
-  late final AortemMagicAuth _auth;
+  late final MagicAuth _auth;
 
   String? _currentUserId;
   String? _currentDIDToken;
@@ -43,7 +43,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
       return;
     }
 
-    _auth = AortemMagicAuth(secretKey);
+    _auth = MagicAuth(secretKey);
     _tokenManager = DSTokenManager();
     _sessionManager = DSSessionManager();
     _isInitialized = true;
@@ -88,7 +88,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
   Future<void> signOut() async {
     try {
       if (_currentDIDToken != null) {
-        await AortemMagicLogoutByToken(
+        await MagicLogoutByToken(
           apiKey: secretKey,
           useStub: false,
         ).logoutByToken(_currentDIDToken!);
@@ -168,7 +168,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
     String didToken,
   ) async {
     try {
-      final payload = AortemMagicTokenDecoder.decode(didToken, verify: true);
+      final payload = MagicTokenDecoder.decode(didToken, verify: true);
       return {
         'issuer': payload['iss'],
         'email': payload['email'],
