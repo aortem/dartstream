@@ -18,7 +18,7 @@ A DartStream authentication provider implementing Magic Authentication services.
 ```yaml
 dependencies:
   # Magic Authentication provider for DartStream
-  ds_magic_auth_provider: ^0.0.1-pre
+  ds_magic_auth_provider: ^0.0.3
 
   # Base authentication package
   ds_auth_base: ^0.0.1
