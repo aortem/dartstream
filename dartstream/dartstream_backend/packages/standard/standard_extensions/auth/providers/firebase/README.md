@@ -24,7 +24,7 @@ dependencies:
 
    # Base authentication package
 
-   ds_auth_base: ^0.0.1-pre
+   ds_auth_base: ^0.0.1
 
    # Framework features
 
