@@ -57,7 +57,7 @@ extensions:
 
   - name: ds_magic_auth_provider
     display_name: ds_magic_auth_provider
-    version: 0.0.1-pre
+    version: 0.0.1
     description: 'DartStream package for Magic authentication provider.'
     dependencies:
       - Auth >=0.0.1
