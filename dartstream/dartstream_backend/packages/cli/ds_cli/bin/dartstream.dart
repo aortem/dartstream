@@ -1,8 +1,5 @@
-// DESCRIPTION: Entry point for DartStream CLI. Dispatches commands based on user input.
-// ============================
-
 import 'package:args/command_runner.dart';
-
+import 'dart:io';
 import '../lib/commands/ds_init_command.dart';
 import '../lib/commands/ds_configure_command.dart';
 import '../lib/commands/ds_enable_extension_command.dart';
@@ -14,17 +11,39 @@ import '../lib/commands/ds_validate_command.dart';
 import '../lib/commands/ds_extensions_command.dart';
 import '../lib/commands/ds_list_command.dart';
 
-void main(List<String> args) async {
-  // if (args.isEmpty) {
-  //   print('❌ No command provided.\nUse `ds help` to see available commands.');
-  //   return;
-  // }
+// Auto-sync manifest and registry before running commands
+Future<void> syncManifestAndRegistry() async {
+  print('Syncing manifest and registry...');
 
-  // Create a CommandRunner
+  // Run sync_manifest.dart
+  final syncResult = await Process.run('dart', [
+    'run',
+    '../../../bin/sync_manifest.dart',
+  ]);
+
+  if (syncResult.exitCode != 0) {
+    print('Warning: Manifest sync failed: ${syncResult.stderr}');
+  }
+
+  // Run generate_registry.dart
+  final genResult = await Process.run('dart', [
+    'run',
+    '../../../bin/generate_registry.dart',
+  ]);
+
+  if (genResult.exitCode != 0) {
+    print('Warning: Registry generation failed: ${genResult.stderr}');
+  }
+}
+
+void main(List<String> args) async {
+  // Auto-sync before running any command
+  await syncManifestAndRegistry();
+
   final runner =
       CommandRunner<void>(
-          'dartstream', // The name of your executable
-          'Dartstream CLI tool.', // Its description
+          'dartstream',
+          'Dartstream CLI - Full-stack framework for Dart',
         )
         ..addCommand(DSInitCommand())
         ..addCommand(DSConfigureCommand())
@@ -40,14 +59,10 @@ void main(List<String> args) async {
   try {
     await runner.run(args);
   } on UsageException catch (e) {
-    // print('❌ Unknown command: $command');
-    // print('❌ No command provided.\nUse `ds help` to see available commands.');
-
-    // The 'args' package will print the help text for you
     print(e);
-    // Exit with a non-zero exit code
-    // exit(64); // You may want to use dart:io's exit code for this
+    exit(64);
   } catch (e) {
     print('An unexpected error occurred: $e');
+    exit(1);
   }
 }
