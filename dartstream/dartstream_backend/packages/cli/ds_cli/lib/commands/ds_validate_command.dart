@@ -2,334 +2,427 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
 import 'package:ds_discovery_provider/main.dart';
+import 'package:yaml/yaml.dart';
 
-/// CLI Command for validating extensions.
 class DSValidateCommand extends Command {
   @override
   final name = 'validate';
 
   @override
   final description =
-      'Validates all discovered extensions for manifest correctness and dependency compatibility.';
+      'Validates extensions, providers, and project configuration.';
 
-  /// Constructor to initialize the validate command.
   DSValidateCommand() {
-    argParser.addOption(
-      'level',
-      abbr: 'l',
-      help: 'Validate extensions of a specific level',
-      allowed: ['core', 'extended', 'third-party', 'all'],
-      defaultsTo: 'all',
-    );
-
-    argParser.addFlag(
-      'strict',
-      abbr: 's',
-      help: 'Perform stricter validation including code standards',
-      negatable: false,
-    );
+    argParser
+      ..addOption('project', abbr: 'p', help: 'Project to validate')
+      ..addOption(
+        'level',
+        abbr: 'l',
+        allowed: ['core', 'extended', 'third-party', 'all'],
+        defaultsTo: 'all',
+        help: 'Validate specific extension level',
+      )
+      ..addFlag(
+        'strict',
+        abbr: 's',
+        help: 'Strict validation including code analysis',
+        negatable: false,
+      )
+      ..addFlag(
+        'providers',
+        help: 'Validate provider compatibility',
+        defaultsTo: true,
+      );
   }
 
-  /// Executes the validation logic.
   @override
   Future<void> run() async {
-    final args = argResults?.arguments ?? [];
-    // Resolve extensions directory relative to this script
-    final scriptDir = p.dirname(Platform.script.toFilePath());
-    final extensionsDirectory = args.isNotEmpty
-        ? args[0]
-        : p.normalize(
-            p.join(
-              scriptDir,
-              '../dartstream_backend/packages/standard/extensions',
-            ),
-          );
-    final registryFile = args.length > 1
-        ? args[1]
-        : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
+    final projectName = argResults?['project'] as String?;
+    final levelFilter = argResults?['level'] as String;
+    final strictMode = argResults?['strict'] as bool;
+    final validateProviders = argResults?['providers'] as bool;
 
-    final levelFilter = argResults?['level'] as String?;
-    final strictMode = argResults?['strict'] as bool? ?? false;
+    print('🔍 Starting validation...\n');
 
-    print('Validating extensions...');
-    print('- Extensions directory: $extensionsDirectory');
-    print('- Registry file: $registryFile');
-    if (levelFilter != 'all') {
-      print('- Validating only $levelFilter extensions');
+    // Validate project if specified
+    if (projectName != null) {
+      if (!await _validateProject(projectName)) {
+        return;
+      }
     }
-    if (strictMode) {
-      print('- Using strict validation mode');
+
+    // Validate extensions
+    await _validateExtensions(levelFilter, strictMode);
+
+    // Validate providers
+    if (validateProviders) {
+      await _validateProviders();
     }
-    print('');
+
+    print('\n✅ Validation complete!');
+  }
+
+  Future<bool> _validateProject(String projectName) async {
+    print('📁 Validating project: $projectName');
+
+    final projectDir = Directory(projectName);
+    if (!projectDir.existsSync()) {
+      print('❌ Project directory not found: $projectName');
+      return false;
+    }
+
+    final errors = <String>[];
+
+    // Check required files
+    final requiredFiles = ['pubspec.yaml', 'config.yaml', 'lib/main.dart'];
+
+    for (final file in requiredFiles) {
+      final path = p.join(projectName, file);
+      if (!File(path).existsSync()) {
+        errors.add('Missing required file: $file');
+      }
+    }
+
+    // Validate configuration
+    final configPath = p.join(projectName, 'config.yaml');
+    if (File(configPath).existsSync()) {
+      try {
+        final content = File(configPath).readAsStringSync();
+        final config = loadYaml(content) as Map;
+
+        // Validate vendor-provider compatibility
+        final vendor = config['vendor'] as String?;
+        final auth = config['auth'] as String?;
+
+        if (vendor != null && auth != null) {
+          if (!_isCompatible(vendor, auth)) {
+            errors.add('Incompatible configuration: $vendor with $auth');
+          }
+        }
+      } catch (e) {
+        errors.add('Invalid config.yaml: $e');
+      }
+    }
+
+    // Validate pubspec.yaml
+    final pubspecPath = p.join(projectName, 'pubspec.yaml');
+    if (File(pubspecPath).existsSync()) {
+      try {
+        final content = File(pubspecPath).readAsStringSync();
+        final pubspec = loadYaml(content) as Map;
+
+        // Check for required dependencies
+        final deps = pubspec['dependencies'] as Map?;
+        if (deps == null || !deps.containsKey('ds_standard_engine')) {
+          errors.add('Missing required dependency: ds_standard_engine');
+        }
+      } catch (e) {
+        errors.add('Invalid pubspec.yaml: $e');
+      }
+    }
+
+    if (errors.isNotEmpty) {
+      print('\n❌ Project validation failed:');
+      for (final error in errors) {
+        print('   • $error');
+      }
+      return false;
+    }
+
+    print('   ✓ Project structure valid');
+    return true;
+  }
+
+  Future<void> _validateExtensions(String levelFilter, bool strictMode) async {
+    print('\n📦 Validating extensions...');
+
+    final extensionsDir = _findExtensionsDirectory();
+    final registryFile = _findRegistryFile();
+
+    if (!Directory(extensionsDir).existsSync()) {
+      print('❌ Extensions directory not found');
+      return;
+    }
 
     try {
       final registry = ExtensionRegistry(
-        extensionsDirectory: extensionsDirectory,
+        extensionsDirectory: extensionsDir,
         registryFile: registryFile,
       );
 
       registry.discoverExtensions();
 
-      if (registry.extensions.isEmpty) {
-        print('No extensions discovered for validation.');
-        return;
-      }
-
-      // Filter extensions by level if requested
-      List<ExtensionManifest> extensionsToValidate = [];
-      switch (levelFilter) {
-        case 'core':
-          extensionsToValidate = registry.coreExtensions;
-          break;
-        case 'extended':
-          extensionsToValidate = registry.extendedFeatures;
-          break;
-        case 'third-party':
-          extensionsToValidate = registry.thirdPartyEnhancements;
-          break;
-        default:
-          extensionsToValidate = registry.extensions;
-      }
-
-      if (extensionsToValidate.isEmpty) {
-        print('No extensions found matching the level filter: $levelFilter');
-        return;
-      }
-
-      bool allValid = true;
-      final validationResults = <String, _ValidationResult>{};
-
-      for (final extension in extensionsToValidate) {
-        print(
-          'Validating extension: ${extension.name} (${extension.version}) - ${_getLevelString(extension.level)}',
-        );
-
-        final result = _ValidationResult();
-
-        // Validate manifest fields
-        if (!_validateManifestFields(extension, result)) {
-          allValid = false;
-        }
-
-        // Validate dependencies
-        if (!registry.validateDependencies(extension)) {
-          allValid = false;
-          result.addError('Dependency issues detected.');
-        }
-
-        // Validate level-specific requirements
-        if (!_validateLevelSpecificRequirements(extension, registry, result)) {
-          allValid = false;
-        }
-
-        // Additional strict validations if enabled
-        if (strictMode) {
-          if (!_performStrictValidation(
-            extension,
-            extensionsDirectory,
-            result,
-          )) {
-            allValid = false;
+      // Filter by level
+      var extensions = registry.extensions;
+      if (levelFilter != 'all') {
+        extensions = extensions.where((ext) {
+          switch (levelFilter) {
+            case 'core':
+              return ext.level == ExtensionLevel.core;
+            case 'extended':
+              return ext.level == ExtensionLevel.extended;
+            case 'third-party':
+              return ext.level == ExtensionLevel.thirdParty;
+            default:
+              return true;
           }
-        }
+        }).toList();
+      }
 
-        // Store validation result
-        validationResults[extension.name] = result;
+      var hasErrors = false;
+      for (final extension in extensions) {
+        final result = _validateExtension(extension, registry, strictMode);
 
-        // Print result status
-        if (result.isValid) {
-          print('✓ Validation successful for ${extension.name}.\n');
-        } else {
-          print('✗ Validation failed for ${extension.name}:');
+        if (result.errors.isNotEmpty) {
+          print('\n   ✗ ${extension.name}:');
           for (final error in result.errors) {
-            print('  - $error');
+            print('      • $error');
           }
+          hasErrors = true;
+        } else {
+          print('   ✓ ${extension.name}');
+        }
+
+        if (result.warnings.isNotEmpty && strictMode) {
           for (final warning in result.warnings) {
-            print('  - Warning: $warning');
+            print('      ⚠️  $warning');
           }
-          print('');
         }
       }
 
-      if (allValid) {
-        print('All extensions validated successfully.');
+      if (!hasErrors) {
+        print('\n✅ All extensions valid');
       } else {
-        print('Some extensions failed validation. Check the errors above.');
+        print('\n⚠️  Some extensions have errors');
       }
     } catch (e) {
-      print('Error during validation: $e');
+      print('❌ Error validating extensions: $e');
     }
   }
 
-  /// Validates required fields in the manifest.
-  bool _validateManifestFields(
-    ExtensionManifest extension,
-    _ValidationResult result,
-  ) {
-    bool isValid = true;
-
-    if (extension.name.isEmpty) {
-      result.addError('Missing required field: name');
-      isValid = false;
-    }
-
-    if (extension.version.isEmpty) {
-      result.addError('Missing required field: version');
-      isValid = false;
-    } else if (!_isValidVersion(extension.version)) {
-      result.addError(
-        'Invalid version format: ${extension.version}. Expected semver (e.g., 1.0.0)',
-      );
-      isValid = false;
-    }
-
-    if (extension.entryPoint.isEmpty) {
-      result.addError('Missing required field: entry_point');
-      isValid = false;
-    }
-
-    if (extension.level == ExtensionLevel.extended &&
-        extension.coreExtension == null) {
-      result.addError('Extended features must specify a core_extension');
-      isValid = false;
-    }
-
-    return isValid;
-  }
-
-  /// Validates level-specific requirements
-  bool _validateLevelSpecificRequirements(
+  ValidationResult _validateExtension(
     ExtensionManifest extension,
     ExtensionRegistry registry,
-    _ValidationResult result,
+    bool strictMode,
   ) {
-    bool isValid = true;
+    final result = ValidationResult();
 
-    switch (extension.level) {
-      case ExtensionLevel.core:
-        // Core extensions should have at least Auth dependency
-        if (!extension.dependencies.any((dep) => dep.startsWith('Auth'))) {
-          result.addWarning('Core extensions typically depend on Auth');
-        }
-        break;
-
-      case ExtensionLevel.extended:
-        // Extended features must have a valid core extension reference
-        final coreExt = extension.coreExtension;
-        if (coreExt != null) {
-          final coreExists = registry.extensions.any(
-            (ext) => ext.name == coreExt && ext.level == ExtensionLevel.core,
-          );
-
-          if (!coreExists) {
-            result.addError('Referenced core extension "$coreExt" not found');
-            isValid = false;
-          }
-        }
-        break;
-
-      case ExtensionLevel.thirdParty:
-        // Third-party enhancements should not modify core functionality directly
-        // This would need code analysis, but here we just check naming conventions
-        if (extension.name.startsWith('Core')) {
-          result.addWarning(
-            'Third-party enhancements should not use "Core" prefix',
-          );
-        }
-        break;
+    // Basic validation
+    if (extension.name.isEmpty) {
+      result.addError('Missing name');
     }
 
-    return isValid;
+    if (!_isValidVersion(extension.version)) {
+      result.addError('Invalid version format: ${extension.version}');
+    }
+
+    // Provider-specific validation
+    if (extension.name.contains('auth_provider')) {
+      _validateAuthProvider(extension, result);
+    } else if (extension.name.contains('database')) {
+      _validateDatabaseProvider(extension, result);
+    }
+
+    // Dependency validation
+    if (!registry.validateDependencies(extension)) {
+      result.addError('Dependency validation failed');
+    }
+
+    // Entry point validation
+    final entryPath = p.join(
+      registry.extensionsDirectory,
+      extension.entryPoint,
+    );
+    if (!File(entryPath).existsSync()) {
+      result.addError('Entry point not found: ${extension.entryPoint}');
+    } else if (strictMode) {
+      _validateProviderCode(entryPath, extension, result);
+    }
+
+    return result;
   }
 
-  /// Performs stricter validation including code patterns
-  bool _performStrictValidation(
+  void _validateAuthProvider(
     ExtensionManifest extension,
-    String extensionsDirectory,
-    _ValidationResult result,
+    ValidationResult result,
   ) {
-    bool isValid = true;
+    // Check for required auth provider structure
+    final requiredFiles = [
+      'ds_error_mapper.dart',
+      'ds_session_manager.dart',
+      'ds_token_manager.dart',
+    ];
 
-    // Check entry point file exists
-    final entryPointFile = File(
-      p.join(extensionsDirectory, extension.entryPoint),
-    );
-    if (!entryPointFile.existsSync()) {
-      result.addError('Entry point file not found: ${extension.entryPoint}');
-      isValid = false;
-    } else {
-      // Check file content (basic checks)
-      final content = entryPointFile.readAsStringSync();
+    final basePath = p.dirname(extension.entryPoint);
+    for (final file in requiredFiles) {
+      final filePath = p.join(basePath, 'src', file);
+      if (!File(filePath).existsSync()) {
+        result.addWarning('Missing standard auth file: src/$file');
+      }
+    }
+  }
 
-      // Check for appropriate class naming based on extension level
-      switch (extension.level) {
-        case ExtensionLevel.core:
-          if (!content.contains('CoreExtension') &&
-              !content.contains('CoreLifecycle')) {
-            result.addWarning(
-              'Core extensions should use CoreExtension or implement CoreExtensionLifecycle',
-            );
-          }
-          break;
+  void _validateDatabaseProvider(
+    ExtensionManifest extension,
+    ValidationResult result,
+  ) {
+    // Database providers should have specific methods
+    if (!extension.dependencies.any((dep) => dep.contains('Core'))) {
+      result.addWarning('Database providers should depend on Core');
+    }
+  }
 
-        case ExtensionLevel.extended:
-          if (!content.contains('ExtendedFeature') &&
-              !content.contains('ExtendedFeatureLifecycle')) {
-            result.addWarning(
-              'Extended features should use ExtendedFeature or implement ExtendedFeatureLifecycle',
-            );
-          }
-          break;
+  void _validateProviderCode(
+    String filePath,
+    ExtensionManifest extension,
+    ValidationResult result,
+  ) {
+    try {
+      final content = File(filePath).readAsStringSync();
 
-        case ExtensionLevel.thirdParty:
-          if (!content.contains('ThirdParty') &&
-              !content.contains('ThirdPartyLifecycle')) {
-            result.addWarning(
-              'Third-party enhancements should use ThirdParty or implement ThirdPartyLifecycle',
-            );
-          }
-          break;
+      // Check for proper class structure
+      if (extension.name.contains('auth_provider')) {
+        if (!content.contains('extends DSAuthProvider') &&
+            !content.contains('implements DSAuthProvider')) {
+          result.addWarning(
+            'Auth provider should extend or implement DSAuthProvider',
+          );
+        }
       }
 
-      // Check for class documentation
+      // Check for documentation
       if (!content.contains('///')) {
         result.addWarning('Missing documentation comments');
       }
+
+      // Check for proper error handling
+      if (!content.contains('try') && !content.contains('catch')) {
+        result.addWarning('No error handling found');
+      }
+    } catch (e) {
+      result.addError('Failed to analyze code: $e');
+    }
+  }
+
+  Future<void> _validateProviders() async {
+    print('\n🔌 Validating providers...');
+
+    final providersPath = p.join(
+      'packages',
+      'standard',
+      'standard_extensions',
+      'auth',
+      'providers',
+    );
+
+    if (!Directory(providersPath).existsSync()) {
+      print('❌ Providers directory not found');
+      return;
     }
 
-    return isValid;
+    final providers = Directory(providersPath)
+        .listSync()
+        .whereType<Directory>()
+        .map((dir) => p.basename(dir.path))
+        .toList();
+
+    print('   Found ${providers.length} auth providers:');
+
+    for (final provider in providers) {
+      final pubspecPath = p.join(providersPath, provider, 'pubspec.yaml');
+
+      if (File(pubspecPath).existsSync()) {
+        try {
+          final content = File(pubspecPath).readAsStringSync();
+          final pubspec = loadYaml(content) as Map;
+          final version = pubspec['version'] as String?;
+
+          if (version != null && version.contains('pre')) {
+            print('   ⚠️  $provider: $version (pre-release)');
+          } else {
+            print('   ✓ $provider: $version');
+          }
+        } catch (e) {
+          print('   ✗ $provider: Invalid pubspec');
+        }
+      } else {
+        print('   ✗ $provider: Missing pubspec.yaml');
+      }
+    }
   }
 
   bool _isValidVersion(String version) {
-    // Simple semver check (major.minor.patch)
-    final pattern = RegExp(r'^\d+\.\d+\.\d+$');
+    // Accept semantic versions and pre-release versions
+    final pattern = RegExp(r'^\d+\.\d+\.\d+(-[\w\.]+)?(\+[\w\.]+)?$');
     return pattern.hasMatch(version);
   }
 
-  String _getLevelString(ExtensionLevel level) {
-    switch (level) {
-      case ExtensionLevel.core:
-        return 'Core Extension';
-      case ExtensionLevel.extended:
-        return 'Extended Feature';
-      case ExtensionLevel.thirdParty:
-        return 'Third-Party Enhancement';
+  bool _isCompatible(String vendor, String auth) {
+    const compatibility = {
+      'gcp': ['firebase', 'google_auth'],
+      'aws': ['cognito', 'aws_auth'],
+      'azure': ['entraid', 'azure_ad'],
+      'local': ['firebase', 'auth0', 'magic', 'stytch', 'cognito', 'entraid'],
+    };
+
+    final compatible = compatibility[vendor] ?? [];
+    return compatible.contains(auth) || vendor == 'local';
+  }
+
+  String _findExtensionsDirectory() {
+    final paths = [
+      p.join('packages', 'standard', 'standard_extensions'),
+      p.join(
+        '..',
+        'dartstream_backend',
+        'packages',
+        'standard',
+        'standard_extensions',
+      ),
+    ];
+
+    for (final path in paths) {
+      final fullPath = p.normalize(p.join(Directory.current.path, path));
+      if (Directory(fullPath).existsSync()) {
+        return fullPath;
+      }
     }
+
+    return p.normalize(
+      p.join(
+        Directory.current.path,
+        'packages',
+        'standard',
+        'standard_extensions',
+      ),
+    );
+  }
+
+  String _findRegistryFile() {
+    final paths = [
+      'dartstream_registry.yaml',
+      p.join('..', 'dartstream_registry.yaml'),
+    ];
+
+    for (final path in paths) {
+      final fullPath = p.normalize(p.join(Directory.current.path, path));
+      if (File(fullPath).existsSync()) {
+        return fullPath;
+      }
+    }
+
+    return p.normalize(
+      p.join(Directory.current.path, 'dartstream_registry.yaml'),
+    );
   }
 }
 
-/// Stores validation result information
-class _ValidationResult {
+class ValidationResult {
   final List<String> errors = [];
   final List<String> warnings = [];
 
   bool get isValid => errors.isEmpty;
 
-  void addError(String error) {
-    errors.add(error);
-  }
-
-  void addWarning(String warning) {
-    warnings.add(warning);
-  }
+  void addError(String error) => errors.add(error);
+  void addWarning(String warning) => warnings.add(warning);
 }
