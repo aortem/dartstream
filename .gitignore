@@ -1,5 +1,8 @@
 # Global Repo Rules
 
+# Env
+**/*.env
+
 # Ignore all IDE settings
 **/.idea/
 **/.vscode/
@@ -7,3 +10,4 @@
 # Ignore Dart clocal build tools
 **/.dart_tool/
 **/pubspec.lock
+**/tmp/pana_*

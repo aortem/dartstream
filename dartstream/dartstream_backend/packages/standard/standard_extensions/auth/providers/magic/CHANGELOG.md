@@ -1,7 +1,7 @@
 ## 0.0.1
 
 ### Added
-- Bump SDK 3.8.3
+- Bump SDK 3.9.0
 
 ## 0.0.1-pre+4
 
@@ -18,7 +18,7 @@
 - Added **LICENSE** (dual BSD‑3 + ELv2) for proper governance.
 
 ### Changed
-- Bumped Dart **SDK constraint** from `^3.8.1` to `^3.8.3`.
+- Bumped Dart **SDK constraint** from `^3.8.1` to `^3.9.0`.
 - Switched `ds_auth_base` dependency from a local path to version `^0.0.1-pre`.
 - Updated **package description** in `pubspec.yaml`.
 

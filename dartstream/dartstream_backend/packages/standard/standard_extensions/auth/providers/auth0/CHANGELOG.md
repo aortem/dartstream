@@ -1,7 +1,7 @@
 ## 0.0.1
 
 ### Added
-- Bump New SDK version 3.8.3
+- Bump New SDK version 3.9.0
 
 ## 0.0.1-pre
 
