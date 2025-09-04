@@ -1,5 +1,5 @@
 #This pubspec file is used for the Main Dartstream CLI
-#It pulls in both DS Shelf and DS Custom Middlewrae packages for the user to scaffold with.
+#It pulls in both DS Shelf and DS Custom Middleware packages for the user to scaffold with.
 
 name: ds_cli_util
 description: Main Dartstream CLI.
