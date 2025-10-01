@@ -5,4 +5,3 @@ library ds_auth_base_export;
 
 export 'ds_auth_provider.dart';
 export 'ds_auth_manager.dart';
-export 'src/auth_registry.dart';

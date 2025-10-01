@@ -4,21 +4,10 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.9.2 
+ sdk: ^3.9.0 
 
 resolution: workspace
 
-# # Dependencies are added in sections alphabetically and according to features.
-# dependencies:
-# # Auth0 
-#   ds_auth0_auth_provider: ^0.0.1
-# # Fingerprint 
-#   ds_fingerprint_auth_provider: ^0.0.1-pre
-# # Firebase 
-#   ds_firebase_auth_provider: ^0.0.1-pre+1
-# # Magic 
-#   ds_magic_auth_provider: ^0.0.1-pre
-# # Transmit 
-#   ds_transmit_auth_provider: ^0.0.2
-# #  Add or remove the supported Auth SDK providers as needed (ie. firebase_dart_admin_auth_sdk: ^latest)
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
 
