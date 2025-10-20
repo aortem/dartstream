@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
-import 'package:ds_cli_util/ds_cli_utils.dart';
 import 'package:path/path.dart' as p;
-import 'package:yaml/yaml.dart';
 
 class DSInitCommand extends Command {
   @override
@@ -27,6 +25,21 @@ class DSInitCommand extends Command {
         help: 'Framework version (stable: 0.0.1, beta: pre-release).',
       )
       ..addOption(
+        'type',
+        abbr: 't',
+        defaultsTo: '',
+        allowed: [
+          'new',
+          'existing-dartstream',
+          'migrate-vue',
+          'migrate-svelte',
+          'migrate-flutter-web',
+          'migrate-flutter-mobile',
+          'migrate-dart-web',
+        ],
+        help: 'Project type.',
+      )
+      ..addOption(
         'framework',
         abbr: 'f',
         defaultsTo: '',
@@ -35,10 +48,18 @@ class DSInitCommand extends Command {
           'flutter_web',
           'flutter_mobile',
           'flutter_desktop',
+          'flutter_games',
           'vue',
           'svelte',
         ],
         help: 'Target framework.',
+      )
+      ..addOption(
+        'middleware',
+        abbr: 'm',
+        defaultsTo: '',
+        allowed: ['dartstream', 'shelf', 'custom'],
+        help: 'Middleware type.',
       );
   }
 
@@ -47,22 +68,24 @@ class DSInitCommand extends Command {
     execute();
   }
 
-  void execute({String Function()? readLineCallback}) {
-    print('🚀 Initializing Dartstream project...');
+  void execute({String? Function()? readLineCallback}) {
+    print('🚀 Initializing Dartstream project...\n');
 
     var name = argResults?['name'];
     var version = argResults?['version'] ?? 'stable';
+    var projectType = argResults?['type'];
     var framework = argResults?['framework'];
+    var middleware = argResults?['middleware'];
 
     var read = readLineCallback ?? stdin.readLineSync;
 
-    // Get project name
+    // Step 1: Get project name
     if (name.isEmpty) {
-      stdout.write('Enter project name (use underscores, no spaces): ');
+      stdout.write('Enter Project Name: ');
       name = read() ?? '';
     }
 
-    // Sanitize project name
+    // Sanitize and validate project name
     name = sanitizeProjectName(name);
 
     if (!isValidDartIdentifier(name)) {
@@ -71,6 +94,96 @@ class DSInitCommand extends Command {
         '   Project names must start with a letter and contain only letters, numbers, and underscores.',
       );
       return;
+    }
+
+    // Step 2: Version selection
+    if (argResults?['version'] == null) {
+      print('\nSelect Version:');
+      print('1. Open-Source Version (Stable)');
+      print('2. Open-Source Version (Beta)');
+      stdout.write('Choice (1-2): ');
+
+      final versionChoice = read() ?? '1';
+      version = versionChoice == '2' ? 'beta' : 'stable';
+    }
+
+    // Step 3: Project type selection
+    if (projectType == null || projectType.isEmpty) {
+      print('\nChoose your project type:');
+      print('1. New Project (from scratch)');
+      print('2. Existing Project (import existing setup)');
+      stdout.write('Choice (1-2): ');
+
+      final typeChoice = read() ?? '1';
+
+      if (typeChoice == '2') {
+        print('\n  Select existing project type:');
+        print('  2a. Existing project previously created with Dartstream');
+        print(
+          '  2b. Existing external project - migration to Dartstream (vue, flutterweb)',
+        );
+        print(
+          '  2c. Existing external project - migration to Dartstream **CLOUD ONLY**',
+        );
+        print(
+          '      (vue, svelte, flutterweb, flutter mobile, dartweb, flutter desktop, Flutter Games)',
+        );
+        stdout.write('  Choice (a-c): ');
+
+        final subChoice = read()?.toLowerCase() ?? 'a';
+
+        switch (subChoice) {
+          case 'a':
+            projectType = 'existing-dartstream';
+            break;
+          case 'b':
+          case 'c':
+            if (version == 'stable' && subChoice == 'c') {
+              print(
+                '\n⚠️  Migration features are available in CLOUD version only',
+              );
+              print('   Starting new project instead.');
+              projectType = 'new';
+            } else {
+              projectType = _getMigrationType(read);
+            }
+            break;
+          default:
+            projectType = 'new';
+        }
+      } else {
+        projectType = 'new';
+      }
+    }
+
+    // Step 4: Framework selection
+    if (framework == null || framework.isEmpty) {
+      print('\nSelect your frontend framework:');
+      print('1. Dart Web');
+      print('2. Flutter Web');
+      print('3. Flutter (mobile)');
+      print('4. Flutter Desktop');
+      print('5. Flutter Games');
+      print('6. Vue.js');
+      print('7. Svelte');
+      stdout.write('Choice (1-7): ');
+
+      final choice = read() ?? '2';
+      framework = _mapFrameworkChoice(choice);
+    }
+
+    // Step 5: Middleware selection
+    if (middleware == null || middleware.isEmpty) {
+      print('\nChoose Middleware:');
+      print('1. Dartstream Middleware (default)');
+      print('2. Shelf Middleware');
+      print(
+        '3. Custom Middleware (start from scratch OR use a partner extension)',
+      );
+      stdout.write('Choice (1-3): ');
+
+      final choice = read() ?? '1';
+      middleware = _mapMiddlewareChoice(choice);
     }
 
     // Find dartstream root and create in projects folder
@@ -84,62 +197,46 @@ class DSInitCommand extends Command {
     final projectDir = Directory(projectPath);
 
     if (projectDir.existsSync()) {
-      print('❌ Project "$name" already exists at: $projectPath');
-      return;
+      print('\n❌ Project "$name" already exists at: $projectPath');
+      stdout.write('Overwrite? (y/N): ');
+      final overwrite = read()?.toLowerCase() ?? 'n';
+      if (overwrite != 'y') {
+        print('Project initialization cancelled.');
+        return;
+      }
+      projectDir.deleteSync(recursive: true);
     }
 
-    // Get framework if not specified
-    if (framework == null || framework.isEmpty) {
-      print('\nSelect framework:');
-      print('1. Dart Web');
-      print('2. Flutter Web');
-      print('3. Flutter Mobile');
-      print('4. Flutter Desktop');
-      print('5. Vue.js');
-      print('6. Svelte');
-      stdout.write('Choice (1-6): ');
-
-      final choice = read() ?? '1';
-      framework = parseFramework(choice);
-    }
-
-    // Create project structure
+    // Create project
+    print('\n🔨 Creating project structure...');
     createProjectWithEngine(
       projectPath: projectPath,
       name: name,
-      version: version,
       framework: framework,
+      version: version,
+      middleware: middleware,
+      projectType: projectType,
     );
 
-    print('✅ Project "$name" initialized successfully!');
-    print('   Location: $projectPath');
-    print('   Version: $version');
-    print('   Framework: $framework');
+    // Save project configuration
+    _saveProjectConfig(
+      projectPath,
+      name,
+      version,
+      projectType,
+      framework,
+      middleware,
+    );
+
+    print('\n✅ Project "$name" initialized successfully!');
+    print('\n📁 Project location: $projectPath');
     print('\nNext steps:');
-    print('  cd $projectPath');
-    print('  dart pub get');
-    print('  dart run dartstream configure');
-  }
-
-  String _findDartstreamRoot() {
-    // Look for dartstream root directory
-    var currentDir = Directory.current.path;
-
-    // Check if we're already in dartstream root
-    if (currentDir.endsWith('dartstream')) {
-      return currentDir;
-    }
-
-    // Check if we're in a subdirectory of dartstream
-    final parts = currentDir.split('/');
-    for (int i = parts.length - 1; i >= 0; i--) {
-      if (parts[i] == 'dartstream') {
-        return parts.sublist(0, i + 1).join('/');
-      }
-    }
-
-    // Default to current directory's parent until we find dartstream
-    return p.normalize(p.join(currentDir, '..', '..', '..', '..'));
+    print('1. cd $projectPath');
+    print(
+      '2. dartstream configure   # Configure cloud vendor, auth, and database',
+    );
+    print('3. dart pub get           # Install dependencies');
+    print('4. dart run               # Start your server');
   }
 
   String sanitizeProjectName(String name) {
@@ -153,7 +250,94 @@ class DSInitCommand extends Command {
     return pattern.hasMatch(name);
   }
 
-  String parseFramework(String choice) {
+  void createProjectWithEngine({
+    required String projectPath,
+    required String name,
+    required String framework,
+    required String version,
+    String? middleware,
+    String? projectType,
+  }) {
+    print('📦 Creating project structure with Standard Engine...');
+
+    final projectDir = Directory(projectPath);
+    projectDir.createSync(recursive: true);
+
+    // Create standard directories
+    Directory('$projectPath/lib').createSync();
+    Directory('$projectPath/lib/src').createSync();
+    Directory('$projectPath/lib/src/core').createSync();
+    Directory('$projectPath/lib/src/extensions').createSync();
+    Directory('$projectPath/lib/src/middleware').createSync();
+    Directory('$projectPath/test').createSync();
+    Directory('$projectPath/config').createSync();
+    Directory('$projectPath/bin').createSync();
+    Directory('$projectPath/web').createSync();
+    Directory('$projectPath/web/assets').createSync();
+
+    // Create main.dart
+    File('$projectPath/lib/main.dart').writeAsStringSync('''
+void main() {
+  print('Welcome to Dartstream!');
+  print('Framework: $framework');
+  print('Middleware: ${middleware ?? 'dartstream'}');
+  
+  // Run: dart run dartstream configure
+  // to set up cloud vendor, auth, and database
+}
+''');
+
+    // Create pubspec.yaml
+    final middlewarePackage = middleware == 'shelf'
+        ? 'ds_shelf: ^0.0.1-pre+4'
+        : 'ds_custom_middleware: ^0.0.1-pre';
+
+    File('$projectPath/pubspec.yaml').writeAsStringSync('''
+name: $name
+description: A DartStream project
+version: 0.1.0
+
+environment:
+  sdk: ^3.9.0
+
+dependencies:
+  # DartStream core
+  ds_standard_features: ^0.0.4
+  $middlewarePackage
+  
+  # Add your dependencies here
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0
+''');
+
+    // Create README
+    File('$projectPath/README.md').writeAsStringSync('''
+# $name
+
+A DartStream project using $framework with ${middleware ?? 'dartstream'} middleware.
+
+## Getting Started
+
+1. Configure your project:
+   ```bash
+   dart run dartstream configure
+   ```
+
+2. Install dependencies:
+   ```bash
+   dart pub get
+   ```
+
+3. Run your application:
+   ```bash
+   dart run
+   ```
+''');
+  }
+
+  String _mapFrameworkChoice(String choice) {
     switch (choice) {
       case '1':
         return 'dart_web';
@@ -164,216 +348,99 @@ class DSInitCommand extends Command {
       case '4':
         return 'flutter_desktop';
       case '5':
-        return 'vue';
+        return 'flutter_games';
       case '6':
+        return 'vue';
+      case '7':
         return 'svelte';
       default:
-        return 'dart_web';
+        return 'flutter_web';
     }
   }
 
-  void createProjectWithEngine({
-    required String projectPath,
-    required String name,
-    required String version,
-    required String framework,
-  }) {
-    print('📦 Creating project structure with Standard Engine...');
-
-    final projectDir = Directory(projectPath);
-    projectDir.createSync(recursive: true);
-
-    // Create standard directories
-    Directory('${projectDir.path}/lib').createSync();
-    Directory('${projectDir.path}/lib/src').createSync();
-    Directory('${projectDir.path}/lib/src/core').createSync();
-    Directory('${projectDir.path}/lib/src/extensions').createSync();
-    Directory('${projectDir.path}/test').createSync();
-    Directory('${projectDir.path}/config').createSync();
-
-    // Create main.dart with Standard Engine initialization
-    File('${projectDir.path}/lib/main.dart').writeAsStringSync('''
-import 'package:ds_standard_engine/ds_standard_engine.dart';
-import 'src/core/app_core.dart';
-
-void main() async {
-  // Initialize Dartstream Standard Engine
-  final core = DSStandardCore(
-    projectConfig: {
-      'name': '$name',
-      'version': '$version',
-      'framework': '$framework',
-      'created': DateTime.now().toIso8601String(),
-    },
-  );
-
-  await core.initialize();
-  
-  // Initialize app-specific core
-  final app = AppCore(core: core);
-  await app.start();
-  
-  print('🚀 $name is running with Dartstream!');
-}
-''');
-
-    // Create app_core.dart
-    File('${projectDir.path}/lib/src/core/app_core.dart').writeAsStringSync('''
-import 'package:ds_standard_engine/ds_standard_engine.dart';
-
-class AppCore {
-  final DSStandardCore core;
-  
-  AppCore({required this.core});
-  
-  Future<void> start() async {
-    // Register your extensions here
-    await registerExtensions();
-    
-    // Start the framework
-    core.start();
-  }
-  
-  Future<void> registerExtensions() async {
-    // Extensions will be auto-discovered and registered
-    // You can manually register additional extensions here
-  }
-}
-''');
-
-    // Create pubspec.yaml with correct dependencies
-    final isPreRelease = version == 'beta';
-    final versionSuffix = isPreRelease ? '-pre' : '';
-
-    File('${projectDir.path}/pubspec.yaml').writeAsStringSync('''
-name: $name
-description: A Dartstream project with Standard Engine.
-version: 0.0.1
-publish_to: none
-
-environment:
-  sdk: ^3.8.0
-
-dependencies:
-  # Core Dartstream packages
-  ds_standard_engine: ^0.0.1
-  ds_standard_features: ^0.0.4
-  
-  # Framework-specific dependencies
-${getFrameworkDependencies(framework, isPreRelease)}
-  
-  # Standard utilities
-  path: ^1.9.0
-  yaml: ^3.1.0
-
-dev_dependencies:
-  test: ^1.25.0
-  lints: ^4.0.0
-''');
-
-    // Create analysis_options.yaml
-    File('${projectDir.path}/analysis_options.yaml').writeAsStringSync('''
-include: package:lints/recommended.yaml
-
-linter:
-  rules:
-    prefer_single_quotes: true
-    prefer_final_locals: true
-    avoid_print: false
-''');
-
-    // Create README.md
-    File('${projectDir.path}/README.md').writeAsStringSync('''
-# $name
-
-A Dartstream project built with the Standard Engine.
-
-## Getting Started
-
-1. Install dependencies:
-   ```bash
-   dart pub get
-   ```
-
-2. Configure your project:
-   ```bash
-   dart run dartstream configure
-   ```
-
-3. Run the application:
-   ```bash
-   dart run lib/main.dart
-   ```
-
-## Framework
-
-This project uses **$framework** with Dartstream Standard Engine.
-
-## Version
-
-Running on Dartstream ${version == 'beta' ? 'Beta (pre-release)' : 'Stable'} version.
-''');
-
-    // Save initial configuration
-    saveProjectConfig(
-      name: name,
-      content: {
-        'name': name,
-        'version': version,
-        'framework': framework,
-        'engine': 'standard',
-        'created': DateTime.now().toIso8601String(),
-      },
-    );
-
-    // Copy framework template if it exists
-    copyFrameworkTemplate(framework, projectDir.path);
-  }
-
-  String getFrameworkDependencies(String framework, bool isPreRelease) {
-    final suffix = isPreRelease ? '-pre' : '';
-
-    switch (framework) {
-      case 'flutter_web':
-      case 'flutter_mobile':
-      case 'flutter_desktop':
-        return '''
-  flutter:
-    sdk: flutter
-  # ds_flutter_mobile: ^0.0.1$suffix  # Uncomment when published''';
-
-      case 'dart_web':
-        return '''
-  shelf: ^1.4.0
-  shelf_router: ^1.1.0
-  # ds_shelf: ^0.0.1$suffix  # Uncomment when published''';
-
-      case 'vue':
-      case 'svelte':
-        return '''
-  # Frontend framework integration
-  shelf: ^1.4.0
-  shelf_static: ^1.1.0''';
-
+  String _mapMiddlewareChoice(String choice) {
+    switch (choice) {
+      case '1':
+        return 'dartstream';
+      case '2':
+        return 'shelf';
+      case '3':
+        return 'custom';
       default:
-        return '  # No framework-specific dependencies';
+        return 'dartstream';
     }
   }
 
-  void copyFrameworkTemplate(String framework, String projectPath) {
-    // Path to framework templates
-    final templatePath = p.join(
-      Directory.current.path,
-      'packages',
-      'frameworks',
-      framework.replaceAll('_', '_'),
-    );
+  String _getMigrationType(String? Function() read) {
+    print('\n  Select migration source:');
+    print('  1. Vue.js');
+    print('  2. Svelte');
+    print('  3. Flutter Web');
+    print('  4. Flutter Mobile');
+    print('  5. Dart Web');
+    print('  6. Flutter Desktop');
+    print('  7. Flutter Games');
+    stdout.write('  Choice (1-7): ');
 
-    final templateDir = Directory(templatePath);
-    if (templateDir.existsSync()) {
-      print('📋 Copying $framework template...');
-      // Copy template files (simplified - in production use proper file copying)
-      // This would copy the framework-specific files from packages/frameworks/
+    final choice = read() ?? '1';
+    switch (choice) {
+      case '1':
+        return 'migrate-vue';
+      case '2':
+        return 'migrate-svelte';
+      case '3':
+        return 'migrate-flutter-web';
+      case '4':
+        return 'migrate-flutter-mobile';
+      case '5':
+        return 'migrate-dart-web';
+      case '6':
+        return 'migrate-flutter-desktop';
+      case '7':
+        return 'migrate-flutter-games';
+      default:
+        return 'new';
     }
+  }
+
+  String _findDartstreamRoot() {
+    var currentDir = Directory.current;
+    while (!Directory(p.join(currentDir.path, 'packages')).existsSync()) {
+      final parent = currentDir.parent;
+      if (parent.path == currentDir.path) {
+        // Reached root, default to current directory
+        return Directory.current.path;
+      }
+      currentDir = parent;
+    }
+    return currentDir.path;
+  }
+
+  void _saveProjectConfig(
+    String projectPath,
+    String name,
+    String version,
+    String projectType,
+    String framework,
+    String middleware,
+  ) {
+    final configFile = File(p.join(projectPath, 'dartstream.yaml'));
+    final config =
+        '''
+# DartStream Project Configuration
+name: $name
+version: $version
+type: $projectType
+framework: $framework
+middleware: $middleware
+created_at: ${DateTime.now().toIso8601String()}
+
+# Use 'dartstream configure' to set up:
+# - Cloud vendor (GCP, AWS, Azure)
+# - Authentication provider
+# - Database
+# - CI/CD tools
+''';
+    configFile.writeAsStringSync(config);
   }
 }

@@ -13,7 +13,7 @@ import '../lib/commands/ds_list_command.dart';
 
 // Auto-sync manifest and registry before running commands
 Future<void> syncManifestAndRegistry() async {
-  print('Syncing manifest and registry...');
+  print('🔄 Syncing manifest and registry...');
 
   // Run sync_manifest.dart
   final syncResult = await Process.run('dart', [
@@ -22,7 +22,7 @@ Future<void> syncManifestAndRegistry() async {
   ]);
 
   if (syncResult.exitCode != 0) {
-    print('Warning: Manifest sync failed: ${syncResult.stderr}');
+    print('⚠️  Warning: Manifest sync failed: ${syncResult.stderr}');
   }
 
   // Run generate_registry.dart
@@ -32,7 +32,7 @@ Future<void> syncManifestAndRegistry() async {
   ]);
 
   if (genResult.exitCode != 0) {
-    print('Warning: Registry generation failed: ${genResult.stderr}');
+    print('⚠️  Warning: Registry generation failed: ${genResult.stderr}');
   }
 }
 
@@ -43,7 +43,7 @@ void main(List<String> args) async {
   final runner =
       CommandRunner<void>(
           'dartstream',
-          'Dartstream CLI - Full-stack framework for Dart',
+          'DartStream CLI - Full-stack framework for Dart',
         )
         ..addCommand(DSInitCommand())
         ..addCommand(DSConfigureCommand())

@@ -1,126 +1,128 @@
 import 'dart:io';
 import 'package:args/command_runner.dart';
-import 'package:ds_cli_util/ds_cli_utils.dart';
 import 'package:path/path.dart' as p;
+import 'package:yaml/yaml.dart';
+import 'dart:convert';
 
 class DSConfigureCommand extends Command {
   @override
   final name = 'configure';
   @override
   final description =
-      'Configure project with cloud provider, framework, and authentication.';
-
-  // Vendor-Provider compatibility matrix
-  static const Map<String, List<String>> vendorCompatibility = {
-    'gcp': ['firebase', 'google_auth'],
-    'aws': ['cognito', 'aws_auth'],
-    'azure': ['entraid', 'azure_ad'],
-    'local': [
-      'firebase',
-      'auth0',
-      'magic',
-      'stytch',
-    ], // Local allows multiple options
-  };
+      'Configure cloud vendor, authentication, database, and CI/CD for your project.';
 
   DSConfigureCommand() {
     argParser
-      ..addOption('name', abbr: 'n', defaultsTo: '', help: 'Project name.')
-      ..addOption(
-        'vendor',
-        abbr: 'v',
-        allowed: ['gcp', 'aws', 'azure', 'local'],
-        help: 'Cloud vendor.',
+      ..addOption('name', abbr: 'n', help: 'Project name')
+      ..addOption('vendor', help: 'Cloud vendor (gcp/aws/azure/local)')
+      ..addOption('auth', help: 'Authentication provider')
+      ..addOption('database', help: 'Database provider')
+      ..addOption('cicd', help: 'CI/CD tool (github/gitlab/custom/none)')
+      ..addFlag(
+        'cloud-features',
+        defaultsTo: false,
+        help: 'Enable cloud-only features (for SAAS version)',
       )
-      ..addOption(
-        'auth',
-        abbr: 'a',
-        allowed: ['firebase', 'cognito', 'entraid', 'auth0', 'magic', 'stytch'],
-        help: 'Authentication provider.',
-      )
-      ..addOption(
-        'database',
-        abbr: 'd',
-        allowed: ['firebase', 'mysql', 'postgres', 'none'],
-        help: 'Database provider.',
-      )
-      ..addOption(
-        'cicd',
-        abbr: 'c',
-        allowed: ['github', 'gitlab', 'custom', 'none'],
-        help: 'CI/CD tool.',
+      ..addFlag(
+        'skip-examples',
+        defaultsTo: false,
+        help: 'Skip example code generation',
       );
   }
+
+  // Compatibility mappings
+  static const vendorCompatibility = {
+    'gcp': ['firebase', 'google_auth', 'auth0', 'magic', 'stytch'],
+    'aws': ['cognito', 'auth0', 'magic', 'stytch'],
+    'azure': ['entraid', 'azure_ad', 'auth0'],
+    'local': ['firebase', 'auth0', 'magic', 'stytch', 'cognito', 'entraid'],
+  };
+
+  static const vendorDatabases = {
+    'gcp': ['firestore', 'postgres', 'mysql', 'mongodb', 'nosql'],
+    'aws': ['dynamodb', 'rds', 'postgres', 'mysql', 'mongodb'],
+    'azure': ['cosmos', 'sql', 'postgres', 'mysql'],
+    'local': ['firestore', 'postgres', 'mysql', 'mongodb', 'nosql'],
+  };
 
   @override
   void run() {
     execute();
   }
 
-  void execute({String Function()? readLineCallback}) {
-    print('⚙️  Configuring Dartstream project...\n');
+  void execute({String? Function()? readLineCallback}) {
+    final read = readLineCallback ?? stdin.readLineSync;
+    final name = argResults?['name'] ?? '';
+    final isCloudEnabled = argResults?['cloud-features'] as bool;
+    final skipExamples = argResults?['skip-examples'] as bool;
 
-    var name = argResults?['name'];
-    var vendor = argResults?['vendor'];
-    var auth = argResults?['auth'];
-    var database = argResults?['database'];
-    var cicd = argResults?['cicd'];
+    print('⚙️  Configuring DartStream Project\n');
 
-    var read = readLineCallback ?? stdin.readLineSync;
-
-    // Get project name
-    if (name.isEmpty) {
-      stdout.write('Enter project name: ');
-      name = read() ?? '';
-    }
-
-    if (name.isEmpty) {
-      print('❌ Project name cannot be empty.');
+    // Load project config
+    final projectConfig = _loadProjectConfig(name);
+    if (projectConfig == null) {
+      print('❌ No project found. Run "dartstream init" first.');
       return;
     }
 
-    // Check if project exists
-    final projectDir = getProjectDir(name);
-    if (!projectDir.existsSync()) {
-      print('❌ Project "$name" does not exist. Run "dartstream init" first.');
-      return;
+    print('Project: ${projectConfig['name']}');
+    print('Framework: ${projectConfig['framework']}');
+    print('Middleware: ${projectConfig['middleware'] ?? 'dartstream'}');
+    print('Version: ${projectConfig['version']}\n');
+
+    // Determine if cloud features are available
+    final canUseCloud = isCloudEnabled || projectConfig['version'] == 'beta';
+
+    String vendor = argResults?['vendor'] ?? '';
+    String auth = argResults?['auth'] ?? '';
+    String database = argResults?['database'] ?? '';
+    String cicd = argResults?['cicd'] ?? '';
+    List<String> customTools = [];
+
+    // Step 1: Cloud Vendor Selection (CLOUD ONLY)
+    if (vendor.isEmpty) {
+      if (canUseCloud) {
+        print('Select your cloud vendor:');
+        print('1. Google Cloud');
+        print('2. AWS');
+        print('3. Azure');
+        print('4. Skip for now (for local development)');
+        stdout.write('Choice (1-4): ');
+
+        final choice = read() ?? '4';
+        vendor = _mapVendorChoice(choice);
+      } else {
+        vendor = 'local';
+        print(
+          'Using local development configuration (cloud features disabled)\n',
+        );
+      }
     }
 
-    // Get cloud vendor
-    if (vendor == null) {
-      print('\nSelect cloud vendor:');
-      print('1. Google Cloud Platform (GCP)');
-      print('2. Amazon Web Services (AWS)');
-      print('3. Microsoft Azure');
-      print('4. Local Development');
-      stdout.write('Choice (1-4): ');
-
-      final choice = read() ?? '4';
-      vendor = parseVendor(choice);
-    }
-
-    // Get authentication provider
-    if (auth == null) {
-      print('\nSelect authentication provider:');
-      final compatibleProviders = getCompatibleAuthProviders(vendor);
+    // Step 2: Authentication SDK
+    if (auth.isEmpty) {
+      print('\nChoose an Authentication SDK:');
+      final compatibleProviders = vendorCompatibility[vendor] ?? [];
 
       for (int i = 0; i < compatibleProviders.length; i++) {
-        print('${i + 1}. ${formatProviderName(compatibleProviders[i])}');
+        print('${i + 1}. ${_formatProviderName(compatibleProviders[i])}');
       }
-      stdout.write('Choice (1-${compatibleProviders.length}): ');
+      print(
+        '${compatibleProviders.length + 1}. Skip for now (configure later)',
+      );
+      stdout.write('Choice (1-${compatibleProviders.length + 1}): ');
 
-      final choice = int.tryParse(read() ?? '1') ?? 1;
-      auth = compatibleProviders[choice - 1];
+      final choice =
+          int.tryParse(read() ?? '') ?? compatibleProviders.length + 1;
+      auth = choice <= compatibleProviders.length
+          ? compatibleProviders[choice - 1]
+          : 'none';
     }
 
-    // Validate vendor-auth compatibility
+    // Validate compatibility
     if (!isCompatible(vendor, auth)) {
-      print('\n⚠️  Warning: $auth is not recommended for $vendor.');
-      print(
-        '   Recommended providers for $vendor: ${vendorCompatibility[vendor]?.join(', ')}',
-      );
-      stdout.write('   Continue anyway? (y/N): ');
-
+      print('\n⚠️  Warning: $auth may have limited support with $vendor.');
+      stdout.write('Continue anyway? (y/N): ');
       final confirm = read()?.toLowerCase() ?? 'n';
       if (confirm != 'y') {
         print('Configuration cancelled.');
@@ -128,42 +130,90 @@ class DSConfigureCommand extends Command {
       }
     }
 
-    // Get database
-    if (database == null) {
-      print('\nSelect database:');
-      final compatibleDatabases = getCompatibleDatabases(vendor);
+    // Step 3: Database Selection
+    if (database.isEmpty) {
+      print('\nChoose a database:');
+      final compatibleDatabases = vendorDatabases[vendor] ?? [];
 
       for (int i = 0; i < compatibleDatabases.length; i++) {
-        print('${i + 1}. ${formatProviderName(compatibleDatabases[i])}');
+        final dbName = compatibleDatabases[i];
+        final suffix = (dbName == 'mongodb' || dbName == 'nosql')
+            ? ' (extension created by partner)'
+            : '';
+        print('${i + 1}. ${_formatProviderName(dbName)}$suffix');
       }
-      stdout.write('Choice (1-${compatibleDatabases.length}): ');
+      print('${compatibleDatabases.length + 1}. Skip for now');
+      stdout.write('Choice (1-${compatibleDatabases.length + 1}): ');
 
-      final choice = int.tryParse(read() ?? '1') ?? 1;
-      database = compatibleDatabases[choice - 1];
+      final choice =
+          int.tryParse(read() ?? '') ?? compatibleDatabases.length + 1;
+      database = choice <= compatibleDatabases.length
+          ? compatibleDatabases[choice - 1]
+          : 'none';
     }
 
-    // Get CI/CD tool
-    if (cicd == null) {
-      print('\nSelect CI/CD tool:');
-      print('1. GitHub Actions');
-      print('2. GitLab CI');
-      print('3. Custom Script');
-      print('4. None');
-      stdout.write('Choice (1-4): ');
+    // Step 4: DevOps Integration (CLOUD ONLY)
+    if (canUseCloud && vendor != 'local' && cicd.isEmpty) {
+      print('\nWould you like to configure CI/CD and DevOps tools? (y/n)');
+      final configureCicd = read()?.toLowerCase() ?? 'n';
 
-      final choice = read() ?? '4';
-      cicd = parseCiCd(choice);
+      if (configureCicd == 'y') {
+        print('\nSelect CI/CD tool:');
+        print('1. GitHub Actions');
+        print('2. GitLab CI');
+        print('3. Custom Script');
+        stdout.write('Choice (1-3): ');
+
+        final choice = read() ?? '1';
+        cicd = _mapCicdChoice(choice);
+      } else {
+        cicd = 'none';
+      }
+    } else if (cicd.isEmpty) {
+      cicd = 'none';
     }
 
-    // Confirm configuration
-    print('\n📋 Configuration Summary:');
-    print('   Cloud Vendor: ${formatProviderName(vendor)}');
-    print('   Authentication: ${formatProviderName(auth)}');
-    print('   Database: ${formatProviderName(database)}');
-    print('   CI/CD: ${formatProviderName(cicd)}');
+    // Step 5: Customize Tools (CLOUD ONLY)
+    if (canUseCloud && vendor != 'local') {
+      print(
+        '\nCustomize your project with the following tools (select all that apply):',
+      );
+      print('1. Security Tools');
+      print('2. Performance Tools');
+      print('3. Integrations');
+      print(
+        'Enter choices separated by commas (e.g., 1,3) or press Enter to skip:',
+      );
 
-    stdout.write('\nProceed with this configuration? (Y/n): ');
-    final confirm = read()?.toLowerCase() ?? 'y';
+      final toolsChoice = read() ?? '';
+      if (toolsChoice.isNotEmpty) {
+        customTools = toolsChoice
+            .split(',')
+            .map((e) => _mapToolChoice(e.trim()))
+            .where((e) => e.isNotEmpty)
+            .toList();
+      }
+    }
+
+    // Step 6: Preview & Confirm Setup
+    print('\n📋 Review your selections:');
+    print('- Project Type: ${projectConfig['type'] ?? 'new'}');
+    print('- Cloud Vendor: ${_formatProviderName(vendor)}');
+    print('- Authentication SDK: ${_formatProviderName(auth)}');
+    print('- Middleware: ${projectConfig['middleware'] ?? 'dartstream'}');
+    print('- Framework: ${projectConfig['framework']}');
+    print('- Database: ${_formatProviderName(database)}');
+    if (cicd != 'none') {
+      print('- CI/CD: ${_formatProviderName(cicd)}');
+    }
+    if (customTools.isNotEmpty) {
+      print(
+        '- Custom Tools: ${customTools.map((t) => _formatProviderName(t)).join(', ')}',
+      );
+    }
+
+    print('\nConfirm setup? (y/n)');
+    final confirm = read()?.toLowerCase() ?? 'n';
 
     if (confirm != 'y') {
       print('Configuration cancelled.');
@@ -172,113 +222,111 @@ class DSConfigureCommand extends Command {
 
     // Save configuration
     saveProjectConfig(
-      name: name,
+      name: projectConfig['name'],
       content: {
         'vendor': vendor,
         'auth': auth,
         'database': database,
         'cicd': cicd,
-        'configured': DateTime.now().toIso8601String(),
+        'customTools': customTools,
+        'configuredAt': DateTime.now().toIso8601String(),
       },
     );
 
     // Generate CI/CD files
     if (cicd != 'none') {
-      generateCICDFiles(projectName: name, ciCdChoice: cicd);
+      generateCICDFiles(projectName: projectConfig['name'], ciCdChoice: cicd);
     }
 
-    // Update pubspec.yaml with provider dependencies
-    updatePubspecWithProviders(name, vendor, auth, database);
+    // Update pubspec with dependencies
+    updatePubspecWithProviders(projectConfig['name'], vendor, auth, database);
 
-    // Initialize Standard Engine with providers
-    initializeEngineProviders(name, vendor, auth, database);
+    // Step 7: Generate Code with Examples & Documentation (Optional)
+    if (!skipExamples) {
+      print(
+        '\nWould you like to include example code and inline documentation? (y/n)',
+      );
+      final generateExamples = read()?.toLowerCase() ?? 'y';
+
+      if (generateExamples == 'y') {
+        _generateExampleCode(
+          projectConfig['name'],
+          vendor,
+          auth,
+          database,
+          projectConfig['framework'],
+        );
+      }
+    }
 
     print('\n✅ Configuration complete!');
-    print('   Run "dart pub get" to install dependencies.');
+    print('\nNext steps:');
+    print('1. dart pub get    # Install dependencies');
+    print('2. dart run        # Start your server');
   }
 
-  String parseVendor(String choice) {
-    switch (choice) {
-      case '1':
-        return 'gcp';
-      case '2':
-        return 'aws';
-      case '3':
-        return 'azure';
-      case '4':
-      default:
-        return 'local';
+  Map<String, dynamic>? _loadProjectConfig(String projectName) {
+    // Try multiple locations
+    final paths = [
+      'dartstream.yaml',
+      p.join(projectName, 'dartstream.yaml'),
+      p.join('projects', projectName, 'dartstream.yaml'),
+      p.join('..', 'projects', projectName, 'dartstream.yaml'),
+    ];
+
+    for (final path in paths) {
+      final file = File(path);
+      if (file.existsSync()) {
+        final content = file.readAsStringSync();
+        return Map<String, dynamic>.from(loadYaml(content));
+      }
     }
+
+    return null;
   }
 
-  String parseCiCd(String choice) {
-    switch (choice) {
-      case '1':
-        return 'github';
-      case '2':
-        return 'gitlab';
-      case '3':
-        return 'custom';
-      case '4':
-      default:
-        return 'none';
+  Directory getProjectDir(String projectName) {
+    // Try multiple locations
+    final paths = [
+      p.join('projects', projectName),
+      p.join('..', 'projects', projectName),
+      p.join('..', '..', 'projects', projectName),
+      p.join('..', '..', '..', 'projects', projectName),
+    ];
+
+    for (final path in paths) {
+      final dir = Directory(path);
+      if (dir.existsSync()) {
+        return dir;
+      }
     }
+
+    // Default to projects folder from current location
+    return Directory(p.join('projects', projectName));
   }
 
-  String formatProviderName(String provider) {
-    final formatted = provider
-        .replaceAll('_', ' ')
-        .split(' ')
-        .map((word) => word[0].toUpperCase() + word.substring(1))
-        .join(' ');
+  void saveProjectConfig({
+    required String name,
+    required Map<String, dynamic> content,
+  }) {
+    final projectPath = getProjectDir(name).path;
+    final configFile = File(p.join(projectPath, 'config.yaml'));
+    configFile.createSync(recursive: true);
 
-    // Special cases
-    switch (provider) {
-      case 'gcp':
-        return 'Google Cloud Platform';
-      case 'aws':
-        return 'Amazon Web Services';
-      case 'entraid':
-        return 'Microsoft EntraID';
-      case 'auth0':
-        return 'Auth0';
-      case 'cognito':
-        return 'AWS Cognito';
-      case 'firebase':
-        return 'Firebase';
-      case 'mysql':
-        return 'MySQL';
-      case 'postgres':
-        return 'PostgreSQL';
-      default:
-        return formatted;
-    }
-  }
+    // Convert to YAML-like format
+    final lines = <String>[];
+    content.forEach((key, value) {
+      if (value is List) {
+        lines.add('$key:');
+        for (final item in value) {
+          lines.add('  - $item');
+        }
+      } else {
+        lines.add('$key: $value');
+      }
+    });
 
-  List<String> getCompatibleAuthProviders(String vendor) {
-    if (vendor == 'local') {
-      return ['firebase', 'auth0', 'magic', 'stytch', 'cognito', 'entraid'];
-    }
-    return vendorCompatibility[vendor] ?? ['firebase'];
-  }
-
-  List<String> getCompatibleDatabases(String vendor) {
-    switch (vendor) {
-      case 'gcp':
-        return ['firebase', 'mysql', 'postgres', 'none'];
-      case 'aws':
-        return ['mysql', 'postgres', 'none'];
-      case 'azure':
-        return ['mysql', 'postgres', 'none'];
-      case 'local':
-      default:
-        return ['firebase', 'mysql', 'postgres', 'none'];
-    }
-  }
-
-  bool isCompatible(String vendor, String auth) {
-    final compatible = vendorCompatibility[vendor] ?? [];
-    return compatible.contains(auth) || vendor == 'local';
+    configFile.writeAsStringSync(lines.join('\n'));
   }
 
   void updatePubspecWithProviders(
@@ -289,24 +337,24 @@ class DSConfigureCommand extends Command {
   ) {
     print('📦 Updating dependencies...');
 
-    final pubspecPath = p.join(getProjectDir(projectName).path, 'pubspec.yaml');
-    final pubspecFile = File(pubspecPath);
+    final projectPath = getProjectDir(projectName).path;
+    final pubspecFile = File(p.join(projectPath, 'pubspec.yaml'));
 
     if (!pubspecFile.existsSync()) return;
 
     var content = pubspecFile.readAsStringSync();
 
     // Add provider dependencies
-    final authPackage = getAuthPackageName(auth);
-    final dbPackage = getDatabasePackageName(database);
-
-    final dependencies = [
-      if (authPackage.isNotEmpty) '  $authPackage: ^0.0.1',
-      if (dbPackage.isNotEmpty) '  $dbPackage: ^0.0.1',
-    ];
+    final dependencies = <String>[];
+    if (auth != 'none') {
+      dependencies.add('  ${_getAuthPackageName(auth)}: ^0.0.1');
+    }
+    if (database != 'none') {
+      dependencies.add('  ${_getDatabasePackageName(database)}: ^0.0.1');
+    }
 
     if (dependencies.isNotEmpty) {
-      // Insert after "dependencies:" line
+      // Insert after dependencies: line
       content = content.replaceFirst(
         'dependencies:',
         'dependencies:\n  # Provider packages\n${dependencies.join('\n')}',
@@ -316,118 +364,286 @@ class DSConfigureCommand extends Command {
     }
   }
 
-  String getAuthPackageName(String auth) {
-    switch (auth) {
-      case 'firebase':
-        return 'ds_firebase_auth_provider';
-      case 'cognito':
-        return 'ds_cognito_auth_provider';
-      case 'entraid':
-        return 'ds_entraid_auth_provider';
-      case 'auth0':
-        return 'ds_auth0_auth_provider';
-      case 'magic':
-        return 'ds_magic_auth_provider';
-      case 'stytch':
-        return 'ds_stytch_auth_provider';
-      default:
-        return '';
+  void generateCICDFiles({
+    required String projectName,
+    required String ciCdChoice,
+  }) {
+    final projectPath = getProjectDir(projectName).path;
+
+    if (ciCdChoice == 'github') {
+      final dir = Directory(p.join(projectPath, '.github', 'workflows'));
+      dir.createSync(recursive: true);
+
+      File(p.join(dir.path, 'dartstream.yml')).writeAsStringSync('''
+name: DartStream CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dart-lang/setup-dart@v1
+      with:
+        sdk: stable
+    - run: dart pub get
+    - run: dart test
+    - run: dart analyze
+''');
+    } else if (ciCdChoice == 'gitlab') {
+      File(p.join(projectPath, '.gitlab-ci.yml')).writeAsStringSync('''
+image: dart:stable
+
+stages:
+  - test
+  - build
+
+before_script:
+  - dart pub get
+
+test:
+  stage: test
+  script:
+    - dart test
+    - dart analyze
+
+build:
+  stage: build
+  script:
+    - dart compile exe bin/main.dart
+''');
     }
+
+    print('✅ Generated CI/CD configuration for $ciCdChoice');
   }
 
-  String getDatabasePackageName(String database) {
-    switch (database) {
-      case 'firebase':
-        return 'ds_google_firebase_database';
-      case 'mysql':
-        return 'ds_google_mysql_database';
-      case 'postgres':
-        return 'ds_google_postgres_database';
-      default:
-        return '';
-    }
-  }
-
-  void initializeEngineProviders(
+  void _generateExampleCode(
     String projectName,
     String vendor,
     String auth,
     String database,
+    String framework,
   ) {
-    print('🔧 Generating provider configuration...');
+    final projectPath = getProjectDir(projectName).path;
 
-    final providerConfigPath = p.join(
-      getProjectDir(projectName).path,
-      'lib',
-      'src',
-      'extensions',
-      'providers.dart',
-    );
+    // Generate auth example
+    if (auth != 'none') {
+      final authExample = _generateAuthExample(auth);
+      File(p.join(projectPath, 'lib', 'services', 'auth_service.dart'))
+        ..createSync(recursive: true)
+        ..writeAsStringSync(authExample);
+    }
 
-    final providerFile = File(providerConfigPath);
-    providerFile.createSync(recursive: true);
+    // Generate database example
+    if (database != 'none') {
+      final dbExample = _generateDatabaseExample(database);
+      File(p.join(projectPath, 'lib', 'services', 'database_service.dart'))
+        ..createSync(recursive: true)
+        ..writeAsStringSync(dbExample);
+    }
 
-    providerFile.writeAsStringSync('''
-// Auto-generated provider configuration
-// Created by Dartstream CLI
-
-import 'package:ds_standard_engine/ds_standard_engine.dart';
-${auth != 'none' ? "import 'package:${getAuthPackageName(auth)}/${getAuthPackageName(auth)}.dart';" : ''}
-${database != 'none' ? "import 'package:${getDatabasePackageName(database)}/${getDatabasePackageName(database)}.dart';" : ''}
-
-Future<void> registerProviders(DSStandardCore core) async {
-  // Register authentication provider
-  ${getAuthRegistration(auth)}
-  
-  // Register database provider
-  ${getDatabaseRegistration(database)}
-  
-  print('✅ Providers registered successfully');
-}
-''');
+    print('📝 Generated example code in lib/services/');
   }
 
-  String getAuthRegistration(String auth) {
+  String _generateAuthExample(String auth) {
+    final providerClass = _getAuthProviderClass(auth);
+    final packageName = _getAuthPackageName(auth);
+
+    return '''
+import 'package:ds_standard_features/auth.dart';
+import 'package:$packageName/$packageName.dart';
+
+/// Example authentication service using $auth
+class AuthService {
+  final authProvider = $providerClass();
+  
+  Future<void> initialize() async {
+    await authProvider.initialize();
+    print('✅ Authentication initialized');
+  }
+  
+  Future<User?> signIn(String email, String password) async {
+    try {
+      return await authProvider.signIn(email, password);
+    } catch (e) {
+      print('Error signing in: \$e');
+      return null;
+    }
+  }
+  
+  Future<void> signOut() async {
+    await authProvider.signOut();
+  }
+  
+  Stream<User?> get authStateChanges => authProvider.authStateChanges;
+}
+''';
+  }
+
+  String _generateDatabaseExample(String database) {
+    final providerClass = _getDatabaseProviderClass(database);
+    final packageName = _getDatabasePackageName(database);
+
+    return '''
+import 'package:ds_standard_features/database.dart';
+import 'package:$packageName/$packageName.dart';
+
+/// Example database service using $database
+class DatabaseService {
+  final dbProvider = $providerClass();
+  
+  Future<void> initialize() async {
+    await dbProvider.connect();
+    print('✅ Database connected');
+  }
+  
+  Future<void> create(String collection, Map<String, dynamic> data) async {
+    await dbProvider.insert(collection, data);
+  }
+  
+  Future<List<Map<String, dynamic>>> read(String collection) async {
+    return await dbProvider.query(collection);
+  }
+  
+  Future<void> update(String collection, String id, Map<String, dynamic> data) async {
+    await dbProvider.update(collection, id, data);
+  }
+  
+  Future<void> delete(String collection, String id) async {
+    await dbProvider.delete(collection, id);
+  }
+}
+''';
+  }
+
+  String _mapVendorChoice(String choice) {
+    switch (choice) {
+      case '1':
+        return 'gcp';
+      case '2':
+        return 'aws';
+      case '3':
+        return 'azure';
+      default:
+        return 'local';
+    }
+  }
+
+  String _mapCicdChoice(String choice) {
+    switch (choice) {
+      case '1':
+        return 'github';
+      case '2':
+        return 'gitlab';
+      case '3':
+        return 'custom';
+      default:
+        return 'none';
+    }
+  }
+
+  String _mapToolChoice(String choice) {
+    switch (choice) {
+      case '1':
+        return 'security';
+      case '2':
+        return 'performance';
+      case '3':
+        return 'integrations';
+      default:
+        return '';
+    }
+  }
+
+  String _formatProviderName(String provider) {
+    final formatted = {
+      'gcp': 'Google Cloud Platform',
+      'aws': 'Amazon Web Services',
+      'azure': 'Microsoft Azure',
+      'local': 'Local Development',
+      'firebase': 'Firebase Authentication',
+      'cognito': 'AWS Cognito',
+      'entraid': 'Azure Active Directory',
+      'azure_ad': 'Azure Active Directory',
+      'auth0': 'Auth0',
+      'magic': 'Magic',
+      'stytch': 'Stytch',
+      'firestore': 'Firebase Firestore',
+      'postgres': 'PostgreSQL',
+      'mysql': 'MySQL',
+      'mongodb': 'MongoDB',
+      'nosql': 'NoSQL Database',
+      'dynamodb': 'DynamoDB',
+      'rds': 'AWS RDS',
+      'cosmos': 'Azure Cosmos DB',
+      'sql': 'Azure SQL',
+      'github': 'GitHub Actions',
+      'gitlab': 'GitLab CI',
+      'custom': 'Custom Script',
+      'security': 'Security Tools',
+      'performance': 'Performance Tools',
+      'integrations': 'Integrations',
+      'none': 'Not configured',
+    };
+
+    return formatted[provider] ?? provider;
+  }
+
+  String _getAuthProviderClass(String auth) {
     switch (auth) {
       case 'firebase':
-        return '''core.registerCoreExtension(
-    extension: DSFirebaseAuthProvider(),
-    baseFeature: 'authentication',
-  );''';
+        return 'DSFirebaseAuthProvider';
       case 'cognito':
-        return '''core.registerCoreExtension(
-    extension: DSCognitoAuthProvider(),
-    baseFeature: 'authentication',
-  );''';
+        return 'DSCognitoAuthProvider';
       case 'entraid':
-        return '''core.registerCoreExtension(
-    extension: DSEntraIDAuthProvider(),
-    baseFeature: 'authentication',
-  );''';
+        return 'DSEntraIDAuthProvider';
+      case 'auth0':
+        return 'DSAuth0Provider';
+      case 'magic':
+        return 'DSMagicProvider';
+      case 'stytch':
+        return 'DSStytchProvider';
       default:
-        return '// No authentication provider configured';
+        return 'DSAuthProvider';
     }
   }
 
-  String getDatabaseRegistration(String database) {
+  String _getDatabaseProviderClass(String database) {
     switch (database) {
-      case 'firebase':
-        return '''core.registerCoreExtension(
-    extension: DSFirebaseDatabase(),
-    baseFeature: 'database',
-  );''';
-      case 'mysql':
-        return '''core.registerCoreExtension(
-    extension: DSMySQLDatabase(),
-    baseFeature: 'database',
-  );''';
+      case 'firestore':
+        return 'DSFirestoreProvider';
       case 'postgres':
-        return '''core.registerCoreExtension(
-    extension: DSPostgresDatabase(),
-    baseFeature: 'database',
-  );''';
+        return 'DSPostgreSQLProvider';
+      case 'mysql':
+        return 'DSMySQLProvider';
+      case 'mongodb':
+        return 'DSMongoDBProvider';
+      case 'dynamodb':
+        return 'DSDynamoDBProvider';
+      case 'cosmos':
+        return 'DSCosmosDBProvider';
       default:
-        return '// No database provider configured';
+        return 'DSDatabaseProvider';
     }
+  }
+
+  String _getAuthPackageName(String auth) {
+    return 'ds_${auth}_auth';
+  }
+
+  String _getDatabasePackageName(String database) {
+    return 'ds_${database}_db';
+  }
+
+  bool isCompatible(String vendor, String auth) {
+    if (auth == 'none') return true;
+    final compatible = vendorCompatibility[vendor] ?? [];
+    return compatible.contains(auth);
   }
 }
