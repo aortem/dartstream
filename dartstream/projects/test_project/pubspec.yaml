@@ -26,6 +26,10 @@ dependencies:
   # Ping Identity / OIDC authentication
   openid_client: ^0.4.9+1
   url_launcher: ^6.2.5
+  
+  # HTTP server for testing
+  shelf: ^1.4.0
+  shelf_static: ^1.1.0
 
 dev_dependencies:
   test: ^1.25.0

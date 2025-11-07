@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Authentication...</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #c62828;
+            text-align: left;
+        }
+        
+        .success {
+            background: #e8f5e9;
+            color: #388e3c;
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid #388e3c;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="loading">
+            <div class="spinner"></div>
+            <h2>Processing Authentication...</h2>
+            <p>Please wait while we complete your login.</p>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        // Ping Identity OIDC Configuration
+        const config = {
+            issuer: 'https://auth.pingone.sg/89bcd671-bbf2-472e-99cb-2ffd24e4b5d6/as',
+            clientId: 'e70846a0-ef26-472d-ad6b-d004f1d748df',
+            tokenEndpoint: 'https://auth.pingone.sg/89bcd671-bbf2-472e-99cb-2ffd24e4b5d6/as/token',
+            userInfoEndpoint: 'https://auth.pingone.sg/89bcd671-bbf2-472e-99cb-2ffd24e4b5d6/as/userinfo',
+        };
+
+        // Process the OAuth callback
+        async function handleCallback() {
+            try {
+                // Parse URL parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const state = urlParams.get('state');
+                const error = urlParams.get('error');
+                const errorDescription = urlParams.get('error_description');
+
+                // Check for errors
+                if (error) {
+                    throw new Error(`${error}: ${errorDescription || 'Authentication failed'}`);
+                }
+
+                // Verify state
+                const savedState = sessionStorage.getItem('state');
+                if (!state || state !== savedState) {
+                    throw new Error('State mismatch - possible CSRF attack');
+                }
+
+                if (!code) {
+                    throw new Error('No authorization code received');
+                }
+
+                // Exchange code for tokens
+                const codeVerifier = sessionStorage.getItem('code_verifier');
+                const tokens = await exchangeCodeForTokens(code, codeVerifier);
+
+                // Get user info
+                const userInfo = await getUserInfo(tokens.access_token);
+
+                // Store tokens and user info
+                localStorage.setItem('access_token', tokens.access_token);
+                if (tokens.id_token) {
+                    localStorage.setItem('id_token', tokens.id_token);
+                }
+                localStorage.setItem('user_info', JSON.stringify(userInfo));
+
+                // Clean up session storage
+                sessionStorage.removeItem('code_verifier');
+                sessionStorage.removeItem('state');
+
+                // Show success
+                showSuccess(userInfo);
+
+                // Redirect back to main page after 2 seconds
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Callback error:', error);
+                showError(error.message);
+            }
+        }
+
+        // Exchange authorization code for tokens
+        async function exchangeCodeForTokens(code, codeVerifier) {
+            const response = await fetch(config.tokenEndpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    grant_type: 'authorization_code',
+                    code: code,
+                    redirect_uri: window.location.origin + '/callback.html',
+                    client_id: config.clientId,
+                    code_verifier: codeVerifier,
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Token exchange failed: ${errorData.error_description || response.statusText}`);
+            }
+
+            return await response.json();
+        }
+
+        // Get user information
+        async function getUserInfo(accessToken) {
+            const response = await fetch(config.userInfoEndpoint, {
+                headers: {
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user info');
+            }
+
+            return await response.json();
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').innerHTML = `
+                <div class="error">
+                    <h2>❌ Authentication Failed</h2>
+                    <p>${message}</p>
+                    <button onclick="window.location.href='/'" style="margin-top: 16px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        Go Back
+                    </button>
+                </div>
+            `;
+        }
+
+        // Show success
+        function showSuccess(userInfo) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('result').innerHTML = `
+                <div class="success">
+                    <h2>✅ Authentication Successful!</h2>
+                    <p>Welcome, ${userInfo.name || userInfo.email || 'User'}!</p>
+                    <p style="font-size: 14px; margin-top: 10px;">Redirecting back to main page...</p>
+                </div>
+            `;
+        }
+
+        // Start processing when page loads
+        window.addEventListener('load', handleCallback);
+    </script>
+</body>
+</html>
+
