@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dartstream + Ping Identity Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+        
+        .logo p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .status {
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+            display: block;
+        }
+        
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+        
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 12px;
+        }
+        
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .user-info {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .user-info h3 {
+            color: #333;
+            margin-bottom: 16px;
+            font-size: 18px;
+        }
+        
+        .user-info-item {
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        
+        .user-info-item strong {
+            color: #667eea;
+            display: inline-block;
+            width: 120px;
+        }
+        
+        .user-info-item code {
+            background: #e0e0e0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+        
+        .config {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 20px;
+            font-size: 12px;
+        }
+        
+        .config h4 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+        
+        .config p {
+            color: #999;
+            margin-bottom: 6px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .loading.active {
+            display: block;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <h1>🔐 Dartstream + Ping</h1>
+            <p>OIDC Authentication Test</p>
+        </div>
+
+        <div id="status" class="status info">
+            <strong>Ready to test!</strong><br>
+            Click "Login with Ping Identity" to start the authentication flow.
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p style="margin-top: 10px; color: #666;">Authenticating...</p>
+        </div>
+
+        <button id="loginBtn" class="btn btn-primary" onclick="login()">
+            🚀 Login with Ping Identity
+        </button>
+
+        <button id="logoutBtn" class="btn btn-secondary" onclick="logout()" style="display: none;">
+            👋 Logout
+        </button>
+
+        <div id="userInfo" class="user-info">
+            <h3>✅ Authenticated User</h3>
+            <div class="user-info-item">
+                <strong>Name:</strong> <span id="userName">-</span>
+            </div>
+            <div class="user-info-item">
+                <strong>Email:</strong> <span id="userEmail">-</span>
+            </div>
+            <div class="user-info-item">
+                <strong>Subject:</strong> <code id="userSub">-</code>
+            </div>
+            <div class="user-info-item">
+                <strong>Access Token:</strong> <code id="accessToken">-</code>
+            </div>
+        </div>
+
+        <div class="config">
+            <h4>⚙️ Configuration</h4>
+            <p>Issuer: auth.pingone.sg/.../as</p>
+            <p>Client ID: e70846a0-ef26-472d-ad6b-d004f1d748df</p>
+            <p>Redirect URI: http://localhost:3000/callback.html</p>
+        </div>
+    </div>
+
+    <script>
+        // Ping Identity OIDC Configuration
+        const config = {
+            issuer: 'https://auth.pingone.sg/89bcd671-bbf2-472e-99cb-2ffd24e4b5d6/as',
+            clientId: 'e70846a0-ef26-472d-ad6b-d004f1d748df',
+            redirectUri: 'http://localhost:3000/callback.html',
+            scopes: ['openid', 'profile', 'email'],
+        };
+
+        // Check if user is already logged in
+        window.addEventListener('load', () => {
+            checkAuthStatus();
+        });
+
+        function checkAuthStatus() {
+            const accessToken = localStorage.getItem('access_token');
+            const userInfo = localStorage.getItem('user_info');
+
+            if (accessToken && userInfo) {
+                showLoggedInState(JSON.parse(userInfo));
+            }
+        }
+
+        // Generate random string for PKCE
+        function generateRandomString(length) {
+            const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~';
+            let result = '';
+            const values = new Uint8Array(length);
+            crypto.getRandomValues(values);
+            for (let i = 0; i < length; i++) {
+                result += charset[values[i] % charset.length];
+            }
+            return result;
+        }
+
+        // Generate PKCE code challenge
+        async function generateCodeChallenge(codeVerifier) {
+            const encoder = new TextEncoder();
+            const data = encoder.encode(codeVerifier);
+            const hash = await crypto.subtle.digest('SHA-256', data);
+            const base64 = btoa(String.fromCharCode(...new Uint8Array(hash)))
+                .replace(/\+/g, '-')
+                .replace(/\//g, '_')
+                .replace(/=/g, '');
+            return base64;
+        }
+
+        // Login function with PKCE
+        async function login() {
+            try {
+                showStatus('Initiating login...', 'info');
+                document.getElementById('loading').classList.add('active');
+                document.getElementById('loginBtn').disabled = true;
+
+                // Generate PKCE parameters
+                const codeVerifier = generateRandomString(128);
+                const codeChallenge = await generateCodeChallenge(codeVerifier);
+                const state = generateRandomString(32);
+
+                // Store for later use
+                sessionStorage.setItem('code_verifier', codeVerifier);
+                sessionStorage.setItem('state', state);
+
+                // Build authorization URL
+                const authUrl = new URL(`${config.issuer}/authorize`);
+                authUrl.searchParams.append('response_type', 'code');
+                authUrl.searchParams.append('client_id', config.clientId);
+                authUrl.searchParams.append('redirect_uri', config.redirectUri);
+                authUrl.searchParams.append('scope', config.scopes.join(' '));
+                authUrl.searchParams.append('state', state);
+                authUrl.searchParams.append('code_challenge', codeChallenge);
+                authUrl.searchParams.append('code_challenge_method', 'S256');
+
+                // Redirect to Ping Identity login
+                window.location.href = authUrl.toString();
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+                document.getElementById('loading').classList.remove('active');
+                document.getElementById('loginBtn').disabled = false;
+            }
+        }
+
+        // Logout function
+        function logout() {
+            // Clear tokens
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('id_token');
+            localStorage.removeItem('user_info');
+            sessionStorage.clear();
+
+            // Reset UI
+            document.getElementById('loginBtn').style.display = 'block';
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.getElementById('userInfo').style.display = 'none';
+            showStatus('Logged out successfully!', 'info');
+
+            // Optional: Redirect to Ping Identity signoff endpoint
+            // window.location.href = `${config.issuer}/signoff`;
+        }
+
+        // Show logged in state
+        function showLoggedInState(userInfo) {
+            document.getElementById('loginBtn').style.display = 'none';
+            document.getElementById('logoutBtn').style.display = 'block';
+            document.getElementById('userInfo').style.display = 'block';
+
+            document.getElementById('userName').textContent = userInfo.name || '-';
+            document.getElementById('userEmail').textContent = userInfo.email || '-';
+            document.getElementById('userSub').textContent = userInfo.sub || '-';
+            
+            const token = localStorage.getItem('access_token');
+            const shortToken = token ? token.substring(0, 50) + '...' : '-';
+            document.getElementById('accessToken').textContent = shortToken;
+
+            showStatus('Successfully authenticated!', 'success');
+        }
+
+        // Show status message
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = `<strong>${type === 'success' ? '✅' : type === 'error' ? '❌' : 'ℹ️'}</strong><br>${message}`;
+            statusDiv.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
+
