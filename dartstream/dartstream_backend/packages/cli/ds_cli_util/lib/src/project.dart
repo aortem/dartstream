@@ -482,7 +482,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.10.7
 
 dependencies:
 $dependencies
