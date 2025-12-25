@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:yaml/yaml.dart';
 import 'package:path/path.dart' as p;
 
+// Sync the version field in all manifest.yaml files with the version in their respective pubspec.yaml files.
 Future<void> main() async {
   final root = Directory.current;
   await for (var entity in root.list(recursive: true, followLinks: false)) {
