@@ -1,0 +1,45 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
+  },
+  "engines": {
+    "node": ">=24.0.0 <25"
+  },
+  "packageManager": "npm@10.5.0",
+  "dependencies": {
+    "@gtm-support/vue-gtm": "^3.1.0",
+    "@nuxt/content": "^2.7.2",
+    "@nuxt/eslint": "^1.4.0",
+    "@nuxt/icon": "^1.13.0",
+    "@nuxt/image": "^1.10.0",
+    "@nuxt/scripts": "^0.11.6",
+    "@tanstack/vue-table": "^8.21.3",
+    "@unhead/vue": "^2.0.8",
+    "better-sqlite3": "^12.2.0",
+    "chart.js": "^4.4.9",
+    "cypress-parallel": "^0.15.0",
+    "eslint": "^9.26.0",
+    "firebase": "^12.2.1",
+    "nuxt": "^4.0.2",
+    "shepherd.js": "^14.5.0",
+    "typescript": "^5.8.3",
+    "vue": "^3.5.13",
+    "vue-chartjs": "^5.3.2",
+    "vue-multiselect": "^3.3.1",
+    "vue-router": "^4.5.1",
+    "vue-toastification": "^2.0.0-rc.5"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.14.0",
+    "cypress": "^15.1.0"
+  }
+}

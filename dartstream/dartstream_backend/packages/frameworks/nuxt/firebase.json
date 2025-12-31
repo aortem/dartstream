@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "intellitoggle-prod",
+    "public": ".output/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}
