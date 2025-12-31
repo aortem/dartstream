@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "intellitoggle-prod"
+  },
+  "targets": {
+    "intellitoggle-prod": {
+      "hosting": {
+        "intellitoggle-prod": [
+          "intellitoggle-prod"
+        ]
+      }
+    }
+  }
+}
