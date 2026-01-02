@@ -10,8 +10,8 @@ class DSStandardCore {
 
   // Extension registries for different levels
   final Map<String, dynamic> _coreExtensions = {};
-  final Map<String, Map<String, List<dynamic>>> _extendedFeatures = {};
-  final Map<String, dynamic> _thirdPartyEnhancements = {};
+  //final Map<String, Map<String, List<dynamic>>> _extendedFeatures = {};
+  //final Map<String, dynamic> _thirdPartyEnhancements = {};
 
   /// Constructor to initialize the core with configuration data.
   /// [projectConfig] contains the initial setup for the project.
@@ -83,7 +83,7 @@ class DSStandardCore {
   /// [coreExtensionName] The name of the core extension to extend
   /// [extension] The extended feature to register
   /// [featureName] The name of the extended feature
-  bool registerExtendedFeature({
+  /*bool registerExtendedFeature({
     required String coreExtensionName,
     required dynamic extension,
     required String featureName,
@@ -129,7 +129,7 @@ class DSStandardCore {
     if (extension is LifecycleHook) {
       extension.onInitialize();
     }
-  }
+  } */
 
   /// Gets a registered core extension
   T? getCoreExtension<T>(String name) {
@@ -137,7 +137,7 @@ class DSStandardCore {
   }
 
   /// Gets extended features for a core extension
-  Map<String, List<dynamic>>? getExtendedFeatures(String coreExtensionName) {
+ /* Map<String, List<dynamic>>? getExtendedFeatures(String coreExtensionName) {
     return _extendedFeatures[coreExtensionName];
   }
 
@@ -174,17 +174,24 @@ class DSStandardCore {
       ),
       'thirdParty': _thirdPartyEnhancements.keys.toList(),
     };
+  }*/
+
+
+  /// Lists all registered core extensions
+  List<String> listCoreExtensions() {
+    return _coreExtensions.keys.toList();
   }
+
 
   /// Debug method to inspect the current configuration and services.
   /// Provides a quick overview of the core state.
   void debug() {
     print("Debugging Dartstream Standard Core:");
     print("Core Extensions: ${_coreExtensions.keys.join(', ')}");
-    print("Extended Features: ${_extendedFeatures.keys.join(', ')}");
-    print(
-      "Third-Party Enhancements: ${_thirdPartyEnhancements.keys.join(', ')}",
-    );
+    //print("Extended Features: ${_extendedFeatures.keys.join(', ')}");
+    //print(
+    //  "Third-Party Enhancements: ${_thirdPartyEnhancements.keys.join(', ')}",
+    //);
     projectConfig.forEach((key, value) {
       print("- $key: $value");
     });
