@@ -46,9 +46,9 @@ debug_merge_request:
     # Run the debug step any time we touch any of the isolated areas.
     - changes:
         - dartstream/backend/**/*
-        - dartstream/admin/**/*
+       # - dartstream/admin/**/*
         - dartstream/docs/**/*
-        - dartstream/frontend/**/*
+       # - dartstream/frontend/**/*
         - "*" # files at repo root (no slash)
         - "**/*" # any other path changes (covered for completeness)
       when: always
@@ -71,30 +71,30 @@ validation_trigger_docs:
 # -------------------------------------------------------------------
 # Validation Conditional Triggers for Frontend
 # -------------------------------------------------------------------
-validation_trigger_frontend:
-  stage: validation
-  trigger:
-    include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
-  rules:
-    # Run only when frontend changed
-    - changes:
-        - dartstream/frontend/**/*
-      when: always
-    - when: never
+# validation_trigger_frontend:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
+#   rules:
+#     # Run only when frontend changed
+#     - changes:
+#         - dartstream/frontend/**/*
+#       when: always
+#     - when: never
 
 # -------------------------------------------------------------------
 # Validation Conditional Triggers for Admin
 # -------------------------------------------------------------------
-validation_trigger_admin:
-  stage: validation
-  trigger:
-    include: tools/pipelines/firebase-hosting/child-ci-production-admin.yml
-  rules:
-    # Run only when admin changed
-    - changes:
-        - dartstream/admin/**/*
-      when: always
-    - when: never
+# validation_trigger_admin:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/firebase-hosting/child-ci-production-admin.yml
+#   rules:
+#     # Run only when admin changed
+#     - changes:
+#         - dartstream/admin/**/*
+#       when: always
+#     - when: never
 
 # -------------------------------------------------------------------
 # Validation Conditional Triggers for Backend
@@ -130,26 +130,26 @@ cypress_tests:
 # We achieve this by first preventing the job when any of those 4 changed,
 # then allowing it for any other changes.
 # -------------------------------------------------------------------
-validation_trigger_root_tools:
-  stage: validation
-  trigger:
-    # NOTE: This currently points to your existing frontend child. If you have a
-    # root-specific child pipeline, replace with that path (e.g., .../child-ci-production-root.yml).
-    include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
-  rules:
-    # If any of the 4 areas changed, do NOT run this root job
-    - changes:
-        - dartstream/backend/**/*
-        - dartstream/admin/**/*
-        - dartstream/docs/**/*
-        - dartstream/frontend/**/*
-      when: never
-    # Otherwise, run for any other change (root files, tools, etc.)
-    - changes:
-        - "*"
-        - "**/*"
-      when: always
-    - when: never
+# validation_trigger_root_tools:
+#   stage: validation
+#   trigger:
+#     # NOTE: This currently points to your existing frontend child. If you have a
+#     # root-specific child pipeline, replace with that path (e.g., .../child-ci-production-root.yml).
+#     include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
+#   rules:
+#     # If any of the 4 areas changed, do NOT run this root job
+#     - changes:
+#         - dartstream/backend/**/*
+#         - dartstream/admin/**/*
+#         - dartstream/docs/**/*
+#         - dartstream/frontend/**/*
+#       when: never
+#     # Otherwise, run for any other change (root files, tools, etc.)
+#     - changes:
+#         - "*"
+#         - "**/*"
+#       when: always
+#     - when: never
 
 # deployment_trigger_devops:
 #   stage: deployment-helm-chart
