@@ -54,6 +54,65 @@ debug_merge_request:
       when: always
     - when: never
 
+validate_branch_name:
+  stage: validate
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, admin, docs, development, qa, main."
+        exit 1
+      fi
+  rules:
+   - when: always
+
+validate_commit_messages:
+  stage: validate
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
+    - when: always
+    
 # -------------------------------------------------------------------
 # Validation Conditional Triggers for Docs
 # -------------------------------------------------------------------
