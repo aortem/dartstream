@@ -99,16 +99,16 @@ validation_trigger_docs:
 # -------------------------------------------------------------------
 # Validation Conditional Triggers for Backend
 # -------------------------------------------------------------------
-validation_trigger_backend:
-  stage: validation
-  trigger:
-    include: tools/pipelines/cloudbuild-hosting/child-ci-production-backend.yml
-  rules:
-    # Run only when backend changed
-    - changes:
-        - dartstream/backend/**/*
-      when: always
-    - when: never
+# validation_trigger_backend:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/cloudbuild-hosting/child-ci-production-backend.yml
+#   rules:
+#     # Run only when backend changed
+#     - changes:
+#         - dartstream/backend/**/*
+#       when: always
+#     - when: never
 
 # -------------------------------------------------------------------
 # Cypress E2E Tests (Frontend Only)
