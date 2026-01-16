@@ -204,8 +204,10 @@ firebase:deploy:
 cleanup:preview-referrers:
   image: google/cloud-sdk:slim
   stage: cleanup
-  only:
-    - schedules
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never
   before_script:
     - apt-get update -y && apt-get install -y jq curl
     - bash tools/scripts/firebase/gcloud_prod_acc_firebase_production.sh
