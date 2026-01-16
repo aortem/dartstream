@@ -14,6 +14,7 @@ class DSAuthProviderMetadata {
 }
 
 class DSAuthManager {
+  
   static final Map<String, DSAuthProvider> _registeredProviders = {};
   static final Map<String, DSAuthProviderMetadata> _providerMetadata = {};
   static bool enableDebugging = false;
@@ -68,8 +69,12 @@ class DSAuthManager {
       throw DSAuthError('Provider not registered: $providerName');
     }
     _provider = _registeredProviders[providerName]!;
-    log('Initialized manager with provider: $providerName');
   }
+  Future<void> initialize(Map<String, dynamic> config) async {
+  log('Initializing auth provider...');
+  await _provider.initialize(config);
+}
+
 
   Future<DSAuthUser> getCurrentUser() {
     log('Fetching current user...');

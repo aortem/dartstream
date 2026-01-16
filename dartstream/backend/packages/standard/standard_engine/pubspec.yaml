@@ -11,6 +11,9 @@ resolution: workspace
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-  ds_tools_testing: ^0.0.2
-#  ds_tools_general: ^0.0.2
-  ds_standard_features: ^0.0.4
+  ds_tools_testing: ^0.1.4
+# ds_tools_general: ^0.0.2
+  ds_standard_features: ^0.1.5
+  ds_lifecycle_base:
+    workspace: true
+  test: ^1.27.0

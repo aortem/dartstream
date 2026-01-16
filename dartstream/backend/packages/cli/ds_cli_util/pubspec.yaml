@@ -19,10 +19,10 @@ dependencies:
   #  TBD: ^0.0.1
 
   # DS Standard Features
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.1.5
 
   # DS Tools Testing
-  ds_tools_testing: ^0.0.1-pre
+  ds_tools_testing: ^0.1.4
 
   #DS Tools CLI
   ds_tools_cli: ^0.0.1-pre+2
