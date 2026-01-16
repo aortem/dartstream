@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
-
 
 /// The core module of Dartstream.
 /// Handles the foundational setup, configurations, and lifecycle of the framework.
