@@ -89,7 +89,7 @@
           </div>
 
           <span class="text-sm md:block hidden">
-            {{ email ? email : "anonymous@acme.com" }}
+            {{ user.email ? user.email : "anonymous@acme.com" }}
           </span>
         </div>
         <div
@@ -102,7 +102,7 @@
 
           <hr class="my-1 block sm:hidden" />
           <span class="block sm:hidden px-4 py-2">
-            {{ email ? email : "anonymous@acme.com" }}
+            {{ user.email ? user.email : "anonymous@acme.com" }}
           </span>
           <div
             @click="goToSettings"
@@ -139,6 +139,9 @@ import { ref, onMounted } from "vue";
 import { signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useAvatar } from "~/composables/useAvatar";
+import { useAuth } from "~/composables/useAuth";
+
+const { user } = useAuth();
 
 const { avatarUrl, refreshAvatar } = useAvatar();
 
@@ -172,8 +175,7 @@ onMounted(async () => {
   email.value = authUser?.email || "";
   tenantName.value = userStatus?.tenantName || "";
 
-  // Fetch and Refresh Avatar after upload
-  await refreshAvatar(authUser.uid, tenantId.value)
+
 
 });
 

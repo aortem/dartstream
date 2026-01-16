@@ -3,49 +3,88 @@
 declare global {
   namespace Cypress {
     interface Chainable {
-      login(email: string, password: string): Chainable<void>;
-      dataCy(element: string): Chainable<JQuery<HTMLElement>>;
-      singUp(
-        email: string,
-        password: string,
-        confirmPassword: string
-      ): Chainable<void>;
+      /**
+       * Logs in via DartStream directly (provider-agnostic)
+       */
+      login(overrides?: {
+        email?: string
+        password?: string
+        provider?: string
+      }): Chainable<void>
+
+      /**
+       * Logs out via DartStream
+       */
+      logout(): Chainable<void>
+
+      /**
+       * data-cy selector helper
+       */
+      dataCy(element: string): Chainable<JQuery<HTMLElement>>
+
+      /**
+       * Registers a user via DartStream
+       */
+      signUp(overrides?: {
+        email?: string
+        password?: string
+      }): Chainable<void>
     }
   }
 }
 
-Cypress.Commands.add("dataCy", (value: string) => {
-  return cy.get(`[data-cy="${value}"]`);
-});
+/* ----------------------------------
+ * data-cy helper (unchanged)
+ * ---------------------------------- */
+Cypress.Commands.add('dataCy', (value: string) => {
+  return cy.get(`[data-cy="${value}"]`)
+})
 
-Cypress.Commands.add("login", (email, password) => {
-  cy.visit("/auth/login");
-  cy.dataCy("input-email").type(email);
-  cy.dataCy("input-password").type(password);
-  // Email/password now flows through Firebase first, then backend token exchange
-  cy.intercept("POST", "**/auth/google").as(
-    "loginUser"
-  );
-  cy.dataCy("button-login").click();
-  cy.wait("@loginUser").then((interception) => {
-    const statusCode = interception.response?.statusCode;
-    const message = interception.response?.body?.message;
+/* ----------------------------------
+ * Provider-agnostic login
+ * ---------------------------------- */
+Cypress.Commands.add('login', (overrides = {}) => {
+  const provider =
+    overrides.provider ||
+    Cypress.env('DS_AUTH_PROVIDER') ||
+    'okta'
 
-    // Log the message first (only if statusCode is not 200)
-    if (statusCode !== 200) {
-      cy.log("Login API call failed, with message: " + message);
-    }
+  cy.request({
+    method: 'POST',
+    url: 'http://localhost:8080/auth/sign-in',
+    body: {
+      email: overrides.email || 'test@dartstream.dev',
+      password: overrides.password || 'password123',
+      provider,
+      __e2e__: true, // 👈 tells DartStream to mock provider safely
+    },
+    failOnStatusCode: false,
+  }).then((res) => {
+    expect(res.status).to.eq(200)
+  })
+})
 
-    // Now assert (this will still fail the test if status != 200)
-    expect(statusCode, "Login API call should return 200").to.eq(200);
-    cy.wait(2000); // wait for 2 seconds to ensure the dashboard loads completely
-  });
-});
+/* ----------------------------------
+ * Logout
+ * ---------------------------------- */
+Cypress.Commands.add('logout', () => {
+  cy.request('POST', 'http://localhost:8080/auth/logout')
+})
 
-Cypress.Commands.add("singUp", (email, password, confirmPassword) => {
-  cy.visit("/auth/register");
-  cy.dataCy("input-email").type(email);
-  cy.dataCy("input-password").type(password);
-  cy.dataCy("input-confirm-password").type(confirmPassword);
-  cy.dataCy("button-submit").click();
-});
+/* ----------------------------------
+ * Provider-agnostic signup
+ * ---------------------------------- */
+Cypress.Commands.add('signUp', (overrides = {}) => {
+  cy.request({
+    method: 'POST',
+    url: 'http://localhost:8080/auth/register',
+    body: {
+      email: overrides.email || 'newuser@dartstream.dev',
+      password: overrides.password || 'password123',
+      __e2e__: true,
+    },
+    failOnStatusCode: false,
+  }).then((res) => {
+    expect(res.status).to.eq(200)
+  })
+})

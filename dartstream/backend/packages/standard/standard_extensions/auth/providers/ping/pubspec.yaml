@@ -1,16 +1,20 @@
-name: ds_ping_auth_provider
-description: Fingerprint authentication provider for Dartstream.
-version: 0.0.1-pre
-repository: https://github.com/aortem/dartstream
-
-publish_to: none # Mark the package as non-publishable for local testing:
-
-environment:
- sdk: ^3.10.7
+name: ping_identity_dart_auth_sdk
+description: Ping Identity Auth SDK for DartStream
+version: 0.0.1
+publish_to: none
 
 resolution: workspace
 
+environment:
+  sdk: ^3.10.7
+
+
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.2
-  ds_auth_base: ^0.0.1
-  ds_standard_features: ^0.0.4
+  ds_auth_base:
+    path: ../../base
+
+
+dev_dependencies:
+  test: ^1.25.0
+
+

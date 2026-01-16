@@ -64,9 +64,10 @@ class DSAuth0ErrorMapper {
       final errorDescription = error['error_description'] as String?;
       
       return DSAuthError(
-        errorDescription ?? 'Auth0 error occurred',
-        code: _mapAuth0ErrorCode(errorCode),
-      );
+  errorDescription ?? _getErrorMessage(errorCode),
+  code: _mapAuth0ErrorCode(errorCode),
+);
+
     }
 
     // Handle unknown errors

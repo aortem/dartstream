@@ -286,13 +286,17 @@ class DSAuth0AuthProvider implements DSAuthProvider {
 
   /// Refreshes an authentication token using refresh token
   @override
-  Future<String> refreshToken(String refreshToken) async {
+  Future<String> refreshToken(String? refreshToken) async {
+    final token = refreshToken ?? _refreshToken;
+  if (token == null) {
+    throw DSAuthError('No refresh token available');
+  }
     try {
       final response = await _performAuth0Request('/oauth/token', {
         'grant_type': 'refresh_token',
         'client_id': clientId,
         'client_secret': clientSecret,
-        'refresh_token': refreshToken,
+        'refresh_token': token,
       });
 
       if (response['error'] != null) {

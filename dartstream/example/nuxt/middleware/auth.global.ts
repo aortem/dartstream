@@ -1,48 +1,44 @@
-export default defineNuxtRouteMiddleware((to) => {
-  const token = useCookie("auth_token");
+// middleware/auth.global.ts
+export default defineNuxtRouteMiddleware(async (to) => {
+  const publicRoutes = [
+    '/auth/login',
+    '/auth/register',
+    '/auth/forgot',
+  ]
 
-  if (
-    !token.value &&
-    to.path !== "/auth/login" &&
-    to.path !== "/auth/register" && 
-    to.path !== "/auth/forgot" 
-  ) {
-    useCookie("auth_token").value = null;
-    localStorage.removeItem("auth_token");
-    localStorage.removeItem("refresh_token");
-    localStorage.removeItem("auth_user");
-    localStorage.removeItem("sandbox");
-    localStorage.clear();
-    return navigateTo("/auth/login");
+  if (publicRoutes.includes(to.path)) {
+    return
   }
 
-  if (process.client && token.value) {
-    const userStatusRaw = localStorage.getItem("user_status");
+  const { fetchSession, user } = useUser()
 
-    if (userStatusRaw) {
-      try {
-        const userStatus = JSON.parse(userStatusRaw);
-        const isInactive = ["inactive", "none"].includes(
-          userStatus?.subscriptionStatus
-        );
-        const isSandbox = userStatus?.isSandbox === true;
-        const hasActivePlan = userStatus?.subscriptionStatus === "active";
+  // Try to restore session from DartStream
+  const sessionUser = user.value ?? (await fetchSession())
 
-        const onDashboard = to.path.startsWith("/dashboard");
-        const onMembership = to.path.startsWith("/membership");
-
-        // ✅ If sandbox or subscription is active → go to dashboard
-        if ((isSandbox || hasActivePlan) && !onDashboard) {
-          return navigateTo("/dashboard");
-        }
-
-        // ❌ If not sandbox and not active → go to membership
-        if (!isSandbox && !hasActivePlan && !onMembership) {
-          return navigateTo("/membership");
-        }
-      } catch (err) {
-        console.warn("❌ Failed to parse user_status:", err);
-      }
-    }
+  // ❌ Not authenticated → login
+  if (!sessionUser) {
+    return navigateTo('/auth/login')
   }
-});
+
+  /* ----------------------------------
+   * Business logic (unchanged concept)
+   * ---------------------------------- */
+  const subscriptionStatus = sessionUser.subscriptionStatus
+  const isSandbox = sessionUser.isSandbox === true
+
+  const hasActivePlan = subscriptionStatus === 'active'
+  const isInactive = ['inactive', 'none'].includes(subscriptionStatus)
+
+  const onDashboard = to.path.startsWith('/dashboard')
+  const onMembership = to.path.startsWith('/membership')
+
+  // ✅ Sandbox or active subscription → dashboard
+  if ((isSandbox || hasActivePlan) && !onDashboard) {
+    return navigateTo('/dashboard')
+  }
+
+  // ❌ No plan → membership
+  if (!isSandbox && isInactive && !onMembership) {
+    return navigateTo('/membership')
+  }
+})

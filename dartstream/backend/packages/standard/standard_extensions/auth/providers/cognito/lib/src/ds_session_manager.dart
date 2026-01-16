@@ -1,4 +1,5 @@
-import '../../../../base/lib/ds_auth_provider.dart';
+import 'package:ds_auth_base/ds_auth_provider.dart';
+
 import 'dart:convert';
 import 'dart:io';
 

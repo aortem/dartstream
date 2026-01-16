@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import CreateFlag from "~/components/feature-flag/createflag.vue";
+import { useUser } from "@/composables/useUser";
 import Main from "~/components/dashboard/main.vue";
 import { useToast } from "vue-toastification";
+
+
+const { user, fetchSession } = useUser();
 const toast = useToast();
 const { $api } = useNuxtApp();
 const isModalOpen = ref(false);
@@ -22,10 +26,14 @@ interface UserStatus {
 }
 const userStatus = ref<UserStatus | null>(null);
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchSession(); // 🔑 wait for cookie session
+
+  if (!user.value) return; // 🚨 stop if not logged in
+
   const rawUserStatus = localStorage.getItem("user_status");
   userStatus.value = rawUserStatus ? JSON.parse(rawUserStatus) : null;
-  
+
   if (selectedProjectId.value) {
     getFlags(selectedProjectId.value);
   }else{
@@ -45,22 +53,21 @@ watch(selectedProjectId, (newId) => {
 });
 
 const getFlags = async (projectId) => {
+  if (!user.value) return; // 🚨 prevent null uid calls
+
   try {
     const res = await $api(
       `/api/flags/projects/${projectId}/flags`,
-      {
-        method: "GET",
-      }
+      { method: "GET" }
     );
 
-    if (res) {
-      totalFlags.value = res.flags.length;
-      flagsList.value = res.flags;
-    }
+    totalFlags.value = res.flags.length;
+    flagsList.value = res.flags;
   } catch (error) {
     console.error("Error fetching flags:", error);
   }
 };
+
 
 const getDemoData = async () => {
   try {
