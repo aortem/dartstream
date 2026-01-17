@@ -1,6 +1,4 @@
 import 'dart:async';
-import '../../../standard_extensions/reactive_dataflow/lifecycle/base/lib/src/ds_lifecycle_hooks.dart';
-//import 'package:ds_standard_features/ds_standard_features.dart';
 
 /// The core module of Dartstream.
 /// Handles the foundational setup, configurations, and lifecycle of the framework.
@@ -8,10 +6,8 @@ class DSStandardCore {
   /// Centralized configuration data for the project.
   final Map<String, dynamic> projectConfig;
 
-  // Extension registries for different levels
+  // Extension registries 
   final Map<String, dynamic> _coreExtensions = {};
-  //final Map<String, Map<String, List<dynamic>>> _extendedFeatures = {};
-  //final Map<String, dynamic> _thirdPartyEnhancements = {};
 
   /// Constructor to initialize the core with configuration data.
   /// [projectConfig] contains the initial setup for the project.
@@ -81,9 +77,7 @@ class DSStandardCore {
 
   /// Registers an extended feature for an existing core extension
   /// [coreExtensionName] The name of the core extension to extend
-  /// [extension] The extended feature to register
-  /// [featureName] The name of the extended feature
-  /*bool registerExtendedFeature({
+  bool registerExtendedFeature({
     required String coreExtensionName,
     required dynamic extension,
     required String featureName,
@@ -95,18 +89,6 @@ class DSStandardCore {
       return false;
     }
 
-    print("Registering extended feature '$featureName' for $coreExtensionName");
-
-    if (!_extendedFeatures.containsKey(coreExtensionName)) {
-      _extendedFeatures[coreExtensionName] = {};
-    }
-
-    if (!_extendedFeatures[coreExtensionName]!.containsKey(featureName)) {
-      _extendedFeatures[coreExtensionName]![featureName] = [];
-    }
-
-    _extendedFeatures[coreExtensionName]![featureName]!.add(extension);
-
     // Initialize if extension supports lifecycle
     if (extension is LifecycleHook) {
       extension.onInitialize();
@@ -115,83 +97,26 @@ class DSStandardCore {
     return true;
   }
 
-  /// Registers a third-party enhancement with the framework
-  /// [extension] The third-party enhancement to register
-  /// [name] The name of the enhancement
-  void registerThirdPartyEnhancement(
-    dynamic extension, {
-    required String name,
-  }) {
-    print("Registering third-party enhancement: $name");
-    _thirdPartyEnhancements[name] = extension;
-
-    // Initialize if extension supports lifecycle
-    if (extension is LifecycleHook) {
-      extension.onInitialize();
-    }
-  } */
 
   /// Gets a registered core extension
   T? getCoreExtension<T>(String name) {
     return _coreExtensions[name] as T?;
   }
 
-  /// Gets extended features for a core extension
- /* Map<String, List<dynamic>>? getExtendedFeatures(String coreExtensionName) {
-    return _extendedFeatures[coreExtensionName];
-  }
 
-  /// Gets a specific extended feature
-  T? getExtendedFeature<T>(
-    String coreExtensionName,
-    String featureName, {
-    int index = 0,
-  }) {
-    if (!_extendedFeatures.containsKey(coreExtensionName)) {
-      return null;
-    }
-    if (!_extendedFeatures[coreExtensionName]!.containsKey(featureName)) {
-      return null;
-    }
-    final features = _extendedFeatures[coreExtensionName]![featureName];
-    if (index >= features!.length) {
-      return null;
-    }
-    return features[index] as T?;
-  }
-
-  /// Gets a third-party enhancement
-  T? getThirdPartyEnhancement<T>(String name) {
-    return _thirdPartyEnhancements[name] as T?;
-  }
 
   /// Lists all registered extensions
   Map<String, dynamic> listExtensions() {
     return {
       'core': _coreExtensions.keys.toList(),
-      'extended': _extendedFeatures.map(
-        (key, value) => MapEntry(key, value.keys.toList()),
-      ),
-      'thirdParty': _thirdPartyEnhancements.keys.toList(),
     };
-  }*/
-
-
-  /// Lists all registered core extensions
-  List<String> listCoreExtensions() {
-    return _coreExtensions.keys.toList();
   }
-
 
   /// Debug method to inspect the current configuration and services.
   /// Provides a quick overview of the core state.
   void debug() {
     print("Debugging Dartstream Standard Core:");
     print("Core Extensions: ${_coreExtensions.keys.join(', ')}");
-    //print("Extended Features: ${_extendedFeatures.keys.join(', ')}");
-    //print(
-    //  "Third-Party Enhancements: ${_thirdPartyEnhancements.keys.join(', ')}",
-    //);
     projectConfig.forEach((key, value) {
       print("- $key: $value");
     });
