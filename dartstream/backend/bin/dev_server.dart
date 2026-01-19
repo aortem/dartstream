@@ -1,4 +1,4 @@
-// bin/dev_server.dart
+// bin/dev_server_mobile.dart
 
 import 'dart:convert';
 import 'dart:math';
@@ -33,22 +33,17 @@ final Map<String, Map<String, dynamic>> _sessions = {};
 /// ===============================
 String _generateSessionId() {
   final rand = Random.secure();
-  return List.generate(32, (_) => rand.nextInt(256))
-      .map((b) => b.toRadixString(16).padLeft(2, '0'))
-      .join();
+  return List.generate(
+    32,
+    (_) => rand.nextInt(256),
+  ).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
 }
 
 String? _getSessionId(Request request) {
-  final cookie = request.headers['cookie'];
-  if (cookie == null) return null;
-
-  for (final part in cookie.split(';')) {
-    final kv = part.trim().split('=');
-    if (kv.length == 2 && kv[0] == 'dartstream_session') {
-      return kv[1];
-    }
-  }
-  return null;
+  // Mobile-friendly: read Authorization header
+  final authHeader = request.headers['authorization'];
+  if (authHeader == null) return null;
+  return authHeader;
 }
 
 /// ===============================
@@ -58,23 +53,29 @@ Middleware corsHeaders() {
   return (Handler innerHandler) {
     return (Request request) async {
       if (request.method == 'OPTIONS') {
-        return Response.ok('',
-            headers: {
-              'Access-Control-Allow-Origin': 'http://localhost:3000',
-              'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-              'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept',
-              'Access-Control-Allow-Credentials': 'true',
-            });
+        return Response.ok(
+          '',
+          headers: {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+            'Access-Control-Allow-Headers':
+                'Origin, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Credentials': 'true',
+          },
+        );
       }
 
       final response = await innerHandler(request);
-      return response.change(headers: {
-        ...response.headers,
-        'Access-Control-Allow-Origin': 'http://localhost:3000',
-        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept',
-        'Access-Control-Allow-Credentials': 'true',
-      });
+      return response.change(
+        headers: {
+          ...response.headers,
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+          'Access-Control-Allow-Headers':
+              'Origin, Content-Type, Accept, Authorization',
+          'Access-Control-Allow-Credentials': 'true',
+        },
+      );
     };
   };
 }
@@ -99,24 +100,20 @@ Future<Response> handleSignIn(Request request) async {
   final String providerKey = data['provider'] ?? 'okta';
   final bool isE2E = (data['__e2e__'] ?? false) == true;
 
-  // DEBUG log for incoming payload
   print('🔥 SignIn payload received: $data');
 
   Map<String, dynamic> user;
 
   if (isE2E) {
     // ✅ DEV/E2E branch: always succeed
-user = {
-  'id': 'dev-user-${providerKey}',
-  'uid': 'dev-user-${providerKey}', // ✅ ADD THIS
-  'email': data['email'] ?? 'dev@dartstream.dev',
-  'subscriptionStatus': 'active',
-  'isSandbox': true,
-  'provider': providerKey,
-};
-
+    user = {
+      'id': 'e2e-user-${providerKey}',
+      'email': data['email'] ?? 'e2e@dartstream.dev',
+      'subscriptionStatus': 'active',
+      'isSandbox': true,
+      'provider': providerKey,
+    };
   } else {
-    // Normal DEV mode: try provider if exists, otherwise fallback
     final provider = _providers[providerKey] ?? _providers.values.first;
 
     user = {
@@ -134,16 +131,12 @@ user = {
   final sessionId = _generateSessionId();
   _sessions[sessionId] = user;
 
+  // Return sessionId in JSON (mobile-friendly)
   return Response.ok(
-    jsonEncode({'user': user}),
-    headers: {
-      'content-type': 'application/json',
-      'set-cookie':
-          'dartstream_session=$sessionId; HttpOnly; Path=/; SameSite=Lax',
-    },
+    jsonEncode({'user': user, 'sessionId': sessionId}),
+    headers: {'content-type': 'application/json'},
   );
 }
-
 
 Future<Response> handleSession(Request request) async {
   final sessionId = _getSessionId(request);
@@ -170,11 +163,7 @@ Future<Response> handleLogout(Request request) async {
 
   return Response.ok(
     jsonEncode({'success': true}),
-    headers: {
-      'content-type': 'application/json',
-      'set-cookie':
-          'dartstream_session=; Path=/; Max-Age=0; HttpOnly; SameSite=Lax',
-    },
+    headers: {'content-type': 'application/json'},
   );
 }
 
@@ -182,7 +171,7 @@ Future<Response> handleLogout(Request request) async {
 /// MAIN SERVER
 /// ===============================
 Future<void> main() async {
-  print('🚀 Starting DartStream Dev Server (DEV=$kIsDev)');
+  print('🚀 Starting DartStream Mobile Dev Server (DEV=$kIsDev)');
 
   // ===============================
   // Initialize Providers (DEV SAFE)
@@ -250,27 +239,27 @@ Future<void> main() async {
       .addMiddleware(logRequests())
       .addMiddleware(corsHeaders())
       .addHandler((Request request) async {
-    final path = request.url.path;
-    final method = request.method;
+        final path = request.url.path;
+        final method = request.method;
 
-    if (method == 'POST' && path == 'auth/sign-in') {
-      return handleSignIn(request);
-    }
+        if (method == 'POST' && path == 'auth/sign-in') {
+          return handleSignIn(request);
+        }
 
-    if (method == 'GET' && path == 'auth/session') {
-      return handleSession(request);
-    }
+        if (method == 'GET' && path == 'auth/session') {
+          return handleSession(request);
+        }
 
-    if (method == 'POST' && path == 'auth/logout') {
-      return handleLogout(request);
-    }
+        if (method == 'POST' && path == 'auth/logout') {
+          return handleLogout(request);
+        }
 
-    return Response.notFound(
-      jsonEncode({'error': 'Not Found'}),
-      headers: {'content-type': 'application/json'},
-    );
-  });
+        return Response.notFound(
+          jsonEncode({'error': 'Not Found'}),
+          headers: {'content-type': 'application/json'},
+        );
+      });
 
-  final server = await io.serve(handler, 'localhost', 8080);
+  final server = await io.serve(handler, '0.0.0.0', 8080);
   print('🔥 Server running at http://${server.address.host}:${server.port}');
 }
