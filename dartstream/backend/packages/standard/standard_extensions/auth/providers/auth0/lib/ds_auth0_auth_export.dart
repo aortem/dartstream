@@ -1,4 +1,5 @@
-library ds_firebase_auth_export;
+// lib/ds_auth0_auth_export.dart
+library ds_auth0_auth_export;
 
 export 'ds_auth0_auth_provider.dart';
 export 'src/ds_token_manager.dart';

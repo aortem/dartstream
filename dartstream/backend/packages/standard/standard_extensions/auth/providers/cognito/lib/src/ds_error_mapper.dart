@@ -1,4 +1,5 @@
-import '../../../../base/lib/ds_auth_provider.dart';
+import 'package:ds_auth_base/ds_auth_provider.dart';
+
 
 /// Maps Cognito-specific errors to DSAuthError
 class DSCognitoErrorMapper {

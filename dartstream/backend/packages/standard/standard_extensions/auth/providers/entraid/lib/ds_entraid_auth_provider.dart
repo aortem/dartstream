@@ -1,56 +1,34 @@
 // Import base authentication interfaces and types from DartStream core
-import '../../../base/lib/ds_auth_provider.dart';
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+
 // Import http client for API calls
 import 'dart:convert';
 import 'dart:io';
 
+import 'src/ds_error_mapper.dart';
+import 'src/ds_event_handlers.dart';
+import 'src/ds_session_manager.dart';
+import 'src/ds_token_manager.dart';
+
 /// Microsoft EntraID (Azure AD B2C) authentication provider implementation for DartStream.
-/// This class integrates EntraID/Azure AD B2C Authentication with the DartStream framework
-/// by implementing the DSAuthProvider interface.
-///
-/// Handles:
-/// - User authentication via EntraID/Azure AD B2C
-/// - Token management (JWT)
-/// - User flows (signup, signin, profile edit, password reset)
-/// - Session tracking
-/// - Multi-factor authentication
-/// - User profile management
-/// - Group management
-/// - Audit logging
 class DSEntraIDAuthProvider implements DSAuthProvider {
   static DSEntraIDAuthProvider? _instance;
   bool _isInitialized = false;
 
-  /// EntraID tenant ID
   final String tenantId;
-
-  /// EntraID client ID
   final String clientId;
-
-  /// EntraID client secret
   final String clientSecret;
-
-  /// Primary user flow (e.g., B2C_1_signup_signin)
   final String primaryUserFlow;
-
-  /// EntraID B2C domain
   final String domain;
-
-  /// Additional user flows
   final Map<String, String> userFlows;
-
-  /// Scopes for token requests
   final List<String> scopes;
 
-  /// Current authenticated user
   DSAuthUser? _currentUser;
 
-  /// Mock data for testing
   final Map<String, DSAuthUser> _mockUsers = {};
   final Map<String, String> _mockPasswords = {};
   final Map<String, String> _mockTokens = {};
 
-  /// Private constructor for singleton pattern
   DSEntraIDAuthProvider._internal({
     required this.tenantId,
     required this.clientId,
@@ -59,14 +37,13 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
     required this.domain,
     Map<String, String>? userFlows,
     List<String>? scopes,
-  }) : userFlows = userFlows ?? {
+  })  : userFlows = userFlows ?? {
           'signup_signin': 'B2C_1_signup_signin',
           'profile_edit': 'B2C_1_profile_edit',
           'password_reset': 'B2C_1_password_reset',
         },
         scopes = scopes ?? ['openid', 'profile', 'email'];
 
-  /// Factory constructor that returns singleton instance
   factory DSEntraIDAuthProvider({
     required String tenantId,
     required String clientId,
@@ -91,41 +68,53 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
     try {
-      // Initialize EntraID configuration
       print('Initializing EntraID provider...');
       print('Tenant ID: $tenantId');
       print('Client ID: $clientId');
       print('Domain: $domain');
       print('Primary User Flow: $primaryUserFlow');
-      
+
       _isInitialized = true;
       print('EntraID provider initialized successfully');
     } catch (e) {
-      print('EntraID provider initialization failed: $e');
-      throw DSAuthError('Failed to initialize EntraID provider: $e');
+      throw DSAuthError(
+        'Failed to initialize EntraID provider: $e',
+        code: 500,
+      );
     }
   }
 
   @override
   Future<void> signIn(String email, String password) async {
     if (!_isInitialized) {
-      throw DSAuthError('Provider not initialized');
+      throw DSAuthError(
+        'Provider not initialized',
+        code: 500,
+      );
     }
 
     try {
-      // Mock EntraID authentication for testing
       if (_mockPasswords[email] == password) {
         _currentUser = _mockUsers[email];
         final token = _generateMockToken(email);
         _mockTokens[email] = token;
+        
+        final sessionManager = DSSessionManager();
+        await sessionManager.storeSession(_currentUser!.id, token);
+        
         await onLoginSuccess(_currentUser!);
-        print('EntraID sign in successful for: $email');
       } else {
-        throw DSAuthError('Invalid credentials');
+        throw DSAuthError(
+          'Invalid credentials',
+          code: 401,
+        );
       }
     } catch (e) {
-      print('EntraID sign in failed: $e');
-      throw DSAuthError('Sign in failed: $e');
+      if (e is DSAuthError) rethrow;
+      throw DSAuthError(
+        'Sign in failed: $e',
+        code: 500,
+      );
     }
   }
 
@@ -133,15 +122,21 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   Future<void> signOut() async {
     try {
       if (_currentUser != null) {
-        _mockTokens.remove(_currentUser!.email);
         final userEmail = _currentUser!.email;
+        _mockTokens.remove(userEmail);
+        
+        final sessionManager = DSSessionManager();
+        await sessionManager.clearSession(_currentUser!.id);
+        
         _currentUser = null;
         await onLogout();
         print('EntraID sign out successful for: $userEmail');
       }
     } catch (e) {
-      print('EntraID sign out failed: $e');
-      throw DSAuthError('Sign out failed: $e');
+      throw DSAuthError(
+        'Sign out failed: $e',
+        code: 500,
+      );
     }
   }
 
@@ -150,65 +145,73 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
     try {
       final user = _mockUsers.values.firstWhere(
         (u) => u.id == userId,
-        orElse: () => throw DSAuthError('User not found: $userId'),
+        orElse: () => throw DSAuthError(
+          'User not found: $userId',
+          code: 404,
+        ),
       );
       return user;
     } catch (e) {
-      print('Get user failed: $e');
-      throw DSAuthError('Get user failed: $e');
+      if (e is DSAuthError) rethrow;
+      throw DSAuthError(
+        'Get user failed: $e',
+        code: 500,
+      );
     }
   }
 
   @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUser == null) {
-      throw DSAuthError('No user is currently signed in');
+      throw DSAuthError(
+        'No user is currently signed in',
+        code: 401,
+      );
     }
     return _currentUser!;
   }
 
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
+  Future<void> createAccount(String email, String password,
+      {String? displayName}) async {
     if (!_isInitialized) {
-      throw DSAuthError('Provider not initialized');
-    }
-
-    try {
-      if (_mockUsers.containsKey(email)) {
-        throw DSAuthError('User already exists');
-      }
-
-      final user = DSAuthUser(
-        id: 'entraid|${email.replaceAll('@', '_').replaceAll('.', '_')}',
-        email: email,
-        displayName: displayName ?? 'EntraID User',
-        customAttributes: {
-          'provider': 'entraid',
-          'tenant_id': tenantId,
-          'user_flow': primaryUserFlow,
-          'email_verified': true,
-          'created_at': DateTime.now().toIso8601String(),
-          'groups': ['default_group'],
-        },
+      throw DSAuthError(
+        'Provider not initialized',
+        code: 500,
       );
-
-      _mockUsers[email] = user;
-      _mockPasswords[email] = password;
-      print('EntraID account created for: $email');
-    } catch (e) {
-      print('Create account failed: $e');
-      throw DSAuthError('Create account failed: $e');
     }
+
+    if (_mockUsers.containsKey(email)) {
+      throw DSAuthError(
+        'User already exists',
+        code: 409,
+      );
+    }
+
+    final user = DSAuthUser(
+      id: 'entraid|${email.replaceAll('@', '_').replaceAll('.', '_')}',
+      email: email,
+      displayName: displayName ?? 'EntraID User',
+      customAttributes: {
+        'provider': 'entraid',
+        'tenant_id': tenantId,
+        'user_flow': primaryUserFlow,
+        'email_verified': true,
+        'created_at': DateTime.now().toIso8601String(),
+        'groups': ['default_group'],
+      },
+    );
+
+    _mockUsers[email] = user;
+    _mockPasswords[email] = password;
+    print('EntraID account created for: $email');
   }
 
   @override
   Future<bool> verifyToken([String? token]) async {
     try {
-      if (token == null) {
-        return _currentUser != null;
-      }
+      if (token == null) return _currentUser != null;
 
-      // Mock JWT token validation
       if (token.startsWith('eyJ') && token.contains('.')) {
         final userEmail = _mockTokens.entries
             .firstWhere(
@@ -216,41 +219,39 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
               orElse: () => MapEntry('', ''),
             )
             .key;
-        
+
         if (userEmail.isNotEmpty && _mockUsers.containsKey(userEmail)) {
           return true;
         }
       }
-      
+
       return false;
     } catch (e) {
-      print('Token verification failed: $e');
       return false;
     }
   }
 
   @override
   Future<String> refreshToken(String refreshToken) async {
-    try {
-      if (_currentUser == null) {
-        throw DSAuthError('No user signed in');
-      }
-
-      // Mock token refresh
-      if (refreshToken.startsWith('refresh_token_')) {
-        final newToken = _generateMockToken(_currentUser!.email);
-        _mockTokens[_currentUser!.email] = newToken;
-        return newToken;
-      }
-
-      throw DSAuthError('Invalid refresh token');
-    } catch (e) {
-      print('Token refresh failed: $e');
-      throw DSAuthError('Token refresh failed: $e');
+    if (_currentUser == null) {
+      throw DSAuthError(
+        'No user signed in',
+        code: 401,
+      );
     }
+
+    if (refreshToken.startsWith('refresh_token_')) {
+      final newToken = _generateMockToken(_currentUser!.email);
+      _mockTokens[_currentUser!.email] = newToken;
+      return newToken;
+    }
+
+    throw DSAuthError(
+      'Invalid refresh token',
+      code: 400,
+    );
   }
 
-  /// Generate mock JWT token for testing
   String _generateMockToken(String email) {
     final header = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9';
     final payload = DateTime.now().millisecondsSinceEpoch.toString();
@@ -258,33 +259,36 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
     return '$header.$payload.$signature';
   }
 
-  /// EntraID-specific: Reset user password
   Future<void> resetPassword(String email) async {
     if (!_mockUsers.containsKey(email)) {
-      throw DSAuthError('User not found');
+      throw DSAuthError(
+        'User not found',
+        code: 404,
+      );
     }
     print('Password reset initiated for: $email');
   }
 
-  /// EntraID-specific: Update user profile
   Future<void> updateUserProfile(String userId, Map<String, dynamic> updates) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
-    // Update user attributes
-    if (user.customAttributes != null) {
-      user.customAttributes!.addAll(updates);
-    }
+
+    user.customAttributes?.addAll(updates);
     print('User profile updated for: $userId');
   }
 
-  /// EntraID-specific: Delete user account
   Future<void> deleteAccount(String userId) async {
     final userToDelete = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
 
     _mockUsers.remove(userToDelete.email);
@@ -293,83 +297,101 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
     print('Account deleted for: $userId');
   }
 
-  /// EntraID-specific: Get user attributes
   Future<Map<String, dynamic>> getUserAttributes(String userId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
+
     return user.customAttributes ?? {};
   }
 
-  /// EntraID-specific: Enable multi-factor authentication
   Future<void> enableMFA(String userId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
+
     user.customAttributes?['mfa_enabled'] = true;
     print('MFA enabled for: $userId');
   }
 
-  /// EntraID-specific: Disable multi-factor authentication
   Future<void> disableMFA(String userId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
+
     user.customAttributes?['mfa_enabled'] = false;
     print('MFA disabled for: $userId');
   }
 
-  /// EntraID-specific: Get user groups
   Future<List<String>> getUserGroups(String userId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
-    return (user.customAttributes?['groups'] as List<String>?) ?? ['default_group'];
+
+    return (user.customAttributes?['groups'] as List<dynamic>?)
+            ?.cast<String>() ??
+        ['default_group'];
   }
 
-  /// EntraID-specific: Assign user to group
   Future<void> assignUserToGroup(String userId, String groupId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
-    final groups = (user.customAttributes?['groups'] as List<String>?) ?? ['default_group'];
-    if (!groups.contains(groupId)) {
-      groups.add(groupId);
-      user.customAttributes?['groups'] = groups;
-    }
+
+    final groups = (user.customAttributes?['groups'] as List<dynamic>?)
+            ?.cast<String>() ??
+        ['default_group'];
+    if (!groups.contains(groupId)) groups.add(groupId);
+    user.customAttributes?['groups'] = groups;
     print('User $userId assigned to group $groupId');
   }
 
-  /// EntraID-specific: Remove user from group
   Future<void> removeUserFromGroup(String userId, String groupId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
-    final groups = (user.customAttributes?['groups'] as List<String>?) ?? ['default_group'];
+
+    final groups = (user.customAttributes?['groups'] as List<dynamic>?)
+            ?.cast<String>() ??
+        ['default_group'];
     groups.remove(groupId);
     user.customAttributes?['groups'] = groups;
     print('User $userId removed from group $groupId');
   }
 
-  /// EntraID-specific: Get audit logs
   Future<List<Map<String, dynamic>>> getAuditLogs(String userId) async {
     final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
-      orElse: () => throw DSAuthError('User not found'),
+      orElse: () => throw DSAuthError(
+        'User not found',
+        code: 404,
+      ),
     );
-    
+
     return [
       {
         'timestamp': DateTime.now().toIso8601String(),
@@ -388,17 +410,14 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
     ];
   }
 
-  /// EntraID-specific: Get user flow URL
   Future<String> getUserFlowUrl(String userFlow) async {
     return 'https://$domain/$tenantId.onmicrosoft.com/oauth2/v2.0/authorize?p=$userFlow';
   }
 
-  /// EntraID-specific: Get profile edit URL
   Future<String> getProfileEditUrl() async {
     return 'https://$domain/$tenantId.onmicrosoft.com/oauth2/v2.0/authorize?p=${userFlows['profile_edit']}';
   }
 
-  /// EntraID-specific: Get password reset URL
   Future<String> getPasswordResetUrl() async {
     return 'https://$domain/$tenantId.onmicrosoft.com/oauth2/v2.0/authorize?p=${userFlows['password_reset']}';
   }
@@ -406,12 +425,10 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     print('EntraID login success hook called for: ${user.email}');
-    // Additional EntraID-specific login logic could go here
   }
 
   @override
   Future<void> onLogout() async {
     print('EntraID logout hook called');
-    // Additional EntraID-specific logout logic could go here
   }
 }

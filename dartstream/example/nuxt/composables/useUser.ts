@@ -1,18 +1,58 @@
 // composables/useUser.ts
-export async function useUser() {
-  const token = localStorage.getItem('auth_token') // or from cookies if SSR-safe
-  
-  if (!token) return
-  const { $api } = useNuxtApp() 
-  try {
-    const response = await $api('/auth/user-status', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+export const useUser = () => {
+  const user = useState<any | null>('user', () => null)
+  const loading = useState<boolean>('auth-loading', () => false)
 
-    localStorage.setItem('user_status', JSON.stringify(response))
-    return response
-  } catch (error) {
-    console.error('Failed to fetch user:', error)
-    localStorage.removeItem('user_status')
+  const config = useRuntimeConfig()
+
+  const api = $fetch.create({
+    baseURL: config.public.dartstreamUrl,
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+
+  const signIn = async (payload: {
+    email: string
+    password: string
+    provider: string
+  }) => {
+    loading.value = true
+    try {
+      const res: any = await api('/auth/sign-in', {
+        method: 'POST',
+        body: payload,
+      })
+
+      user.value = res.user
+      return res
+    } finally {
+      loading.value = false
+    }
+  }
+
+  const signOut = async () => {
+    await api('/auth/logout', { method: 'POST' })
+    user.value = null
+  }
+
+  const fetchSession = async () => {
+    try {
+      const res: any = await api('/auth/session')
+      user.value = res.user
+      return res.user
+    } catch {
+      user.value = null
+      return null
+    }
+  }
+
+  return {
+    user,
+    loading,
+    signIn,
+    signOut,
+    fetchSession,
   }
 }

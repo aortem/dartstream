@@ -17,7 +17,7 @@
 /// 
 /// Usage:
 /// ```dart
-/// import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
+//import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
 /// 
 /// final oktaProvider = DSOktaAuthProvider(
 ///   domain: 'your-okta-domain.okta.com',

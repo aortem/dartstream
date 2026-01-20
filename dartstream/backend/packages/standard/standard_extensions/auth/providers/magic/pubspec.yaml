@@ -12,3 +12,6 @@ dependencies:
   magic_dart_auth_sdk: ^0.0.3
   ds_auth_base: ^0.0.1
   ds_standard_features: ^0.1.5
+
+dev_dependencies:
+  test: ^1.24.0

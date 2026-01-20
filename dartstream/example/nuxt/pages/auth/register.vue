@@ -271,169 +271,37 @@
 
 
 
-<script setup>
-// useHead({
-//   script: [
-//     {
-//       src: 'https://accounts.google.com/gsi/client',
-//       async: true,
-//       defer: true,
-//     },
-//   ],
-// })
-import {
-  signInWithPopup,
-  GoogleAuthProvider,
-  GithubAuthProvider,
-  OAuthProvider,
-  createUserWithEmailAndPassword
-} from 'firebase/auth';
-
-import { useStorage } from '@vueuse/core'
-// noop: keep file touched for CI; no UI change
-import { ref } from 'vue'
-import { useRouter, useRoute } from 'vue-router' // 🔹 ADD: useRouter/useRoute were missing
-import { useToast } from 'vue-toastification';
-import SuccessDeactivateAccount from "../../components/settings/modals/successDeactivateAccount.vue"
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { useToast } from 'vue-toastification'
+import SuccessDeactivateAccount from '@/components/settings/modals/successDeactivateAccount.vue'
+import { useAnalytics } from '@/composables/useAnalytics'
 
 const router = useRouter()
-const route = useRoute() // 🔹 ADD
 const toast = useToast()
 
-const user = ref(null);
-const errorMessage = ref('');
+const { trackSignupLogin, track } = useAnalytics()
 
-
-// 🔹 ADD: analytics composable
-import { useAnalytics } from '@/composables/useAnalytics'
-// keep trackSignupLogin; add `track` + `trackPageView` (guarded)
-const { trackSignupLogin, track: mpTrack, trackPageView } = useAnalytics()
-
+/* ----------------------------------
+ * UI state
+ * ---------------------------------- */
 const showPassword = ref(false)
-const togglePassword = () => {
-  showPassword.value = !showPassword.value
-}
-
 const showConfirmPassword = ref(false)
-const toggleConfirmPassword = () => {
-  showConfirmPassword.value = !showConfirmPassword.value
-}
+
+const togglePassword = () => (showPassword.value = !showPassword.value)
+const toggleConfirmPassword = () =>
+  (showConfirmPassword.value = !showConfirmPassword.value)
 
 const form = ref({
   email: '',
   password: '',
-  confirmPassword: ''
+  confirmPassword: '',
 })
-const authUser = useStorage('auth_user', null)
-// const user = useStorage('user', null)
-const refreshToken = useStorage('refresh_token', '')
-const token = useStorage('token', '')
 
-const { $firebaseAuth, $api } = useNuxtApp();
-
-const handlePopupSignIn = async (provider) => {
-  errorMessage.value = ''; // Clear previous errors
-  try {
-    // 2. The signInWithPopup function is called
-    const result = await signInWithPopup($firebaseAuth, provider);
-
-    // 3. If successful, the user object is available in the result
-    user.value = result.user;
-    console.log("Sign-in successful. User:", user.value.displayName);
-
-    // 4. Get the ID Token from the user object
-    const idToken = await user.value.getIdToken();
-    console.log("Successfully retrieved ID Token.");
-
-    // 5. Send the token to your backend API
-    await sendTokenToBackend(idToken, provider.providerId);
-
-  } catch (error) {
-    // 6. Handle errors, such as the user closing the popup
-    if (error.code === 'auth/popup-closed-by-user') {
-      errorMessage.value = 'Sign-in cancelled. The popup was closed.';
-      console.warn('Popup closed by user.');
-    } else {
-      
-      errorMessage.value = `An error occurred: ${error.message}`;
-      console.error("Authentication Error:", error);
-    }
-    user.value = null;
-  }
-};
-
- const signInWithGoogle = () => {
-  // 1. A new provider object is created
-  const provider = new GoogleAuthProvider();
-  handlePopupSignIn(provider);
-};
-
- const signInWithGitHub = () => {
-  const provider = new GithubAuthProvider();
-  handlePopupSignIn(provider);
-};
-
- const signInWithMicrosoft = () => {
-  const provider = new OAuthProvider('microsoft.com');
-  handlePopupSignIn(provider);
-};
-
-
-const sendTokenToBackend = async (token, method) => {
-   const providerName = method.split('.')[0];
-  try {
-    const res = await $api("/auth/google", {
-          method: "POST",
-          body: { idToken : token ,providerName : providerName  },
-        });
-
-      if (res.token && res.user) {
-          useCookie("auth_token", { maxAge: 3600 }).value = res.token;
-          localStorage.setItem("auth_token", res.token);
-          localStorage.setItem("refresh_token", res.refreshToken);
-          localStorage.setItem("auth_user", JSON.stringify(res.user));
-          await new Promise((resolve) => setTimeout(resolve, 10));
-
-          const userStatus = await $api("/auth/user-status", { method: "GET" });
-
-          if (userStatus) {
-            localStorage.setItem("user_status", JSON.stringify(userStatus));
-          }
-
-          // 🔹 ADD: track login (google)
-          trackSignupLogin({
-            user_id: res.user.id || res.user._id,
-            email: res.user.email,
-            full_name:
-              [res.user.firstName, res.user.lastName].filter(Boolean).join(" ") ||
-              res.user.name,
-            plan: res.user.plan || "standard",
-            user_role: res.user.role || userStatus?.firebaseRole || "user",
-            signup_ts: Date.now(),
-             method: providerName,
-          });
-
-          // 🔹 ADD: success breadcrumb
-         mpTrack?.("login_success", { method: providerName }); 
-
-          if (userStatus.firebaseRole == "user" && userStatus.isSandbox) {
-            router.push("/dashboard");
-          } else {
-            router.push("/membership");
-          }
-          toast.success(`${providerName.charAt(0).toUpperCase() + providerName.slice(1)} Sign-In successful!`);
-          // router.push('/dashboard')
-        }
-  } catch (error) {
-    console.error(`Failed to send token to backend for ${providerName}:`, error);
-     const errorMessage = error.data?.message;
-      toast.error(errorMessage);
-  }
-};
-
-
-
-// signup with credential starts
+/* ----------------------------------
+ * Email/password signup
+ * ---------------------------------- */
 const onSubmit = async () => {
   const { email, password, confirmPassword } = form.value
 
@@ -448,274 +316,81 @@ const onSubmit = async () => {
   }
 
   if (password !== confirmPassword) {
-    toast.error('Passwords do not match!')
+    toast.error('Passwords do not match.')
     return
   }
 
   if (password.length < 8) {
-    toast.error('Password must be at least 8 characters long.')
+    toast.error('Password must be at least 8 characters.')
     return
   }
 
-  // 🔹 ADD: funnel breadcrumb
-  mpTrack?.('signup_started', { method: 'email' })
-
-  // Use Firebase Email/Password to create account, then send ID token to backend
-  try {
-    const cred = await createUserWithEmailAndPassword($firebaseAuth, email, password)
-    const idToken = await cred.user.getIdToken()
-    await sendTokenToBackend(idToken, 'password')
-    return
-  } catch (error) {
-    console.error('Firebase signup error:', error)
-    const code = error?.code || ''
-    const map = {
-      'auth/email-already-in-use': 'Email already in use. Try signing in.',
-      'auth/invalid-email': 'Please enter a valid email address.',
-      'auth/weak-password': 'Password is too weak. Use at least 8 characters.',
-      'auth/operation-not-allowed': 'Email signup disabled. Contact support.',
-    }
-    toast.error(map[code] || (error?.message || 'Signup failed. Please try again.'))
-    return
-  }
+  track?.('signup_started', { method: 'email' })
 
   try {
-    const res = await $api('/auth/signup', {
+    await $fetch('/auth/register', {
       method: 'POST',
-      body: {
-        email,
-        password,
-      },
+      body: { email, password },
     })
 
-    if (res.token) {
-      useCookie('auth_token', { maxAge: 3600 }).value = res.token
-      localStorage.setItem('auth_token', res.token)
-      token.value = res.token
-    }
-    if (res.refreshToken) {
-      refreshToken.value = res.refreshToken
-      localStorage.setItem('refresh_token', res.refreshToken)
-    }
-    if (res.user) {
-      // authUser.value = res.user
-      localStorage.setItem('auth_user', JSON.stringify(res.user))
+    trackSignupLogin({
+      email,
+      signup_ts: Date.now(),
+      method: 'email',
+    })
 
-      // 🔹 ADD: track signup (email/password)
-      trackSignupLogin({
-        user_id: res.user.id || res.user._id,
-        email: res.user.email,
-        full_name: [res.user.firstName, res.user.lastName].filter(Boolean).join(' ') || res.user.name,
-        plan: res.user.plan || 'standard',
-        user_role: res.user.role || 'user',
-        signup_ts: Date.now(),
-        method: 'email',
-      })
+    track?.('signup_completed', { method: 'email' })
 
-      // 🔹 ADD: complete breadcrumb
-      mpTrack?.('signup_completed', { method: 'email' })
-    }
-
-    router.push('/auth/login')
-    toast.success('Signup successful!')
-
-  } catch (error) {
-    console.error('Signup error:', error?.data || error?.message)
-    toast.error(error?.data?.message || 'Signup failed. Please try again.')
-    // (optional) mpTrack?.('signup_failed', { method: 'email', reason: (error?.data?.code || error?.status || 'unknown')+'' })
+    toast.success('Account created successfully!')
+    router.push('/dashboard')
+  } catch (err: any) {
+    toast.error(err?.data?.message || 'Signup failed.')
   }
 }
 
-// signup with credential ends
+/* ----------------------------------
+ * Social signup (redirect-based)
+ * ---------------------------------- */
+const signInWithGoogle = () => {
+  track?.('signup_started', { method: 'google' })
+  window.location.href = '/auth/oauth/google'
+}
 
+const signInWithGitHub = () => {
+  track?.('signup_started', { method: 'github' })
+  window.location.href = '/auth/oauth/github'
+}
 
-const showSuccessDeactivateAccountModal = ref(false);
-const message = ref("");
-const buttonText = ref("");
+const signInWithMicrosoft = () => {
+  track?.('signup_started', { method: 'microsoft' })
+  window.location.href = '/auth/oauth/microsoft'
+}
+
+/* ----------------------------------
+ * Deactivation success modal (unchanged)
+ * ---------------------------------- */
+const showSuccessDeactivateAccountModal = ref(false)
+const message = ref('')
+const buttonText = ref('')
 
 const toggleDeactivationModal = () => {
-  showSuccessDeactivateAccountModal.value = !showSuccessDeactivateAccountModal.value;
-};
+  showSuccessDeactivateAccountModal.value =
+    !showSuccessDeactivateAccountModal.value
+}
 
 onMounted(() => {
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(window.location.search)
 
-  const clean = (str) => (str ? str.replace(/^'(.*)'$/, "$1") : "");
+  const clean = (str: string | null) =>
+    str ? str.replace(/^'(.*)'$/, '$1') : ''
 
-  message.value = clean(params.get("message"));
-  buttonText.value = clean(params.get("buttonText"));
+  message.value = clean(params.get('message'))
+  buttonText.value = clean(params.get('buttonText'))
 
-  // Clear query params from URL
-  window.history.replaceState({}, document.title, window.location.pathname);
+  window.history.replaceState({}, document.title, window.location.pathname)
 
-  if (message.value.length > 0) {
-    showSuccessDeactivateAccountModal.value = true;
+  if (message.value) {
+    showSuccessDeactivateAccountModal.value = true
   }
-});
-
-
-
-
-// const signInWithGoogle = () => {
-//   if (!window.google || !window.google.accounts?.id) {
-//     console.error('Google Identity Services not loaded')
-//     return;
-//   }
-
-//   // 🔹 ADD: funnel breadcrumb
-//   mpTrack?.('signup_started', { method: 'google' })
-
-//   window.google.accounts.id.initialize({
-//     client_id: '811694630640-iv0lftqlvqoeo60losd98gp82si7d3me.apps.googleusercontent.com',
-//     callback: async (response) => {
-//       try {
-//         const idToken = response.credential
-
-//         const res = await $api('/auth/google', {
-//           method: 'POST',
-//           body: { idToken },
-//         })
-
-//         if (res.token) {
-//           useCookie('auth_token', { maxAge: 3600 }).value = res.token
-//           localStorage.setItem('auth_token', res.token)
-//           token.value = res.token
-//         }
-//         if (res.refreshToken) {
-//           refreshToken.value = res.refreshToken
-//           localStorage.setItem('refresh_token', res.refreshToken)
-//         }
-//         if (res.user) {
-//           // authUser.value = res.user
-//           localStorage.setItem('auth_user', JSON.stringify(res.user))
-
-//           // 🔹 ADD: track signup (google)
-//           trackSignupLogin({
-//             user_id: res.user.id || res.user._id,
-//             email: res.user.email,
-//             full_name: [res.user.firstName, res.user.lastName].filter(Boolean).join(' ') || res.user.name,
-//             plan: res.user.plan || 'standard',
-//             user_role: res.user.role || 'user',
-//             signup_ts: Date.now(),
-//             method: 'google',
-//           })
-
-//           // 🔹 ADD: complete breadcrumb
-//           mpTrack?.('signup_completed', { method: 'google' })
-//         }
-
-//         await new Promise(resolve => setTimeout(resolve, 10))
-
-//         const userStatus = await $api('/auth/user-status', { method: 'GET' })
-
-//         if (userStatus) {
-//           localStorage.setItem('user_status', JSON.stringify(userStatus))
-//         }
-
-//         router.push('/membership')
-//         toast.success('Signup successful!')
-//       } catch (err) {
-//         console.error('Sign-In error:', err)
-//         toast.error(err?.data?.message || 'Sign-in failed')
-//         // (optional) mpTrack?.('signup_failed', { method: 'google', reason: (err?.data?.code || err?.status || 'unknown')+'' })
-//       }
-//     },
-//     ux_mode: 'popup',
-//   })
-
-//   window.google.accounts.id.prompt()
-// }
-
-// onMounted(async () => {
-//   // 🔹 ADD: SPA page view breadcrumb
-//   trackPageView?.({ page: 'register' })
-
-//   const scriptId = 'google-client-script'
-//   if (!document.getElementById(scriptId)) {
-//     const script = document.createElement('script')
-//     script.id = scriptId
-//     script.src = 'https://accounts.google.com/gsi/client'
-//     script.async = true
-//     script.defer = true
-//     document.head.appendChild(script)
-//   }
-//   if (window.location.hash.includes('id_token')) {
-//     const hash = window.location.hash.substring(1)
-//     const params = new URLSearchParams(hash)
-//     const idToken = params.get('id_token')
-
-//     if (!idToken) {
-//       toast.error('Microsoft login failed: No token found.')
-//       return
-//     }
-
-//     try {
-//       const res = await $api('/auth/microsoft', {
-//         method: 'POST',
-//         body: { idToken },
-//       })
-
-//       if (res.token && res.user) {
-//         useCookie("auth_token", { maxAge: 3600 }).value = res.token;
-//         localStorage.setItem("auth_token", res.token);
-//         localStorage.setItem("refresh_token", res.refreshToken);
-//         // localStorage.setItem("auth_user", JSON.stringify(res.user)); // 🔸 COMMENTED: set just below to avoid duplicate
-//         await new Promise((resolve) => setTimeout(resolve, 10));
-
-//         const userStatus = await $api("/auth/user-status", { method: "GET" });
-
-//         if (userStatus) {
-//           localStorage.setItem("user_status", JSON.stringify(userStatus));
-//         }
-
-//         localStorage.setItem('auth_user', JSON.stringify(res.user))
-
-//         // 🔹 ADD: track signup (microsoft) 
-//         trackSignupLogin({
-//           user_id: res.user.id || res.user._id,
-//           email: res.user.email,
-//           full_name: [res.user.firstName, res.user.lastName].filter(Boolean).join(' ') || res.user.name,
-//           plan: res.user.plan || 'standard',
-//           user_role: res.user.role || 'user',
-//           signup_ts: Date.now(),
-//           method: 'microsoft',
-//         })
-
-//         // 🔹 ADD: complete breadcrumb
-//         mpTrack?.('signup_completed', { method: 'microsoft' })
-//       }
-
-//       toast.success('Logged in successfully!')
-//       // Save token, user info, etc. if returned
-//       router.push('/') // go to home/dashboard
-//     } catch (err) {
-//       console.error('Login error:', err)
-//       toast.error(err?.data?.message || 'Sign-in failed.')
-//     } finally {
-//       // Clean the hash from URL
-//       window.history.replaceState(null, '', route.path)
-//     }
-//   }
-// })
-
-// const MICROSOFT_CLIENT_ID = '634f4c4f-068a-4e85-9b1c-e8b1c677147b'
-// const REDIRECT_URI = `${location.origin}/auth/login`
-
-// // Handle Microsoft Sign-in
-// const signInWithMicrosoft = () => {
-//   // 🔹 ADD: funnel breadcrumb for MS OAuth entry
-//   mpTrack?.('signup_started', { method: 'microsoft' })
-
-//   const authUrl =
-//     'https://login.microsoftonline.com/common/oauth2/v2.0/authorize' +
-//     `?client_id=${MICROSOFT_CLIENT_ID}` +
-//     '&response_type=id_token' +
-//     `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-//     '&scope=openid email profile' +
-//     '&response_mode=fragment' +
-//     `&nonce=${crypto.randomUUID()}` +
-//     `&state=${crypto.randomUUID()}`
-
-//   window.location.href = authUrl
-// }
+})
 </script>

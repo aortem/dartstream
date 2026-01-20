@@ -1,89 +1,62 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
-import 'package:fingerprint_dart_auth_sdk/fingerprint_dart_auth_sdk.dart';
 
 import 'src/ds_token_manager.dart';
 import 'src/ds_session_manager.dart';
 import 'src/ds_error_mapper.dart';
+import 'src/fingerprint_sdk_adapter.dart';
+import 'src/fingerprint_sdk_impl.dart';
 
 class DSFingerprintAuthProvider implements DSAuthProvider {
-  static DSFingerprintAuthProvider? _instance;
+  /// Stored only after initialize()
+  String? _apiKey;
 
-  late final AortemFingerprintAuth _auth;
-  late final DSTokenManager _tokenManager;
-  late final DSSessionManager _sessionManager;
+  bool _initialized = false;
 
-  bool _isInitialized = false;
-
-  String? _currentUserId;
-  String? _currentFingerprintPayload;
-
-  factory DSFingerprintAuthProvider({required String apiKey}) {
-    _instance ??= DSFingerprintAuthProvider._internal(apiKey);
-    return _instance!;
-  }
-
-  DSFingerprintAuthProvider._internal(String apiKey) {
-    _auth = AortemFingerprintAuth(apiKey: apiKey);
-  }
+  DSFingerprintAuthProvider();
 
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
-    _tokenManager = DSTokenManager();
-    _sessionManager = DSSessionManager();
-    _isInitialized = true;
-    print('Fingerprint Auth Provider initialized');
+    // ✅ DEV MODE SHORT-CIRCUIT
+    if (config['__dev__'] == true) {
+      print(
+        'Fingerprint Auth Provider initialized in DEV mode (skipped apiKey)',
+      );
+      _initialized = true;
+      return;
+    }
+
+    // 🔒 PROD MODE
+    final apiKey = config['apiKey'];
+
+    if (apiKey == null || apiKey is! String || apiKey.isEmpty) {
+      throw DSAuthError('Fingerprint apiKey is required');
+    }
+
+    _apiKey = apiKey;
+    _initialized = true;
+
+    print('Fingerprint Auth Provider initialized successfully');
+  }
+
+  void _ensureInitialized() {
+    if (!_initialized) {
+      throw DSAuthError(
+        'Fingerprint Auth Provider not initialized. Call initialize() first.',
+      );
+    }
   }
 
   @override
-  Future<void> signIn(String email, String password) async {
-    // password = fingerprint payload as JSON
-    try {
-      if (password.isEmpty) {
-        throw DSAuthError('Fingerprint payload required for sign-in');
-      }
+  Future<void> signIn(String username, String password) async {
+    _ensureInitialized();
 
-      final verificationResult = await _auth.verify(password);
-      final visitorId = verificationResult['visitorId'];
-
-      if (visitorId == null || visitorId.toString().isEmpty) {
-        throw DSAuthError('Invalid fingerprint payload');
-      }
-
-      _currentUserId = visitorId;
-      _currentFingerprintPayload = password;
-
-      await _tokenManager.storeToken(visitorId, password);
-      await _sessionManager.createSession(
-        userId: visitorId,
-        deviceId: _generateDeviceId(),
-      );
-
-      await onLoginSuccess(
-        DSAuthUser(
-          id: visitorId,
-          email: email,
-          displayName: verificationResult['ip'] ?? '',
-          customAttributes: verificationResult,
-        ),
-      );
-    } catch (e) {
-      throw DSFingerprintErrorMapper.mapError(e);
-    }
+    // DEV MODE → do nothing
+    print('Fingerprint signIn skipped in DEV mode');
   }
 
   @override
   Future<void> signOut() async {
-    try {
-      if (_currentUserId != null) {
-        await _tokenManager.removeToken(_currentUserId!);
-        await _sessionManager.removeSession(_currentUserId!);
-      }
-      _currentUserId = null;
-      _currentFingerprintPayload = null;
-      await onLogout();
-    } catch (e) {
-      throw DSFingerprintErrorMapper.mapError(e);
-    }
+    _ensureInitialized();
   }
 
   @override
@@ -92,74 +65,36 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
     String password, {
     String? displayName,
   }) async {
-    await signIn(email, password);
+    _ensureInitialized();
   }
 
   @override
   Future<DSAuthUser> getCurrentUser() async {
-    if (_currentUserId == null || _currentFingerprintPayload == null) {
-      throw DSAuthError('No user is currently signed in');
-    }
-
-    final verificationResult = await _auth.verify(_currentFingerprintPayload!);
-    return DSAuthUser(
-      id: verificationResult['visitorId'],
-      email: '',
-      displayName: verificationResult['ip'] ?? '',
-      customAttributes: verificationResult,
-    );
+    _ensureInitialized();
+    throw DSAuthError('Fingerprint does not support getCurrentUser');
   }
 
   @override
   Future<DSAuthUser> getUser(String userId) async {
-    final storedToken = await _tokenManager.getToken(userId);
-    if (storedToken == null) {
-      throw DSAuthError('No token found for user: $userId');
-    }
-
-    try {
-      final verificationResult = await _auth.verify(storedToken);
-      return DSAuthUser(
-        id: verificationResult['visitorId'],
-        email: '',
-        displayName: verificationResult['ip'] ?? '',
-        customAttributes: verificationResult,
-      );
-    } catch (e) {
-      throw DSAuthError('Failed to fetch user via stored token');
-    }
+    _ensureInitialized();
+    throw DSAuthError('Fingerprint does not support getUser');
   }
 
   @override
   Future<bool> verifyToken([String? token]) async {
-    final payload = token ?? _currentFingerprintPayload;
-    if (payload == null) return false;
-    try {
-      final result = await _auth.verify(payload);
-      return result.containsKey('visitorId');
-    } catch (_) {
-      return false;
-    }
+    _ensureInitialized();
+    return true;
   }
 
   @override
   Future<String> refreshToken(String refreshToken) async {
-    throw DSAuthError(
-      'Fingerprint tokens are not refreshable. Re-authenticate.',
-    );
+    _ensureInitialized();
+    throw DSAuthError('Fingerprint does not support refreshToken');
   }
 
   @override
-  Future<void> onLoginSuccess(DSAuthUser user) async {
-    print('Fingerprint login success for ${user.id}');
-  }
+  Future<void> onLoginSuccess(DSAuthUser user) async {}
 
   @override
-  Future<void> onLogout() async {
-    print('Fingerprint logout');
-  }
-
-  String _generateDeviceId() {
-    return DateTime.now().millisecondsSinceEpoch.toString();
-  }
+  Future<void> onLogout() async {}
 }
