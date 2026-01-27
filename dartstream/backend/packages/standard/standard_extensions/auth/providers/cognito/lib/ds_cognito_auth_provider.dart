@@ -1,5 +1,4 @@
 import 'package:amazon_cognito_identity_dart_2/cognito.dart';
-import 'package:ds_auth_base/ds_auth_base.dart';
 import 'dart:convert';
 
 import 'package:ds_auth_base/ds_auth_provider.dart';
