@@ -11,6 +11,28 @@ The Transmit provider adds modular authentication capabilities to DartStream, fo
 - Session management: active session tracking and validation
 - Lifecycle event hooks: handle login/logout and other authentication events
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart';
+
+Future<void> main() async {
+  registerTransmitProvider({
+    'name': 'transmit',
+    // 'region': 'global',
+    // 'clientId': 'your-client-id',
+  });
+
+  final auth = DSAuthManager('transmit');
+  await auth.initialize({
+    'clientId': 'your-client-id',
+    'clientSecret': 'your-client-secret',
+    // '__dev__': true,
+  });
+}
+```
+
 ## Directory Structure
 
 ```

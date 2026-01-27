@@ -30,6 +30,31 @@ dependencies:
 
 ## Quick Start
 
+### Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
+
+Future<void> main() async {
+  registerCognitoProvider({
+    'name': 'cognito',
+    'userPoolId': 'us-east-1_abc123def',
+    'clientId': 'your-cognito-client-id',
+    'region': 'us-east-1',
+    // 'clientSecret': 'your-client-secret',
+    // 'identityPoolId': 'your-identity-pool-id',
+  });
+
+  final auth = DSAuthManager('cognito');
+  await auth.initialize({
+    'userPoolId': 'us-east-1_abc123def',
+    'clientId': 'your-cognito-client-id',
+    'region': 'us-east-1',
+  });
+}
+```
+
 ### Basic Setup
 
 ```dart

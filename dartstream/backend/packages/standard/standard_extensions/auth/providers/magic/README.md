@@ -29,6 +29,27 @@ dependencies:
 
 ## Usage
 
+### Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_magic_auth_provider/ds_magic_auth_export.dart';
+
+Future<void> main() async {
+  registerMagicProvider({
+    'name': 'magic',
+    'publishableKey': 'your-magic-publishable-key',
+    'secretKey': 'your-magic-secret-key',
+  });
+
+  final auth = DSAuthManager('magic');
+  await auth.initialize({
+    'publishableKey': 'your-magic-publishable-key',
+    'secretKey': 'your-magic-secret-key',
+  });
+}
+```
+
 ### Basic Setup
 
 ```dart

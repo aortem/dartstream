@@ -27,7 +27,7 @@ jobs:
       # Set up a specific version of Dart SDK
       - uses: dart-lang/setup-dart@v1
         with:
-          sdk: "stable" # You can specify a version like '2.19.0'
+          sdk: "3.10.7" # You can specify a version like '3.10.7'
 
       # Get Dart dependencies
       - name: Install dependencies
@@ -46,7 +46,7 @@ jobs:
 var gitlabExample = '''
 # Define the Docker image to use.
 # You can use official Dart images or Flutter-specific ones like ghcr.io/cirruslabs/flutter.
-image: dart:stable
+image: dart:3.10.7
 
 # Define stages for the pipeline
 stages:

@@ -12,6 +12,29 @@ dependencies:
   ds_auth_base: ^0.0.1
 ```
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
+
+Future<void> main() async {
+  registerOktaProvider({
+    'name': 'okta',
+    // 'region': 'us-east-1',
+    // 'clientId': 'your-client-id',
+  });
+
+  final auth = DSAuthManager('okta');
+  await auth.initialize({
+    'clientId': 'your-client-id',
+    'issuer': 'https://dev-12345.okta.com',
+    // 'clientSecret': 'your-client-secret',
+    // 'redirectUri': 'http://localhost:3000/callback',
+  });
+}
+```
+
 ## Configuration
 
 Before using the Okta provider, you need to configure it with your Okta application credentials:

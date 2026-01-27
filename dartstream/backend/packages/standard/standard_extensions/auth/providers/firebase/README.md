@@ -38,6 +38,29 @@ dependencies:
 
 ## Usage
 
+### Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_firebase_auth_provider/ds_firebase_auth_export.dart';
+
+Future<void> main() async {
+  registerFirebaseProvider({
+    'name': 'firebase',
+    'projectId': 'your-project-id',
+    'privateKeyPath': 'path/to/service-account.json',
+    'apiKey': 'your-api-key',
+  });
+
+  final auth = DSAuthManager('firebase');
+  await auth.initialize({
+    'projectId': 'your-project-id',
+    'privateKeyPath': 'path/to/service-account.json',
+    'apiKey': 'your-api-key',
+  });
+}
+```
+
 ### Basic Setup
 
 final provider = DSFirebaseAuthProvider(

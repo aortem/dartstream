@@ -32,3 +32,4 @@
 library ds_okta_auth_provider;
 
 export 'ds_okta_auth_provider.dart';
+export 'ds_okta_auth_entry.dart';
