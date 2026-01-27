@@ -2,3 +2,13 @@
 # We want to cache discovered extensions to avoid repeated scans.
 # Provides a high-level view of all registered extensions.
 # Provides a global configuration or dependency resolver.
+
+auth:
+  providers:
+    - name: cognito
+      path: packages/standard/standard_extensions/auth/providers/cognito
+      enabled: true
+      config:
+        userPoolId: "us-east-1_example"
+        clientId: "example7890123456789"
+        region: "us-east-1"

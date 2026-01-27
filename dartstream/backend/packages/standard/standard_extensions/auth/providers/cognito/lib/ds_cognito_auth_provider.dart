@@ -1,3 +1,5 @@
+import 'package:amazon_cognito_identity_dart_2/cognito.dart';
+import 'package:ds_auth_base/ds_auth_base.dart';
 import 'dart:convert';
 
 import 'package:ds_auth_base/ds_auth_provider.dart';
@@ -18,6 +20,7 @@ class DSCognitoAuthProvider implements DSAuthProvider {
   final String? clientSecret;
   final String? identityPoolId;
 
+  late final CognitoUserPool _userPool;
   late final DSTokenManager _tokenManager;
   late final DSSessionManager _sessionManager;
   late final DSCognitoEventHandler _eventHandler;
@@ -66,11 +69,16 @@ class DSCognitoAuthProvider implements DSAuthProvider {
   Future<void> initialize(Map<String, dynamic> config) async {
     if (_isInitialized) return;
 
+    // Initialize the actual SDK connection
+    _userPool = CognitoUserPool(
+      config['userPoolId'] ?? userPoolId,
+      config['clientId'] ?? clientId,
+    );
+
     _tokenManager = DSTokenManager();
     _sessionManager = DSSessionManager();
     _eventHandler = DSCognitoEventHandler(onEvent: _handleAuthEvent);
 
-    _eventHandler.initialize();
     _isInitialized = true;
   }
 
@@ -162,45 +170,48 @@ Future<String> refreshToken(String refreshToken) async {
 
 
   @override
-  Future<void> createAccount(
-    String email,
-    String password, {
-    String? displayName,
-  }) async {
+  Future<void> createAccount(String email, String password, {String? displayName}) async {
     _ensureInitialized();
 
-    if (!email.contains('@')) {
-      throw DSAuthError('Invalid email address');
-    }
+    final userAttributes = [
+      AttributeArg(name: 'email', value: email),
+      if (displayName != null) AttributeArg(name: 'name', value: displayName),
+    ];
 
-    if (password.length < 8) {
-      throw DSAuthError('Password must be at least 8 characters');
+    try {
+      // Actual registration call
+      await _userPool.signUp(email, password, userAttributes: userAttributes);
+    } catch (e) {
+      throw DSCognitoErrorMapper.mapError(e);
     }
-
-    await _eventHandler.handleAccountCreation('mock-user-id', email);
   }
-
   // ----------------------------------------------------------
   // INTERNAL HELPERS
   // ----------------------------------------------------------
 
   Future<Map<String, dynamic>> _performCognitoSignIn(
       String username, String password) async {
-    await Future.delayed(const Duration(milliseconds: 300));
+    
+    final cognitoUser = CognitoUser(username, _userPool);
+    final authDetails = AuthenticationDetails(
+      username: username,
+      password: password,
+    );
 
-    if (!username.contains('@')) {
-      throw DSAuthError('Invalid credentials');
+    try {
+      // This is the "Actual SDK" call Jeremy wants to see
+      final session = await cognitoUser.authenticateUser(authDetails);
+      
+      if (session == null) throw DSAuthError('Authentication failed');
+
+      return {
+        'AccessToken': session.getAccessToken().getJwtToken(),
+        'RefreshToken': session.getRefreshToken()?.getToken(),
+        'IdToken': session.getIdToken().getJwtToken(),
+      };
+    } catch (e) {
+      throw DSCognitoErrorMapper.mapError(e);
     }
-
-    return {
-      'AccessToken': 'cognito_access_token_${DateTime.now().millisecondsSinceEpoch}',
-      'RefreshToken':
-          'cognito_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
-      'IdToken':
-          'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.'
-              '${base64Url.encode('{"sub":"user-id","email":"$username","exp":9999999999}'.codeUnits)}.'
-              'signature',
-    };
   }
 
   Future<DSAuthUser> _createUserFromToken(String idToken) async {
