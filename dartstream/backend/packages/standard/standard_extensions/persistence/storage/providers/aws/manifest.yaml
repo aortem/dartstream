@@ -1,0 +1,7 @@
+name: ds_storage_aws
+version: "0.0.1"
+description: "S3-compatible storage provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_storage_aws_entry.dart"

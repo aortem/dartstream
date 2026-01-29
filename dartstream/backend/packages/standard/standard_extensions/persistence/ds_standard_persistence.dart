@@ -1,6 +1,4 @@
-library ds_standard_extensions;
+library ds_standard_persistence;
 
-// Export standard api module
-export 'ds_standard_persistence.dart';
-
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Persistence umbrella export
+export 'ds_standard_persistence_export.dart';

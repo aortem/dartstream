@@ -57,9 +57,9 @@ dependencies:
  ds_sentry_logging_provider: ^0.0.1
 
 
-#   # persistence - storage providers
-#   ds_storage_aws:       ^0.0.1
-#   ds_storage_gcp:       ^0.0.1
+# Persistence - storage providers
+ ds_storage_aws:       ^0.0.1
+ ds_storage_gcp:       ^0.0.1
 
 #   # feature-flags
 #   ds_ff_base:           ^0.0.1

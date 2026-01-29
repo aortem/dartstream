@@ -1,9 +1,6 @@
 # Changelog
 
-## 0.0.1-pre
+## 0.0.1
 
 ### Added
-- Initial release for the auth integration package providers.
-
-
-
+- Initial release of storage base interfaces and manager.

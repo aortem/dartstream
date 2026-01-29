@@ -1,6 +1,4 @@
-library ds_standard_extensions;
+library ds_standard_platform_services;
 
-// Export standard api module
-export 'ds_standard_platform_services.dart';
-
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Platform services umbrella export
+export 'ds_standard_platform_services_export.dart';
