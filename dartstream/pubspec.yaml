@@ -10,7 +10,7 @@ description: A package for DartStream project-wide configurations and scripts.
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.10.8
 
 # This pubspec file is used for any dependencies that both the frontend and backend framework use(aka. shared dependencies)
 # Dependencies are added in sections alphabetically and according to features.

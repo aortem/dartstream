@@ -19,7 +19,7 @@ version: 0.0.10
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 dependencies:
  shelf: ^1.4.2

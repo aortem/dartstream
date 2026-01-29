@@ -1,5 +1,5 @@
 name: ds_sentry_logging_provider
-version: "0.0.1-pre"
+version: "0.0.1"
 description: "Sentry logging provider for DartStream."
 level: "core"
 dependencies:

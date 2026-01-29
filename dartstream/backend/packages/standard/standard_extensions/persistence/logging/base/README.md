@@ -78,10 +78,8 @@ dependencies:
   ds_logging_base: ^0.0.1
 
   # Choose one or both providers
-  ds_sentry_logging_provider:
-    path: path/to/persistence/logging/providers/sentry
-  ds_otlp_logging_provider:
-    path: path/to/persistence/logging/providers/otlp
+  ds_sentry_logging_provider: ^0.0.1
+  ds_otlp_logging_provider: ^0.0.1
 ```
 
 ### Basic Setup
