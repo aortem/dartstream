@@ -18,9 +18,9 @@ Adapters for these providers may live as separate packages; if a provider packag
 These are recommended stacks for teams that prefer a cloud-vendor mental model. They are **not** provider packages and do **not** appear in the registry.
 
 - **AWS profile**
-  - S3 -> `ds_storage_aws`
+  - S3 -> `ds_aws_storage_provider`
 - **GCP profile**
-  - Cloud Storage -> `ds_storage_gcp`
+  - Cloud Storage -> `ds_gcp_storage_provider`
 - **Azure profile**
   - Azure Blob Storage (not in OSS)
 

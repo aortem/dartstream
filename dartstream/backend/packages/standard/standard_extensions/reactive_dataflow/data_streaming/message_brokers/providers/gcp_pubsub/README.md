@@ -7,14 +7,14 @@ Google Cloud Pub/Sub provider for DartStream using the official `googleapis` cli
 ```yaml
 dependencies:
   ds_message_broker_base: ^0.0.1
-  ds_message_broker_gcp_pubsub: ^0.0.1
+  ds_gcp_pubsub_message_broker_provider: ^0.0.1
 ```
 
 ## Usage
 
 ```dart
 import 'package:ds_message_broker_base/ds_message_broker_base_export.dart';
-import 'package:ds_message_broker_gcp_pubsub/ds_message_broker_gcp_pubsub_export.dart';
+import 'package:ds_gcp_pubsub_message_broker_provider/ds_message_broker_gcp_pubsub_export.dart';
 
 final config = {
   'name': 'pubsub',

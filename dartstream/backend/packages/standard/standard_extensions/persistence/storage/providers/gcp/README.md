@@ -7,14 +7,14 @@ Google Cloud Storage provider for DartStream using the official `googleapis` cli
 ```yaml
 dependencies:
   ds_storage_base: ^0.0.1
-  ds_storage_gcp: ^0.0.1
+  ds_gcp_storage_provider: ^0.0.1
 ```
 
 ## Usage
 
 ```dart
 import 'package:ds_storage_base/ds_storage_base_export.dart';
-import 'package:ds_storage_gcp/ds_storage_gcp_export.dart';
+import 'package:ds_gcp_storage_provider/ds_storage_gcp_export.dart';
 
 final config = {
   'name': 'gcs',

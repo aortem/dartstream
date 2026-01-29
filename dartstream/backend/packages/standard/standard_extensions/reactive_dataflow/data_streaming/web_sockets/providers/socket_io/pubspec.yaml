@@ -1,4 +1,4 @@
-name: ds_websocket_socket_io
+name: ds_socket_io_websocket_provider
 description: Socket.IO WebSocket provider for DartStream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream

@@ -58,8 +58,8 @@ dependencies:
 
 
 # Persistence - storage providers
- ds_storage_aws:       ^0.0.1
- ds_storage_gcp:       ^0.0.1
+ ds_aws_storage_provider: ^0.0.1
+ ds_gcp_storage_provider: ^0.0.1
 
 #   # feature-flags
 #   ds_ff_base:           ^0.0.1
@@ -68,9 +68,9 @@ dependencies:
 
 # Reactive dataflow - data streaming (lean OSS list)
  ds_message_broker_base:      ^0.0.1
- ds_message_broker_gcp_pubsub: ^0.0.1
+ ds_gcp_pubsub_message_broker_provider: ^0.0.1
  ds_websocket_base:           ^0.0.1
- ds_websocket_socket_io:      ^0.0.1
+ ds_socket_io_websocket_provider: ^0.0.1
 
 
 workspace:

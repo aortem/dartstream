@@ -19,7 +19,7 @@ Adapters for these providers may live as separate packages; if a provider packag
 These are recommended stacks for teams that prefer a cloud-vendor mental model. They are **not** provider packages and do **not** appear in the registry.
 
 - **Generic profile**
-  - Socket.IO -> `ds_websocket_socket_io`
+  - Socket.IO -> `ds_socket_io_websocket_provider`
 
 ## Not in OSS (SaaS or community-driven)
 

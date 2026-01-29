@@ -1,4 +1,4 @@
-name: ds_storage_aws
+name: ds_aws_storage_provider
 version: "0.0.1"
 description: "S3-compatible storage provider for DartStream."
 level: "core"

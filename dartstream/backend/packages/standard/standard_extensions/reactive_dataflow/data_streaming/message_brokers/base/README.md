@@ -19,7 +19,7 @@ Adapters for these providers may live as separate packages; if a provider packag
 These are recommended stacks for teams that prefer a cloud-vendor mental model. They are **not** provider packages and do **not** appear in the registry.
 
 - **GCP profile**
-  - Pub/Sub -> `ds_message_broker_gcp_pubsub`
+  - Pub/Sub -> `ds_gcp_pubsub_message_broker_provider`
 
 ## Not in OSS (SaaS or community-driven)
 

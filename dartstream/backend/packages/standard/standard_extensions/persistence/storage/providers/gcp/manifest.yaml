@@ -1,4 +1,4 @@
-name: ds_storage_gcp
+name: ds_gcp_storage_provider
 version: "0.0.1"
 description: "Google Cloud Storage provider for DartStream."
 level: "core"
