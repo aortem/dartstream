@@ -13,5 +13,5 @@ resolution: workspace
 dependencies:
   ds_tools_testing: ^0.1.4
 #  ds_tools_general: ^0.0.2
-  ds_standard_features: ^0.1.5
+  ds_standard_features: ^0.1.6
   

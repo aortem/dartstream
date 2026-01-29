@@ -302,7 +302,7 @@ environment:
 
 dependencies:
   # DartStream core
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.1.6
   $middlewarePackage
   
   # Add your dependencies here

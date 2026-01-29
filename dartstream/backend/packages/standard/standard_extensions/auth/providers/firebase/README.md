@@ -28,7 +28,7 @@ dependencies:
 
    # Framework features
 
-   ds_standard_features: ^0.0.8
+   ds_standard_features: ^0.1.6
 
 2. Configure Firebase:
 

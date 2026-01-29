@@ -12,7 +12,7 @@ dependencies:
   ds_google_firebase_database: ^0.0.1
   # Core Dartstream packages
   ds_standard_engine: ^0.0.1
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.1.6
   
   # Framework-specific dependencies
   flutter:

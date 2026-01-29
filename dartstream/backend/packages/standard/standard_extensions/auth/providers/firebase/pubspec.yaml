@@ -11,7 +11,7 @@ resolution: workspace
 dependencies:
   firebase_dart_admin_auth_sdk: ^0.0.9
   ds_auth_base: ^0.0.2
-  ds_standard_features: ^0.1.5
+  ds_standard_features: ^0.1.6
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4
