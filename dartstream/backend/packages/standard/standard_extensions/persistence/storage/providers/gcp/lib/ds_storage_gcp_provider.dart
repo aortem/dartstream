@@ -111,7 +111,7 @@ class DSGcpStorageProvider implements DSStorageProvider {
       }
 
       pageToken = response.nextPageToken;
-    } while (pageToken != null && pageToken!.isNotEmpty);
+    } while (pageToken != null && pageToken.isNotEmpty);
 
     return results;
   }
