@@ -1,6 +1,6 @@
 name: ds_gcp_pubsub_message_broker_provider
 description: Google Cloud Pub/Sub message broker provider for DartStream.
-version: 0.0.2
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
