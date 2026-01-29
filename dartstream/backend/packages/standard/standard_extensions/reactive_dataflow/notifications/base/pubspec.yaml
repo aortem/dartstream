@@ -1,13 +1,11 @@
 name: ds_notifications_base
-description: "Amazon authentication provider for Dartstream."
-version: "0.0.1-pre"
+description: Base notification interfaces and manager for DartStream.
+version: "0.0.1"
 repository: https://github.com/aortem/dartstream
-
-publish_to: none # Mark the package as non-publishable for local testing:
 
 environment:
   sdk: ^3.10.8
 
 resolution: workspace
 
-entry_point: "lib/amazon_auth_provider.dart"
+entry_point: "lib/ds_notifications_base_export.dart"

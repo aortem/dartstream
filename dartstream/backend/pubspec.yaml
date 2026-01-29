@@ -108,7 +108,5 @@ workspace:
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io
   - packages/standard/standard_extensions/reactive_dataflow/events/base
-  - packages/standard/standard_extensions/reactive_dataflow/events/providers
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
-  - packages/standard/standard_extensions/reactive_dataflow/notifications/providers
