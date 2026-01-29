@@ -52,7 +52,7 @@ A **meta-package** that bundles the entire DartStream framework—tooling, core 
 | **Core Tooling & CLI**   | `ds_tooling` (workspace & bootstrap), `ds_cli`                                       |
 | **Standard Engine**      | `ds_standard_engine`                                                                 |
 | **Authentication**       | `ds_auth_base`, `ds_auth_auth0`, `ds_auth_cognito`, `ds_auth_firebase`, etc.         |
-| **Persistence**          | `ds_db_base`, `ds_db_mysql`, `ds_db_postgres`, `ds_storage_aws`, `ds_storage_gcp`    |
+| **Persistence**          | `ds_database_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_storage_aws`, `ds_storage_gcp` |
 | **Feature Flags**        | `ds_ff_base`, `ds_ff_flagd`, `ds_ff_intellitoggle`                                   |
 | **Reactive Dataflow**    | `ds_dataflow_base`, `ds_dataflow_websocket`, `ds_dataflow_broker_base`               |
 | **AI Modules (Preview)** | Semantic-release, AI-driven test generation, docs-sync, CLI assistant (coming soon!) |
@@ -79,9 +79,9 @@ A **meta-package** that bundles the entire DartStream framework—tooling, core 
 
 ### 4. Persistence
 
-* **Database**: base interfaces + MySQL/Postgres/Firebase implementations
+* **Database**: base interfaces + Postgres/Mongo/Firestore implementations
 * **Storage**: base interfaces + AWS S3 / GCP Storage providers
-* **Logging**: base interfaces + Console, Stackdriver, etc.
+* **Logging**: base interfaces + OTLP/Sentry providers
 
 ### 5. Feature Flags
 

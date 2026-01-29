@@ -47,9 +47,9 @@ dependencies:
 
 # Persistence - database providers (lean OSS list)
  ds_database_base:       ^0.0.1
-#   ds_postgres_database: ^0.0.1
-#   ds_mongo_database:    ^0.0.1
-#   ds_firebase_database: ^0.0.1
+ ds_postgres_database:   ^0.0.1
+ ds_mongo_database:      ^0.0.1
+ ds_firebase_database:   ^0.0.1
 
 # Persistence - logging providers
  ds_logging_base:            ^0.0.1
@@ -86,6 +86,9 @@ workspace:
   - packages/standard/standard_extensions/auth/providers/stytch
   - packages/standard/standard_extensions/auth/providers/transmit
   - packages/standard/standard_extensions/persistence/database/base
+  - packages/standard/standard_extensions/persistence/database/providers/postgres
+  - packages/standard/standard_extensions/persistence/database/providers/mongo
+  - packages/standard/standard_extensions/persistence/database/providers/firebase
   - packages/standard/standard_extensions/persistence/logging/base
   - packages/standard/standard_extensions/persistence/logging/providers/otlp
   - packages/standard/standard_extensions/persistence/logging/providers/sentry

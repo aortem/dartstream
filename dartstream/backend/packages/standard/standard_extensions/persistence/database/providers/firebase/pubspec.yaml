@@ -1,0 +1,16 @@
+name: ds_firebase_database
+description: Firestore database provider for DartStream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.8
+
+resolution: workspace
+
+dependencies:
+  ds_database_base: ^0.0.1
+  googleapis: ^12.0.0
+  googleapis_auth: ^2.0.0
+
+entry_point: "lib/ds_firebase_database_entry.dart"

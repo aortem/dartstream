@@ -1,0 +1,15 @@
+name: ds_postgres_database
+description: PostgreSQL database provider for DartStream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.8
+
+resolution: workspace
+
+dependencies:
+  ds_database_base: ^0.0.1
+  postgres: ^3.5.9
+
+entry_point: "lib/ds_postgres_database_entry.dart"
