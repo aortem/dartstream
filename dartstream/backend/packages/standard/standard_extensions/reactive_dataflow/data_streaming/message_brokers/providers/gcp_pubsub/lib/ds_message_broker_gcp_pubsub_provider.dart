@@ -135,7 +135,7 @@ class DSGcpPubSubMessageBrokerProvider implements DSMessageBrokerProvider {
   @override
   Future<void> dispose() async {
     _api = null;
-    await _authClient?.close();
+    _authClient?.close();
     _authClient = null;
     _projectId = null;
     _initialized = false;
