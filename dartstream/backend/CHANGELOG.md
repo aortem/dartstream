@@ -1,3 +1,19 @@
+## 0.0.10
+
+### Added
+- Lean OSS persistence providers: PostgreSQL, MongoDB, Firestore; AWS S3‑compatible and GCP Storage; OTLP and Sentry logging.
+- Data streaming modules: message broker base + GCP Pub/Sub provider; WebSocket base + Socket.IO provider.
+- Reactive dataflow base packages for events and notifications (interfaces, managers, manifests, exports).
+- Standard engine/extensions umbrella exports and refreshed registry manifests for discovery.
+
+### Changed
+- Standardized provider package naming to `*_provider` and updated docs/vendor profiles to match.
+- Updated SDK constraints to `^3.10.8` and bumped key deps (`googleapis ^15.0.0`, `googleapis_auth ^2.0.0`, `ds_standard_features ^0.1.6`).
+- Updated backend meta‑package dependencies/workspace list to include new and renamed providers.
+
+### Fixed
+- Resolved self‑export loops in umbrella exports and removed placeholder configs.
+- Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
 
 ## 0.0.1-pre+3
 
