@@ -63,7 +63,7 @@ class DSMongoDatabaseProvider implements DSDatabaseProvider {
   ) async {
     final coll = _collection(collection);
     final payload = _sanitizePayload(data);
-    await coll.updateOne({'_id': id}, {'$set': payload});
+    await coll.updateOne({'_id': id}, {r'$set': payload});
   }
 
   @override

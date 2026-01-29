@@ -26,7 +26,7 @@ class DSPostgresDatabaseProvider implements DSDatabaseProvider {
     final id = _extractId(data) ?? _generateId();
     final payload = _sanitizePayload(data);
 
-    final sql = Sql('INSERT INTO ${_tableName(collection)} (id, data) VALUES ($1, $2)');
+    final sql = Sql('INSERT INTO ${_tableName(collection)} (id, data) VALUES (\$1, \$2)');
     await connection.execute(
       sql,
       parameters: [
@@ -43,7 +43,7 @@ class DSPostgresDatabaseProvider implements DSDatabaseProvider {
     final connection = _requireConnection();
     await _ensureCollection(collection);
 
-    final sql = Sql('SELECT data FROM ${_tableName(collection)} WHERE id = $1');
+    final sql = Sql('SELECT data FROM ${_tableName(collection)} WHERE id = \$1');
     final result = await connection.execute(sql, parameters: [id]);
     if (result.isEmpty) {
       return null;
@@ -67,7 +67,7 @@ class DSPostgresDatabaseProvider implements DSDatabaseProvider {
     await _ensureCollection(collection);
 
     final payload = _sanitizePayload(data);
-    final sql = Sql('UPDATE ${_tableName(collection)} SET data = $1 WHERE id = $2');
+    final sql = Sql('UPDATE ${_tableName(collection)} SET data = \$1 WHERE id = \$2');
 
     await connection.execute(
       sql,
@@ -83,7 +83,7 @@ class DSPostgresDatabaseProvider implements DSDatabaseProvider {
     final connection = _requireConnection();
     await _ensureCollection(collection);
 
-    final sql = Sql('DELETE FROM ${_tableName(collection)} WHERE id = $1');
+    final sql = Sql('DELETE FROM ${_tableName(collection)} WHERE id = \$1');
     await connection.execute(sql, parameters: [id]);
   }
 
@@ -166,10 +166,7 @@ class DSPostgresDatabaseProvider implements DSDatabaseProvider {
     final sslMode = _sslModeFromConfig(config) ?? SslMode.disable;
 
     if (connectionString != null) {
-      return Connection.openFromUrl(
-        connectionString,
-        settings: ConnectionSettings(sslMode: sslMode),
-      );
+      return Connection.openFromUrl(connectionString);
     }
 
     final host = _requireString(config, 'host');

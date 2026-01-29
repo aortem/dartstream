@@ -6,7 +6,7 @@ MongoDB database provider for DartStream powered by `mongo_dart`.
 
 ```yaml
 dependencies:
-  ds_database_base: ^0.0.1
+  ds_database_base: ^0.0.2
   ds_mongo_database: ^0.0.1
 ```
 
