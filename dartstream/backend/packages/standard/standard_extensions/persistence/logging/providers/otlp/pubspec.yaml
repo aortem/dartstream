@@ -1,0 +1,17 @@
+name: ds_otlp_logging_provider
+description: OpenTelemetry (OTLP) logging provider for DartStream.
+version: "0.0.1-pre"
+repository: https://github.com/aortem/dartstream
+
+publish_to: none # Mark the package as non-publishable for local testing:
+
+environment:
+  sdk: ^3.10.7
+
+resolution: workspace
+
+dependencies:
+  ds_logging_base:
+    path: ../../base
+
+entry_point: "lib/ds_otlp_logging_entry.dart"
