@@ -11,8 +11,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  ds_logging_base:
-    path: ../../base
+  ds_logging_base: ^0.0.1
   sentry: ^9.9.2
 
 entry_point: "lib/ds_sentry_logging_entry.dart"

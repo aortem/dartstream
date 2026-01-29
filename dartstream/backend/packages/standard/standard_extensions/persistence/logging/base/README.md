@@ -75,8 +75,7 @@ Add the required dependencies to your `pubspec.yaml`:
 ```yaml
 dependencies:
   # Base logging package
-  ds_logging_base:
-    path: path/to/persistence/logging/base
+  ds_logging_base: ^0.0.1
 
   # Choose one or both providers
   ds_sentry_logging_provider:
