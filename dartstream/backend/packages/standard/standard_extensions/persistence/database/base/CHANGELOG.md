@@ -1,4 +1,4 @@
-## 0.0.10
+## 0.0.2
 
 ### Changed
 - Move public API under lib/ with src/ implementation layout.
