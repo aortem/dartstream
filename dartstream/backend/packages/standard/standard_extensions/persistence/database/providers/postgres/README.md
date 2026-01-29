@@ -13,7 +13,7 @@ dependencies:
 ## Usage
 
 ```dart
-import 'package:ds_database_base/ds_database_base_export.dart';
+import 'package:ds_database_base/ds_database_base.dart';
 import 'package:ds_postgres_database/ds_postgres_database_export.dart';
 
 final config = {

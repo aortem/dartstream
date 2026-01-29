@@ -1,6 +1,6 @@
 import 'dart:math';
 
-import 'package:ds_database_base/ds_database_base_export.dart';
+import 'package:ds_database_base/ds_database_base.dart';
 import 'package:mongo_dart/mongo_dart.dart';
 
 class DSMongoDatabaseProvider implements DSDatabaseProvider {

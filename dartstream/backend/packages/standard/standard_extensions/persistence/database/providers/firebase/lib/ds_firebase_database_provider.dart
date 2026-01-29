@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 
-import 'package:ds_database_base/ds_database_base_export.dart';
+import 'package:ds_database_base/ds_database_base.dart';
 import 'package:googleapis/firestore/v1.dart' as firestore;
 import 'package:googleapis_auth/auth_io.dart';
 

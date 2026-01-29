@@ -21,7 +21,7 @@
 - Update ds_testing_tools package to .0.0.2
 - ds_database_provider.dart - Core interface for all database providers with CRUD operations
 - ds_database_manager.dart - Central registry for database providers
-- ds_database_base_export.dart - Consolidates exports for easier importing Providers:
+- ds_database_base.dart - Consolidates exports for easier importing Providers:
 - ds_firebase_database.dart - Google Cloud Firestore implementation
 - ds_postgres_database.dart - PostgreSQL implementation
 - ds_mysql_database.dart - MySQL implementation Configuration:

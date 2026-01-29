@@ -1,4 +1,4 @@
-import 'package:ds_database_base/ds_database_base_export.dart';
+import 'package:ds_database_base/ds_database_base.dart';
 
 import 'ds_mongo_database_provider.dart';
 
