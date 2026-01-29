@@ -32,7 +32,7 @@ dependencies:
 #   # standard engine
 #   ds_standard_engine:   ^0.0.6
 
-# auth extensions
+# Auth Extensions
  ds_auth_base:                  ^0.0.2
  ds_auth0_auth_provider:        ^0.0.1
 # ds_cognito_auth_provider:     ^0.0.1-pre+1
@@ -45,11 +45,17 @@ dependencies:
 # ds_stytch_auth_provider:      ^0.0.1-pre
  ds_transmit_auth_provider:     ^0.0.2
 
-#   # persistence - database providers
-#   ds_db_base:           ^0.0.1
-#   ds_db_firebase:       ^0.0.1
-#   ds_db_mysql:          ^0.0.1
-#   ds_db_postgres:       ^0.0.1
+# Persistence - database providers (lean OSS list)
+ ds_database_base:       ^0.0.1
+#   ds_postgres_database: ^0.0.1
+#   ds_mongo_database:    ^0.0.1
+#   ds_firebase_database: ^0.0.1
+
+# Persistence - logging providers
+ ds_logging_base:            ^0.0.1
+ ds_otlp_logging_provider:   ^0.0.1
+ ds_sentry_logging_provider: ^0.0.1
+
 
 #   # persistence - storage providers
 #   ds_storage_aws:       ^0.0.1
@@ -80,7 +86,6 @@ workspace:
   - packages/standard/standard_extensions/auth/providers/stytch
   - packages/standard/standard_extensions/auth/providers/transmit
   - packages/standard/standard_extensions/persistence/database/base
-  - packages/standard/standard_extensions/persistence/database/providers/gcp/sql
   - packages/standard/standard_extensions/persistence/logging/base
   - packages/standard/standard_extensions/persistence/logging/providers/otlp
   - packages/standard/standard_extensions/persistence/logging/providers/sentry
