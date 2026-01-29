@@ -1,0 +1,16 @@
+name: ds_message_broker_gcp_pubsub
+description: Google Cloud Pub/Sub message broker provider for DartStream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.8
+
+resolution: workspace
+
+dependencies:
+  ds_message_broker_base: ^0.0.1
+  googleapis: ^13.2.0
+  googleapis_auth: ^1.6.0
+
+entry_point: "lib/ds_message_broker_gcp_pubsub_entry.dart"

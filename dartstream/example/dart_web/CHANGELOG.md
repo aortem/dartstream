@@ -1,5 +1,3 @@
-# Changelog
-
 ## 0.0.1-pre+1 - 2024-08-12
 
 - update web package to stable version 1.0.0.

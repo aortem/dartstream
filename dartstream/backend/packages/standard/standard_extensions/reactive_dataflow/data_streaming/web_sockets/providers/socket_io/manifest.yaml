@@ -1,0 +1,7 @@
+name: ds_websocket_socket_io
+version: "0.0.1"
+description: "Socket.IO WebSocket provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_websocket_socket_io_entry.dart"

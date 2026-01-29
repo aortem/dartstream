@@ -66,10 +66,11 @@ dependencies:
 #   ds_ff_flagd:          ^0.0.1
 #   ds_ff_intellitoggle:  ^0.0.1
 
-#   # reactive dataflow, etc.
-#   ds_dataflow_base:        ^0.0.1
-#   ds_dataflow_websocket:   ^0.0.1
-#   ds_dataflow_broker_base: ^0.0.1
+# Reactive dataflow - data streaming (lean OSS list)
+ ds_message_broker_base:      ^0.0.1
+ ds_message_broker_gcp_pubsub: ^0.0.1
+ ds_websocket_base:           ^0.0.1
+ ds_websocket_socket_io:      ^0.0.1
 
 
 workspace:
@@ -103,9 +104,9 @@ workspace:
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers  
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io
   - packages/standard/standard_extensions/reactive_dataflow/events/base
   - packages/standard/standard_extensions/reactive_dataflow/events/providers
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 

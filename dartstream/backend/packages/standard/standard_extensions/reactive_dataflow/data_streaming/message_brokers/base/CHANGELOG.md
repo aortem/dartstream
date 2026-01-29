@@ -1,6 +1,4 @@
-# Changelog
-
-## 0.0.1-pre
+## 0.0.1
 
 ### Added
-- Initial release.
+- Initial release for the message broker base package.

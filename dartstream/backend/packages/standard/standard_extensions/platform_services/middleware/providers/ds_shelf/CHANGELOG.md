@@ -1,5 +1,3 @@
-# Changelog
-
 ## 0.0.1
 
 - add CORS to the shelf package

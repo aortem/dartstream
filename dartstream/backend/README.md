@@ -54,7 +54,7 @@ A **meta-package** that bundles the entire DartStream framework—tooling, core 
 | **Authentication**       | `ds_auth_base`, `ds_auth_auth0`, `ds_auth_cognito`, `ds_auth_firebase`, etc.         |
 | **Persistence**          | `ds_database_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_storage_aws`, `ds_storage_gcp` |
 | **Feature Flags**        | `ds_ff_base`, `ds_ff_flagd`, `ds_ff_intellitoggle`                                   |
-| **Reactive Dataflow**    | `ds_dataflow_base`, `ds_dataflow_websocket`, `ds_dataflow_broker_base`               |
+| **Reactive Dataflow**    | `ds_message_broker_base`, `ds_message_broker_gcp_pubsub`, `ds_websocket_base`, `ds_websocket_socket_io` |
 | **AI Modules (Preview)** | Semantic-release, AI-driven test generation, docs-sync, CLI assistant (coming soon!) |
 
 ---
