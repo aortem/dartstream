@@ -46,10 +46,10 @@ dependencies:
  ds_transmit_auth_provider:     ^0.0.2
 
 # Persistence - database providers (lean OSS list)
- # ds_database_base: ^0.0.2
- # ds_postgres_database:   ^0.0.1
- # ds_mongo_database:      ^0.0.1
- # ds_firebase_database:   ^0.0.1
+ ds_database_base: ^0.0.2
+ ds_postgres_database:   ^0.0.1
+ ds_mongo_database:      ^0.0.1
+ ds_firebase_database:   ^0.0.1
 
 # Persistence - logging providers
  ds_logging_base:            ^0.0.1
