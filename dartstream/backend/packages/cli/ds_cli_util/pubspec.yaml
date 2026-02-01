@@ -7,7 +7,7 @@ version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -19,7 +19,7 @@ dependencies:
   #  TBD: ^0.0.1
 
   # DS Standard Features
-  ds_standard_features: ^0.1.5
+  ds_standard_features: ^0.1.6
 
   # DS Tools Testing
   ds_tools_testing: ^0.1.4

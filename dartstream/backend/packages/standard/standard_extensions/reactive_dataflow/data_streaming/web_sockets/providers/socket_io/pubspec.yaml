@@ -1,0 +1,15 @@
+name: ds_socket_io_websocket_provider
+description: Socket.IO WebSocket provider for DartStream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.8
+
+resolution: workspace
+
+dependencies:
+  ds_websocket_base: ^0.0.1
+  socket_io_client: ^3.1.4
+
+entry_point: "lib/ds_websocket_socket_io_entry.dart"

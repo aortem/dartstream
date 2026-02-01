@@ -31,6 +31,32 @@ dependencies:
     path: path/to/auth/providers/entraid
 ```
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_entraid_auth_provider/ds_entraid_auth_export.dart';
+
+Future<void> main() async {
+  registerEntraIdProvider({
+    'name': 'entraid',
+    'tenantId': 'your-tenant-id',
+    'clientId': 'your-client-id',
+    'clientSecret': 'your-client-secret',
+    // 'primaryUserFlow': 'B2C_1_signup_signin',
+    // 'domain': 'your-tenant.b2clogin.com',
+  });
+
+  final auth = DSAuthManager('entraid');
+  await auth.initialize({
+    'tenantId': 'your-tenant-id',
+    'clientId': 'your-client-id',
+    'clientSecret': 'your-client-secret',
+    // 'primaryUserFlow': 'B2C_1_signup_signin',
+  });
+}
+```
+
 ## Quick Start
 
 ```dart

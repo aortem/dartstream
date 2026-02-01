@@ -101,6 +101,31 @@ void main() async {
 
 ---
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_auth0_auth_provider/ds_auth0_auth_export.dart';
+
+Future<void> main() async {
+  registerAuth0Provider({
+    'name': 'auth0',
+    'domain': 'your-tenant.auth0.com',
+    'clientId': 'YOUR_CLIENT_ID',
+    'clientSecret': 'YOUR_CLIENT_SECRET',
+    'audience': 'https://api.example.com/',
+  });
+
+  final auth = DSAuthManager('auth0');
+  await auth.initialize({
+    'domain': 'your-tenant.auth0.com',
+    'clientId': 'YOUR_CLIENT_ID',
+    'clientSecret': 'YOUR_CLIENT_SECRET',
+    'audience': 'https://api.example.com/',
+  });
+}
+```
+
 ## Package Conflicts and Aliases
 
 All classes in this package are prefixed with `DSAuth0…` to avoid naming collisions with other SDKs. No additional aliasing is required.

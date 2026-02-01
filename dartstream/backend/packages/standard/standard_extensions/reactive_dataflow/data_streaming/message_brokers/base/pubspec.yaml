@@ -1,13 +1,11 @@
-name: ds_messaging_base
-description: "Amazon authentication provider for Dartstream."
-version: "0.0.1-pre"
+name: ds_message_broker_base
+description: Base interfaces and manager for DartStream message brokers.
+version: "0.0.1"
 repository: https://github.com/aortem/dartstream
 
-publish_to: none # Mark the package as non-publishable for local testing:
-
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 resolution: workspace
 
-entry_point: "lib/amazon_auth_provider.dart"
+entry_point: "lib/ds_message_broker_base_export.dart"

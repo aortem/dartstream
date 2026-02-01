@@ -15,7 +15,8 @@ A pure-Dart library containing the core logic, commands, and utilities used by t
   Reads your workspace manifest (YAML/JSON), validates subpackage paths, and writes an updated manifest.
 
 - **`GenerateRegistryCommand`**  
-  Consumes the synced manifest and emits Dart registry files (e.g. `auth_registry.dart`) under specified output paths.
+  Consumes the synced manifest and emits optional bundle/allowlist registry files (e.g. `auth_registry.dart`).  
+  Not required for standard per-provider manifest discovery.
 
 - **`ReleaseCommand`**, **`DocsSyncCommand`**, **`QaTestCommand`**, etc.  
   Other commands for semantic releases, documentation pipelines, and AI‐powered QA testing.
@@ -104,7 +105,7 @@ ds generate-registry --help
 ## Examples
 
 ```bash
-# Sync + generate registry in one pipeline step
+# Sync + optionally generate a bundle registry
 ds sync-manifest && ds generate-registry
 
 # Use in GitLab CI

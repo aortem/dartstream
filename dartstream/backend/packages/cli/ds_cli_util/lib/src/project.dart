@@ -444,7 +444,7 @@ void _generatePubspec(
   String dependencies = '''
   # Core Dartstream packages
   ds_standard_engine: ^0.0.1
-  ds_standard_features: ^0.0.4
+  ds_standard_features: ^0.1.6
   
   # Utilities
   path: ^1.9.0

@@ -1,5 +1,6 @@
 // Export the main Cognito Auth Provider
 export 'ds_cognito_auth_provider.dart';
+export 'ds_cognito_auth_entry.dart';
 
 // Export utility classes
 export 'src/ds_token_manager.dart';

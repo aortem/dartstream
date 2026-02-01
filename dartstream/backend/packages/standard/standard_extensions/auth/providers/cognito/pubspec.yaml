@@ -6,12 +6,12 @@ repository: https://github.com/aortem/dartstream
 publish_to: none # Mark the package as non-publishable for local testing:
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 dependencies:
   ds_auth_base:
-    path: ../../../base
-  amazon_cognito_identity_dart_2: ^3.0.0
+    path: ../../base
+  cognito_dart_auth_sdk: ^0.0.1
 
 resolution: workspace
 

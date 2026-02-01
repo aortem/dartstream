@@ -21,6 +21,29 @@ dart pub add fingerprint_dart_auth_sdk
 
 ---
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_fingerprint_auth_provider/ds_fingerprint_auth_export.dart';
+
+Future<void> main() async {
+  registerFingerprintProvider({
+    'name': 'fingerprint',
+    // 'region': 'us-east-1',
+    // 'clientId': 'your-client-id',
+  });
+
+  final auth = DSAuthManager('fingerprint');
+  await auth.initialize({
+    // 'region': 'us-east-1',
+    // 'clientId': 'your-client-id',
+  });
+}
+```
+
+---
+
 ## API Usage
 
 `initialize(Map config)`

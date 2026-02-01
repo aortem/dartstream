@@ -24,6 +24,28 @@ dependencies:
     path: ../../providers/ping
 ```
 
+## Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_ping_auth/ds_ping_auth_export.dart';
+
+Future<void> main() async {
+  registerPingProvider({
+    'name': 'ping',
+    // 'region': 'us-east-1',
+    // 'clientId': 'mock-client-id',
+  });
+
+  final auth = DSAuthManager('ping');
+  await auth.initialize({
+    'clientId': 'mock-client-id',
+    'issuer': 'https://auth.pingone.com/mock-env-id',
+    'redirectUri': 'https://yourapp.com/callback',
+  });
+}
+```
+
 ## Quick Start
 
 ### 1. Register the Provider

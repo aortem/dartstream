@@ -10,10 +10,10 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Auth Providers
 import 'package:ds_auth0_auth_provider/ds_auth0_auth_export.dart';
-import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
-import 'package:ds_entraid_auth_provider/ds_entraid_auth_export.dart';
+// import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
+// import 'package:ds_entraid_auth_provider/ds_entraid_auth_export.dart';
 import 'package:ds_fingerprint_auth_provider/ds_fingerprint_auth_export.dart';
-import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
+// import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
 import 'package:ping_identity_dart_auth_sdk/ds_ping_auth_export.dart';
 import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart';
 
@@ -97,7 +97,7 @@ Future<Response> handleSignIn(Request request) async {
     );
   }
 
-  final String providerKey = data['provider'] ?? 'okta';
+  final String providerKey = data['provider'] ?? 'auth0';
   final bool isE2E = (data['__e2e__'] ?? false) == true;
 
   print('🔥 SignIn payload received: $data');
@@ -114,17 +114,19 @@ Future<Response> handleSignIn(Request request) async {
       'provider': providerKey,
     };
   } else {
-    final provider = _providers[providerKey] ?? _providers.values.first;
+    final String resolvedProviderKey = _providers.containsKey(providerKey)
+        ? providerKey
+        : _providers.keys.first;
 
     user = {
-      'id': 'dev-user-${providerKey}',
+      'id': 'dev-user-${resolvedProviderKey}',
       'email': data['email'] ?? 'dev@dartstream.dev',
       'subscriptionStatus': 'active',
       'isSandbox': true,
-      'provider': providerKey,
+      'provider': resolvedProviderKey,
     };
 
-    print('⚡ Simulated login for provider: $providerKey');
+    print('⚡ Simulated login for provider: $resolvedProviderKey');
   }
 
   // Generate session
@@ -176,18 +178,8 @@ Future<void> main() async {
   // ===============================
   // Initialize Providers (DEV SAFE)
   // ===============================
-  final oktaProvider = DSOktaAuthProvider();
-  await oktaProvider.initialize({'__dev__': true});
-
   final transmitProvider = DSTransmitAuthProvider();
   await transmitProvider.initialize({'__dev__': true});
-
-  final entraidProvider = DSEntraIDAuthProvider(
-    tenantId: 'mock-tenant-id',
-    clientId: 'mock-client-id',
-    clientSecret: 'mock-client-secret',
-  );
-  await entraidProvider.initialize({'__dev__': true});
 
   final auth0Provider = DSAuth0AuthProvider(
     domain: 'mock-domain',
@@ -196,13 +188,6 @@ Future<void> main() async {
     audience: 'mock-audience',
   );
   await auth0Provider.initialize({'__dev__': true});
-
-  final cognitoProvider = DSCognitoAuthProvider(
-    userPoolId: 'mock-user-pool-id',
-    clientId: 'mock-client-id',
-    region: 'mock-region',
-  );
-  await cognitoProvider.initialize({'__dev__': true});
 
   final fingerprintProvider = DSFingerprintAuthProvider();
   await fingerprintProvider.initialize({'__dev__': true});
@@ -222,11 +207,8 @@ Future<void> main() async {
     _providers[key] = provider;
   }
 
-  registerProvider('okta', oktaProvider);
   registerProvider('transmit', transmitProvider);
-  registerProvider('entraid', entraidProvider);
   registerProvider('auth0', auth0Provider);
-  registerProvider('cognito', cognitoProvider);
   registerProvider('fingerprint', fingerprintProvider);
   registerProvider('ping', pingProvider);
 

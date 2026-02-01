@@ -1,6 +1,6 @@
-library ds_standard_extensions;
+library ds_standard_platform_services_export;
 
-// Export standard api module
-export 'ds_standard_platform_services.dart';
-
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Base platform services modules
+export 'discovery/lib/main.dart';
+export 'feature_flags/base/lib/ds_feature_flag_base_export.dart';
+export 'middleware/base/lib/ds_middleware_base_export.dart';

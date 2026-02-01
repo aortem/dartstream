@@ -1,6 +1,6 @@
-library ds_standard_extensions;
+library ds_standard_persistence_export;
 
-// Export standard api module
-export 'ds_standard_persistence.dart';
-
-// You can also include any shared utility functions or common interfaces here that might be used across multiple utility files.
+// Base persistence modules
+export 'database/base/lib/ds_database_base.dart';
+export 'logging/base/lib/ds_logging_base_export.dart';
+export 'storage/base/lib/ds_storage_base_export.dart';

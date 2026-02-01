@@ -15,11 +15,11 @@
 name: ds_dartstream
 description: A meta-package that bundles all DartStream framework modules
   tooling, standard engine, auth providers, persistence, feature flags, etc.
-version: 0.0.1-pre+4
+version: 0.0.10
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 dependencies:
  shelf: ^1.4.2
@@ -32,38 +32,45 @@ dependencies:
 #   # standard engine
 #   ds_standard_engine:   ^0.0.6
 
-# auth extensions
- ds_auth_base:                  ^0.0.1
+# Auth Extensions
+ ds_auth_base:                  ^0.0.2
  ds_auth0_auth_provider:        ^0.0.1
-# ds_cognito_auth_provider:     ^0.0.1
-# ds_entraid_auth_provider:     ^0.0.1
-# ds_fingerprint_auth_provider:  ^0.0.1-pre
- ds_firebase_auth_provider:      ^0.0.1-pre+1
+ # ds_cognito_auth_provider:     ^0.0.1-pre+1
+ # ds_entraid_auth_provider:     ^0.0.1-pre
+ # ds_fingerprint_auth_provider: ^0.0.1-pre
+ ds_firebase_auth_provider:     ^0.0.1
  ds_magic_auth_provider:        ^0.0.1
-# ds_okta_auth_provider:         ^0.0.1
-# ds_ping_auth_provider:         ^0.0.1
-# ds_stytch_auth_provider:       ^0.0.1
- ds_transmit_auth_provider:     ^0.0.1
+ # ds_okta_auth_provider:        ^0.0.1-pre
+ ping_identity_dart_auth_sdk:  ^0.0.1
+ # ds_stytch_auth_provider:      ^0.0.1-pre
+ ds_transmit_auth_provider:     ^0.0.2
 
-#   # persistence - database providers
-#   ds_db_base:           ^0.0.1
-#   ds_db_firebase:       ^0.0.1
-#   ds_db_mysql:          ^0.0.1
-#   ds_db_postgres:       ^0.0.1
+# Persistence - database providers (lean OSS list)
+ ds_database_base: ^0.0.2
+ ds_postgres_database:   ^0.0.1
+ ds_mongo_database:      ^0.0.1
+ ds_firebase_database:   ^0.0.1
 
-#   # persistence - storage providers
-#   ds_storage_aws:       ^0.0.1
-#   ds_storage_gcp:       ^0.0.1
+# Persistence - logging providers
+ ds_logging_base:            ^0.0.1
+ ds_otlp_logging_provider:   ^0.0.1
+ ds_sentry_logging_provider: ^0.0.1
+
+
+# Persistence - storage providers
+ ds_aws_storage_provider: ^0.0.1
+ ds_gcp_storage_provider: ^0.0.1
 
 #   # feature-flags
 #   ds_ff_base:           ^0.0.1
 #   ds_ff_flagd:          ^0.0.1
 #   ds_ff_intellitoggle:  ^0.0.1
 
-#   # reactive dataflow, etc.
-#   ds_dataflow_base:        ^0.0.1
-#   ds_dataflow_websocket:   ^0.0.1
-#   ds_dataflow_broker_base: ^0.0.1
+# Reactive dataflow - data streaming (lean OSS list)
+ # ds_message_broker_base:      ^0.0.1
+ # ds_gcp_pubsub_message_broker_provider: ^0.0.1
+ # ds_websocket_base:           ^0.0.1
+ # ds_socket_io_websocket_provider: ^0.0.1
 
 
 workspace:
@@ -80,11 +87,12 @@ workspace:
   - packages/standard/standard_extensions/auth/providers/stytch
   - packages/standard/standard_extensions/auth/providers/transmit
   - packages/standard/standard_extensions/persistence/database/base
-  - packages/standard/standard_extensions/persistence/database/providers/google/firebase
-  - packages/standard/standard_extensions/persistence/database/providers/google/mysql
-  - packages/standard/standard_extensions/persistence/database/providers/google/postgres
+  - packages/standard/standard_extensions/persistence/database/providers/postgres
+  - packages/standard/standard_extensions/persistence/database/providers/mongo
+  - packages/standard/standard_extensions/persistence/database/providers/firebase
   - packages/standard/standard_extensions/persistence/logging/base
-  - packages/standard/standard_extensions/persistence/logging/providers
+  - packages/standard/standard_extensions/persistence/logging/providers/otlp
+  - packages/standard/standard_extensions/persistence/logging/providers/sentry
   - packages/standard/standard_extensions/persistence/storage/base
   - packages/standard/standard_extensions/persistence/storage/providers/aws
   - packages/standard/standard_extensions/persistence/storage/providers/gcp
@@ -96,11 +104,9 @@ workspace:
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
-  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers  
+  - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io
   - packages/standard/standard_extensions/reactive_dataflow/events/base
-  - packages/standard/standard_extensions/reactive_dataflow/events/providers
-  - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base 
+  - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
-  - packages/standard/standard_extensions/reactive_dataflow/notifications/providers

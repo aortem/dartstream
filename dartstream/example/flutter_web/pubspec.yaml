@@ -7,13 +7,13 @@ repository: https://github.com/aortem/dartstream
 publish_to: none
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
 # STANDARD PACKAGES - Built By The Dart Team
-  ds_standard_features: ^0.0.2
+  ds_standard_features: ^0.1.6
   flutter:
     sdk: flutter 
   ds_auth_base:

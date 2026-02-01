@@ -3,6 +3,7 @@
 library ds_ping_auth_export;
 
 export 'ds_ping_auth_provider.dart';
+export 'ds_ping_auth_entry.dart';
 
 
 // Internal components (optional - expose if users need fine-grained control)

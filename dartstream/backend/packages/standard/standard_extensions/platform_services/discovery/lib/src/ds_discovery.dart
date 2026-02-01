@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 import 'package:ds_lifecycle_base/main.dart';
 
@@ -30,7 +31,11 @@ class ExtensionManifest implements LifecycleHook {
 
   /// Factory to create an `ExtensionManifest` object from YAML data.
   /// This helps standardize the metadata format for all extensions.
-  factory ExtensionManifest.fromYaml(Map yaml) {
+  factory ExtensionManifest.fromYaml(
+    Map yaml, {
+    String? manifestDir,
+    String? extensionsRoot,
+  }) {
     // Parse extension level from string if provided
     ExtensionLevel level = ExtensionLevel.thirdParty; // Default
 
@@ -56,12 +61,22 @@ class ExtensionManifest implements LifecycleHook {
       }
     }
 
+    var entryPoint = yaml['entry_point']?.toString() ?? '';
+    if (manifestDir != null && entryPoint.isNotEmpty) {
+      final resolvedEntryPoint = p.normalize(p.join(manifestDir, entryPoint));
+      if (extensionsRoot != null && extensionsRoot.isNotEmpty) {
+        entryPoint = p.relative(resolvedEntryPoint, from: extensionsRoot);
+      } else {
+        entryPoint = resolvedEntryPoint;
+      }
+    }
+
     return ExtensionManifest(
       yaml['name'],
       yaml['version'],
       yaml['description'] ?? '',
       List<String>.from(yaml['dependencies'] ?? []),
-      yaml['entry_point'],
+      entryPoint,
       level,
       yaml['core_extension'],
     );
@@ -170,7 +185,11 @@ class ExtensionRegistry {
           }
 
           final manifestContent = yamlDoc as Map;
-          final extension = ExtensionManifest.fromYaml(manifestContent);
+          final extension = ExtensionManifest.fromYaml(
+            manifestContent,
+            manifestDir: p.dirname(entity.path),
+            extensionsRoot: extensionsDirectory,
+          );
 
           // Validate and register the extension.
           if (validateDependencies(extension)) {
@@ -209,7 +228,11 @@ class ExtensionRegistry {
           if (yamlDoc == null) continue;
 
           final manifestContent = yamlDoc as Map;
-          final extension = ExtensionManifest.fromYaml(manifestContent);
+          final extension = ExtensionManifest.fromYaml(
+            manifestContent,
+            manifestDir: p.dirname(entity.path),
+            extensionsRoot: extensionsDirectory,
+          );
 
           // Only process extensions of the specified level
           if (extension.level == level && validateDependencies(extension)) {

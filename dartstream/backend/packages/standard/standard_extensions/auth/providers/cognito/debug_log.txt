@@ -1,0 +1,82 @@
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: signIn EXCEPTION: DSAuthError: Event handler not initialized (Code: null)
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: signIn EXCEPTION: DSAuthError: Event handler not initialized (Code: null)
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called
+DEBUG: setUp started
+DEBUG: Config keys: [httpClient]
+DEBUG: httpClient found. Type: MockCognitoHttpClient
+DEBUG: Successfully assigned injected HttpClient
+DEBUG: setUp finished
+DEBUG: signIn called with user@test.com
+DEBUG: performSignIn using client: MockCognitoHttpClient
+DEBUG: MockHttpClient.post called

@@ -4,14 +4,14 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 resolution: workspace
 
 dependencies:
   auth0_dart_auth_sdk: ^0.0.1
   ds_auth_base: ^0.0.1
-  ds_standard_features: ^0.1.5
+  ds_standard_features: ^0.1.6
 
 dev_dependencies:
   test: ^1.25.0

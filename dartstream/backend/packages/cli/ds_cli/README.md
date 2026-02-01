@@ -13,7 +13,8 @@ A thin wrapper around the `ds_cli_utils` library that provides a single global e
 - **`sync_manifest.dart`**  
   Synchronizes your workspace manifest (e.g. pulls in every sub-package).  
 - **`generate_registry.dart`**  
-  Generates a Dart registry file (e.g. auth provider registrations) from your manifest.  
+  Generates optional bundle/allowlist registry files (e.g. prebuilt auth bundles).  
+  Not required for standard per-provider manifest discovery.  
 - **Other commands** (release management, docs sync, QA testing) live under the `ds` CLI surface.
 
 ---
@@ -48,7 +49,7 @@ Typical workflow:
 # 1. Sync your manifest
 ds sync-manifest --input=workspace.yaml
 
-# 2. Generate provider registry
+# 2. (Optional) Generate a bundle/allowlist registry
 ds generate-registry --output=lib/src/auth_registry.dart
 
 # 3. (Optional) Run other ds commands:
@@ -83,7 +84,7 @@ Environment variables:
 ## Examples
 
 ```bash
-# Sync and generate all auth providers in one go
+# Sync and optionally generate a bundle registry
 ds sync-manifest && ds generate-registry
 ```
 

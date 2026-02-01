@@ -3,17 +3,15 @@ description: Google authentication provider for Dartstream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
-publish_to: none # Mark the package as non-publishable for local testing:
-
 environment:
- sdk: ^3.10.7
+  sdk: ^3.10.8
 
 resolution: workspace
 
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.4
-  ds_auth_base: ^0.0.1
-  ds_standard_features: ^0.1.5
+  firebase_dart_admin_auth_sdk: ^0.0.9
+  ds_auth_base: ^0.0.2
+  ds_standard_features: ^0.1.6
 
 dev_dependencies:
-  test: ^1.24.0
+  ds_tools_testing: ^0.1.4

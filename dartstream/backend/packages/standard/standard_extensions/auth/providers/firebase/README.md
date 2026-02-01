@@ -28,7 +28,7 @@ dependencies:
 
    # Framework features
 
-   ds_standard_features: ^0.0.8
+   ds_standard_features: ^0.1.6
 
 2. Configure Firebase:
 
@@ -37,6 +37,29 @@ dependencies:
 - Set up Firebase Authentication
 
 ## Usage
+
+### Entry-point registration (recommended)
+
+```dart
+import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_firebase_auth_provider/ds_firebase_auth_export.dart';
+
+Future<void> main() async {
+  registerFirebaseProvider({
+    'name': 'firebase',
+    'projectId': 'your-project-id',
+    'privateKeyPath': 'path/to/service-account.json',
+    'apiKey': 'your-api-key',
+  });
+
+  final auth = DSAuthManager('firebase');
+  await auth.initialize({
+    'projectId': 'your-project-id',
+    'privateKeyPath': 'path/to/service-account.json',
+    'apiKey': 'your-api-key',
+  });
+}
+```
 
 ### Basic Setup
 

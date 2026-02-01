@@ -1,0 +1,7 @@
+name: ds_logging_base
+version: "0.0.1"
+description: "Base logging interfaces and manager for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_logging_base_export.dart"

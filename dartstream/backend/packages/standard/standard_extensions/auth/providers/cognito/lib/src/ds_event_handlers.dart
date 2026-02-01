@@ -33,21 +33,14 @@ class DSCognitoEventHandler {
   // -------------------------
 
   Future<void> handleLoginSuccess(String userId, String email) async {
-    await emitEvent('login_success', {
-      'user_id': userId,
-      'email': email,
-    });
+    await emitEvent('login_success', {'user_id': userId, 'email': email});
   }
 
   Future<void> handleLogout(String userId) async {
-    await emitEvent('logout', {
-      'user_id': userId,
-    });
+    await emitEvent('logout', {'user_id': userId});
   }
+
   Future<void> handleAccountCreation(String userId, String email) async {
-    await emitEvent('account_created', {
-      'user_id': userId,
-      'email': email,
-    });
+    await emitEvent('account_created', {'user_id': userId, 'email': email});
   }
 }
