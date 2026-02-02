@@ -8,11 +8,6 @@ publish_to: none # Mark the package as non-publishable for local testing:
 environment:
   sdk: ^3.10.8
 
-dependencies:
-  ds_auth_base:
-    path: ../../base
-  cognito_dart_auth_sdk: ^0.0.1
-
 resolution: workspace
 
-entry_point: "lib/ds_cognito_auth_provider.dart"
+entry_point: "lib/amazon_auth_provider.dart"
