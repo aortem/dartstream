@@ -24,6 +24,7 @@ class DSCognitoAuthProvider implements DSAuthProvider {
 
   DSAuthUser? _currentUser;
   String? _accessToken;
+  // ignore: unused_field
   String? _refreshToken;
   String? _idToken;
 

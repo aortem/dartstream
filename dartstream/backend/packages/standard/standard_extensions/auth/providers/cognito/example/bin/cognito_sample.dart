@@ -1,140 +1,95 @@
-import 'dart:convert';
 import 'dart:io';
+import 'dart:convert';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as io;
 import 'package:ds_cognito_auth_provider/ds_cognito_auth_provider.dart';
-import 'package:cognito_dart_auth_sdk/requests/cognito_http_client.dart';
+import 'mock_client.dart';
 
-// ------------------------------------------------------------------
-// Mock Client (Simulates AWS)
-// ------------------------------------------------------------------
-class MockCognitoHttpClient implements CognitoHttpClient {
-  @override
-  Future<CognitoHttpResponse> post({
-    required String region,
-    required String xAmzTarget,
-    required Map<String, dynamic> payload,
-    Map<String, String>? additionalHeaders,
-    Duration? timeout,
-  }) async {
-    print('\n[MockClient] 📡 Sending Request: $xAmzTarget');
-    print('[MockClient] 📦 Payload: $payload');
-
-    // Simulate Network Delay
-    await Future.delayed(Duration(milliseconds: 800));
-
-    // Response for SignUp
-    if (xAmzTarget.endsWith('SignUp')) {
-      return CognitoHttpResponse(
-        statusCode: 200,
-        headers: {},
-        bodyString: jsonEncode({
-          'UserConfirmed': true,
-          'UserSub': 'mock-user-sub-12345',
-        }),
-      );
-    }
-
-    // Response for AdminInitiateAuth (Sign In)
-    if (xAmzTarget.endsWith('AdminInitiateAuth')) {
-       return CognitoHttpResponse(
-        statusCode: 200,
-        headers: {},
-        bodyString: jsonEncode({
-          'AuthenticationResult': {
-            'AccessToken': 'cognito_access_token_mock_123',
-            'IdToken': _createMockJwt('mock@user.com'),
-            'RefreshToken': 'mock_refresh_token_456',
-            'ExpiresIn': 3600,
-            'TokenType': 'Bearer',
-          }
-        }),
-      );
-    }
-    
-    return CognitoHttpResponse(statusCode: 200, headers: {}, bodyString: '{}');
-  }
-
-  @override
-  Future<CognitoHttpResponse> send({
-    required String service,
-    required String target,
-    required String region,
-    required Map<String, dynamic> payload,
-    required Duration timeout,
-    Map<String, String>? headers,
-  }) {
-    return post(region: region, xAmzTarget: target, payload: payload);
-  }
-
-  String _createMockJwt(String email) {
-    final header = base64Url.encode(utf8.encode(jsonEncode({'alg': 'HS256', 'typ': 'JWT'})));
-    final payload = base64Url.encode(utf8.encode(jsonEncode({
-      'sub': '12345-67890',
-      'email': email,
-      'exp': (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600,
-    })));
-    return '$header.$payload.mock_sig';
-  }
-}
-
-// ------------------------------------------------------------------
-// Main Application
-// ------------------------------------------------------------------
-void main(List<String> arguments) async {
-  print('==========================================');
-  print('   Cognito SDK Verification (Mock Mode)   ');
-  print('==========================================');
-  print('Running against simulated AWS environment.\n');
-
+void main(List<String> args) async {
+  // 1. Initialize Provider (Mock Mode)
   final provider = DSCognitoAuthProvider(
     userPoolId: 'mock_pool_id',
     clientId: 'mock_client_id',
     region: 'us-mock-1',
   );
-
-  // Inject the Mock Client
+  
   await provider.initialize({
       'httpClient': MockCognitoHttpClient()
   });
-  
-  print('✅ Provider Initialized with MockClient');
 
-  while (true) {
-    print('\n------------------------------------------');
-    print('1. Simulate Sign Up');
-    print('2. Simulate Sign In');
-    print('3. Check Current User');
-    print('4. Sign Out');
-    print('5. Exit');
-    stdout.write('Select option: ');
-    final choice = stdin.readLineSync()?.trim();
+  print('✅ DSCognitoAuthProvider Middleware Initialized (Mock Mode)');
+
+  // 2. Handler
+  Response _cors(Response response) => response.change(headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Origin, Content-Type',
+  });
+
+  Future<Response> _handler(Request request) async {
+    if (request.method == 'OPTIONS') {
+      return Response.ok('');
+    }
+
+    final path = request.url.path;
 
     try {
-      switch (choice) {
-        case '1':
-          print('\n--- Sign Up Flow ---');
-          await provider.createAccount('test@example.com', 'password123');
-          print('✅ Sign Up Success (Mocked)');
-          break;
-        case '2':
-          print('\n--- Sign In Flow ---');
-          await provider.signIn('test@example.com', 'password123');
-          print('✅ Sign In Success (Mocked)');
-          break;
-        case '3':
-          final user = await provider.getCurrentUser();
-          print('👤 Logged in as: ${user.email} (${user.id})');
-          break;
-        case '4':
-          await provider.signOut();
-          print('👋 Signed out');
-          break;
-        case '5':
-          exit(0);
-        default:
-          print('Invalid option');
-      }
+        // Serve Frontend
+        if (path == '' || path == 'index.html') {
+            final indexFile = File('example/client/index.html');
+            if (indexFile.existsSync()) {
+                 return Response.ok(indexFile.readAsStringSync(), headers: {'content-type': 'text/html'});
+            }
+            return Response.notFound('Client not found. Run from package root.');
+        }
+
+        // Auth Endpoints
+        if (path == 'auth/register' && request.method == 'POST') {
+            final payload = jsonDecode(await request.readAsString());
+            await provider.createAccount(payload['email'], payload['password']);
+            return Response.ok(jsonEncode({'message': 'User registered'}));
+        }
+
+        if (path == 'auth/login' && request.method == 'POST') {
+             final payload = jsonDecode(await request.readAsString());
+             await provider.signIn(payload['email'], payload['password']);
+             final isValid = await provider.verifyToken();
+             return Response.ok(jsonEncode({
+                'message': 'Login successful',
+                'token': isValid ? 'mock_valid_token_123' : 'invalid'
+             }));
+        }
+
+        if (path == 'auth/user' && request.method == 'GET') {
+             final user = await provider.getCurrentUser();
+             return Response.ok(jsonEncode({
+                'id': user.id,
+                'email': user.email
+             }));
+        }
+
+        if (path == 'auth/logout' && request.method == 'POST') {
+             await provider.signOut();
+             return Response.ok(jsonEncode({'message': 'Logged out'}));
+        }
+
+        return Response.notFound('Not Found');
+
     } catch (e) {
-      print('❌ Error: $e');
+        if (e.toString().contains('No user signed in')) {
+           return Response.notFound(jsonEncode({'message': 'No user signed in'}));
+        }
+        return Response.internalServerError(body: jsonEncode({'message': e.toString()}));
     }
   }
+
+  // 3. Start Server
+  final handler = Pipeline()
+      .addMiddleware((inner) => (req) async => _cors(await inner(req)))
+      .addMiddleware(logRequests())
+      .addHandler(_handler);
+
+  final server = await io.serve(handler, 'localhost', 8081);
+  print('🚀 Server running on http://${server.address.host}:${server.port}');
+  print('👉 Open your browser to http://localhost:8081 to test');
 }
