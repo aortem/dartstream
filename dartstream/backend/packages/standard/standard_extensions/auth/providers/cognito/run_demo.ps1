@@ -10,6 +10,16 @@ if ($portInfo) {
 # Navigate to app directory
 Set-Location "example/cognito-app"
 
+# Check if node_modules exists, if not install dependencies
+if (-not (Test-Path "node_modules")) {
+    Write-Host "Installing dependencies... (This runs once)" -ForegroundColor Cyan
+    npm install
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "npm install failed!" -ForegroundColor Red
+        exit 1
+    }
+}
+
 # Run concurrently
 # -y: yes to install
 # --kill-others: if one crashes, kill the other
