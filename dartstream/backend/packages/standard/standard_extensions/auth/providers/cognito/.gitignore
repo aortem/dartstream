@@ -1,0 +1,18 @@
+# Dart
+.dart_tool/
+.packages
+pubspec.lock
+
+# Data
+.ds_cognito_sessions/
+debug_log.txt
+test_output.txt
+analysis_errors.txt
+compilation_errors.txt
+errors.txt
+error.log
+
+# Node
+node_modules/
+example/cognito-app/node_modules/
+dist/
