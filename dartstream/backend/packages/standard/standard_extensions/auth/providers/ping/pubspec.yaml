@@ -6,7 +6,7 @@ publish_to: none
 resolution: workspace
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 
 dependencies:
@@ -16,5 +16,6 @@ dependencies:
 
 dev_dependencies:
   test: ^1.25.0
+
 
 

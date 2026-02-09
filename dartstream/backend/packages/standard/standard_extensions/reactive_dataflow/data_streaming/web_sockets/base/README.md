@@ -33,7 +33,8 @@ Providers implement the shared interface from `ds_websocket_base` and are regist
 ---
 
 If you plan to publish a provider, ensure it includes:
-- `pubspec.yaml` with `sdk: ^3.10.8`
+- `pubspec.yaml` with `sdk: ^3.10.9`
 - `LICENSE` (DartStream standard)
 - `CHANGELOG.md`
 - `manifest.yaml` for registry/discovery
+

@@ -391,14 +391,14 @@ jobs:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: 3.10.7
+        sdk: 3.10.9
     - run: dart pub get
     - run: dart test
     - run: dart analyze
 ''');
     } else if (ciCdChoice == 'gitlab') {
       File(p.join(projectPath, '.gitlab-ci.yml')).writeAsStringSync('''
-image: dart:3.10.7
+image: dart:3.10.9
 
 stages:
   - test
@@ -647,3 +647,5 @@ class DatabaseService {
     return compatible.contains(auth);
   }
 }
+
+
