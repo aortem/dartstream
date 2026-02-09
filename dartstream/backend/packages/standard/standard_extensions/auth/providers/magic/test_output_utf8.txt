@@ -1,0 +1,40 @@
+﻿00:00 +0: loading test\ds_magic_auth_provider_test.dart
+00:00 +0 -1: loading test\ds_magic_auth_provider_test.dart [E]
+  Failed to load "test\ds_magic_auth_provider_test.dart":
+  test/ds_magic_auth_provider_test.dart:8:3: Error: The superclass, 'DSMagicAuthProvider', has no unnamed constructor that takes no arguments.
+    TestDSMagicAuthProvider({
+    ^^^^^^^^^^^^^^^^^^^^^^^
+  test/ds_magic_auth_provider_test.dart:40:27: Error: A value of type 'int' can't be assigned to a variable of type 'String'.
+        payloadMap['exp'] = exp;
+                            ^
+  test/ds_magic_auth_provider_test.dart:43:75: Error: A value of type 'int' can't be assigned to a variable of type 'String'.
+        payloadMap['exp'] = (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600;
+                                                                            ^
+  lib/ds_magic_auth_provider.dart:10:53: Error: Can't find '}' to match '{'.
+  class DSMagicAuthProvider implements DSAuthProvider {
+                                                      ^
+  lib/ds_magic_auth_provider.dart:158:16: Error: 'createAccount' is already declared in this scope.
+    Future<void> createAccount(String email, String password, {String? displayName}) async {
+                 ^^^^^^^^^^^^^
+  lib/ds_magic_auth_provider.dart:77:16: Context: Previous declaration of 'createAccount'.
+    Future<void> createAccount(String email, String password, {String? displayName}) async {
+                 ^^^^^^^^^^^^^
+  lib/ds_magic_auth_provider.dart:23:41: Error: Field formal parameters can only be used in a constructor.
+  Try removing 'this.'.
+    factory DSMagicAuthProvider({required this.publishableKey, required this.secretKey}) {
+                                          ^^^^
+  lib/ds_magic_auth_provider.dart:23:71: Error: Field formal parameters can only be used in a constructor.
+  Try removing 'this.'.
+    factory DSMagicAuthProvider({required this.publishableKey, required this.secretKey}) {
+                                                                        ^^^^
+  lib/ds_magic_auth_provider.dart:48:28: Error: The method '_verifyDIDTokenWithMagic' isn't defined for the type 'DSMagicAuthProvider'.
+   - 'DSMagicAuthProvider' is from 'package:ds_magic_auth_provider/ds_magic_auth_provider.dart' ('lib/ds_magic_auth_provider.dart').
+  Try correcting the name to the name of an existing method, or defining a method named '_verifyDIDTokenWithMagic'.
+      final userInfo = await _verifyDIDTokenWithMagic(didToken);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^
+  lib/ds_magic_auth_provider.dart:85:28: Error: The method '_verifyDIDTokenWithMagic' isn't defined for the type 'DSMagicAuthProvider'.
+   - 'DSMagicAuthProvider' is from 'package:ds_magic_auth_provider/ds_magic_auth_provider.dart' ('lib/ds_magic_auth_provider.dart').
+  Try correcting the name to the name of an existing method, or defining a method named '_verifyDIDTokenWithMagic'.
+      final userInfo = await _verifyDIDTokenWithMagic(_currentDIDToken!);
+                             ^^^^^^^^^^^^^^^^^^^^^^^^
+00:00 +0 -1: Some tests failed.

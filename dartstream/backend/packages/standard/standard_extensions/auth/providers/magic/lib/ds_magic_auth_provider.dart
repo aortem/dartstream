@@ -1,6 +1,7 @@
 import 'package:crypto/crypto.dart';
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:magic_dart_auth_sdk/magic_dart_auth_sdk.dart';
+import 'package:meta/meta.dart';
 
 import 'src/ds_token_manager.dart';
 import 'src/ds_session_manager.dart';
@@ -19,12 +20,14 @@ class DSMagicAuthProvider implements DSAuthProvider {
   String? _currentUserId;
   String? _currentDIDToken;
 
-  factory DSMagicAuthProvider({required this.publishableKey, required this.secretKey}) {
-    _instance ??= DSMagicAuthProvider._internal(publishableKey: publishableKey, secretKey: secretKey);
+  factory DSMagicAuthProvider({required String publishableKey, required String secretKey}) {
+    _instance ??= DSMagicAuthProvider.internal(publishableKey: publishableKey, secretKey: secretKey);
     return _instance!;
   }
 
-  DSMagicAuthProvider._internal({required this.publishableKey, required this.secretKey});
+  /// Internal constructor exposed for testing purposes
+  @visibleForTesting
+  DSMagicAuthProvider.internal({required this.publishableKey, required this.secretKey});
 
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
@@ -44,7 +47,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
     _ensureInitialized();
     final didToken = password;
     if (didToken.isEmpty) throw DSAuthError('DID token required');
-    final userInfo = await _verifyDIDTokenWithMagic(didToken);
+    final userInfo = await verifyDIDTokenWithMagic(didToken);
     if (userInfo == null) throw DSAuthError('Failed to verify DID token');
     _currentUserId = userInfo['issuer'];
     _currentDIDToken = didToken;
@@ -73,15 +76,13 @@ class DSMagicAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
-    await signIn(email, password);
-  }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     _ensureInitialized();
     if (_currentUserId == null || _currentDIDToken == null) throw DSAuthError('No signed-in user');
-    final userInfo = await _verifyDIDTokenWithMagic(_currentDIDToken!);
+    final userInfo = await verifyDIDTokenWithMagic(_currentDIDToken!);
+    // In case verify fails (token expired etc but local check passed basic validation)
+    if (userInfo == null) throw DSAuthError('Token invalid');
+    
     return DSAuthUser(
       id: userInfo['issuer'],
       email: userInfo['email'] ?? '',
@@ -90,15 +91,22 @@ class DSMagicAuthProvider implements DSAuthProvider {
     );
   }
 
+  @visibleForTesting
+  static void resetInstance() {
+    _instance = null;
+  }
+
   @override
   Future<bool> verifyToken([String? token]) async {
     _ensureInitialized();
     final didToken = token ?? _currentDIDToken;
     if (didToken == null) return false;
-    return await _verifyDIDTokenWithMagic(didToken) != null;
+    return await verifyDIDTokenWithMagic(didToken) != null;
   }
 
-  Future<Map<String, dynamic>?> _verifyDIDTokenWithMagic(String didToken) async {
+  /// Exposed for testing purposes
+  @visibleForTesting
+  Future<Map<String, dynamic>?> verifyDIDTokenWithMagic(String didToken) async {
     try {
       final payload = MagicTokenDecoder.decode(didToken, verify: true);
       return {'issuer': payload['iss'], 'email': payload['email'], 'publicAddress': payload['publicAddress']};
@@ -121,10 +129,36 @@ class DSMagicAuthProvider implements DSAuthProvider {
 
   @override
   Future<void> onLoginSuccess(DSAuthUser user) async {}
+  
   @override
   Future<void> onLogout() async {}
+  
   @override
-  Future<DSAuthUser> getUser(String userId) async => throw UnimplementedError();
+  Future<DSAuthUser> getUser(String userId) async {
+    _ensureInitialized();
+    // In this basic provider, we only support retrieval of the currently signed-in user.
+    if (_currentUserId != null && _currentUserId == userId) {
+      return getCurrentUser();
+    }
+    throw DSAuthError('User not found or not currently signed in', code: 404);
+  }
+
   @override
-  Future<String> refreshToken(String refreshToken) async => throw UnimplementedError();
+  Future<String> refreshToken(String refreshToken) async {
+    _ensureInitialized();
+    // Magic DID tokens are typically short-lived and managed by client SDKs.
+    // Here we verify the provided token is still valid.
+    // If valid, we return it as the "refreshed" token (no server-side refresh logic available).
+    if (await verifyToken(refreshToken)) {
+      return refreshToken;
+    }
+    throw DSAuthError('Invalid or expired token', code: 401);
+  }
+
+  @override
+  Future<void> createAccount(String email, String password, {String? displayName}) async {
+    // For Magic links, account creation is essentially the first sign-in.
+    // The 'password' argument is expected to be the DID Token provided by the client after link verification.
+    await signIn(email, password);
+  }
 }
