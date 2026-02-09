@@ -87,7 +87,7 @@ validate_dart_sdk_version:
   script:
     - echo "Validating Dart SDK versions in all pubspec.yaml files..."
     - apk add --no-cache grep
-    - cd intellitoggle/backend
+    - cd dartstream/backend
 
     # Find all pubspec.yaml files (recursively, all levels)
     - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
@@ -152,7 +152,7 @@ analyze_main:
     - echo "🔍 Locating Dart packages…"
     - |
       # Find all package dirs (where pubspec.yaml lives)
-      find intellitoggle/backend -type f -name pubspec.yaml -exec dirname {} \; | sort -u \
+      find dartstream/backend -type f -name pubspec.yaml -exec dirname {} \; | sort -u \
       | while read -r pkg; do
           name=$(basename "$pkg")
           echo "📦 Analyzing package: $name"
@@ -210,13 +210,13 @@ analyze_main:
     - when: always
 
 #  # Build docker image using Cloud Build
-# intellitoggle:prod_build:
+# dartstream:prod_build:
 #   image: google/cloud-sdk:alpine
 #   stage: build
 #   before_script:
 #     - bash tools/scripts/cloudbuild-hosting/gcloud_prod_acc_cloudrun.sh
 #   script:
-#     - cd intellitoggle/backend
+#     - cd dartstream/backend
 #      # UTC timestamp like 20251113-1200
 #     - TAG_TS=$(date -u +%Y%m%d-%H%M)
 #     - echo "Using image tag timestamp $TAG_TS"
@@ -224,10 +224,10 @@ analyze_main:
 #       gcloud builds submit . \
 #         --config=cloudbuild.yaml \
 #         --substitutions \
-#         "_ONEPUB_TOKEN=${ONEPUB_TOKEN},_IMAGE=us-central1-docker.pkg.dev/intellitoggle-prod/intellitoggle/intellitoggle:${CI_COMMIT_REF_SLUG}"
+#         "_ONEPUB_TOKEN=${ONEPUB_TOKEN},_IMAGE=us-central1-docker.pkg.dev/dartstream-open-dev/dartstream/dartstream:${CI_COMMIT_REF_SLUG}"
 #   rules:
 #     # Condition 1: Branch is main
 #     - if: '$CI_COMMIT_BRANCH == "main"'
 #       when: always  
-# # --tag=us-central1-docker.pkg.dev/intellitoggle-prod/intellitoggle/intellitoggle:${CI_COMMIT_REF_SLUG}-${CI_JOB_TIMESTAMP}"
+# # --tag=us-central1-docker.pkg.dev/dartstream-open-dev/dartstream/dartstream:${CI_COMMIT_REF_SLUG}-${CI_JOB_TIMESTAMP}"
 #   #retry: 2 

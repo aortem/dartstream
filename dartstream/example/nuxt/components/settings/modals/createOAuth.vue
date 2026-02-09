@@ -396,7 +396,7 @@ function handleDownloadEnv() {
   const blob = new Blob([envContent], { type: 'text/plain;charset=utf-8' });
   const link = document.createElement('a');
   link.href = URL.createObjectURL(blob);
-  link.download = 'intellitoggle.env';
+  link.download = 'dartstream.env';
   link.click();
   URL.revokeObjectURL(link.href);
 }

@@ -11,8 +11,8 @@ export default defineNuxtPlugin((nuxtApp) => {
   const host = window.location.hostname
 
   // Allow on prod, Firebase preview, or local — plus an explicit override
-  const onProdHost = host === 'app.intellitoggle.com'
-  const onFirebasePreview = host.startsWith('intellitoggle-prod--')
+  const onProdHost = host === 'app.dartstream.com'
+  const onFirebasePreview = host.startsWith('dartstream-open-dev--')
   const onLocal =
     host === 'localhost' || host === '127.0.0.1' || host === '0.0.0.0'
   const forceEnable = (cfg.GTM_FORCE_ENABLE || '').toString() === 'true'

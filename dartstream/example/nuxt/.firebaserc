@@ -1,12 +1,12 @@
 {
   "projects": {
-    "default": "intellitoggle-prod"
+    "default": "dartstream-open-dev"
   },
   "targets": {
-    "intellitoggle-prod": {
+    "dartstream-open-dev": {
       "hosting": {
-        "intellitoggle-prod": [
-          "intellitoggle-prod"
+        "dartstream-open-dev": [
+          "dartstream-open-dev"
         ]
       }
     }
