@@ -115,7 +115,7 @@ dist/
 # Local cache / prerendered data
 .cache/
 .data/
- 
+
 ##########################################
 # From dartstream/backend/packages/standard/standard_extensions/auth/providers/cognito/.gitignore
 ##########################################
