@@ -1,95 +1,95 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
 
-const API_URL = 'http://127.0.0.1:8081'
+const API_URL = "http://127.0.0.1:8081";
 
 function App() {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [message, setMessage] = useState('')
-  const [isError, setIsError] = useState(false)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [isError, setIsError] = useState(false);
 
   // Form states
-  const [loginEmail, setLoginEmail] = useState('')
-  const [loginPassword, setLoginPassword] = useState('')
-  const [registerEmail, setRegisterEmail] = useState('')
-  const [registerPassword, setRegisterPassword] = useState('')
+  const [loginEmail, setLoginEmail] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [registerEmail, setRegisterEmail] = useState("");
+  const [registerPassword, setRegisterPassword] = useState("");
 
   const showMessage = (msg, error = false) => {
-    setMessage(msg)
-    setIsError(error)
-    setTimeout(() => setMessage(''), 5000)
-  }
+    setMessage(msg);
+    setIsError(error);
+    setTimeout(() => setMessage(""), 5000);
+  };
 
   const handleLogin = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/login`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           username: loginEmail,
-          password: loginPassword
-        })
-      })
-      const data = await res.json()
+          password: loginPassword,
+        }),
+      });
+      const data = await res.json();
 
       if (data.success) {
-        setUser(data.user)
-        showMessage('Login successful!')
-        setLoginEmail('')
-        setLoginPassword('')
+        setUser(data.user);
+        showMessage("Login successful!");
+        setLoginEmail("");
+        setLoginPassword("");
       } else {
-        showMessage(data.error || 'Login failed', true)
+        showMessage(data.error || "Login failed", true);
       }
     } catch (err) {
-      showMessage('Connection error: Is backend running?', true)
-      console.error(err)
+      showMessage("Connection error: Is backend running?", true);
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleRegister = async (e) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setLoading(true);
     try {
       const res = await fetch(`${API_URL}/register`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           email: registerEmail,
-          password: registerPassword
-        })
-      })
-      const data = await res.json()
+          password: registerPassword,
+        }),
+      });
+      const data = await res.json();
 
       if (data.success) {
-        showMessage('Registration successful! Please login.')
-        setRegisterEmail('')
-        setRegisterPassword('')
+        showMessage("Registration successful! Please login.");
+        setRegisterEmail("");
+        setRegisterPassword("");
       } else {
-        showMessage(data.error || 'Registration failed', true)
+        showMessage(data.error || "Registration failed", true);
       }
     } catch (err) {
-      showMessage('Connection error: Is backend running?', true)
-      console.error(err)
+      showMessage("Connection error: Is backend running?", true);
+      console.error(err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleLogout = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
-      await fetch(`${API_URL}/logout`, { method: 'POST' })
-      setUser(null)
-      showMessage('Logged out successfully')
+      await fetch(`${API_URL}/logout`, { method: "POST" });
+      setUser(null);
+      showMessage("Logged out successfully");
     } catch (err) {
-      showMessage('Logout failed', true)
+      showMessage("Logout failed", true);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="container">
@@ -115,7 +115,7 @@ function App() {
                 required
               />
               <button type="submit" disabled={loading}>
-                {loading ? 'Processing...' : 'Sign In'}
+                {loading ? "Processing..." : "Sign In"}
               </button>
             </form>
           </div>
@@ -138,7 +138,7 @@ function App() {
                 required
               />
               <button type="submit" disabled={loading}>
-                {loading ? 'Processing...' : 'Create Account'}
+                {loading ? "Processing..." : "Create Account"}
               </button>
             </form>
           </div>
@@ -147,20 +147,26 @@ function App() {
         <div className="dashboard">
           <div className="card success-card">
             <h2>Welcome, {user.displayName || user.email}!</h2>
-            <p><strong>User ID:</strong> {user.id}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <button onClick={handleLogout} className="danger">Sign Out</button>
+            <p>
+              <strong>User ID:</strong> {user.id}
+            </p>
+            <p>
+              <strong>Email:</strong> {user.email}
+            </p>
+            <button onClick={handleLogout} className="danger">
+              Sign Out
+            </button>
           </div>
         </div>
       )}
 
       {message && (
-        <div className={`message ${isError ? 'error' : 'success'}`}>
+        <div className={`message ${isError ? "error" : "success"}`}>
           {message}
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
