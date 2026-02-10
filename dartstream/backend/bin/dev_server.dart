@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:ds_auth_base/ds_auth_manager.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
@@ -33,10 +34,9 @@ final Map<String, Map<String, dynamic>> _sessions = {};
 /// ===============================
 String _generateSessionId() {
   final rand = Random.secure();
-  return List.generate(
-    32,
-    (_) => rand.nextInt(256),
-  ).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  return List.generate(32, (_) => rand.nextInt(256))
+      .map((b) => b.toRadixString(16).padLeft(2, '0'))
+      .join();
 }
 
 String? _getSessionId(Request request) {
@@ -58,24 +58,20 @@ Middleware corsHeaders() {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers':
-                'Origin, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
             'Access-Control-Allow-Credentials': 'true',
           },
         );
       }
 
       final response = await innerHandler(request);
-      return response.change(
-        headers: {
-          ...response.headers,
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers':
-              'Origin, Content-Type, Accept, Authorization',
-          'Access-Control-Allow-Credentials': 'true',
-        },
-      );
+      return response.change(headers: {
+        ...response.headers,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+      });
     };
   };
 }
@@ -117,7 +113,6 @@ Future<Response> handleSignIn(Request request) async {
     final String resolvedProviderKey = _providers.containsKey(providerKey)
         ? providerKey
         : _providers.keys.first;
-
     user = {
       'id': 'dev-user-${resolvedProviderKey}',
       'email': data['email'] ?? 'dev@dartstream.dev',
@@ -135,8 +130,13 @@ Future<Response> handleSignIn(Request request) async {
 
   // Return sessionId in JSON (mobile-friendly)
   return Response.ok(
-    jsonEncode({'user': user, 'sessionId': sessionId}),
-    headers: {'content-type': 'application/json'},
+    jsonEncode({
+      'user': user,
+      'sessionId': sessionId,
+    }),
+    headers: {
+      'content-type': 'application/json',
+    },
   );
 }
 
@@ -202,7 +202,7 @@ Future<void> main() async {
     DSAuthManager.registerProvider(
       key,
       provider,
-      DSAuthProviderMetadata(type: key, region: 'global', clientId: 'mock'),
+      null,
     );
     _providers[key] = provider;
   }
@@ -221,26 +221,26 @@ Future<void> main() async {
       .addMiddleware(logRequests())
       .addMiddleware(corsHeaders())
       .addHandler((Request request) async {
-        final path = request.url.path;
-        final method = request.method;
+    final path = request.url.path;
+    final method = request.method;
 
-        if (method == 'POST' && path == 'auth/sign-in') {
-          return handleSignIn(request);
-        }
+    if (method == 'POST' && path == 'auth/sign-in') {
+      return handleSignIn(request);
+    }
 
-        if (method == 'GET' && path == 'auth/session') {
-          return handleSession(request);
-        }
+    if (method == 'GET' && path == 'auth/session') {
+      return handleSession(request);
+    }
 
-        if (method == 'POST' && path == 'auth/logout') {
-          return handleLogout(request);
-        }
+    if (method == 'POST' && path == 'auth/logout') {
+      return handleLogout(request);
+    }
 
-        return Response.notFound(
-          jsonEncode({'error': 'Not Found'}),
-          headers: {'content-type': 'application/json'},
-        );
-      });
+    return Response.notFound(
+      jsonEncode({'error': 'Not Found'}),
+      headers: {'content-type': 'application/json'},
+    );
+  });
 
   final server = await io.serve(handler, '0.0.0.0', 8080);
   print('🔥 Server running at http://${server.address.host}:${server.port}');

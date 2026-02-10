@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
-import 'package:ds_stytch_auth_provider/ds_firebase_auth_provider.dart';
-import 'package:ds_auth_base/ds_auth_base_export.dart';
+import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
 
 void main() {
   group('DSStytchAuthProvider (mock)', () {
@@ -12,7 +11,11 @@ void main() {
     });
 
     test('can create and login a user', () async {
-      await provider.createAccount('test@mail.com', '123456', displayName: 'Test User');
+      await provider.createAccount(
+        'test@mail.com',
+        '123456',
+        displayName: 'Test User',
+      );
       await provider.signIn('test@mail.com', '123456');
 
       final user = await provider.getCurrentUser();
