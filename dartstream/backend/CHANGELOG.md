@@ -8,7 +8,7 @@
 
 ### Changed
 - Standardized provider package naming to `*_provider` and updated docs/vendor profiles to match.
-- Updated SDK constraints to `^3.10.8` and bumped key deps (`googleapis ^15.0.0`, `googleapis_auth ^2.0.0`, `ds_standard_features ^0.1.6`).
+- Updated SDK constraints to `^3.10.9` and bumped key deps (`googleapis ^15.0.0`, `googleapis_auth ^2.0.0`, `ds_standard_features ^0.1.6`).
 - Updated backend meta‑package dependencies/workspace list to include new and renamed providers.
 
 ### Fixed
@@ -49,3 +49,4 @@
 ## .0.0.1-pre+1
 
 - Initial version.
+

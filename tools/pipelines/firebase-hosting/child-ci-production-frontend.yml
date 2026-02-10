@@ -98,11 +98,11 @@ firebase:preview:
     - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
   script:
     - ls -la
-    - cd intellitoggle/frontend
+    - cd dartstream/frontend
     # Deploy the preview and capture structured JSON (keeps your deploy behavior, adds URL capture)
     - |
       echo "Deploying Hosting preview channel for branch: $CI_COMMIT_REF_NAME"
-      PREVIEW_JSON=$(firebase hosting:channel:deploy "$CI_COMMIT_REF_NAME" --project intellitoggle-prod --json)
+      PREVIEW_JSON=$(firebase hosting:channel:deploy "$CI_COMMIT_REF_NAME" --project dartstream-open-dev --json)
       echo "$PREVIEW_JSON" | jq .
       # Extract preview URL (robust fallbacks)
       PREVIEW_URL=$(echo "$PREVIEW_JSON" | jq -r '
@@ -190,8 +190,8 @@ firebase:deploy:
     - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
   script:
     - ls -la
-    - cd intellitoggle/frontend
-    - firebase deploy --project intellitoggle-prod
+    - cd dartstream/frontend
+    - firebase deploy --project dartstream-open-dev
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_BRANCH == "main"'

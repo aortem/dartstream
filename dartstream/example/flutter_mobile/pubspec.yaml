@@ -6,7 +6,7 @@ version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -15,3 +15,4 @@ dependencies:
   ds_standard_features: ^0.1.6
 
   
+

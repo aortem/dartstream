@@ -13,9 +13,9 @@ export default defineNuxtPlugin((nuxtApp) => {
       const baseURL =
         hostname === 'localhost'
           ? 'http://localhost:8080'
-          : hostname === 'app.intellitoggle.com'
-            ? 'https://api.intellitoggle.com'
-            : 'https://dev-api.intellitoggle.com'
+          : hostname === 'app.dartstream.com'
+            ? 'https://api.dartstream.com'
+            : 'https://dev-api.dartstream.com'
 
       // 🚨 BLOCK non-auth calls in DartStream mode
       if (isDartStreamDev && !url.startsWith('/auth')) {

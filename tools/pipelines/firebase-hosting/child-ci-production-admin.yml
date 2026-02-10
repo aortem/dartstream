@@ -97,7 +97,7 @@ firebase:preview_admin:
     - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
   script:
     - ls -la
-    - cd intellitoggle/admin
+    - cd dartstream/admin
     - firebase hosting:channel:deploy $CI_COMMIT_REF_NAME --debug
   rules:
     # Condition 1: Branch is not main, qa, or development
@@ -114,8 +114,8 @@ firebase:deploy_admin:
     - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
   script:
     - ls -la
-    - cd intellitoggle/admin
-    - firebase deploy --project intellitoggle-prod
+    - cd dartstream/admin
+    - firebase deploy --project dartstream-open-dev
   rules:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_BRANCH == "main"'

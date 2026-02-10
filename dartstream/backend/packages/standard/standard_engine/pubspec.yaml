@@ -6,7 +6,7 @@ homepage: https://dartstream.io
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 resolution: workspace
 
@@ -18,3 +18,4 @@ dependencies:
 dev_dependencies: 
 # Packages only needed for development/testing
   ds_tools_testing: ^0.1.4
+

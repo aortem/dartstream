@@ -31,7 +31,7 @@ release:
         echo "Current working directory: $(pwd)"
         ls -la
 
-        if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
+         if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
           git fetch --prune --unshallow
         else
           git fetch --prune
@@ -78,7 +78,7 @@ release:
         git config --global user.email "${_GIT_USER}"
         git config --global user.name "${_GIT_USER}"
 
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream-opensource.git
+        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream.git
 
         echo "Creating Git tag: v$VERSION"
         git tag "v$VERSION"

@@ -54,7 +54,7 @@ definePageMeta({
       >
         Find guides & tips to help you get the most out of Intellitoggle.
       </p>
-      <a href="https://docs.intellitoggle.com/" target="_blank">
+      <a href="https://docs.dartstream.com/" target="_blank">
         <button
           class="text-[#fff] rounded-[8px] bg-[#42489E] shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] w-[178px] h-[40px] p-[8px] flex justify-center items-center gap-[4px] bg-[#42489E] mt-[12px]"
         >

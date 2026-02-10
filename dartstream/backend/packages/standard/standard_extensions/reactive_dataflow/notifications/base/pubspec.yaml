@@ -4,8 +4,9 @@ version: "0.0.1"
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 resolution: workspace
 
 entry_point: "lib/ds_notifications_base_export.dart"
+

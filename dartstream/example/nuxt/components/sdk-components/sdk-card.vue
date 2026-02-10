@@ -103,15 +103,15 @@ const generatedCode = computed(() => {
   
  
   return `With Dart:
-  dart pub add openfeature_provider_intellitoggle
+  dart pub add openfeature_provider_dartstream
   With Flutter:
-  flutter pub add openfeature_provider_intellitoggle
+  flutter pub add openfeature_provider_dartstream
   dependencies:
-  openfeature_provider_intellitoggle: ^0.0.4  
+  openfeature_provider_dartstream: ^0.0.4  
   Import:
   Now in your Dart code, you can use:
-  import 'package:openfeature_provider_intellitoggle
-  /openfeature_provider_intellitoggle.dart';
+  import 'package:openfeature_provider_dartstream
+  /openfeature_provider_dartstream.dart';
 });`
 })
 
