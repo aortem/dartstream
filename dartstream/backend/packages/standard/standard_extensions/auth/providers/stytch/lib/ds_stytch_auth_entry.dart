@@ -1,6 +1,6 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
-import 'ds_firebase_auth_provider.dart';
+import 'ds_stytch_auth_provider.dart';
 
 String _optionalString(Map<String, dynamic> config, String key) {
   final value = config[key];

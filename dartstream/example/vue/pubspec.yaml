@@ -10,5 +10,7 @@ environment:
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
-  # STANDARD PACKAGES - Built By The Dart Team
+
+# STANDARD PACKAGES - Built By The Dart Team
   ds_standard_features: ^0.1.6
+
