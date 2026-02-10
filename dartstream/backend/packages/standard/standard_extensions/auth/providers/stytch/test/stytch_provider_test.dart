@@ -11,11 +11,7 @@ void main() {
     });
 
     test('can create and login a user', () async {
-      await provider.createAccount(
-        'test@mail.com',
-        '123456',
-        displayName: 'Test User',
-      );
+      await provider.createAccount('test@mail.com', '123456', displayName: 'Test User');
       await provider.signIn('test@mail.com', '123456');
 
       final user = await provider.getCurrentUser();
