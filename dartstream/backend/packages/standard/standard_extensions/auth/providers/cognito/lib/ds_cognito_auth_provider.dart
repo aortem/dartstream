@@ -133,34 +133,32 @@ class DSCognitoAuthProvider implements DSAuthProvider {
   }
 
   @override
-Future<bool> verifyToken([String? token]) async {
-  _ensureInitialized();
+  Future<bool> verifyToken([String? token]) async {
+    _ensureInitialized();
 
-  final tokenToVerify = token ?? _accessToken;
-  if (tokenToVerify == null) return false;
+    final tokenToVerify = token ?? _accessToken;
+    if (tokenToVerify == null) return false;
 
-  // Accept both Cognito mock access tokens and JWT id tokens
-  if (tokenToVerify.startsWith('cognito_access_token_')) {
-    return true;
+    // Accept both Cognito mock access tokens and JWT id tokens
+    if (tokenToVerify.startsWith('cognito_access_token_')) {
+      return true;
+    }
+
+    // Fallback: verify JWT-like tokens (ID token)
+    return _tokenManager.verifyToken(tokenToVerify);
   }
 
-  // Fallback: verify JWT-like tokens (ID token)
-  return _tokenManager.verifyToken(tokenToVerify);
-}
+  @override
+  Future<String> refreshToken(String refreshToken) async {
+    _ensureInitialized();
 
+    _refreshToken = refreshToken;
 
-@override
-Future<String> refreshToken(String refreshToken) async {
-  _ensureInitialized();
+    _accessToken =
+        'cognito_access_token_${DateTime.now().millisecondsSinceEpoch}';
 
-  _refreshToken = refreshToken;
-
-  _accessToken =
-      'cognito_access_token_${DateTime.now().millisecondsSinceEpoch}';
-
-  return _accessToken!;
-}
-
+    return _accessToken!;
+  }
 
   @override
   Future<void> createAccount(
@@ -186,7 +184,9 @@ Future<String> refreshToken(String refreshToken) async {
   // ----------------------------------------------------------
 
   Future<Map<String, dynamic>> _performCognitoSignIn(
-      String username, String password) async {
+    String username,
+    String password,
+  ) async {
     await Future.delayed(const Duration(milliseconds: 300));
 
     if (!username.contains('@')) {
@@ -194,13 +194,14 @@ Future<String> refreshToken(String refreshToken) async {
     }
 
     return {
-      'AccessToken': 'cognito_access_token_${DateTime.now().millisecondsSinceEpoch}',
+      'AccessToken':
+          'cognito_access_token_${DateTime.now().millisecondsSinceEpoch}',
       'RefreshToken':
           'cognito_refresh_token_${DateTime.now().millisecondsSinceEpoch}',
       'IdToken':
           'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.'
-              '${base64Url.encode('{"sub":"user-id","email":"$username","exp":9999999999}'.codeUnits)}.'
-              'signature',
+          '${base64Url.encode('{"sub":"user-id","email":"$username","exp":9999999999}'.codeUnits)}.'
+          'signature',
     };
   }
 
@@ -215,24 +216,19 @@ Future<String> refreshToken(String refreshToken) async {
     );
   }
 
-  Future<void> _handleAuthEvent(
-      String event, Map<String, dynamic> data) async {
+  Future<void> _handleAuthEvent(String event, Map<String, dynamic> data) async {
     // no-op for now
   }
 
   @override
-Future<void> onLoginSuccess(DSAuthUser user) async {
-  await _eventHandler.handleLoginSuccess(
-    user.id,
-    user.email,
-  );
-}
-
-@override
-Future<void> onLogout() async {
-  if (_currentUser != null) {
-    await _eventHandler.handleLogout(_currentUser!.id);
+  Future<void> onLoginSuccess(DSAuthUser user) async {
+    await _eventHandler.handleLoginSuccess(user.id, user.email);
   }
-}
 
+  @override
+  Future<void> onLogout() async {
+    if (_currentUser != null) {
+      await _eventHandler.handleLogout(_currentUser!.id);
+    }
+  }
 }
