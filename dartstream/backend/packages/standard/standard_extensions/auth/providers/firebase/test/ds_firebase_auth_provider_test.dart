@@ -6,17 +6,17 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 void main() {
   group('Firebase Auth Provider - Mock Tests', () {
     late DSAuthManager authManager;
-    
+
     setUp(() {
       DSAuthManager.clearProviders();
     });
 
     test('Should accept provider registration', () {
       final mockProvider = MockFirebaseAuthProvider();
-      
+
       DSAuthManager.registerProvider('firebase', mockProvider);
       final providers = DSAuthManager.getRegisteredProviders();
-      
+
       expect(providers, contains('firebase'));
       print('✓ Provider registration works');
     });
@@ -24,7 +24,7 @@ void main() {
     test('Should create auth manager instance', () {
       final mockProvider = MockFirebaseAuthProvider();
       DSAuthManager.registerProvider('firebase', mockProvider);
-      
+
       authManager = DSAuthManager('firebase');
       expect(authManager, isNotNull);
       print('✓ Auth manager creation works');
@@ -33,7 +33,7 @@ void main() {
     test('Should reject duplicate provider registration', () {
       final mockProvider = MockFirebaseAuthProvider();
       DSAuthManager.registerProvider('firebase', mockProvider);
-      
+
       expect(
         () => DSAuthManager.registerProvider('firebase', mockProvider),
         throwsArgumentError,
@@ -42,10 +42,7 @@ void main() {
     });
 
     test('Should throw error for unregistered provider', () {
-      expect(
-        () => DSAuthManager('nonexistent'),
-        throwsA(isA<DSAuthError>()),
-      );
+      expect(() => DSAuthManager('nonexistent'), throwsA(isA<DSAuthError>()));
       print('✓ Unregistered provider error works');
     });
 
@@ -53,7 +50,7 @@ void main() {
       final mockProvider = MockFirebaseAuthProvider();
       DSAuthManager.registerProvider('firebase', mockProvider);
       DSAuthManager.clearProviders();
-      
+
       final providers = DSAuthManager.getRegisteredProviders();
       expect(providers, isEmpty);
       print('✓ Provider clearing works');
@@ -63,24 +60,29 @@ void main() {
       final mockProvider = MockFirebaseAuthProvider();
       DSAuthManager.registerProvider('firebase', mockProvider);
       authManager = DSAuthManager('firebase');
-      
-      // Test that the interface is properly implemented
-      expect(() => authManager.createAccount('test@example.com', 'password'),
-          returnsNormally);
-      expect(() => authManager.signIn('test@example.com', 'password'),
-          returnsNormally);
-      expect(() => authManager.getCurrentUser(), returnsNormally);
-      expect(() => authManager.signOut(), returnsNormally);
-      
+
+      // 🔹 Initialize the provider to avoid "Not initialized" errors
+      await mockProvider.initialize({});
+
+      // Test the auth interface
+      await authManager.createAccount('test@example.com', 'password');
+      await authManager.signIn('test@example.com', 'password');
+
+      final currentUser = await authManager.getCurrentUser();
+      expect(currentUser.email, equals('test@example.com'));
+
+      await authManager.signOut();
+      expect(() => authManager.getCurrentUser(), throwsA(isA<DSAuthError>()));
+
       print('✓ Auth flow interface works');
     });
   });
 
   group('Token Manager - Unit Tests', () {
     test('Should validate token structure', () {
-      // These tests don't need Firebase connection
-      final validToken = 'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0IiwiYXVkIjoidGVzdCIsImV4cCI6OTk5OTk5OTk5OX0.test';
-      
+      final validToken =
+          'eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJ0ZXN0IiwiYXVkIjoidGVzdCIsImV4cCI6OTk5OTk5OTk5OX0.test';
+
       expect(validToken.split('.').length, equals(3));
       print('✓ Token structure validation works');
     });
@@ -88,7 +90,6 @@ void main() {
 
   group('Error Mapper - Unit Tests', () {
     test('Should have error mapping functions', () {
-      // Test that error mapper structure exists
       expect(() => DSAuthError('Test error', code: 401), returnsNormally);
       print('✓ Error creation works');
     });
@@ -115,8 +116,11 @@ class MockFirebaseAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(String email, String password,
-      {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     if (!_isInitialized) throw DSAuthError('Not initialized');
     _currentUser = DSAuthUser(
       id: 'mock_${email.hashCode}',
