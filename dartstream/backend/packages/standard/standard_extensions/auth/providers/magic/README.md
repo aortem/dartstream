@@ -103,13 +103,13 @@ DSAuthManager.registerProvider('magic', magicProvider);
 * [x] Session management via `DSSessionManager`
 * [x] Error mapping with `DSMagicErrorMapper`
 * [x] Lifecycle hooks (`onLoginSuccess`, `onLogout`)
+* [x] User retrieval (`getUser`) - *Returns current user if ID matches*
+* [x] Token refresh (`refreshToken`) - *Validates current token*
 
 ### Limitations & Notes
 
-* **No `getUser` support**: Magic API doesn’t provide direct user lookup;
-  store user info after sign-in if needed.
-* **No `refreshToken`**: DID tokens are short-lived; re-authentication required.
 * **No MFA/Groups/Audit Logs**: Not offered by Magic’s API.
+* **Token Refresh**: Relies on valid DID token validation; no new token issuance from backend.
 
 ## Enhanced Usage Examples
 
@@ -200,6 +200,28 @@ await DSFlutterMobileCore.initialize(
 * Lightweight in-memory session manager
 * No heavy Crypto operations on every request
 * Single HTTP call to Magic API for token verification
+
+## Running the Example App
+
+A complete sample application with Backend (Dart) and Frontend (React) is available in `example/`.
+
+### Prerequisites
+* Dart SDK
+* Node.js & npm
+
+### Quick Start
+Run the demo script to start both backend and frontend:
+
+```powershell
+./example/run_demo.ps1
+```
+
+Or run manually:
+1. **Backend**: `cd example && dart run server.dart`
+2. **Frontend**: `cd example/magic-app && npm run dev`
+
+### Configuration
+Set your Magic keys in `example/server.dart` and `example/magic-app/src/App.jsx` before running.
 
 ## Status: Production Ready 🚀
 

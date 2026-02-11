@@ -1,0 +1,17 @@
+name: magic_example_server
+description: A simple backend server demonstrating Magic Auth usage.
+version: 1.0.0
+environment:
+  sdk: ^3.0.0
+
+dependencies:
+  shelf: ^1.4.0
+  shelf_router: ^1.1.0
+  ds_auth_base: any
+  ds_magic_auth_provider: any
+
+dependency_overrides:
+  ds_auth_base:
+    path: ../../../base
+  ds_magic_auth_provider:
+    path: ../
