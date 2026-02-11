@@ -1,6 +1,6 @@
 {
   "hosting": {
-    "target": "intellitoggle-prod",
+    "target": "dartstream-open-dev",
     "public": ".output/public",
     "ignore": [
       "firebase.json",

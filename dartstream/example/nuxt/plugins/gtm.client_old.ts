@@ -9,10 +9,10 @@ export default defineNuxtPlugin((nuxtApp) => {
   const host = window.location.hostname
 
   // ✅ Prod host
-  const onProdHost = host === 'app.intellitoggle.com'
+  const onProdHost = host === 'app.dartstream.com'
 
-  // ✅ Firebase preview host (always starts with intellitoggle-prod--)
-  const onFirebasePreview = host.startsWith('intellitoggle-prod--')
+  // ✅ Firebase preview host (always starts with dartstream-open-dev--)
+  const onFirebasePreview = host.startsWith('dartstream-open-dev--')
 
   // ✅ Local dev convenience
   const onLocal =

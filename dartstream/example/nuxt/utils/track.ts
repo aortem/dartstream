@@ -1,5 +1,5 @@
 // utils/track.ts
-const PROD_HOST = 'app.intellitoggle.com'
+const PROD_HOST = 'app.dartstream.com'
 const FAILURE_SUFFIXES = ['_failed']
 const SENSITIVE = new Set([
   'password','pwd','secret','client_secret','jwt','access_token','id_token','refresh_token'

@@ -1,0 +1,233 @@
+stages:
+  - validate
+  - analyze
+  - build
+
+# Debug Stage
+debug_merge_request:
+  stage: validate
+  script:
+    - echo "Debugging merge request..."
+    - echo "CI_COMMIT_BRANCH $CI_COMMIT_BRANCH"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_COMMIT_REF_NAME $CI_COMMIT_REF_NAME"
+    - echo "Determining branch name..."
+    - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
+    - echo "Branch name determined $BRANCH_NAME"
+
+
+validate_branch_name:
+  stage: validate
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|docs)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9_-]+)?(\+[0-9]+)?$"; then
+        echo "✅ Valid release branch name: $BRANCH_NAME."  
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, docs, development, qa, main."
+        exit 1
+      fi
+  rules:
+   - when: always
+
+validate_commit_messages:
+  stage: validate
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
+    - when: always
+
+validate_dart_sdk_version:
+  stage: validate
+  image: alpine:latest
+  needs:
+    - validate_commit_messages
+  script:
+    - echo "Validating Dart SDK versions in all pubspec.yaml files..."
+    - apk add --no-cache grep
+    - cd dartstream/backend
+
+    # Find all pubspec.yaml files (recursively, all levels)
+    - PUBSPEC_FILES=$(find . -name "pubspec.yaml")
+    - echo "Found the following pubspec.yaml files:"
+    - echo "$PUBSPEC_FILES"
+
+    # Define the minimum required Dart SDK version
+    - MINIMUM_version="3.10.9"
+    - ALL_VALID="true"
+
+    # Iterate over each pubspec.yaml file
+    - |
+      for PUBSPEC in $PUBSPEC_FILES; do
+        echo "Checking $PUBSPEC..."
+
+        # Extract the Dart SDK version
+        SDK_VERSION=$( sed -n \
+        's/^[[:space:]]*sdk:[[:space:]]*\^\([0-9]\+\.[0-9]\+\.[0-9]\+\).*/\1/p' \
+        "$PUBSPEC" \
+        | head -n1 )
+        [ -z "$SDK_VERSION" ] && SDK_VERSION="not_found"
+        echo "Extracted Dart SDK version from $PUBSPEC: $SDK_VERSION"
+
+        # Validate the extracted version
+        if [ "$SDK_VERSION" = "not_found" ]; then
+          echo "❌ Failed to extract Dart SDK version from $PUBSPEC. Ensure the file contains a valid 'sdk' entry."
+          ALL_VALID="false"
+          continue
+        fi
+
+        # Compare the version
+        if [[ $(echo -e "${SDK_VERSION}\n${MINIMUM_VERSION}" | sort -V | head -n1) != "$MINIMUM_VERSION" ]]; then
+          echo "❌ Dart SDK version in $PUBSPEC must be at least $MINIMUM_VERSION, found $SDK_VERSION"
+          ALL_VALID="false"
+        else
+          echo "✅ Dart SDK version in $PUBSPEC is satisfactory: $SDK_VERSION"
+        fi
+      done
+
+    # Exit with failure if any pubspec.yaml file has an invalid version
+    - |
+      if [ "$ALL_VALID" != "true" ]; then
+        echo "❌ One or more pubspec.yaml files have an invalid Dart SDK version."
+        exit 1
+      else
+        echo "✅ All pubspec.yaml files have a valid Dart SDK version."
+      fi
+  rules:
+    - when: always
+
+analyze_main:
+  stage: analyze
+  image: dart:stable
+  needs: 
+    - validate_commit_messages
+  before_script:
+    - dart pub global activate onepub
+    - onepub import
+    - dart pub token add https://onepub.dev/api/anfaavuhno --env-var ONEPUB_TOKEN   
+ 
+  script:
+    - echo "🔍 Locating Dart packages…"
+    - |
+      # Find all package dirs (where pubspec.yaml lives)
+      find dartstream/backend -type f -name pubspec.yaml -exec dirname {} \; | sort -u \
+      | while read -r pkg; do
+          name=$(basename "$pkg")
+          echo "📦 Analyzing package: $name"
+          (
+            cd "$pkg"
+    
+            # 1) Install dependencies
+            dart pub get \
+              || { echo "❌ pub get failed in $name"; exit 1; }
+    
+            # 2) Run analyzer
+            dart analyze lib/ > analysis_report.txt 2> error_log.txt || true
+    
+            # 3) Categorize results
+            grep -i "info"    analysis_report.txt > info_issues.txt    || true
+            grep -i "warning" analysis_report.txt > warning_issues.txt || true
+            grep -i "error"   analysis_report.txt > error_issues.txt   || true
+    
+            # 4) Summarize counts
+            {
+              echo "Info Issues:    $(wc -l < info_issues.txt    || echo 0)"
+              echo "Warning Issues: $(wc -l < warning_issues.txt || echo 0)"
+              echo "Error Issues:   $(wc -l < error_issues.txt   || echo 0)"
+            } > summary.txt
+    
+            # 5) Outdated dependencies
+            dart pub outdated > pub_outdated.txt || true
+    
+            # 6) Who last touched the files with errors?
+            {
+              while read -r line; do
+                file=${line%%:*}
+                if [[ -n "$file" ]]; then
+                  echo -n "$file → "
+                  git log -1 --pretty=format:"%h by %an <%ae>" -- "$file"
+                fi
+              done < error_issues.txt
+            } > collaboration.txt || true
+    
+            # 7) Gather everything into a central folder
+            mkdir -p "$CI_PROJECT_DIR/analysis_outputs/$name"
+            mv \
+              analysis_report.txt \
+              info_issues.txt warning_issues.txt error_issues.txt \
+              summary.txt pub_outdated.txt collaboration.txt \
+              "$CI_PROJECT_DIR/analysis_outputs/$name/"
+          )
+      done
+    - echo "✅ All packages analyzed. See analysis_outputs/ for details."
+  artifacts:
+    paths:
+      - analysis_outputs/
+    expire_in: 1h
+  rules:
+    - when: always
+
+#  # Build docker image using Cloud Build
+# dartstream:prod_build:
+#   image: google/cloud-sdk:alpine
+#   stage: build
+#   before_script:
+#     - bash tools/scripts/cloudbuild-hosting/gcloud_prod_acc_cloudrun.sh
+#   script:
+#     - cd dartstream/backend
+#      # UTC timestamp like 20251113-1200
+#     - TAG_TS=$(date -u +%Y%m%d-%H%M)
+#     - echo "Using image tag timestamp $TAG_TS"
+#     - |
+#       gcloud builds submit . \
+#         --config=cloudbuild.yaml \
+#         --substitutions \
+#         "_ONEPUB_TOKEN=${ONEPUB_TOKEN},_IMAGE=us-central1-docker.pkg.dev/dartstream-open-dev/dartstream/dartstream:${CI_COMMIT_REF_SLUG}"
+#   rules:
+#     # Condition 1: Branch is main
+#     - if: '$CI_COMMIT_BRANCH == "main"'
+#       when: always  
+# # --tag=us-central1-docker.pkg.dev/dartstream-open-dev/dartstream/dartstream:${CI_COMMIT_REF_SLUG}-${CI_JOB_TIMESTAMP}"
+#   #retry: 2 

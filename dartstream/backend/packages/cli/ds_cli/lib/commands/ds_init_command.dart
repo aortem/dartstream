@@ -298,7 +298,7 @@ description: A DartStream project
 version: 0.1.0
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.10.9
 
 dependencies:
   # DartStream core
@@ -444,3 +444,4 @@ created_at: ${DateTime.now().toIso8601String()}
     configFile.writeAsStringSync(config);
   }
 }
+

@@ -7,7 +7,7 @@ repository: https://github.com/aortem/dartstream
 publish_to: none
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -20,3 +20,4 @@ dependencies:
     path: ../../standard/standard_extensions/auth/base
   google_auth_provider:
     path: ../../standard/standard_extensions/auth/providers/google
+

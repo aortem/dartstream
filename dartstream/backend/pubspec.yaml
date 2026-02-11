@@ -19,7 +19,7 @@ version: 0.0.10
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 dependencies:
  shelf: ^1.4.2
@@ -64,7 +64,7 @@ dependencies:
 #   # feature-flags
 #   ds_ff_base:           ^0.0.1
 #   ds_ff_flagd:          ^0.0.1
-#   ds_ff_intellitoggle:  ^0.0.1
+#   ds_ff_dartstream:  ^0.0.1
 
 # Reactive dataflow - data streaming (lean OSS list)
  # ds_message_broker_base:      ^0.0.1
@@ -99,7 +99,7 @@ workspace:
   - packages/standard/standard_extensions/platform_services/discovery/
   - packages/standard/standard_extensions/platform_services/feature_flags/base
   - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
-  - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
+  - packages/standard/standard_extensions/platform_services/feature_flags/providers/dartstream
   - packages/standard/standard_extensions/platform_services/middleware/base
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
@@ -110,3 +110,4 @@ workspace:
   - packages/standard/standard_extensions/reactive_dataflow/events/base
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
+

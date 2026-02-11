@@ -36,7 +36,7 @@ void main() {
   test('logout success', () async {
     await provider.signIn('user@test.com', 'Password123!');
     await provider.signOut();
-    
+
     // Verify user is null after logout
     try {
       await provider.getCurrentUser();

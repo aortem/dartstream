@@ -482,7 +482,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.10.7
+  sdk: ^3.10.9
 
 dependencies:
 $dependencies
@@ -529,3 +529,4 @@ Visit [dartstream.io/docs](https://dartstream.io/docs) for complete documentatio
 See LICENSE file for details.
 ''');
 }
+

@@ -33,8 +33,8 @@ class MockCognitoHttpClient implements CognitoHttpClient {
 
     // 2. Simulate SignIn (AdminInitiateAuth) Response
     if (xAmzTarget.endsWith('AdminInitiateAuth')) {
-       print('[MockAWS] ✅ Simulating Successful Sign In');
-       return CognitoHttpResponse(
+      print('[MockAWS] ✅ Simulating Successful Sign In');
+      return CognitoHttpResponse(
         statusCode: 200,
         headers: {},
         bodyString: jsonEncode({
@@ -44,11 +44,11 @@ class MockCognitoHttpClient implements CognitoHttpClient {
             'RefreshToken': 'mock_refresh_token_456',
             'ExpiresIn': 3600,
             'TokenType': 'Bearer',
-          }
+          },
         }),
       );
     }
-    
+
     return CognitoHttpResponse(statusCode: 200, headers: {}, bodyString: '{}');
   }
 
@@ -66,12 +66,18 @@ class MockCognitoHttpClient implements CognitoHttpClient {
 
   // Helper to create a fake valid-looking JWT
   String _createMockJwt(String email) {
-    final header = base64Url.encode(utf8.encode(jsonEncode({'alg': 'HS256', 'typ': 'JWT'})));
-    final payload = base64Url.encode(utf8.encode(jsonEncode({
-      'sub': '12345-67890',
-      'email': email,
-      'exp': (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600,
-    })));
+    final header = base64Url.encode(
+      utf8.encode(jsonEncode({'alg': 'HS256', 'typ': 'JWT'})),
+    );
+    final payload = base64Url.encode(
+      utf8.encode(
+        jsonEncode({
+          'sub': '12345-67890',
+          'email': email,
+          'exp': (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600,
+        }),
+      ),
+    );
     return '$header.$payload.mock_sig';
   }
 }

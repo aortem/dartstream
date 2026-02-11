@@ -6,7 +6,7 @@ version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 resolution: workspace
 
@@ -16,3 +16,4 @@ dependencies:
 
 
 # STANDARD PACKAGES - Built By The Dart Team
+

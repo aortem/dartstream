@@ -4,7 +4,7 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 resolution: workspace
 
@@ -13,3 +13,4 @@ dependencies:
   socket_io_client: ^3.1.4
 
 entry_point: "lib/ds_websocket_socket_io_entry.dart"
+

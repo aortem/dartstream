@@ -15,16 +15,22 @@ void main() async {
   await provider.initialize({});
 
   print('Cognito Auth Server running on http://localhost:8081');
-  
+
   // Use loopbackIPv4 to avoid binding issues on some windows setups
   final server = await HttpServer.bind(InternetAddress.loopbackIPv4, 8081);
-  
+
   await for (HttpRequest request in server) {
     try {
       // CORS Headers
       request.response.headers.add('Access-Control-Allow-Origin', '*');
-      request.response.headers.add('Access-Control-Allow-Methods', 'POST, GET, OPTIONS');
-      request.response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      request.response.headers.add(
+        'Access-Control-Allow-Methods',
+        'POST, GET, OPTIONS',
+      );
+      request.response.headers.add(
+        'Access-Control-Allow-Headers',
+        'Content-Type, Authorization',
+      );
 
       if (request.method == 'OPTIONS') {
         request.response.close();
@@ -43,48 +49,47 @@ void main() async {
 
         await provider.signIn(username, password);
         final user = await provider.getCurrentUser();
-        
-        request.response.write(jsonEncode({
-          'success': true,
-          'user': {
-            'id': user.id,
-            'email': user.email,
-            'displayName': user.displayName,
-          },
-          'message': 'Login successful (Mocked Internal)'
-        }));
 
-      } else if (path == '/register' && request.method == 'POST') {
-         final content = await utf8.decoder.bind(request).join();
-         final body = jsonDecode(content);
-         final email = body['email'];
-         final password = body['password'];
-
-         await provider.createAccount(email, password);
-         
-         request.response.write(jsonEncode({
-           'success': true,
-           'message': 'Registration successful (Mocked Internal)'
-         }));
-
-      } else if (path == '/logout' && request.method == 'POST') {
-          await provider.signOut();
-          request.response.write(jsonEncode({
+        request.response.write(
+          jsonEncode({
             'success': true,
-            'message': 'Logged out successfully'
-          }));
+            'user': {
+              'id': user.id,
+              'email': user.email,
+              'displayName': user.displayName,
+            },
+            'message': 'Login successful (Mocked Internal)',
+          }),
+        );
+      } else if (path == '/register' && request.method == 'POST') {
+        final content = await utf8.decoder.bind(request).join();
+        final body = jsonDecode(content);
+        final email = body['email'];
+        final password = body['password'];
+
+        await provider.createAccount(email, password);
+
+        request.response.write(
+          jsonEncode({
+            'success': true,
+            'message': 'Registration successful (Mocked Internal)',
+          }),
+        );
+      } else if (path == '/logout' && request.method == 'POST') {
+        await provider.signOut();
+        request.response.write(
+          jsonEncode({'success': true, 'message': 'Logged out successfully'}),
+        );
       } else {
         request.response.statusCode = HttpStatus.notFound;
         request.response.write('Not Found');
       }
-
     } catch (e) {
       print('Error: $e');
       request.response.statusCode = HttpStatus.internalServerError;
-      request.response.write(jsonEncode({
-        'success': false,
-        'error': e.toString()
-      }));
+      request.response.write(
+        jsonEncode({'success': false, 'error': e.toString()}),
+      );
     } finally {
       await request.response.close();
     }

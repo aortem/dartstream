@@ -1,6 +1,7 @@
 site:
-  title: Dartstream Docs
+  title: Dartstream OSS Docs
   start_page: dartstream::index.adoc
+  url: https://docs.dartstreamoss.com/
 
 content:
   sources:
@@ -14,5 +15,9 @@ content:
 
 ui:
   bundle:
-    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+   # 1) Documentation Team Custom
+   # 2) Antora Default
+    url: ./ui/antora-ui-custom/ui-bundle
+   # url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
     snapshot: true
+  

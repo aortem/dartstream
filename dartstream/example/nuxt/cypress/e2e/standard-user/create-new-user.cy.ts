@@ -52,7 +52,7 @@ describe("Signup & Login Flow", () => {
     // intercept checkout API
     cy.intercept(
       "POST",
-      "https://dev-api.intellitoggle.com/api/billing/checkout"
+      "https://dev-api.dartstream.com/api/billing/checkout"
     ).as("checkout");
     cy.dataCy("button-sign-up-standard").click();
 

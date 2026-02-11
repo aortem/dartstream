@@ -6,7 +6,7 @@ repository: https://github.com/aortem/dartstream
 publish_to: none # Mark the package as non-publishable for local testing:
 
 environment:
-  sdk: ^3.10.8
+  sdk: ^3.10.9
 
 resolution: workspace
 
@@ -14,3 +14,4 @@ dependencies:
   okta_identity_dart_auth_sdk: ^0.0.1-pre
   ds_auth_base: ^0.0.1
   ds_standard_features: ^0.1.6
+
