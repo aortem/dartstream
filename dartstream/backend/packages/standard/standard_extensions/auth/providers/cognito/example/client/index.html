@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cognito SDK Verification</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: #f0f2f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h1,
+        h2 {
+            text-align: center;
+            color: #1a1a1a;
+        }
+
+        h1 {
+            margin-bottom: 40px;
+        }
+
+        input {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        button.secondary {
+            background: #6c757d;
+            margin-top: 10px;
+        }
+
+        button.logout {
+            background: #dc3545;
+            margin-top: 20px;
+        }
+
+        button.logout:hover {
+            background: #c82333;
+        }
+
+        /* Dashboard Styles */
+        #dashboard {
+            display: none;
+        }
+
+        .welcome-banner {
+            background: #d4edda;
+            color: #155724;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .log-container {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+
+        #log {
+            background: #1e1e1e;
+            color: #0f0;
+            padding: 15px;
+            border-radius: 6px;
+            height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- AUTH SCREEN -->
+    <div id="authScreen" class="container">
+        <h1>Cognito Sample App</h1>
+
+        <div class="card">
+            <h2>Sign In</h2>
+            <input type="email" id="loginEmail" placeholder="Email" value="test@example.com">
+            <input type="password" id="loginPass" placeholder="Password" value="Password123!">
+            <button onclick="login()">Log In</button>
+            <button class="secondary" onclick="toggleRegister()">Need an account? Register</button>
+        </div>
+    </div>
+
+    <!-- REGISTER MODAL (Hidden by default for simplicity, re-using container) -->
+    <div id="registerScreen" class="container" style="display: none;">
+        <h1>Create Account</h1>
+        <div class="card">
+            <h2>Register</h2>
+            <input type="email" id="regEmail" placeholder="Email" value="test@example.com">
+            <input type="password" id="regPass" placeholder="Password" value="Password123!">
+            <button onclick="register()">Sign Up</button>
+            <button class="secondary" onclick="toggleRegister()">Back to Login</button>
+        </div>
+    </div>
+
+    <!-- DASHBOARD SCREEN -->
+    <div id="dashboard">
+        <h1>Dashboard</h1>
+        <div class="card">
+            <div class="welcome-banner" id="welcomeMsg">
+                Welcome! You are logged in.
+            </div>
+
+            <p><strong>Status:</strong> <span style="color: green; font-weight: bold;">Matches Criteria</span></p>
+            <p>The backend (cognito_sample.dart) successfully verified your credentials with the Provider.</p>
+
+            <button onclick="checkUser()">Check User Session</button>
+            <button class="logout" onclick="logout()">Log Out</button>
+        </div>
+    </div>
+
+    <!-- LOGS -->
+    <div class="container log-container">
+        <small>System Logs:</small>
+        <div id="log"></div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:8081';
+
+        function log(msg) {
+            const el = document.getElementById('log');
+            const time = new Date().toLocaleTimeString();
+            el.innerHTML += `<div>[${time}] ${msg}</div>`;
+            el.scrollTop = el.scrollHeight;
+        }
+
+        function toggleRegister() {
+            const auth = document.getElementById('authScreen');
+            const reg = document.getElementById('registerScreen');
+            if (auth.style.display === 'none') {
+                auth.style.display = 'block';
+                reg.style.display = 'none';
+            } else {
+                auth.style.display = 'none';
+                reg.style.display = 'block';
+            }
+        }
+
+        function showDashboard(email) {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('registerScreen').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+            document.getElementById('welcomeMsg').textContent = `Welcome, ${email}!`;
+        }
+
+        function showLogin() {
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'block';
+        }
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPass').value;
+
+            try {
+                log('Sending Login Request...');
+                const res = await fetch(`${API}/auth/login`, {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    log('✅ Login Successful! Navigating to Dashboard...');
+                    // SIMULATE NAVIGATION
+                    setTimeout(() => showDashboard(email), 500);
+                } else {
+                    log(`❌ Login Failed: ${data.message}`);
+                    alert(data.message);
+                }
+            } catch (e) {
+                log(`❌ Network Error: ${e}`);
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPass').value;
+
+            try {
+                log('Sending Register Request...');
+                const res = await fetch(`${API}/auth/register`, {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    log('✅ Registration Successful! Please Log In.');
+                    alert('Account Created! Please Log In.');
+                    toggleRegister();
+                } else {
+                    const data = await res.json();
+                    log(`❌ Registration Failed: ${data.message}`);
+                }
+            } catch (e) {
+                log(`❌ Error: ${e}`);
+            }
+        }
+
+        async function checkUser() {
+            try {
+                const res = await fetch(`${API}/auth/user`);
+                const data = await res.json();
+                if (res.ok) log(`👤 Current User ID: ${data.id}`);
+            } catch (e) { log(e); }
+        }
+
+        async function logout() {
+            await fetch(`${API}/auth/logout`, { method: 'POST' });
+            log('👋 Signed Out');
+            showLogin();
+        }
+    </script>
+</body>
+
+</html>

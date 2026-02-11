@@ -1,0 +1,16 @@
+name: cognito_sample
+description: A sample CLI application to verify DSCognitoAuthProvider.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.10.8
+
+dependencies:
+  ds_cognito_auth_provider:
+    path: ../
+  ds_auth_base:
+    path: ../../../base
+  cognito_dart_auth_sdk: ^0.0.1
+  args: ^2.4.0
+  shelf: any

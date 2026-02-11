@@ -115,3 +115,54 @@ dist/
 # Local cache / prerendered data
 .cache/
 .data/
+
+##########################################
+# From dartstream/backend/packages/standard/standard_extensions/auth/providers/cognito/.gitignore
+##########################################
+# Dart
+.dart_tool/
+.packages
+pubspec.lock
+
+# Data
+.ds_cognito_sessions/
+debug_log.txt
+test_output.txt
+analysis_errors.txt
+compilation_errors.txt
+errors.txt
+error.log
+
+# Node
+node_modules/
+example/cognito-app/node_modules/
+dist/
+
+##########################################
+# From dartstream/backend/packages/standard/standard_extensions/auth/providers/cognito/example/cognito-app/.gitignore
+##########################################
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.data/
