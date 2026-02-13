@@ -1,0 +1,15 @@
+name: transmit_auth_example
+description: Example app demonstrating Transmit authentication
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  shelf: ^1.4.0
+  ds_transmit_auth_provider:
+    path: ../
+
+dev_dependencies:
+  lints: ^5.0.0
