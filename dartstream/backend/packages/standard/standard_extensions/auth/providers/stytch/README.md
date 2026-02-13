@@ -1,3 +1,67 @@
+<<<<<<< HEAD
+# Stytch Auth Provider for DartStream
+
+A generic authentication provider for DartStream using Stytch.
+
+## Features
+
+- Email/Password authentication
+- Session management
+- Token management (Mock implementation for development)
+- Secure token storage
+
+## Getting Started
+
+### Installation
+
+Add the dependency to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  ds_stytch_auth_provider: ^0.0.1
+```
+
+### Usage
+
+```dart
+import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
+
+// Initialize provider
+final auth = DSStytchAuthProvider();
+await auth.initialize({});
+
+// Sign up
+await auth.createAccount('user@example.com', 'password');
+
+// Sign in
+await auth.signIn('user@example.com', 'password');
+
+// Get current user
+final user = await auth.getCurrentUser();
+```
+
+## Running the Example
+
+This package includes a complete example application with a backend server and a frontend client.
+
+To run the example:
+
+1. Navigate to the `example` directory:
+   ```bash
+   cd example
+   ```
+
+2. Run the unified launcher script:
+   ```powershell
+   ./run_demo.ps1
+   ```
+
+This will:
+- Install dependencies
+- Start the Dart backend server
+- Serve the static frontend files
+- Automatically open your browser to the demo app
+=======
 # DartStream Stytch Authentication Provider
 
 A DartStream authentication provider implementing Stytch authentication services.
@@ -75,3 +139,4 @@ await auth.initialize({
 
 This package is part of the DartStream project and is licensed under the BSD-3
 License.
+>>>>>>> origin/development
