@@ -1,5 +1,5 @@
 name: ds_cognito_auth_provider
-version: "0.0.1-pre+1"
+version: "0.0.1
 description: "Amazon Cognito authentication provider for Dartstream."
 dependencies:
   - "Auth >=0.0.1"
