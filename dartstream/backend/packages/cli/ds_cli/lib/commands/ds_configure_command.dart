@@ -265,13 +265,34 @@ class DSConfigureCommand extends Command {
     print('2. dart run        # Start your server');
   }
 
+  /// Walks up the directory tree to find the dartstream backend root.
+  /// The root is identified as the directory that contains a 'packages/' folder.
+  /// This is the same approach used by DSInitCommand._findDartstreamRoot().
+  String _findDartstreamRoot() {
+    var currentDir = Directory.current;
+    while (!Directory(p.join(currentDir.path, 'packages')).existsSync()) {
+      final parent = currentDir.parent;
+      if (parent.path == currentDir.path) {
+        // Reached filesystem root, default to current directory
+        return Directory.current.path;
+      }
+      currentDir = parent;
+    }
+    return currentDir.path;
+  }
+
   Map<String, dynamic>? _loadProjectConfig(String projectName) {
+    // Find the dartstream backend root for reliable resolution
+    final dartstreamRoot = _findDartstreamRoot();
+
     // Try multiple locations
     final paths = [
       'dartstream.yaml',
       p.join(projectName, 'dartstream.yaml'),
       p.join('projects', projectName, 'dartstream.yaml'),
       p.join('..', 'projects', projectName, 'dartstream.yaml'),
+      // Root-relative path (works regardless of cwd depth)
+      p.join(dartstreamRoot, 'projects', projectName, 'dartstream.yaml'),
     ];
 
     for (final path in paths) {
@@ -286,12 +307,17 @@ class DSConfigureCommand extends Command {
   }
 
   Directory getProjectDir(String projectName) {
+    // Find the dartstream backend root for reliable resolution
+    final dartstreamRoot = _findDartstreamRoot();
+
     // Try multiple locations
     final paths = [
       p.join('projects', projectName),
       p.join('..', 'projects', projectName),
       p.join('..', '..', 'projects', projectName),
       p.join('..', '..', '..', 'projects', projectName),
+      // Root-relative path (works regardless of cwd depth)
+      p.join(dartstreamRoot, 'projects', projectName),
     ];
 
     for (final path in paths) {
@@ -301,8 +327,8 @@ class DSConfigureCommand extends Command {
       }
     }
 
-    // Default to projects folder from current location
-    return Directory(p.join('projects', projectName));
+    // Default to projects folder from dartstream root
+    return Directory(p.join(dartstreamRoot, 'projects', projectName));
   }
 
   void saveProjectConfig({
@@ -647,5 +673,3 @@ class DatabaseService {
     return compatible.contains(auth);
   }
 }
-
-
