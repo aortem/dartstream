@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transmit Auth Demo</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Login View -->
+        <div id="loginView" class="view active">
+            <div class="card">
+                <div class="header">
+                    <div class="logo">🔐</div>
+                    <h1>Transmit Auth Demo</h1>
+                    <p class="subtitle">Test authentication with Transmit SDK</p>
+                </div>
+
+                <form id="loginForm" class="form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter your email" required autocomplete="email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" required
+                            autocomplete="current-password">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        Sign In
+                    </button>
+
+                    <div id="loginError" class="error hidden"></div>
+                </form>
+
+                <div class="info-box">
+                    <p><strong>💡 Test Credentials:</strong></p>
+                    <p>Any email and password will work in dev mode</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="view">
+            <div class="card">
+                <div class="header">
+                    <div class="logo">✅</div>
+                    <h1>Welcome!</h1>
+                    <p class="subtitle">You're successfully authenticated</p>
+                </div>
+
+                <div class="user-info">
+                    <div class="info-row">
+                        <span class="label">Email:</span>
+                        <span id="userEmail" class="value"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Display Name:</span>
+                        <span id="userDisplayName" class="value"></span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">User ID:</span>
+                        <span id="userId" class="value"></span>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        🔄 Refresh Token
+                    </button>
+                    <button class="btn btn-danger" id="logoutBtn">
+                        🚪 Logout
+                    </button>
+                </div>
+
+                <div id="dashboardError" class="error hidden"></div>
+                <div id="dashboardSuccess" class="success hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
