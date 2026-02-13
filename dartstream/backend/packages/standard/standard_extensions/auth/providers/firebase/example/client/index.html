@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Auth Demo | DartStream</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="background-animation"></div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <!-- Logo and Header -->
+        <div class="header">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+                    <path d="M20 5L35 15V25L20 35L5 25V15L20 5Z" fill="url(#fireGradient)" stroke="#FFA000"
+                        stroke-width="2" />
+                    <defs>
+                        <linearGradient id="fireGradient" x1="5" y1="5" x2="35" y2="35">
+                            <stop offset="0%" stop-color="#FFCA28" />
+                            <stop offset="100%" stop-color="#FF6F00" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <h1>Firebase Auth</h1>
+            </div>
+            <p class="subtitle">DartStream Authentication Demo</p>
+        </div>
+
+        <!-- Login View -->
+        <div id="loginView" class="view active">
+            <div class="card">
+                <h2>Welcome Back</h2>
+                <p class="card-subtitle">Sign in to your account</p>
+
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email</label>
+                        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-loader"></span>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>Don't have an account?</span>
+                </div>
+
+                <button class="btn btn-secondary" onclick="showRegister()">
+                    Create Account
+                </button>
+            </div>
+        </div>
+
+        <!-- Register View -->
+        <div id="registerView" class="view">
+            <div class="card">
+                <h2>Create Account</h2>
+                <p class="card-subtitle">Join DartStream today</p>
+
+                <form id="registerForm">
+                    <div class="form-group">
+                        <label for="registerName">Display Name</label>
+                        <input type="text" id="registerName" placeholder="John Doe" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerEmail">Email</label>
+                        <input type="email" id="registerEmail" placeholder="you@example.com" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="registerPassword">Password</label>
+                        <input type="password" id="registerPassword" placeholder="••••••••" required minlength="6">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-loader"></span>
+                    </button>
+                </form>
+
+                <div class="divider">
+                    <span>Already have an account?</span>
+                </div>
+
+                <button class="btn btn-secondary" onclick="showLogin()">
+                    Sign In
+                </button>
+            </div>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="view">
+            <div class="card dashboard">
+                <div class="dashboard-header">
+                    <div>
+                        <h2>Welcome, <span id="userName">User</span>! 🎉</h2>
+                        <p class="card-subtitle">You're successfully authenticated</p>
+                    </div>
+                    <button class="btn btn-danger" onclick="logout()">
+                        Logout
+                    </button>
+                </div>
+
+                <div class="user-info">
+                    <div class="info-card">
+                        <div class="info-icon">📧</div>
+                        <div class="info-content">
+                            <label>Email</label>
+                            <p id="userEmail">-</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔑</div>
+                        <div class="info-content">
+                            <label>User ID</label>
+                            <p id="userId">-</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">🔐</div>
+                        <div class="info-content">
+                            <label>Provider</label>
+                            <p>Firebase</p>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-icon">✅</div>
+                        <div class="info-content">
+                            <label>Status</label>
+                            <p class="status-active">Active</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="success-message">
+                    <div class="success-icon">🎊</div>
+                    <h3>Authentication Successful!</h3>
+                    <p>Your Firebase authentication is working perfectly. The backend and frontend are connected and
+                        communicating securely.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        <div id="alertContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
