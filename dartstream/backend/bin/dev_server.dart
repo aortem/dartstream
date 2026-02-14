@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:ds_auth_base/ds_auth_manager.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
@@ -10,14 +11,12 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Auth Providers
 import 'package:ds_auth0_auth_provider/ds_auth0_auth_export.dart';
-// import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
-// import 'package:ds_entraid_auth_provider/ds_entraid_auth_export.dart';
+import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
+import 'package:ds_entraid_auth_provider/ds_entraid_auth_export.dart';
 import 'package:ds_fingerprint_auth_provider/ds_fingerprint_auth_export.dart';
-// import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
+import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
 import 'package:ping_identity_dart_auth_sdk/ds_ping_auth_export.dart';
 import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart';
-import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
-
 
 /// ===============================
 /// DEV mode flag
@@ -35,10 +34,9 @@ final Map<String, Map<String, dynamic>> _sessions = {};
 /// ===============================
 String _generateSessionId() {
   final rand = Random.secure();
-  return List.generate(
-    32,
-    (_) => rand.nextInt(256),
-  ).map((b) => b.toRadixString(16).padLeft(2, '0')).join();
+  return List.generate(32, (_) => rand.nextInt(256))
+      .map((b) => b.toRadixString(16).padLeft(2, '0'))
+      .join();
 }
 
 String? _getSessionId(Request request) {
@@ -60,24 +58,20 @@ Middleware corsHeaders() {
           headers: {
             'Access-Control-Allow-Origin': '*',
             'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            'Access-Control-Allow-Headers':
-                'Origin, Content-Type, Accept, Authorization',
+            'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
             'Access-Control-Allow-Credentials': 'true',
           },
         );
       }
 
       final response = await innerHandler(request);
-      return response.change(
-        headers: {
-          ...response.headers,
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-          'Access-Control-Allow-Headers':
-              'Origin, Content-Type, Accept, Authorization',
-          'Access-Control-Allow-Credentials': 'true',
-        },
-      );
+      return response.change(headers: {
+        ...response.headers,
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Origin, Content-Type, Accept, Authorization',
+        'Access-Control-Allow-Credentials': 'true',
+      });
     };
   };
 }
@@ -99,7 +93,7 @@ Future<Response> handleSignIn(Request request) async {
     );
   }
 
-  final String providerKey = data['provider'] ?? 'auth0';
+  final String providerKey = data['provider'] ?? 'okta';
   final bool isE2E = (data['__e2e__'] ?? false) == true;
 
   print('🔥 SignIn payload received: $data');
@@ -116,19 +110,15 @@ Future<Response> handleSignIn(Request request) async {
       'provider': providerKey,
     };
   } else {
-    final String resolvedProviderKey = _providers.containsKey(providerKey)
-        ? providerKey
-        : _providers.keys.first;
-
     user = {
-      'id': 'dev-user-${resolvedProviderKey}',
+      'id': 'dev-user-${providerKey}',
       'email': data['email'] ?? 'dev@dartstream.dev',
       'subscriptionStatus': 'active',
       'isSandbox': true,
-      'provider': resolvedProviderKey,
+      'provider': providerKey,
     };
 
-    print('⚡ Simulated login for provider: $resolvedProviderKey');
+    print('⚡ Simulated login for provider: $providerKey');
   }
 
   // Generate session
@@ -137,8 +127,13 @@ Future<Response> handleSignIn(Request request) async {
 
   // Return sessionId in JSON (mobile-friendly)
   return Response.ok(
-    jsonEncode({'user': user, 'sessionId': sessionId}),
-    headers: {'content-type': 'application/json'},
+    jsonEncode({
+      'user': user,
+      'sessionId': sessionId,
+    }),
+    headers: {
+      'content-type': 'application/json',
+    },
   );
 }
 
@@ -180,8 +175,18 @@ Future<void> main() async {
   // ===============================
   // Initialize Providers (DEV SAFE)
   // ===============================
+  final oktaProvider = DSOktaAuthProvider();
+  await oktaProvider.initialize({'__dev__': true});
+
   final transmitProvider = DSTransmitAuthProvider();
   await transmitProvider.initialize({'__dev__': true});
+
+  final entraidProvider = DSEntraIDAuthProvider(
+    tenantId: 'mock-tenant-id',
+    clientId: 'mock-client-id',
+    clientSecret: 'mock-client-secret',
+  );
+  await entraidProvider.initialize({'__dev__': true});
 
   final auth0Provider = DSAuth0AuthProvider(
     domain: 'mock-domain',
@@ -191,15 +196,18 @@ Future<void> main() async {
   );
   await auth0Provider.initialize({'__dev__': true});
 
+  final cognitoProvider = DSCognitoAuthProvider(
+    userPoolId: 'mock-user-pool-id',
+    clientId: 'mock-client-id',
+    region: 'mock-region',
+  );
+  await cognitoProvider.initialize({'__dev__': true});
+
   final fingerprintProvider = DSFingerprintAuthProvider();
   await fingerprintProvider.initialize({'__dev__': true});
 
   final pingProvider = DSPingAuthProvider();
   await pingProvider.initialize({'__dev__': true});
-
-  final stytchProvider = DSStytchAuthProvider();
-  await stytchProvider.initialize({'__dev__': true});
-
 
   // ===============================
   // Register Providers & populate _providers map
@@ -208,17 +216,18 @@ Future<void> main() async {
     DSAuthManager.registerProvider(
       key,
       provider,
-      DSAuthProviderMetadata(type: key, region: 'global', clientId: 'mock'),
+      null,
     );
     _providers[key] = provider;
   }
 
+  registerProvider('okta', oktaProvider);
   registerProvider('transmit', transmitProvider);
+  registerProvider('entraid', entraidProvider);
   registerProvider('auth0', auth0Provider);
+  registerProvider('cognito', cognitoProvider);
   registerProvider('fingerprint', fingerprintProvider);
   registerProvider('ping', pingProvider);
-  registerProvider('stytch', stytchProvider);
-
 
   print('✅ All auth providers initialized & registered');
 
@@ -229,26 +238,26 @@ Future<void> main() async {
       .addMiddleware(logRequests())
       .addMiddleware(corsHeaders())
       .addHandler((Request request) async {
-        final path = request.url.path;
-        final method = request.method;
+    final path = request.url.path;
+    final method = request.method;
 
-        if (method == 'POST' && path == 'auth/sign-in') {
-          return handleSignIn(request);
-        }
+    if (method == 'POST' && path == 'auth/sign-in') {
+      return handleSignIn(request);
+    }
 
-        if (method == 'GET' && path == 'auth/session') {
-          return handleSession(request);
-        }
+    if (method == 'GET' && path == 'auth/session') {
+      return handleSession(request);
+    }
 
-        if (method == 'POST' && path == 'auth/logout') {
-          return handleLogout(request);
-        }
+    if (method == 'POST' && path == 'auth/logout') {
+      return handleLogout(request);
+    }
 
-        return Response.notFound(
-          jsonEncode({'error': 'Not Found'}),
-          headers: {'content-type': 'application/json'},
-        );
-      });
+    return Response.notFound(
+      jsonEncode({'error': 'Not Found'}),
+      headers: {'content-type': 'application/json'},
+    );
+  });
 
   final server = await io.serve(handler, '0.0.0.0', 8080);
   print('🔥 Server running at http://${server.address.host}:${server.port}');
