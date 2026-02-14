@@ -18,7 +18,7 @@ class DSMagicAuthProvider implements DSAuthProvider {
   String? _currentUserId;
   String? _currentDIDToken;
 
-  factory DSMagicAuthProvider({required this.publishableKey, required this.secretKey}) {
+  factory DSMagicAuthProvider({required String publishableKey, required String secretKey}) {
     _instance ??= DSMagicAuthProvider.internal(publishableKey: publishableKey, secretKey: secretKey);
     return _instance!;
   }
