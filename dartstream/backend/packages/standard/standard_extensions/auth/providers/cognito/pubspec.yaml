@@ -6,7 +6,12 @@ repository: https://github.com/aortem/dartstream
 environment:
   sdk: ^3.10.9
 
-#resolution: workspace
+resolution: workspace
 
-entry_point: "lib/amazon_auth_provider.dart"
+dependencies:
+  ds_auth_base: ^0.0.2
+  ds_standard_features: ^0.1.6
 
+dev_dependencies:
+  test: ^1.24.0
+  ds_tools_testing: ^0.1.4
