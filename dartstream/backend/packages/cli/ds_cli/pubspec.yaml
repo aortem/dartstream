@@ -8,6 +8,8 @@ publish_to: none
 environment:
   sdk: ^3.10.9
 
+resolution: workspace
+
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
   ds_discovery_provider:
@@ -23,4 +25,3 @@ entry_point: "./bin/dartstream.dart"
 
 executables:
   dartstream:
-
