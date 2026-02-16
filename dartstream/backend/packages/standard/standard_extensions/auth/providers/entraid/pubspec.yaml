@@ -3,18 +3,12 @@ description: Azure authentication provider for Dartstream.
 version: 0.0.1-pre
 repository: https://github.com/aortem/dartstream
 
-publish_to: none
-
-resolution: workspace
-
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.10.0
 
 dependencies:
   # Add the base auth package as a dependency
-  ds_auth_base:
-    path: ../../base
-    
+  ds_auth_base: ^0.0.1
+
 dev_dependencies:
   test: ^1.25.0
-
