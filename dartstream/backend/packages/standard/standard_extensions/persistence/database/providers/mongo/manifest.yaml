@@ -1,0 +1,7 @@
+name: ds_mongo_database
+version: "0.0.1"
+description: "MongoDB database provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_mongo_database_entry.dart"

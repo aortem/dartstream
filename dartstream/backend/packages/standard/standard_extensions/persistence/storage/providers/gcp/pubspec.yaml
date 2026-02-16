@@ -1,0 +1,18 @@
+name: ds_gcp_storage_provider
+description: Google Cloud Storage provider for DartStream.
+version: "0.0.1"
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  ds_storage_base: ^0.0.1
+  googleapis: ^15.0.0
+  googleapis_auth: ^2.0.0
+  _discoveryapis_commons: ^1.0.0
+
+entry_point: "lib/ds_storage_gcp_entry.dart"
+

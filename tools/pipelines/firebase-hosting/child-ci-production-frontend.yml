@@ -1,0 +1,254 @@
+stages:
+  - validate
+  - preview
+  - deploy
+  - cleanup
+# Debug Stage
+debug_merge_request:
+  stage: validate
+  script:
+    - echo "Basic Merge Request Variables..." 
+    - echo "CI_MERGE_REQUEST_IID is '$CI_MERGE_REQUEST_IID'"
+    - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME is $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME is $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
+    - echo "CI_MERGE_REQUEST_EVENT_TYPE is $CI_MERGE_REQUEST_EVENT_TYPE"
+    
+    - echo "Commit Information Variables..."
+    - echo "CI_COMMIT_REF_NAME is $CI_COMMIT_REF_NAME"
+    - echo "CI_COMMIT_BRANCH is $CI_COMMIT_BRANCH"
+    - echo "CI_COMMIT_MESSAGE is $CI_COMMIT_MESSAGE" 
+
+    - echo "Determining branch name..."
+    - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
+    - echo "Branch name determined $BRANCH_NAME"
+
+    - echo "Pipeline Metadata..."
+    - echo "CI_PIPELINE_SOURCE is $CI_PIPELINE_SOURCE"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE'  # Forces execution in ALL scenarios
+      when: always
+
+validate_branch_name:
+  stage: validate
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|docs)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, docs, development, qa, main."
+        exit 1
+      fi
+  rules:
+   - when: always
+
+validate_commit_messages:
+  stage: validate
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
+    - when: always
+
+firebase:preview:
+  image: google/cloud-sdk:slim
+  stage: preview
+  before_script:
+    - apt-get update -y && apt-get install -y jq curl    # ← added for JSON parsing + PATCH
+    - curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+    - apt-get install -y nodejs
+    - bash tools/scripts/firebase/gcloud_prod_acc_firebase_production.sh
+    - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
+  script:
+    - ls -la
+    - cd dartstream/frontend
+    # Deploy the preview and capture structured JSON (keeps your deploy behavior, adds URL capture)
+    - |
+      echo "Deploying Hosting preview channel for branch: $CI_COMMIT_REF_NAME"
+      PREVIEW_JSON=$(firebase hosting:channel:deploy "$CI_COMMIT_REF_NAME" --project dartstream-open-dev --json)
+      echo "$PREVIEW_JSON" | jq .
+      # Extract preview URL (robust fallbacks)
+      PREVIEW_URL=$(echo "$PREVIEW_JSON" | jq -r '
+        .result[]?.url
+        // .result?.hosting?.url
+        // .result?.hosting?.deploy?.site?.url
+        // empty
+      ' | head -n1)
+      if [ -z "$PREVIEW_URL" ]; then
+        echo "⚠️ Could not parse preview URL; skipping API-key referrer update."
+        exit 0
+      fi
+      echo "Preview URL: $PREVIEW_URL"
+      PREVIEW_ORIGIN="$(echo "$PREVIEW_URL" | awk -F/ '{print $1"//"$3"/*"}')"
+      echo "Preview origin to allow: $PREVIEW_ORIGIN"
+
+      # Prepare API Keys API auth (uses the service account your script already activated)
+      ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+      if [ -z "$ACCESS_TOKEN" ] || [ -z "$FIREBASE_PREVIEW_API_KEY_ID" ]; then
+        echo "⚠️ Missing access token or FIREBASE_PREVIEW_API_KEY_ID; skipping referrer PATCH."
+        exit 0
+      fi
+
+      # Fetch current referrers
+      KEY_JSON=$(curl -sS -H "Authorization: Bearer $ACCESS_TOKEN" \
+        "https://apikeys.googleapis.com/v2/$FIREBASE_PREVIEW_API_KEY_ID") || true
+      echo "$KEY_JSON" | jq . || true
+
+      EXISTING=$(echo "$KEY_JSON" | jq -r '.restrictions.browserKeyRestrictions.allowedReferrers // [] | .[]')
+
+      # Merge + dedupe with localhost convenience
+      TMP=$(mktemp)
+      {
+        echo "$EXISTING"
+        echo "$PREVIEW_ORIGIN"
+        echo "http://localhost/*"
+        echo "http://localhost:3000/*"
+      } | sed '/^$/d' | sort -u > "$TMP"
+
+      NEW_REFERRERS=$(jq -R . < "$TMP" | jq -s .)
+      PATCH_PAYLOAD=$(jq -n --argjson refs "$NEW_REFERRERS" '{
+        restrictions: { browserKeyRestrictions: { allowedReferrers: $refs } }
+      }')
+
+      # PATCH allowedReferrers only (leave API restrictions as set in console) — fail-soft with retries
+      PATCH_OK=0
+      for i in 1 2 3; do
+        RESP=$(curl -sS -w "\n%{http_code}" -X PATCH \
+          -H "Authorization: Bearer $ACCESS_TOKEN" \
+          -H "Content-Type: application/json" \
+          "https://apikeys.googleapis.com/v2/$FIREBASE_PREVIEW_API_KEY_ID?updateMask=restrictions.browserKeyRestrictions.allowedReferrers" \
+          -d "$PATCH_PAYLOAD")
+        BODY=$(echo "$RESP" | sed '$d')
+        CODE=$(echo "$RESP" | tail -n1)
+        echo "$BODY" | jq . || true
+        if [ "$CODE" = "200" ]; then
+          PATCH_OK=1
+          echo "✅ Referrers updated for Preview/QA key."
+          break
+        else
+          echo "⚠️ PATCH failed (HTTP $CODE) — retrying in 3s…"
+          sleep 3
+        fi
+      done
+
+      if [ "$PATCH_OK" -ne 1 ]; then
+        echo "⚠️ Gave up updating referrers after 3 attempts. Preview is deployed; key unchanged."
+      fi
+
+      echo "🎯 Preview ready at: $PREVIEW_URL"
+#    - firebase hosting:channel:deploy $CI_COMMIT_REF_NAME --debug
+  rules:
+    # Condition 1: Branch is not main, qa, or development
+    - if: '$CI_COMMIT_BRANCH != "main"'
+      when: always
+
+firebase:deploy:
+  image: google/cloud-sdk:slim
+  stage: deploy
+  before_script:
+    - curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+    - apt-get install -y nodejs
+    - export NUXT_PUBLIC_GTM_ID="$NUXT_PUBLIC_GTM_ID"
+    - bash tools/scripts/firebase/gcloud_prod_acc_firebase_production.sh
+    - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
+  script:
+    - ls -la
+    - cd dartstream/frontend
+    - firebase deploy --project dartstream-open-dev
+  rules:
+    # Condition 1: Branch is not main, qa, or development
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: always
+
+# ----------------------------
+# Scheduled cleanup job (optional)
+# Keeps the Preview/QA key's referrer list tidy
+# ----------------------------
+cleanup:preview-referrers:
+  image: google/cloud-sdk:slim
+  stage: cleanup
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+      when: always
+    - when: never
+  before_script:
+    - apt-get update -y && apt-get install -y jq curl
+    - bash tools/scripts/firebase/gcloud_prod_acc_firebase_production.sh
+    - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
+  script:
+    - |
+      ACCESS_TOKEN=$(gcloud auth application-default print-access-token)
+      if [ -z "$ACCESS_TOKEN" ] || [ -z "$FIREBASE_PREVIEW_API_KEY_ID" ]; then
+        echo "⚠️ Missing access token or FIREBASE_PREVIEW_API_KEY_ID; skipping cleanup."
+        exit 0
+      fi
+
+      KEY_JSON=$(curl -sS -H "Authorization: Bearer $ACCESS_TOKEN" \
+        "https://apikeys.googleapis.com/v2/$FIREBASE_PREVIEW_API_KEY_ID") || {
+          echo "⚠️ Failed to fetch key; skipping cleanup."; exit 0; }
+
+      ALL=$(echo "$KEY_JSON" | jq -r '.restrictions.browserKeyRestrictions.allowedReferrers // []')
+      STATIC='["http://localhost/*","http://localhost:3000/*"]'
+      # Keep last 15 web.app entries (adjust as needed)
+      RECENT=$(echo "$ALL" | jq -r '
+        map(select(type=="string")) |
+        map(select(startswith("https://") and contains(".web.app/"))) |
+        sort | .[-15:]
+      ')
+      MERGED=$(jq -n --argjson a "$STATIC" --argjson b "$RECENT" '$a + ($b // [])')
+
+      PATCH_PAYLOAD=$(jq -n --argjson refs "$MERGED" '{
+        restrictions: { browserKeyRestrictions: { allowedReferrers: $refs } }
+      }')
+
+      RESP=$(curl -sS -w "\n%{http_code}" -X PATCH \
+        -H "Authorization: Bearer $ACCESS_TOKEN" \
+        -H "Content-Type: application/json" \
+        "https://apikeys.googleapis.com/v2/$FIREBASE_PREVIEW_API_KEY_ID?updateMask=restrictions.browserKeyRestrictions.allowedReferrers" \
+        -d "$PATCH_PAYLOAD")
+      BODY=$(echo "$RESP" | sed '$d')
+      CODE=$(echo "$RESP" | tail -n1)
+      echo "$BODY" | jq . || true
+
+      if [ "$CODE" = "200" ]; then
+        echo "🧹 Cleanup successful."
+      else
+        echo "⚠️ Cleanup PATCH failed with HTTP $CODE; leaving referrers as-is."
+      fi

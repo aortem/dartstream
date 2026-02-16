@@ -1,0 +1,27 @@
+#This pubspec file is used to import our standard features tooling.
+name: dartstream
+description: Core Testing Components For Dartstream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+  ds_discovery_provider:
+    path: ../../standard/standard_extensions/platform_services/discovery
+  ds_lifecycle_base:
+    path: ../../standard/standard_extensions/reactive_dataflow/lifecycle/base
+  ds_cli_util:
+    path: ../ds_cli_util
+  ds_tools_testing: ^0.1.4
+  yaml_writer: ^2.1.0
+
+entry_point: "./bin/dartstream.dart"
+
+executables:
+  dartstream:

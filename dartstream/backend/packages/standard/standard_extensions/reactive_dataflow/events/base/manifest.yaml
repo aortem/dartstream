@@ -1,0 +1,7 @@
+name: ds_events_base
+version: "0.0.1"
+description: "Base event interfaces and manager for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_events_base_export.dart"

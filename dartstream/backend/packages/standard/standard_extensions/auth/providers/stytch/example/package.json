@@ -1,0 +1,18 @@
+{
+  "name": "stytch-auth-demo",
+  "version": "1.0.0",
+  "description": "Stytch Authentication Demo for DartStream",
+  "scripts": {
+    "start": "pwsh -File run_demo.ps1",
+    "backend": "dart run bin/stytch_server.dart",
+    "frontend": "npx serve client -p 3000"
+  },
+  "keywords": [
+    "stytch",
+    "auth",
+    "dartstream",
+    "demo"
+  ],
+  "author": "DartStream",
+  "license": "MIT"
+}

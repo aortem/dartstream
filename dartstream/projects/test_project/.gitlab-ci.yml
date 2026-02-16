@@ -1,0 +1,41 @@
+# Define the Docker image to use.
+# You can use official Dart images or Flutter-specific ones like ghcr.io/cirruslabs/flutter.
+image: dart:stable
+
+# Define stages for the pipeline
+stages:
+  - test
+  - build
+
+# Cache dependencies to speed up subsequent jobs
+cache:
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - .pub-cache/
+
+# Job to run static analysis
+analyze:
+  stage: test
+  script:
+    - dart analyze
+
+# Job to run tests
+unit_test:
+  stage: test
+  script:
+    - dart pub get
+    - dart test
+
+# Job to build the application (this is a generic example)
+# For a Flutter project, you would use a Flutter image and `flutter build` commands.
+build_project:
+  stage: build
+  script:
+    - dart pub get
+    # Example of building a generic Dart application.
+    # Replace with your actual build command, e.g., for a web app: dart compile js -o build/main.js web/main.dart
+    - echo "Build step would go here."
+  artifacts:
+    paths:
+      - build/ # Save the build output as an artifact
+

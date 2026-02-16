@@ -1,0 +1,14 @@
+# This file is beneficial for the following:
+# We want to cache discovered extensions to avoid repeated scans.
+# Provides a high-level view of all registered extensions.
+# Provides a global configuration or dependency resolver.
+
+auth:
+  providers:
+    - name: cognito
+      path: packages/standard/standard_extensions/auth/providers/cognito
+      enabled: true
+      config:
+        userPoolId: "us-east-1_012345678"
+        clientId: "7example890123456789012345"
+        region: "us-east-1"

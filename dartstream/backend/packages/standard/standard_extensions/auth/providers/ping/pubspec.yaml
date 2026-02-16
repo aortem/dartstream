@@ -1,0 +1,21 @@
+name: ping_identity_dart_auth_sdk
+description: Ping Identity Auth SDK for DartStream
+version: 0.0.1
+publish_to: none
+
+resolution: workspace
+
+environment:
+  sdk: ^3.10.9
+
+
+dependencies:
+  ds_auth_base:
+    path: ../../base
+
+
+dev_dependencies:
+  test: ^1.25.0
+
+
+

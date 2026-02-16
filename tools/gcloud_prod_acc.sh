@@ -2,7 +2,7 @@
 
 #cat "$woa_dev_service_creds" >"$(pwd)/service-account.json"
 
-gcloud config set project dartstream-prod
+gcloud config set project dartstream-open-dev
 
 gcloud auth activate-service-account $ACCOUNT_PROD --key-file $GOOGLE_CLOUD_CREDENTIALS_PROD
 

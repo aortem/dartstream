@@ -1,0 +1,13 @@
+{
+    "name": "transmit-auth-example",
+    "version": "0.0.1",
+    "description": "Transmit Authentication Example App",
+    "scripts": {
+        "dev": "concurrently \"dart run bin/transmit_server.dart\" \"echo Frontend served by backend at http://localhost:8080\"",
+        "backend": "dart run bin/transmit_server.dart",
+        "install": "dart pub get"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}

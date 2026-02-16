@@ -1,0 +1,30 @@
+= Releases
+:navtitle: Releases
+:description: Release highlights and updates for Dartstream.
+:sectnums:
+
+This page summarizes client-facing features, improvements, and fixes across Dartstream releases.
+'''
+
+== v0.0.1
+
+=== Overview
+First main OSS release of the Dartstream backend meta-package and workspace tooling.
+
+=== Highlights
+* Standard engine and extensions umbrella exports with refreshed registry manifests.
+* Auth provider extensions for Auth0, Cognito, Entra ID, Firebase, Magic, Okta, Stytch, Transmit, Fingerprint, and Ping Identity.
+* Persistence providers for PostgreSQL, MongoDB, Firestore, AWS S3-compatible storage, GCP Storage, OTLP logging, and Sentry logging.
+* Reactive dataflow modules including message broker base with GCP Pub/Sub and WebSocket base with Socket.IO.
+
+=== Improvements
+* CLI tooling for init, setup, discovery, enable or disable, generate, and validate.
+* Registry tooling scripts and a dev server example.
+* Configuration templates for development and production middleware.
+
+=== Fixes
+* Resolved self-export loops in umbrella exports and removed placeholder configs.
+* Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
+
+=== Notes
+This is the first stable public release of the Dartstream backend packages.

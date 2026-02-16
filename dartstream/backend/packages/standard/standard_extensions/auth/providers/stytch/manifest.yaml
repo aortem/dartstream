@@ -1,0 +1,6 @@
+name: ds_stytch_auth_provider
+version: "0.0.3"
+description: "Stytch authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_stytch_auth_entry.dart"

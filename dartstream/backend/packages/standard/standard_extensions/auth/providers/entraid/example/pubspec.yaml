@@ -1,0 +1,17 @@
+name: entraid_example
+description: Example application for EntraID authentication provider
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+dependencies:
+  shelf: ^1.4.2
+  shelf_cors_headers: ^0.1.5
+  ds_entraid_auth_provider:
+    path: ../
+  ds_auth_base: ^0.0.2
+
+dev_dependencies:
+  test: ^1.29.0

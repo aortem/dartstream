@@ -1,0 +1,7 @@
+name: ds_storage_base
+version: "0.0.1"
+description: "Base storage interfaces and manager for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_storage_base_export.dart"

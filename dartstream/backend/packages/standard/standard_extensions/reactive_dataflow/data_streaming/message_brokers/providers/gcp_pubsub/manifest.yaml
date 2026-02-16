@@ -1,0 +1,7 @@
+name: ds_gcp_pubsub_message_broker_provider
+version: "0.0.1"
+description: "Google Cloud Pub/Sub message broker provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_message_broker_gcp_pubsub_entry.dart"

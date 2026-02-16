@@ -1,0 +1,14 @@
+name: firebase_auth_example
+description: Firebase Authentication example for DartStream
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+dependencies:
+  # HTTP Server
+  shelf: ^1.4.2
+
+dev_dependencies:
+  lints: ^6.1.0
