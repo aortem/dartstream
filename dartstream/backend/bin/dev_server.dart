@@ -16,6 +16,8 @@ import 'package:ds_fingerprint_auth_provider/ds_fingerprint_auth_export.dart';
 // import 'package:ds_okta_auth_provider/ds_okta_auth_export.dart';
 import 'package:ping_identity_dart_auth_sdk/ds_ping_auth_export.dart';
 import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart';
+import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
+
 
 /// ===============================
 /// DEV mode flag
@@ -195,6 +197,10 @@ Future<void> main() async {
   final pingProvider = DSPingAuthProvider();
   await pingProvider.initialize({'__dev__': true});
 
+  final stytchProvider = DSStytchAuthProvider();
+  await stytchProvider.initialize({'__dev__': true});
+
+
   // ===============================
   // Register Providers & populate _providers map
   // ===============================
@@ -211,6 +217,8 @@ Future<void> main() async {
   registerProvider('auth0', auth0Provider);
   registerProvider('fingerprint', fingerprintProvider);
   registerProvider('ping', pingProvider);
+  registerProvider('stytch', stytchProvider);
+
 
   print('✅ All auth providers initialized & registered');
 

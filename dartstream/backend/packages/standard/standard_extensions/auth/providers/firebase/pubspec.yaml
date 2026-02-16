@@ -4,7 +4,7 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.10.0
 
 resolution: workspace
 
@@ -15,4 +15,3 @@ dependencies:
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4
-

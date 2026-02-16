@@ -161,7 +161,7 @@ Future<bool> verifyToken([String? token])
 | Method               | Description                                   |
 |----------------------|-----------------------------------------------|
 | `initialize(config)` | Provider setup and configuration              |
-| `signIn(token)`      | Sign in user using a Transmit token           |
+| `signIn(username, password)` | Sign in user using Transmit credentials |
 | `signOut()`          | End the current user session                  |
 | `getCurrentUser()`   | Retrieve the current authenticated user       |
 | `verifyToken(token)` | Validate a given token with Transmit's API    |

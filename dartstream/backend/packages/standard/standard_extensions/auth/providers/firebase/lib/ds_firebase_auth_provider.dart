@@ -1,12 +1,12 @@
 // Import base authentication interfaces and types from DartStream core
 import 'package:ds_auth_base/ds_auth_base_export.dart';
+
 // Firebase Admin SDK
 import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
 
 // Local utils
 import 'src/ds_token_manager.dart';
 import 'src/ds_session_manager.dart';
-import 'src/ds_error_mapper.dart';
 import 'src/ds_event_handlers.dart';
 
 /// Dev mode flag
@@ -57,17 +57,29 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
     _eventHandler.initialize(_auth);
 
     _isInitialized = true;
-    print('Firebase Auth Provider initialized');
   }
 
   @override
   Future<void> signIn(String username, String password) async {
-    final credential = await _auth.signInWithEmailAndPassword(username, password);
-    final user = credential.user;
+    final credential =
+        await _auth.signInWithEmailAndPassword(username, password);
+
+    final user = credential!.user;
     final token = await user.getIdToken();
+
     await _tokenManager.storeToken(user.uid, token);
-    await _sessionManager.createSession(userId: user.uid, deviceId: 'mock-device-id');
-    await onLoginSuccess(DSAuthUser(id: user.uid, email: user.email ?? '', displayName: user.displayName ?? ''));
+    await _sessionManager.createSession(
+      userId: user.uid,
+      deviceId: 'mock-device-id',
+    );
+
+    await onLoginSuccess(
+      DSAuthUser(
+        id: user.uid,
+        email: user.email ?? '',
+        displayName: user.displayName ?? '',
+      ),
+    );
   }
 
   @override
@@ -82,10 +94,15 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   }
 
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
-    final credential = await _auth.createUserWithEmailAndPassword(email, password);
-    final user = credential.user;
-    if (displayName != null) user.displayName = displayName;
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
+    final credential =
+        await _auth.createUserWithEmailAndPassword(email, password);
+
+    credential.user; // ensure non-null
     if (!kIsDev) await signOut();
   }
 
@@ -93,7 +110,12 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
   Future<DSAuthUser> getCurrentUser() async {
     final user = _auth.currentUser;
     if (user == null) throw Exception('No signed-in user');
-    return DSAuthUser(id: user.uid, email: user.email ?? '', displayName: user.displayName ?? '');
+
+    return DSAuthUser(
+      id: user.uid,
+      email: user.email ?? '',
+      displayName: user.displayName ?? '',
+    );
   }
 
   @override
@@ -103,68 +125,68 @@ class DSFirebaseAuthProvider implements DSAuthProvider {
 
   @override
   Future<String> refreshToken(String refreshToken) async {
-    final user = _auth.currentUser;
+    final user = _auth.currentUser!;
     final token = await user.getIdToken(true);
+
     await _tokenManager.refreshToken(user.uid, token);
     return token;
   }
 
   // ===== Dev-safe Firebase methods =====
+
   Future<void> sendEmailVerification() async {
-    if (kIsDev) return print('Dev mode: skipping sendEmailVerification');
-    final user = _auth.currentUser!;
-    await user.sendEmailVerification();
+    // Not supported by Admin SDK
+    return;
   }
 
   Future<bool> isEmailVerified() async {
     if (kIsDev) return true;
-    final user = _auth.currentUser!;
-    return user.emailVerified;
+    final user = _auth.currentUser;
+    return user?.emailVerified ?? false;
   }
 
   Future<void> updatePassword(String newPassword) async {
-    if (kIsDev) return print('Dev mode: skipping updatePassword');
-    final user = _auth.currentUser!;
-    await user.updatePassword(newPassword);
+    // Not supported by Admin SDK
+    return;
   }
 
   Future<void> updateEmail(String newEmail) async {
-    if (kIsDev) return print('Dev mode: skipping updateEmail');
-    final user = _auth.currentUser!;
-    await user.updateEmail(newEmail);
+    // Not supported by Admin SDK
+    return;
   }
 
   Future<void> deleteUser() async {
-    final user = _auth.currentUser!;
+    final user = _auth.currentUser;
+    if (user == null) return;
+
     await _tokenManager.removeToken(user.uid);
     await _sessionManager.removeSession(user.uid);
-    if (kIsDev) return print('Dev mode: skipping deleteUser');
-    await user.delete();
+    // No delete API available in this SDK
   }
 
   @override
-Future<DSAuthUser> getUser(String userId) async {
-  // For dev server, return a mock user
-  if (kIsDev) {
+  Future<DSAuthUser> getUser(String userId) async {
+    if (kIsDev) {
+      return DSAuthUser(
+        id: userId,
+        email: 'devuser@example.com',
+        displayName: 'Dev User',
+      );
+    }
+
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('User not found');
+
     return DSAuthUser(
-      id: userId,
-      email: 'devuser@example.com',
-      displayName: 'Dev User',
+      id: user.uid,
+      email: user.email ?? '',
+      displayName: user.displayName ?? '',
     );
   }
 
-  final user = _auth.currentUser;
-  if (user == null) throw Exception('User not found');
-  return DSAuthUser(
-    id: user.uid,
-    email: user.email ?? '',
-    displayName: user.displayName ?? '',
-  );
-}
-
-
   @override
   Future<void> onLoginSuccess(DSAuthUser user) async {}
+
   @override
   Future<void> onLogout() async {}
 
