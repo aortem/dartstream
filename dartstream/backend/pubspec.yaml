@@ -1,15 +1,6 @@
-# Purpose:
-# https://dart.dev/tools/pub/workspaces
-
 # This is the framework’s root
 # Contains actual code and dependencies
-# Uses the workspace: field to manually define subpackage paths (even though Dart doesn't support it natively yet outside experimental tooling)
-# Is effectively the main “entry point” for developing and testing all backend features
-# 🔹 Note:
-# The workspace: key is currently only recognized by experimental tooling or for organizational clarity.
-# Dart’s official tooling does not yet support it.
-# Provided here for documentation or internal tooling reference however dart pub won’t act on it natively.
-# [DartCodeAI](https://dartcodeai.com) will be integrated in a future state.
+
 
 name: ds_dartstream
 description: A meta-package that bundles all DartStream framework modules
@@ -29,7 +20,7 @@ dependencies:
   path: ^1.9.1
 
   #   # standard engine
-  #   ds_standard_engine:   ^0.0.6
+  ds_dartstream_standard_engine:   ^0.0.1
 
   # Auth Extensions
   ds_auth_base: ^0.0.2
