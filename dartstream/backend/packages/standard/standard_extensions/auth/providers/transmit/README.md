@@ -37,19 +37,20 @@ Future<void> main() async {
 
 ```
 transmit/
-    lib/
-        src/
-            ds_error_mapper.dartds_event_handlers.dart
-            ds_session_manager.dartds_token_manager.dart
-            ds_transmit_auth_export.dart
-            ds_transmit_auth_provider.dart
-        ds_transmit_auth_export.dart
-        ds_transmit_auth_provider.dart
-        CHANGELOG.md
-        LICENSE
-        manifest.yaml
-        pubspec.yaml
-        README.md
+  lib/
+    src/
+      ds_error_mapper.dart
+      ds_event_handlers.dart
+      ds_session_manager.dart
+      ds_token_manager.dart
+    ds_transmit_auth_entry.dart
+    ds_transmit_auth_export.dart
+    ds_transmit_auth_provider.dart
+  CHANGELOG.md
+  LICENSE
+  manifest.yaml
+  pubspec.yaml
+  README.md
 ```
 
 ## Key Dart Files
@@ -82,13 +83,13 @@ A Dart provider implementing the `DSAuthProvider` interface, using the Transmit 
 Future<void> initialize(Map<String, dynamic> config)
 ```
 
-- Initialize with `{ apiKey, serviceId, region? }`.
+- Initialize with `{ clientId, clientSecret, region? }`.
 - Example:
 
 ```dart
 await provider.initialize({
-  'apiKey': 'your_api_key',
-  'serviceId': 'your_service_id',
+  'clientId': 'your_client_id',
+  'clientSecret': 'your_client_secret',
   'region': 'global',
 });
 ```
@@ -128,18 +129,18 @@ Future<bool> verifyToken([String? token])
 
 #### Getter, Hooks, and Unimplemented
 
-- `Future<DSAuthUser> getCurrentUser()` – returns current user.
-- `Future<void> createAccount(...)` and `Future<DSAuthUser> getUser(...)` – not supported (throw `UnimplementedError`).
-- `Future<void> onLoginSuccess(DSAuthUser user)` and `Future<void> onLogout()` – override for custom lifecycle behavior.
+- `Future<DSAuthUser> getCurrentUser()` - returns current user.
+- `Future<void> createAccount(...)` and `Future<DSAuthUser> getUser(...)` - not supported (throw `UnimplementedError`).
+- `Future<void> onLoginSuccess(DSAuthUser user)` and `Future<void> onLogout()` - override for custom lifecycle behavior.
 
 ## User Docs / Onboarding
 
- 1. Add Dependency: Add `transmit_dart_auth_sdk` in your `pubspec.yaml`.
- 2. Provider Setup: Create and initialize `DSTransmitAuthProvider` with the necessary configuration.
- 3. Sign-In Flow: Use `signIn(username, password)` to authenticate; access user and token state from the provider.
- 4. Session/Token Management: Use `refreshToken` and `verifyToken` helpers to maintain sessions.
- 5. Sign Out: Use `signOut()` to clear session state.
- 6. Error Handling: Error messages are mapped to standard codes for easier handling (see Error Mapping in System Design).
+ 1. Add Dependency: Add `ds_transmit_auth_provider` to your `pubspec.yaml` (it uses `transmit_dart_auth_sdk` internally).
+ 2. Provider Setup: Create and initialize `DSTransmitAuthProvider` with the necessary configuration.
+ 3. Sign-In Flow: Use `signIn(username, password)` to authenticate; access user and token state from the provider.
+ 4. Session/Token Management: Use `refreshToken` and `verifyToken` helpers to maintain sessions.
+ 5. Sign Out: Use `signOut()` to clear session state.
+ 6. Error Handling: Error messages are mapped to standard codes for easier handling (see Error Mapping in System Design).
 
 ## System Design / Architecture
 
@@ -148,11 +149,11 @@ Future<bool> verifyToken([String? token])
 - Transmit SDK Integration:
 - Uses `TransmitAuthConfig` and `ApiClient` for secure HTTP REST interaction and token lifecycle.
 - Stateless Client Logic:
-- All network methods hit the Transmit API directly, passing API key for auth, and maintain stateless operation via token/session managers.
+- All network methods hit the Transmit API directly, using client credentials for auth, and maintain stateless operation via token/session managers.
 - Extensible Events:
 - `onLoginSuccess` and `onLogout` lifecycle hooks can be customized.
 - Error Mapping:
-- Transmit-specific error codes (e.g., `INVALID_TOKEN`, `USER_NOT_FOUND`) are mapped to your auth system’s error taxonomy for consistency.
+- Transmit-specific error codes (e.g., `INVALID_TOKEN`, `USER_NOT_FOUND`) are mapped to your auth system's error taxonomy for consistency.
 - DSAuthProvider Compatibility:
 - This provider is drop-in compatible with the DartStream auth ecosystem and can be used interchangeably with other providers.
 
@@ -187,3 +188,5 @@ Future<bool> verifyToken([String? token])
 - Follow this structure and modular approach for maintainability and extensibility.
 - Ensure all secrets and API keys are securely managed.
 - Update dependencies and documentation as Transmit or DartStream evolves.
+
+
