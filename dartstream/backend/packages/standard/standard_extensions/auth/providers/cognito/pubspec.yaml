@@ -1,6 +1,6 @@
 name: ds_cognito_auth_provider
-description: "Amazon authentication provider for Dartstream."
-version: "0.0.1"
+description: Cognito authentication provider for Dartstream.
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -13,7 +13,4 @@ dependencies:
   ds_standard_features: ^0.1.6
 
 dev_dependencies:
-  test: ^1.24.0
   ds_tools_testing: ^0.1.4
-
-entry_point: "lib/amazon_auth_provider.dart"
