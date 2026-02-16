@@ -1,0 +1,12 @@
+name: ds_websocket_base
+description: Base interfaces and manager for DartStream WebSocket providers.
+version: "0.0.1"
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+entry_point: "lib/ds_websocket_base_export.dart"
+

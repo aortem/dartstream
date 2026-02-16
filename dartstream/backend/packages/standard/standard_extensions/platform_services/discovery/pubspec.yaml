@@ -1,0 +1,19 @@
+name: ds_discovery_provider
+description: "Amazon authentication provider for Dartstream."
+version: "0.0.1-pre"
+repository: https://github.com/aortem/dartstream
+
+publish_to: none # Mark the package as non-publishable for local testing:
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  ds_lifecycle_base: ^0.0.1
+  path: ^1.9.1
+  yaml: ^3.1.3
+
+entry_point: "lib/main.dart"
+

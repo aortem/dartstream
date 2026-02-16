@@ -1,0 +1,7 @@
+name: ds_websocket_base
+version: "0.0.1"
+description: "Base interfaces and manager for DartStream WebSocket providers."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_websocket_base_export.dart"

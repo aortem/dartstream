@@ -1,0 +1,17 @@
+name: ds_okta_auth_provider
+description: Okta authentication provider for Dartstream.
+version: 0.0.3
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  okta_identity_dart_auth_sdk: ^0.0.5
+  ds_auth_base: ^0.0.2
+  ds_standard_features: ^0.1.6
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

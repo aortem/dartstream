@@ -1,0 +1,11 @@
+{
+  "hosting": {
+    "target": "dartstream-open-dev",
+    "public": ".output/public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
+  }
+}

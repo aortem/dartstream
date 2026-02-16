@@ -1,0 +1,37 @@
+name: test_project
+description: A Dartstream project with Standard Engine.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+dependencies:
+  # Provider packages
+  ds_firebase_auth_provider: ^0.0.1
+  ds_google_firebase_database: ^0.0.1
+  # Core Dartstream packages
+  ds_standard_engine: ^0.0.1
+  ds_standard_features: ^0.1.6
+  
+  # Framework-specific dependencies
+  flutter:
+    sdk: flutter
+  ds_flutter_mobile: ^0.0.1
+  
+  # Standard utilities
+  path: ^1.9.0
+  yaml: ^3.1.0
+  
+  # Ping Identity / OIDC authentication
+  openid_client: ^0.4.9+1
+  url_launcher: ^6.2.5
+  
+  # HTTP server for testing
+  shelf: ^1.4.0
+  shelf_static: ^1.1.0
+
+dev_dependencies:
+  test: ^1.25.0
+  lints: ^4.0.0
+

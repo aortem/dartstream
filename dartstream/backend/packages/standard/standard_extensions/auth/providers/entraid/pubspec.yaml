@@ -1,0 +1,16 @@
+name: ds_entraid_auth_provider
+description: Azure authentication provider for Dartstream.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  # Add the base auth package as a dependency
+  ds_auth_base: ^0.0.2
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

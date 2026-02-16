@@ -1,0 +1,12 @@
+name: ds_events_base
+description: Base event interfaces and manager for DartStream.
+version: "0.0.1"
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+entry_point: "lib/ds_events_base_export.dart"
+

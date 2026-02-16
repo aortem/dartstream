@@ -1,0 +1,21 @@
+# The Dartstream Code Engine
+name: ds_dartstream_standard_engine
+description: The Core Engine For Dartstream.
+version: 0.0.1
+homepage: https://dartstream.io
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+# Dependencies are added in sections alphabetically and according to features.
+dependencies:
+# Packages needed for the app to run
+  ds_standard_features: ^0.1.6
+
+dev_dependencies: 
+# Packages only needed for development/testing
+  ds_tools_testing: ^0.1.4
+

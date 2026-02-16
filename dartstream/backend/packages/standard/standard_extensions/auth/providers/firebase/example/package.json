@@ -1,0 +1,18 @@
+{
+    "name": "firebase-auth-demo",
+    "version": "1.0.0",
+    "description": "Firebase Authentication Demo for DartStream",
+    "scripts": {
+        "start": "pwsh -File run_demo.ps1",
+        "backend": "dart run bin/firebase_server.dart",
+        "frontend": "npx serve client -p 3000"
+    },
+    "keywords": [
+        "firebase",
+        "auth",
+        "dartstream",
+        "demo"
+    ],
+    "author": "DartStream",
+    "license": "MIT"
+}

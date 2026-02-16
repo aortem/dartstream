@@ -1,0 +1,7 @@
+name: ds_gcp_storage_provider
+version: "0.0.1"
+description: "Google Cloud Storage provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_storage_gcp_entry.dart"

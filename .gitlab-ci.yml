@@ -1,29 +1,40 @@
 stages:
   - setup
   - validation
-  - analyze_sample_apps
-  - backend_unit
-  - backend_integration
-  - backend_full_lifecycle
-  - frontend
+  # - unit_testing
+  # - integration_testing
+  - e2e_testing
+  # - frontend
+  # - backend
+  - deployment-helm-chart
   - release
 
 # The pipeline covers a series of triggers to ensure full testing and coverage
 
+# -------------------------------------------------------------------
+# Gate the workflow: allow pipelines to run for any repo change.
+# (We isolate execution per job using rules:changes below.)
+# -------------------------------------------------------------------
+workflow:
+  rules:
+    - when: always
+
+# -------------------------------------------------------------------
 # Debug Stage
+# -------------------------------------------------------------------
 debug_merge_request:
   stage: setup
   script:
-    - echo "Basic Merge Request Variables..." 
+    - echo "Basic Merge Request Variables..."
     - echo "CI_MERGE_REQUEST_IID is '$CI_MERGE_REQUEST_IID'"
     - echo "CI_MERGE_REQUEST_SOURCE_BRANCH_NAME is $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME"
     - echo "CI_MERGE_REQUEST_TARGET_BRANCH_NAME is $CI_MERGE_REQUEST_TARGET_BRANCH_NAME"
     - echo "CI_MERGE_REQUEST_EVENT_TYPE is $CI_MERGE_REQUEST_EVENT_TYPE"
-    
+
     - echo "Commit Information Variables..."
     - echo "CI_COMMIT_REF_NAME is $CI_COMMIT_REF_NAME"
     - echo "CI_COMMIT_BRANCH is $CI_COMMIT_BRANCH"
-    - echo "CI_COMMIT_MESSAGE is $CI_COMMIT_MESSAGE" 
+    - echo "CI_COMMIT_MESSAGE is $CI_COMMIT_MESSAGE"
 
     - echo "Determining branch name..."
     - BRANCH_NAME=${CI_COMMIT_BRANCH:-${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME:-$CI_COMMIT_REF_NAME}}
@@ -32,110 +43,205 @@ debug_merge_request:
     - echo "Pipeline Metadata..."
     - echo "CI_PIPELINE_SOURCE is $CI_PIPELINE_SOURCE"
   rules:
-    - if: '$CI_PIPELINE_SOURCE'  # Forces execution in ALL scenarios
+    # Run the debug step any time we touch any of the isolated areas.
+    - changes:
+        - dartstream/backend/**/*
+       # - dartstream/admin/**/*
+        - dartstream/docs/**/*
+       # - dartstream/frontend/**/*
+        - "*" # files at repo root (no slash)
+        - "**/*" # any other path changes (covered for completeness)
       when: always
-
-# Validate Conditional Triggers
-validation_trigger:
-  stage: validation
-  trigger:
-    include: tools/pipelines/backend/child-ci-setup-validation.yml
-  rules:
-    # Condition 1: Branch is not main, qa, or development
-    - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
-      when: always
-
-    # Condition 2: Triggered by a push event
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-      when: always
-
-    # Condition 3: Triggered by a merge request event (source branch is not "development")
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "development"'
-      when: always
-
-    # Condition 4: Triggered by a merge request event (source branch is "development", "qa", or "main")
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
-      when: always
-
-    # Fallback: Skip if no condition matches
     - when: never
 
-# Analyze Conditional Triggers
-analyze_flutter_mobile:
-  stage: analyze_sample_apps
-  trigger:
-    include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
-  needs:
-    - job: validation_trigger
+validate_branch_name:
+  stage: validation
+  script:
+    - echo "Validating branch name..."
+    - |
+      BRANCH_NAME=${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
+      echo "Branch name: $BRANCH_NAME"
+
+      if echo "$BRANCH_NAME" | grep -Eq "^(development|qa|main)$"; then
+        echo "✅ Valid branch name for protected branches: $BRANCH_NAME."
+      elif echo "$BRANCH_NAME" | grep -Eq "^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)/[a-z0-9_-]+$"; then
+        echo "✅ Branch name follows naming convention: $BRANCH_NAME."
+      else
+        echo "❌ Invalid branch name: $BRANCH_NAME."
+        echo "Expected format: <type>/<branch-name>. Valid types: feat, fix, hotfix, chore, test, refactor, release, admin, docs, development, qa, main."
+        exit 1
+      fi
   rules:
-    # Always runs after validation trigger
+   - when: always
+
+validate_commit_messages:
+  stage: validation
+  image: alpine:latest
+  script:
+    - apk add --no-cache git bash grep
+    - echo "Validating commit messages..."
+    - |
+      # Define valid target branches for merge commits
+      TARGET_BRANCHES="(development|main|qa)"
+      # Check if this is a merge request pipeline
+      if [ -n "$CI_MERGE_REQUEST_IID" ]; then
+        echo "Merge request detected. Allowing merge commit messages..."
+        MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
+      else
+        echo "Standard pipeline detected. Enforcing strict commit message validation..."
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+      fi
+
+      # Validate the last commit message
+      INVALID_COMMITS=$(git log -1 --format=%s | grep -vE "$COMBINED_REGEX" || true)
+
+      if [ -n "$INVALID_COMMITS" ]; then
+        echo "❌ Commit message does not follow convention:"
+        echo "$INVALID_COMMITS"
+        echo "Expected formats:"
+        echo "  Merge branch 'source-branch' into 'target-branch' (for merge requests)"
+        echo "  <type>(<scope>): <short summary> (standard commits)"
+        echo "Examples:"
+        echo "  feat(auth): add OAuth 2.0 support"
+        echo "  fix(payment): resolve rounding error in total calculation"
+        exit 1
+      else
+        echo "✅ Commit message follows the convention."
+      fi
+  rules:
     - when: always
-
     
-# Unit Tests for Backend (Dev)
-# unit_test_dev:
-#  stage: backend_unit
-#  trigger:
-#    include: tools/pipelines/backend/child-ci-unit-tests-dev.yml
+# -------------------------------------------------------------------
+# Validation Conditional Triggers for Docs
+# -------------------------------------------------------------------
+validation_trigger_docs:
+  stage: validation
+  trigger:
+    include: tools/pipelines/firebase-hosting/child-ci-production-docs.yml
+  rules:
+    # Run only when docs changed
+    - changes:
+        - dartstream/docs/**/*
+      when: always
+    - when: never
 
-# Release Triggers
+# -------------------------------------------------------------------
+# Validation Conditional Triggers for Frontend
+# -------------------------------------------------------------------
+# validation_trigger_frontend:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
+#   rules:
+#     # Run only when frontend changed
+#     - changes:
+#         - dartstream/frontend/**/*
+#       when: always
+#     - when: never
+
+# -------------------------------------------------------------------
+# Validation Conditional Triggers for Admin
+# -------------------------------------------------------------------
+# validation_trigger_admin:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/firebase-hosting/child-ci-production-admin.yml
+#   rules:
+#     # Run only when admin changed
+#     - changes:
+#         - dartstream/admin/**/*
+#       when: always
+#     - when: never
+
+# -------------------------------------------------------------------
+# Validation Conditional Triggers for Backend
+# -------------------------------------------------------------------
+# validation_trigger_backend:
+#   stage: validation
+#   trigger:
+#     include: tools/pipelines/cloudbuild-hosting/child-ci-production-backend.yml
+#   rules:
+#     # Run only when backend changed
+#     - changes:
+#         - dartstream/backend/**/*
+#       when: always
+#     - when: never
+
+# -------------------------------------------------------------------
+# Cypress E2E Tests (Frontend Only)
+# -------------------------------------------------------------------
+cypress_tests:
+  stage: e2e_testing
+  trigger:
+    include: tools/pipelines/qa-testing/child-ci-qa-e2e.yml
+  rules:
+    # Run only when frontend has changed
+    - changes:
+        - dartstream/frontend/**/*
+      when: always
+    - when: never
+
+# -------------------------------------------------------------------
+# Validation Conditional Triggers for Root and Tools
+# Root = "everything else that does NOT touch backend/admin/docs/frontend"
+# We achieve this by first preventing the job when any of those 4 changed,
+# then allowing it for any other changes.
+# -------------------------------------------------------------------
+# validation_trigger_root_tools:
+#   stage: validation
+#   trigger:
+#     # NOTE: This currently points to your existing frontend child. If you have a
+#     # root-specific child pipeline, replace with that path (e.g., .../child-ci-production-root.yml).
+#     include: tools/pipelines/firebase-hosting/child-ci-production-frontend.yml
+#   rules:
+#     # If any of the 4 areas changed, do NOT run this root job
+#     - changes:
+#         - dartstream/backend/**/*
+#         - dartstream/admin/**/*
+#         - dartstream/docs/**/*
+#         - dartstream/frontend/**/*
+#       when: never
+#     # Otherwise, run for any other change (root files, tools, etc.)
+#     - changes:
+#         - "*"
+#         - "**/*"
+#       when: always
+#     - when: never
+
+# deployment_trigger_devops:
+#   stage: deployment-helm-chart
+#   trigger:
+#     include: tools/pipelines/kubernetes-hosting/child-ci-production-backend-publish-helm-chart.yml
+#   environment:
+#     name: production
+#     # url: https://your.prod.url
+
+#   # Make this manual job optional
+#   allow_failure: true
+
+#   rules:
+#     # Condition 1: Branch is not main, qa, or development
+#     - if: '$CI_COMMIT_REF_NAME != "main" && $CI_COMMIT_REF_NAME != "qa" && $CI_COMMIT_REF_NAME != "development"'
+#       when: manual
+#     # Condition 2: Triggered by a push event
+#     - if: '$CI_PIPELINE_SOURCE == "push"'
+#       when: manual
+#     # Condition 3: Triggered by a merge request event (source branch is not "development")
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME != "development"'
+#       when: manual
+#     # Condition 4: Triggered by a merge request event (source branch is "development", "qa", or "main")
+#     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "development" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "qa" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "main"'
+#       when: manual
+#     # Fallback: Skip if no condition matches
+#     - when: manual
+
+  # Release Triggers
 gitlab_github_release:
   stage: release
   trigger:
-    include: tools/pipelines/backend/child-ci-release.yml
+    include: tools/pipelines/cloudbuild-hosting/child-ci-release.yml
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'
       when: always
-
-# Integration Tests for Backend (Dev)
-# integration_test_dev:
-#  stage: backend_integration
-#  trigger:
-#    include: tools/pipelines/backend/child-ci-integration-tests-dev.yml
-
-# Full Lifecycle Tests for Backend (Dev)
-#full_lifecycle_dev:
-#  stage: backend_full_lifecycle
-#  trigger:
-#    include: tools/pipelines/backend/child-ci-full-lifecycle-dev.yml
-
-# Frontend Integration Tests (Run Simultaneously After Full Lifecycle)
-# dart_web_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-dart-web-integration-test-dev.yml
-
-# flutter_desktop_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-flutter-desktop-integration-test-dev.yml
-
-# flutter_games_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-flutter-games-integration-test.yml
-
-# flutter_mobile_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-flutter-mobile-integration-test-dev.yml
-
-# flutter_web_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-flutter-web-integration-test-dev.yml
-
-# react_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-react-integration-test-dev.yml
-
-# svelte_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-svelte-integration-test-dev.yml
-
-# vue_integration_test_dev:
-#   stage: frontend
-#   trigger:
-#     include: tools/pipelines/frontend/child-ci-vue-integration-test-dev.yml

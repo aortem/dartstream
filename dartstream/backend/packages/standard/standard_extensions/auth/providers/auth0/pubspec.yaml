@@ -1,0 +1,18 @@
+name: ds_auth0_auth_provider
+description: Auth0 authentication provider for Dartstream.
+version: 0.0.2
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  auth0_dart_auth_sdk: ^0.0.4
+  ds_auth_base: ^0.0.2
+  ds_standard_features: ^0.1.5
+
+dev_dependencies:
+  test: ^1.29.0
+

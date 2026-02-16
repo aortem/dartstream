@@ -1,0 +1,6 @@
+name: ping_identity_dart_auth_sdk
+version: "0.0.1"
+description: "Ping Identity authentication provider for Dartstream."
+dependencies:
+  - "Auth >=0.0.1"
+entry_point: "lib/ds_ping_auth_entry.dart"
