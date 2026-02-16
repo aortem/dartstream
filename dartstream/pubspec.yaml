@@ -1,6 +1,6 @@
 # Purpose:
   # This is the root-level pubspec for the entire monorepo.
-  # Acts as an entry point or workspace root for tools like melos.
+  # Acts as an entry point or workspace root for tools.
   # Does not include actual executable or package code.
   # Could define repository-wide metadata, global dev dependencies, or scripts.
 

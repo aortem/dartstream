@@ -1,4 +1,30 @@
-= Welcome to Intellitoggle Docs
+= Dartstream Configuration
 :page-layout: default
 
-This is the introduction to your Intellitoggle Docs project.
+This page documents the configuration templates and where to place your runtime configuration files.
+
+== Configuration Templates
+
+Dartstream ships with environment-specific templates in the backend workspace:
+
+- `backend/packages/config/development/general/ds_general.yaml`
+- `backend/packages/config/development/middleware/ds_custom.yaml`
+- `backend/packages/config/development/middleware/ds_shelf.yaml`
+- `backend/packages/config/production/middleware/ds_custom.yaml`
+- `backend/packages/config/production/middleware/ds_shelf.yaml`
+
+Copy the template that matches your deployment and middleware, then adjust values for your environment.
+
+== Registered Extensions
+
+Extension registration can be tracked in either YAML or JSON:
+
+- `backend/packages/config/registered_extensions.yaml`
+- `backend/packages/config/registered_extensions.json`
+
+Each extension also ships a `manifest.yaml` in its package directory. The registry tooling can aggregate these manifests into a single registry file for discovery.
+
+== Notes
+
+- Middleware-specific configuration should override general configuration when keys overlap.
+- Keep development and production configs separate to avoid leaking credentials.

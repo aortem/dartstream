@@ -1,18 +1,22 @@
-## 0.0.10
+## 0.0.1
 
 ### Added
-- Lean OSS persistence providers: PostgreSQL, MongoDB, Firestore; AWS S3‑compatible and GCP Storage; OTLP and Sentry logging.
-- Data streaming modules: message broker base + GCP Pub/Sub provider; WebSocket base + Socket.IO provider.
-- Reactive dataflow base packages for events and notifications (interfaces, managers, manifests, exports).
-- Standard engine/extensions umbrella exports and refreshed registry manifests for discovery.
+- First main OSS release of the backend meta-package and workspace wiring.
+- Lean OSS persistence providers: PostgreSQL, MongoDB, Firestore; AWS S3-compatible and GCP Storage; OTLP and Sentry logging.
+- Reactive dataflow modules: message broker base + GCP Pub/Sub provider; WebSocket base + Socket.IO provider; events and notifications bases.
+- Standard engine and extensions umbrella exports plus refreshed registry manifests for discovery.
+- CLI tooling packages and commands for init, setup, discovery, enable/disable, generate, and validate.
+- Registry tooling scripts and a dev server example (`bin/generate_registry.dart`, `bin/sync_manifest.dart`, `bin/dev_server.dart`).
+- Configuration templates for development/production middleware and registered extension manifests.
+- Backend root LICENSE (BSD-3 with ELv2 for service integrations).
 
 ### Changed
 - Standardized provider package naming to `*_provider` and updated docs/vendor profiles to match.
 - Updated SDK constraints to `^3.10.9` and bumped key deps (`googleapis ^15.0.0`, `googleapis_auth ^2.0.0`, `ds_standard_features ^0.1.6`).
-- Updated backend meta‑package dependencies/workspace list to include new and renamed providers.
+- Updated backend meta-package dependencies/workspace list to include new and renamed providers.
 
 ### Fixed
-- Resolved self‑export loops in umbrella exports and removed placeholder configs.
+- Resolved self-export loops in umbrella exports and removed placeholder configs.
 - Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
 
 ## 0.0.1-pre+3
@@ -46,7 +50,6 @@
 - Update Discovery command for consistency
 - Remove deprecated CLI tooling packages
 
-## .0.0.1-pre+1
+## 0.0.1-pre+1
 
 - Initial version.
-
