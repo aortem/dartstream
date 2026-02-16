@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
-import 'package:ds_lifecycle_base/main.dart';
+import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
 
 /// Extension level enumeration to classify extension types
 enum ExtensionLevel { core, extended, thirdParty }
