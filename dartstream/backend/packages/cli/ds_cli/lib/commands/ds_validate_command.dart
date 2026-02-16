@@ -35,6 +35,22 @@ class DSValidateCommand extends Command {
       );
   }
 
+  /// Walks up the directory tree to find the dartstream backend root.
+  /// The root is identified as the directory that contains a 'packages/' folder.
+  /// This is the same approach used by DSInitCommand._findDartstreamRoot().
+  String _findDartstreamRoot() {
+    var currentDir = Directory.current;
+    while (!Directory(p.join(currentDir.path, 'packages')).existsSync()) {
+      final parent = currentDir.parent;
+      if (parent.path == currentDir.path) {
+        // Reached filesystem root, default to current directory
+        return Directory.current.path;
+      }
+      currentDir = parent;
+    }
+    return currentDir.path;
+  }
+
   @override
   Future<void> run() async {
     final projectName = argResults?['project'] as String?;
@@ -65,7 +81,11 @@ class DSValidateCommand extends Command {
   Future<bool> _validateProject(String projectName) async {
     print('📁 Validating project: $projectName');
 
-    final projectDir = Directory(projectName);
+    // Resolve the project directory using the dartstream root
+    final dartstreamRoot = _findDartstreamRoot();
+    final projectPath = _resolveProjectPath(projectName, dartstreamRoot);
+
+    final projectDir = Directory(projectPath);
     if (!projectDir.existsSync()) {
       print('❌ Project directory not found: $projectName');
       return false;
@@ -77,14 +97,14 @@ class DSValidateCommand extends Command {
     final requiredFiles = ['pubspec.yaml', 'config.yaml', 'lib/main.dart'];
 
     for (final file in requiredFiles) {
-      final path = p.join(projectName, file);
+      final path = p.join(projectPath, file);
       if (!File(path).existsSync()) {
         errors.add('Missing required file: $file');
       }
     }
 
     // Validate configuration
-    final configPath = p.join(projectName, 'config.yaml');
+    final configPath = p.join(projectPath, 'config.yaml');
     if (File(configPath).existsSync()) {
       try {
         final content = File(configPath).readAsStringSync();
@@ -105,16 +125,25 @@ class DSValidateCommand extends Command {
     }
 
     // Validate pubspec.yaml
-    final pubspecPath = p.join(projectName, 'pubspec.yaml');
+    final pubspecPath = p.join(projectPath, 'pubspec.yaml');
     if (File(pubspecPath).existsSync()) {
       try {
         final content = File(pubspecPath).readAsStringSync();
         final pubspec = loadYaml(content) as Map;
 
-        // Check for required dependencies
+        // Check for required dependencies — accept any valid dartstream core package
         final deps = pubspec['dependencies'] as Map?;
-        if (deps == null || !deps.containsKey('ds_standard_engine')) {
-          errors.add('Missing required dependency: ds_standard_engine');
+        final validCoreDeps = [
+          'ds_standard_engine',
+          'ds_standard_features',
+          'ds_dartstream_standard_engine',
+        ];
+        final hasCoreDep =
+            deps != null && validCoreDeps.any((dep) => deps.containsKey(dep));
+        if (!hasCoreDep) {
+          errors.add(
+            'Missing required Dartstream dependency (expected one of: ${validCoreDeps.join(', ')})',
+          );
         }
       } catch (e) {
         errors.add('Invalid pubspec.yaml: $e');
@@ -131,6 +160,30 @@ class DSValidateCommand extends Command {
 
     print('   ✓ Project structure valid');
     return true;
+  }
+
+  /// Resolves the project directory path by trying multiple locations.
+  String _resolveProjectPath(String projectName, String dartstreamRoot) {
+    final paths = [
+      // Bare name (user cd'd into projects/)
+      projectName,
+      // Relative to cwd
+      p.join('projects', projectName),
+      p.join('..', 'projects', projectName),
+      p.join('..', '..', 'projects', projectName),
+      p.join('..', '..', '..', 'projects', projectName),
+      // Root-relative path (works regardless of cwd depth)
+      p.join(dartstreamRoot, 'projects', projectName),
+    ];
+
+    for (final path in paths) {
+      if (Directory(path).existsSync()) {
+        return path;
+      }
+    }
+
+    // Default to root-relative
+    return p.join(dartstreamRoot, 'projects', projectName);
   }
 
   Future<void> _validateExtensions(String levelFilter, bool strictMode) async {
@@ -307,7 +360,11 @@ class DSValidateCommand extends Command {
   Future<void> _validateProviders() async {
     print('\n🔌 Validating providers...');
 
+    // Use dartstream root for reliable path resolution
+    final dartstreamRoot = _findDartstreamRoot();
+
     final providersPath = p.join(
+      dartstreamRoot,
       'packages',
       'standard',
       'standard_extensions',
@@ -370,6 +427,9 @@ class DSValidateCommand extends Command {
   }
 
   String _findExtensionsDirectory() {
+    // Use dartstream root for reliable resolution
+    final dartstreamRoot = _findDartstreamRoot();
+
     final paths = [
       p.join('packages', 'standard', 'standard_extensions'),
       p.join(
@@ -379,6 +439,8 @@ class DSValidateCommand extends Command {
         'standard',
         'standard_extensions',
       ),
+      // Root-relative path (works regardless of cwd depth)
+      p.join(dartstreamRoot, 'packages', 'standard', 'standard_extensions'),
     ];
 
     for (final path in paths) {
@@ -388,13 +450,9 @@ class DSValidateCommand extends Command {
       }
     }
 
+    // Default to root-relative
     return p.normalize(
-      p.join(
-        Directory.current.path,
-        'packages',
-        'standard',
-        'standard_extensions',
-      ),
+      p.join(dartstreamRoot, 'packages', 'standard', 'standard_extensions'),
     );
   }
 
