@@ -36,23 +36,36 @@ class DSExtensionsCommand extends Command {
     );
   }
 
+  /// Walks up the directory tree to find the dartstream backend root.
+  /// The root is identified as the directory that contains a 'packages/' folder.
+  /// This is the same approach used by DSInitCommand._findDartstreamRoot().
+  String _findDartstreamRoot() {
+    var currentDir = Directory.current;
+    while (!Directory(p.join(currentDir.path, 'packages')).existsSync()) {
+      final parent = currentDir.parent;
+      if (parent.path == currentDir.path) {
+        // Reached filesystem root, default to current directory
+        return Directory.current.path;
+      }
+      currentDir = parent;
+    }
+    return currentDir.path;
+  }
+
   /// Executes the list extensions logic.
   @override
   Future<void> run() async {
     final args = argResults?.arguments ?? [];
-    // Resolve extensions directory relative to this script
-    final scriptDir = p.dirname(Platform.script.toFilePath());
+
+    // Use dartstream root for reliable path resolution
+    final dartstreamRoot = _findDartstreamRoot();
+
     final extensionsDirectory = args.isNotEmpty
         ? args[0]
-        : p.normalize(
-            p.join(
-              scriptDir,
-              '../dartstream_backend/packages/standard/extensions',
-            ),
-          );
+        : _findExtensionsDirectory(dartstreamRoot);
     final registryFile = args.length > 1
         ? args[1]
-        : p.normalize(p.join(scriptDir, '../dartstream_registry.yaml'));
+        : _findRegistryFile(dartstreamRoot);
 
     final levelFilter = argResults?['level'] as String?;
     final includeInactive = argResults?['inactive'] as bool? ?? false;
@@ -209,5 +222,47 @@ class DSExtensionsCommand extends Command {
     };
 
     print(result);
+  }
+
+  String _findExtensionsDirectory(String dartstreamRoot) {
+    final paths = [
+      // Root-relative path (most reliable)
+      p.join(dartstreamRoot, 'packages', 'standard', 'standard_extensions'),
+      // Relative to cwd
+      p.join('packages', 'standard', 'standard_extensions'),
+      p.join('..', '..', '..', 'packages', 'standard', 'standard_extensions'),
+      p.join('..', '..', 'standard', 'standard_extensions'),
+    ];
+
+    for (final path in paths) {
+      final fullPath = p.normalize(path);
+      if (Directory(fullPath).existsSync()) {
+        return fullPath;
+      }
+    }
+
+    // Default to root-relative
+    return p.normalize(
+      p.join(dartstreamRoot, 'packages', 'standard', 'standard_extensions'),
+    );
+  }
+
+  String _findRegistryFile(String dartstreamRoot) {
+    final paths = [
+      'dartstream_registry.yaml',
+      p.join('..', 'dartstream_registry.yaml'),
+      p.join('..', '..', 'dartstream_registry.yaml'),
+    ];
+
+    for (final path in paths) {
+      final fullPath = p.normalize(p.join(Directory.current.path, path));
+      if (File(fullPath).existsSync()) {
+        return fullPath;
+      }
+    }
+
+    return p.normalize(
+      p.join(Directory.current.path, 'dartstream_registry.yaml'),
+    );
   }
 }
