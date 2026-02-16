@@ -1,0 +1,14 @@
+{
+    "name": "entraid-example",
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "dev": "npx concurrently \"npm run backend\" \"npm run frontend\"",
+        "backend": "dart run bin/server.dart",
+        "frontend": "npm run dev --prefix entraid-app",
+        "install-all": "npm install && dart pub get && cd entraid-app && npm install"
+    },
+    "devDependencies": {
+        "concurrently": "^8.2.2"
+    }
+}
