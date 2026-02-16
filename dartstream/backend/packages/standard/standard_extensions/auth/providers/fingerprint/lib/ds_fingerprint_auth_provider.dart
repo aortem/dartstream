@@ -1,14 +1,9 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
-import 'src/ds_token_manager.dart';
-import 'src/ds_session_manager.dart';
-import 'src/ds_error_mapper.dart';
-import 'src/fingerprint_sdk_adapter.dart';
-import 'src/fingerprint_sdk_impl.dart';
+
 
 class DSFingerprintAuthProvider implements DSAuthProvider {
-  /// Stored only after initialize()
-  String? _apiKey;
+
 
   bool _initialized = false;
 
@@ -32,7 +27,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
       throw DSAuthError('Fingerprint apiKey is required');
     }
 
-    _apiKey = apiKey;
+
     _initialized = true;
 
     print('Fingerprint Auth Provider initialized successfully');

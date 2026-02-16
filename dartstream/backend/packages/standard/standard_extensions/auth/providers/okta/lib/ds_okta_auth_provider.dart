@@ -18,23 +18,21 @@ class DSOktaAuthProvider implements DSAuthProvider {
 
 @override
 Future<void> initialize(Map<String, dynamic> config) async {
-  if (config['__dev__'] == true) {
-    _isInitialized = true; // 🔥 REQUIRED
-    DSAuthManager.log('Okta initialized in DEV mode (mock)');
-    return;
-  }
-
-  if (config['clientId'] == null || config['issuer'] == null) {
-    throw DSAuthError('Missing required Okta configuration');
-  }
-
   _clientId = config['clientId'];
   _oktaDomain = config['issuer'];
   _redirectUri = config['redirectUri'];
   _clientSecret = config['clientSecret'];
 
+  if (_clientId == null ||
+      _oktaDomain == null ||
+      _redirectUri == null || 
+      _clientSecret == null) {
+    throw DSAuthError('Missing required Okta configuration');
+  }
+
   _isInitialized = true;
 }
+
 
 
   @override
