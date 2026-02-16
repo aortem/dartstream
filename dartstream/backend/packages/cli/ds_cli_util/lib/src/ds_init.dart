@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:ds_tools_cli/ds_tools_cli.dart';
+import 'package:args/command_runner.dart';
 
 class DSInit {
   void run() {
@@ -70,4 +70,3 @@ dev_dependencies:
     print('Project $projectName has been successfully created!');
   }
 }
-
