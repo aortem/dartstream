@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
-import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart'; // <- fixed
-
+import 'package:ds_transmit_auth_provider/ds_transmit_auth_export.dart';
 
 void main() {
   group('DSTransmitAuthProvider', () {
@@ -32,9 +31,9 @@ void main() {
     test('signOut clears current user', () async {
       await provider.signIn('testuser', 'password');
       expect(await provider.getCurrentUser(), isNotNull);
-      
+
       await provider.signOut();
-      
+
       expect(
         () async => await provider.getCurrentUser(),
         throwsA(isA<Exception>()),
