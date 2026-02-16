@@ -1,3 +1,4 @@
+// ignore_for_file: unused_field, unused_local_variable, unused_element, deprecated_member_use
 import 'dart:convert';
 import 'package:test/test.dart';
 import 'package:ds_auth_base/ds_auth_base_export.dart';

@@ -23,7 +23,6 @@ void main() async {
   });
 
   DSAuthManager.registerProvider('magic', magicProvider);
-  final authManager = DSAuthManager('magic');
 
   final app = Router();
 
