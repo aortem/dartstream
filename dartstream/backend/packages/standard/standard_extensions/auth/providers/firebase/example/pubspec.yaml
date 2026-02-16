@@ -4,11 +4,11 @@ version: 1.0.0
 publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ^3.10.9
 
 dependencies:
   # HTTP Server
-  shelf: ^1.4.0
+  shelf: ^1.4.2
 
 dev_dependencies:
-  lints: ^2.0.0
+  lints: ^6.1.0
