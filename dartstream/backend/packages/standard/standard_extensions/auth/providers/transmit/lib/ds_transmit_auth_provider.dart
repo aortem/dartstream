@@ -1,5 +1,4 @@
 import 'package:ds_auth_base/ds_auth_provider.dart';
-import 'package:transmit_dart_auth_sdk/transmit_dart_auth_sdk.dart';
 
 import 'src/ds_error_mapper.dart';
 import 'src/ds_session_manager.dart';
@@ -9,10 +8,8 @@ import 'src/ds_event_handlers.dart';
 import 'dart:convert';
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'package:transmit_dart_auth_sdk/src/core/transmit_api_client.dart';
-import 'package:transmit_dart_auth_sdk/src/models/tansmit_region.dart';
 
 class DSTransmitAuthProvider implements DSAuthProvider {
-  late TransmitAuthConfig _config;
   late ApiClient _apiClient;
   final DSTransmitErrorMapper _errorMapper = DSTransmitErrorMapper();
   final DSTransmitEventHandlers _eventHandlers = DSTransmitEventHandlers();
