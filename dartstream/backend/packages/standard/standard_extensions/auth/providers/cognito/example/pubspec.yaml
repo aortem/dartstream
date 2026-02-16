@@ -9,8 +9,7 @@ environment:
 dependencies:
   ds_cognito_auth_provider:
     path: ../
-  ds_auth_base:
-    path: ../../../base
+  ds_auth_base: ^0.0.2
   cognito_dart_auth_sdk: ^0.0.1
   ds_standard_features: ^0.1.6
   shelf: ^1.4.2
