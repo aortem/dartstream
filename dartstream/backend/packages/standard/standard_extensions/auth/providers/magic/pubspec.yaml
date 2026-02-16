@@ -1,6 +1,6 @@
 name: ds_magic_auth_provider
 description: DartStream package for Magic authentication provider.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -10,8 +10,8 @@ resolution: workspace
 
 dependencies:
   magic_dart_auth_sdk: ^0.0.3
-  ds_auth_base: ^0.0.1
+  ds_auth_base: ^0.0.2
   ds_standard_features: ^0.1.6
 
 dev_dependencies:
-  test: ^1.24.0
+  ds_tools_testing: ^0.1.4
