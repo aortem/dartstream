@@ -2,18 +2,28 @@
 
 ## DS Auth0 Dart Auth SDK
 
-This package provides a DartStream‑compatible Auth0 authentication integration.  
-It implements the core `DSAuthProvider` interface, handling Auth0’s OAuth flows, session & token management, error mapping, and event emission—so you can swap in Auth0 without touching your app’s auth core.
+This package provides a DartStream-compatible Auth0 authentication integration.  
+It implements the core `DSAuthProvider` interface, handling Auth0's OAuth flows, session and token management, error mapping, and event emission so you can swap in Auth0 without touching your app's auth core.
 
 **Key components**  
-- **`ds_auth0_auth_export.dart`** – Re‑exports the provider and all its helpers.  
-- **`DSAuth0AuthProvider`** – Implements `DSAuthProvider`; your entry point for Auth0 auth.  
-- **`src/ds_token_manager.dart`** – JWT storage, expiry tracking, validation.  
-- **`src/ds_session_manager.dart`** – Session lifecycle, device tracking, expiry logic.  
-- **`src/ds_error_mapper.dart`** – Translates Auth0 errors into `DSAuthError`.  
-- **`src/ds_event_handlers.dart`** – Emits `DSAuthEvent` callbacks (signed in, token refreshed, etc.).
+- **`ds_auth0_auth_export.dart`** - Re-exports the provider and all its helpers.  
+- **`DSAuth0AuthProvider`** - Implements `DSAuthProvider`; your entry point for Auth0 auth.  
+- **`src/ds_token_manager.dart`** - JWT storage, expiry tracking, validation.  
+- **`src/ds_session_manager.dart`** - Session lifecycle, device tracking, expiry logic.  
+- **`src/ds_error_mapper.dart`** - Translates Auth0 errors into `DSAuthError`.  
+- **`src/ds_event_handlers.dart`** - Emits `DSAuthEvent` callbacks (signed in, token refreshed, etc.).
 
 ---
+
+## Installation
+
+Add to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  ds_auth0_auth_provider: ^0.0.2
+  ds_auth_base: ^0.0.2
+```
 
 ## Configuration
 
@@ -21,7 +31,7 @@ Construct your provider with your Auth0 application credentials:
 
 ```dart
 final auth0 = DSAuth0AuthProvider(
-  domain: 'your‑tenant.auth0.com',
+  domain: 'your-tenant.auth0.com',
   clientId: 'YOUR_CLIENT_ID',
   clientSecret: 'YOUR_CLIENT_SECRET',
   audience: 'https://api.yoursite.com/',  // Auth0 API Identifier
@@ -57,13 +67,13 @@ await auth0.onLoginSuccess(user);                        // hookable callback
 await auth0.onLogout();                                  // hookable callback
 ```
 
-### Auth0‑specific helpers
+### Auth0-specific helpers
 
 ```dart
 await auth0.sendPasswordResetEmail('user@example.com');
 await auth0.updateProfile(
   displayName: 'Updated Name',
-  photoURL: 'https://…/avatar.png',
+  photoURL: 'https://.../avatar.png',
 );
 await auth0.deleteUser();  // removes user via Auth0 Management API
 ```
@@ -88,7 +98,7 @@ void main() async {
   final manager = DSAuthManager();
   manager.registerProvider(
     provider,
-    onEvent: (e) => print('Auth0 event: ${e.type} → ${e.data}'),
+    onEvent: (e) => print('Auth0 event: ${e.type} -> ${e.data}'),
   );
 
   // Init & sign in
@@ -128,7 +138,7 @@ Future<void> main() async {
 
 ## Package Conflicts and Aliases
 
-All classes in this package are prefixed with `DSAuth0…` to avoid naming collisions with other SDKs. No additional aliasing is required.
+All classes in this package are prefixed with `DSAuth0...` to avoid naming collisions with other SDKs. No additional aliasing is required.
 
 ---
 
@@ -140,3 +150,7 @@ All Dartstream packages are licensed under BSD-3, except for the *services packa
 ## Enhance with DartStream
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+
+
+
+

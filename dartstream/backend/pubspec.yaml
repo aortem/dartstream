@@ -34,14 +34,14 @@ dependencies:
   # Auth Extensions
   ds_auth_base: ^0.0.2
   ds_auth0_auth_provider: ^0.0.1
-  # ds_cognito_auth_provider:     ^0.0.1-pre+1
-  # ds_entraid_auth_provider:     ^0.0.1-pre
-  # ds_fingerprint_auth_provider: ^0.0.1-pre
+  ds_cognito_auth_provider: ^0.0.1
+  ds_entraid_auth_provider: ^0.0.1
+  ds_fingerprint_auth_provider: ^0.0.1
   ds_firebase_auth_provider: ^0.0.1
   ds_magic_auth_provider: ^0.0.1
-  # ds_okta_auth_provider:        ^0.0.1-pre
+  ds_okta_auth_provider: ^0.0.1
   ping_identity_dart_auth_sdk: ^0.0.1
-  # ds_stytch_auth_provider:      ^0.0.1-pre
+  ds_stytch_auth_provider: ^0.0.1
   ds_transmit_auth_provider: ^0.0.2
 
   # Persistence - database providers (lean OSS list)
