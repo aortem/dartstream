@@ -363,7 +363,7 @@ class DS${className}Provider {
     final className = _toPascalCase(name);
     file.writeAsStringSync('''
 import 'package:ds_standard_engine/ds_standard_engine.dart';
-import 'package:ds_lifecycle_base/main.dart';
+import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
 
 /// Extension for $className
 class DS${className}Extension implements LifecycleHook {

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
 import 'package:ds_discovery_provider/main.dart';
-import 'package:ds_lifecycle_base/main.dart';
+import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
 import 'package:yaml/yaml.dart';
 
 /// CLI Command for Dartstream to discover and manage extensions dynamically.

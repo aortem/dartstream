@@ -12,4 +12,3 @@ dependencies:
   fingerprint_dart_auth_sdk: ^0.0.1
   ds_auth_base: ^0.0.1
   ds_standard_features: ^0.1.6
-
