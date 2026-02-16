@@ -3,6 +3,9 @@ description: "Amazon authentication provider for Dartstream."
 version: "0.0.1"
 repository: https://github.com/aortem/dartstream
 
+resolution: workspace
+
+
 environment:
   sdk: ^3.10.9
 
