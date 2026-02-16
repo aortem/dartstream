@@ -1,6 +1,6 @@
 name: ds_fingerprint_auth_provider
 description: Fingerprint authentication provider for Dartstream.
-version: 0.0.1-pre
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -9,9 +9,9 @@ environment:
 resolution: workspace
 
 dependencies:
-  fingerprint_dart_auth_sdk: ^0.0.1
-  ds_auth_base: ^0.0.1
+  fingerprint_dart_auth_sdk: ^0.0.3
+  ds_auth_base: ^0.0.2
   ds_standard_features: ^0.1.6
 
 dev_dependencies:
-  test: ^1.24.0
+  test: ^1.29.0

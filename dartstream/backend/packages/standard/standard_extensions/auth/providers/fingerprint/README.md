@@ -1,25 +1,25 @@
-# DSFingerprintAuthProvider
+# DartStream Fingerprint Authentication Provider
 
-A production-ready authentication provider for [DartStream](https://dartstream.dev) using the [Fingerprint Dart Auth SDK](https://pub.dev/packages/fingerprint_dart_auth_sdk). This provider supports passwordless authentication using secure device fingerprinting and visitor payloads.
+## Overview
 
----
+Fingerprint authentication provider for DartStream using the
+`fingerprint_dart_auth_sdk`.
 
 ## Features
 
-- Authenticate users with FingerprintJS payloads
+- FingerprintJS payload authentication
 - Stateless verification via `visitorId`
-- Session and token tracking via internal managers
-- Pluggable with the `DSAuthProvider` interface
-
----
+- Session and token tracking
+- `DSAuthProvider` interface compatibility
 
 ## Installation
 
-```bash
-dart pub add fingerprint_dart_auth_sdk
-```
+Add to your `pubspec.yaml`:
 
----
+```yaml
+dependencies:
+  ds_fingerprint_auth_provider: ^0.0.1
+```
 
 ## Entry-point registration (recommended)
 
@@ -42,88 +42,21 @@ Future<void> main() async {
 }
 ```
 
----
+## Usage
 
-## API Usage
-
-`initialize(Map config)`
-Initializes session and token managers.
 ```dart
-await provider.initialize({});
+await auth.signIn('user@example.com', fingerprintPayloadJson);
+final user = await auth.getCurrentUser();
+print('Signed in as: ${user.email}');
+
+await auth.signOut();
 ```
 
-`signIn(String email, String payload)`
-Authenticates a user via fingerprint payload (JSON string).
-```dart
-await provider.signIn('user@example.com', fingerprintPayloadJson);
-```
+## Configuration
 
-`getCurrentUser()`
-Returns the currently signed-in user, if any.
-```dart
-final user = await provider.getCurrentUser();
-```
+The provider expects FingerprintJS payloads as the authentication token. It does
+not support refresh tokens.
 
-`verifyToken([String? payload])`
-Verifies a payload's authenticity and structure.
-```dart
-final isValid = await provider.verifyToken(jsonPayload);
-```
+## License
 
----
-
-## User Onboarding
-
-- Step 1: Generate FingerprintJS Payload
-Use the FingerprintJS Pro client in your frontend to collect the fingerprint.
-```
-const fp = await FingerprintJS.load();
-const result = await fp.get();
-sendToBackend(result);
-```
-
-- Step 2: Authenticate from Backend
-```
-await provider.signIn(userEmail, jsonEncode(fingerprintPayload));
-```
-
-- Step 3: Token and Session Managed Internally
-The provider stores the visitor ID and starts a session automatically.
-
-## System Design Overview
-
-### Architecture
-
-```
-[Frontend]
-   |
-   |--- FingerprintJS Pro (collects device fingerprint)
-   |
-[Backend (Dart)]
-   |
-   |--- DSFingerprintAuthProvider
-          |
-          |- AortemFingerprintAuth.verify()
-          |- DSTokenManager (stores payload as token)
-          |- DSSessionManager (tracks session)
-```
-
-### Core Components
-
-- `AortemFingerprintAuth`: Verifies fingerprint payloads
-
-- `DSTokenManager`: Manages tokens (payloads)
-
-- `DSSessionManager`: Tracks active sessions
-
-- `DSAuthUser`: Standard user representation
-
-### Design Notes
-
-- Fingerprint payload = token (no JWTs)
-
-- Stateless and secure (verification-only)
-
-- No token refresh supported
-
-- Sessions expire based on configured duration
+See `LICENSE` for details.
