@@ -1,70 +1,10 @@
-<<<<<<< HEAD
-# Stytch Auth Provider for DartStream
-
-A generic authentication provider for DartStream using Stytch.
-
-## Features
-
-- Email/Password authentication
-- Session management
-- Token management (Mock implementation for development)
-- Secure token storage
-
-## Getting Started
-
-### Installation
-
-Add the dependency to your `pubspec.yaml`:
-
-```yaml
-dependencies:
-  ds_stytch_auth_provider: ^0.0.1
-```
-
-### Usage
-
-```dart
-import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
-
-// Initialize provider
-final auth = DSStytchAuthProvider();
-await auth.initialize({});
-
-// Sign up
-await auth.createAccount('user@example.com', 'password');
-
-// Sign in
-await auth.signIn('user@example.com', 'password');
-
-// Get current user
-final user = await auth.getCurrentUser();
-```
-
-## Running the Example
-
-This package includes a complete example application with a backend server and a frontend client.
-
-To run the example:
-
-1. Navigate to the `example` directory:
-   ```bash
-   cd example
-   ```
-
-2. Run the unified launcher script:
-   ```powershell
-   ./run_demo.ps1
-   ```
-
-This will:
-- Install dependencies
-- Start the Dart backend server
-- Serve the static frontend files
-- Automatically open your browser to the demo app
-=======
 # DartStream Stytch Authentication Provider
 
-A DartStream authentication provider implementing Stytch authentication services.
+## Overview
+
+This is a mock Stytch authentication provider for DartStream. It implements the
+`DSAuthProvider` interface without calling external Stytch services, making it
+open-source safe and suitable for local development and demos.
 
 ## Features
 
@@ -72,7 +12,7 @@ A DartStream authentication provider implementing Stytch authentication services
 - Token management
 - Session handling
 - Error mapping
-- Event system integration
+- Event hooks
 
 ## Installation
 
@@ -80,15 +20,14 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ds_stytch_auth_provider: ^0.0.1-pre
-  ds_auth_base: ^0.0.1
+  ds_stytch_auth_provider: ^0.0.3
 ```
 
 ## Entry-point registration (recommended)
 
 ```dart
 import 'package:ds_auth_base/ds_auth_base_export.dart';
-import 'package:ds_stytch_auth_provider/ds_firebase_auth_export.dart';
+import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
 
 Future<void> main() async {
   registerStytchProvider({
@@ -135,8 +74,25 @@ await auth.initialize({
 });
 ```
 
+## Running the Example
+
+This package includes a complete example app with a backend server and a
+frontend client.
+
+1. Navigate to the `example` directory:
+
+```powershell
+cd example
+```
+
+2. Run the unified launcher script:
+
+```powershell
+./run_demo.ps1
+```
+
+The server starts on `http://localhost:8082`.
+
 ## License
 
-This package is part of the DartStream project and is licensed under the BSD-3
-License.
->>>>>>> origin/development
+See `LICENSE` for details.
