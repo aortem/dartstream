@@ -9,11 +9,16 @@ repository: https://github.com/aortem/dartstream
 environment:
   sdk: ^3.10.9
 
+resolution: workspace
+
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
+  # Args (CLI command support)
+  args: ^2.4.2
+
   # DS Shelf Middleware
   ds_shelf: ^0.0.1-pre+4
-  ds_custom_middleware: ^0.0.1-pre
+  #ds_custom_middleware: ^0.0.1-pre
 
   # DS Custom Middleware
   #  TBD: ^0.0.1
@@ -25,7 +30,7 @@ dependencies:
   ds_tools_testing: ^0.1.4
 
   #DS Tools CLI
-  ds_tools_cli: ^0.0.1-pre+2
+  #ds_tools_cli: ^0.0.1-pre+2
   yaml_writer: ^2.1.0
 
 # Dev dependencies are added in sections alphabetically and according to features.
@@ -36,4 +41,3 @@ dev_dependencies:
 #Globally Activated Package
 executables:
   ds: ds_cli_util
-

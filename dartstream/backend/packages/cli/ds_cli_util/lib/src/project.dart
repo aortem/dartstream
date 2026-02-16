@@ -2,26 +2,27 @@ import 'dart:io';
 import 'package:ds_cli_util/ds_cli_utils.dart';
 import 'package:path/path.dart' as p;
 
-Directory getProjectDir(String projectName) {
-  // Find dartstream root
-  var currentDir = Directory.current.path;
-  String dartstreamRoot = currentDir; // Initialize with default
-
-  if (currentDir.endsWith('dartstream')) {
-    dartstreamRoot = currentDir;
-  } else {
-    final parts = currentDir.split('/');
-    for (int i = parts.length - 1; i >= 0; i--) {
-      if (parts[i] == 'dartstream') {
-        dartstreamRoot = parts.sublist(0, i + 1).join('/');
-        break;
-      }
+/// Walks up the directory tree to find the dartstream backend root.
+/// The root is identified as the directory that contains a 'packages/' folder.
+/// This is cross-platform (works on both Linux and Windows).
+String _findDartstreamRoot() {
+  var currentDir = Directory.current;
+  while (!Directory(p.join(currentDir.path, 'packages')).existsSync()) {
+    final parent = currentDir.parent;
+    if (parent.path == currentDir.path) {
+      // Reached filesystem root, fall back to 4 levels up from cwd
+      return p.normalize(
+        p.join(Directory.current.path, '..', '..', '..', '..'),
+      );
     }
-    // If not found, use fallback path
-    if (!dartstreamRoot.contains('dartstream')) {
-      dartstreamRoot = p.normalize(p.join(currentDir, '..', '..', '..', '..'));
-    }
+    currentDir = parent;
   }
+  return currentDir.path;
+}
+
+Directory getProjectDir(String projectName) {
+  // Find dartstream root using cross-platform directory traversal
+  final dartstreamRoot = _findDartstreamRoot();
 
   return Directory(p.join(dartstreamRoot, 'projects', projectName));
 }
@@ -529,4 +530,3 @@ Visit [dartstream.io/docs](https://dartstream.io/docs) for complete documentatio
 See LICENSE file for details.
 ''');
 }
-
