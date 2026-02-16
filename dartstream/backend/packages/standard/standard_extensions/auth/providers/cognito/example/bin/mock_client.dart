@@ -1,5 +1,37 @@
 import 'dart:convert';
-import 'package:cognito_dart_auth_sdk/requests/cognito_http_client.dart';
+
+/// A dummy response class to simulate AWS Cognito responses.
+class CognitoHttpResponse {
+  final int statusCode;
+  final Map<String, String> headers;
+  final String bodyString;
+
+  CognitoHttpResponse({
+    required this.statusCode,
+    required this.headers,
+    required this.bodyString,
+  });
+}
+
+/// A dummy base class for Cognito HTTP clients.
+abstract class CognitoHttpClient {
+  Future<CognitoHttpResponse> post({
+    required String region,
+    required String xAmzTarget,
+    required Map<String, dynamic> payload,
+    Map<String, String>? additionalHeaders,
+    Duration? timeout,
+  });
+
+  Future<CognitoHttpResponse> send({
+    required String service,
+    required String target,
+    required String region,
+    required Map<String, dynamic> payload,
+    required Duration timeout,
+    Map<String, String>? headers,
+  });
+}
 
 /// A Mock HTTP Client that simulates AWS Cognito responses.
 /// This allows the sample app to run without real AWS credentials.
@@ -16,7 +48,7 @@ class MockCognitoHttpClient implements CognitoHttpClient {
     print('[MockAWS] 📦 Payload: $payload');
 
     // Simulate Network Delay
-    await Future.delayed(Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     // 1. Simulate SignUp Response
     if (xAmzTarget.endsWith('SignUp')) {
@@ -49,7 +81,8 @@ class MockCognitoHttpClient implements CognitoHttpClient {
       );
     }
 
-    return CognitoHttpResponse(statusCode: 200, headers: {}, bodyString: '{}');
+    return CognitoHttpResponse(
+        statusCode: 200, headers: {}, bodyString: '{}');
   }
 
   @override
