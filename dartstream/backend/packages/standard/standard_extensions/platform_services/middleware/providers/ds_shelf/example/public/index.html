@@ -5,12 +5,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DartStream Static Files</title>
     <style>
-        body { font-family: sans-serif; text-align: center; margin-top: 50px; }
-        h1 { color: #333; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; color: #333; }
+        h1 { color: #2c3e50; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { background-color: #3498db; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
+        button:hover { background-color: #2980b9; }
+        #api-response { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; text-align: left; font-family: monospace; white-space: pre-wrap; display: none; }
+        #api-response.show { display: block; }
+        .status { margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <h1>🚀 DartStream Static Files Demo</h1>
-    <p>This file is served by ds_shelf static handler.</p>
+    <div class="container">
+        <h1>🚀 DartStream Static Files Demo</h1>
+        <p>This file is served by <strong>ds_shelf</strong> static handler.</p>
+        
+        <hr>
+        
+        <h2>🔗 Backend Connection Verification</h2>
+        <p>Click the button below to fetch data from the DartStream backend API.</p>
+        
+        <button id="test-api">Ping Backend API</button>
+        <div id="api-status" class="status"></div>
+        <div id="api-response"></div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
