@@ -69,7 +69,7 @@ class DSInitCommand extends Command {
   }
 
   void execute({String? Function()? readLineCallback}) {
-    print('🚀 Initializing Dartstream project...\n');
+    print('ðŸš€ Initializing Dartstream project...\n');
 
     var name = argResults?['name'];
     var version = argResults?['version'] ?? 'stable';
@@ -89,7 +89,7 @@ class DSInitCommand extends Command {
     name = sanitizeProjectName(name);
 
     if (!isValidDartIdentifier(name)) {
-      print('❌ Error: "$name" is not a valid Dart identifier.');
+      print('âŒ Error: "$name" is not a valid Dart identifier.');
       print(
         '   Project names must start with a letter and contain only letters, numbers, and underscores.',
       );
@@ -140,7 +140,7 @@ class DSInitCommand extends Command {
           case 'c':
             if (version == 'stable' && subChoice == 'c') {
               print(
-                '\n⚠️  Migration features are available in CLOUD version only',
+                '\nâš ï¸  Migration features are available in CLOUD version only',
               );
               print('   Starting new project instead.');
               projectType = 'new';
@@ -197,7 +197,7 @@ class DSInitCommand extends Command {
     final projectDir = Directory(projectPath);
 
     if (projectDir.existsSync()) {
-      print('\n❌ Project "$name" already exists at: $projectPath');
+      print('\nâŒ Project "$name" already exists at: $projectPath');
       stdout.write('Overwrite? (y/N): ');
       final overwrite = read()?.toLowerCase() ?? 'n';
       if (overwrite != 'y') {
@@ -208,7 +208,7 @@ class DSInitCommand extends Command {
     }
 
     // Create project
-    print('\n🔨 Creating project structure...');
+    print('\nðŸ”¨ Creating project structure...');
     createProjectWithEngine(
       projectPath: projectPath,
       name: name,
@@ -228,8 +228,8 @@ class DSInitCommand extends Command {
       middleware,
     );
 
-    print('\n✅ Project "$name" initialized successfully!');
-    print('\n📁 Project location: $projectPath');
+    print('\nâœ… Project "$name" initialized successfully!');
+    print('\nðŸ“ Project location: $projectPath');
     print('\nNext steps:');
     print('1. cd $projectPath');
     print(
@@ -258,7 +258,7 @@ class DSInitCommand extends Command {
     String? middleware,
     String? projectType,
   }) {
-    print('📦 Creating project structure with Standard Engine...');
+    print('ðŸ“¦ Creating project structure with Standard Engine...');
 
     final projectDir = Directory(projectPath);
     projectDir.createSync(recursive: true);
@@ -298,7 +298,7 @@ description: A DartStream project
 version: 0.1.0
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 dependencies:
   # DartStream core

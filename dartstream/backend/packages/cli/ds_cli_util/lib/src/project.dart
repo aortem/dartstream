@@ -33,13 +33,13 @@ void createProject({
   required String version,
   String? framework,
 }) {
-  print('📦 Creating Dartstream project: $name');
+  print('ðŸ“¦ Creating Dartstream project: $name');
 
   final projectDir = getProjectDir(name);
 
   // Check if directory exists
   if (projectDir.existsSync()) {
-    print('❌ Project "$name" already exists.');
+    print('âŒ Project "$name" already exists.');
     return;
   }
 
@@ -66,7 +66,7 @@ void createProject({
     },
   );
 
-  print('✅ Project created successfully!');
+  print('âœ… Project created successfully!');
 }
 
 void _createProjectStructure(String projectPath) {
@@ -314,7 +314,7 @@ void main() async {
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, 'localhost', port);
   
-  print('🚀 Server running on http://\${server.address.host}:\${server.port}');
+  print('ðŸš€ Server running on http://\${server.address.host}:\${server.port}');
 }
 
 Response _rootHandler(Request req) {
@@ -352,7 +352,7 @@ void main() async {
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, 'localhost', port);
   
-  print('🚀 Server with Vue.js running on http://\${server.address.host}:\${server.port}');
+  print('ðŸš€ Server with Vue.js running on http://\${server.address.host}:\${server.port}');
 }
 
 Router _apiRouter() {
@@ -419,7 +419,7 @@ void main() async {
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
   final server = await serve(handler, 'localhost', port);
   
-  print('🚀 Server with Svelte running on http://\${server.address.host}:\${server.port}');
+  print('ðŸš€ Server with Svelte running on http://\${server.address.host}:\${server.port}');
 }
 
 Router _apiRouter() {
@@ -483,7 +483,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 dependencies:
 $dependencies
