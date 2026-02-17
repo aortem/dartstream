@@ -6,7 +6,7 @@ homepage: https://dartstream.io
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 resolution: workspace
 
