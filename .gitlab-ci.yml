@@ -180,7 +180,7 @@ cypress_tests:
   rules:
     # Run only when backend has changed
     - changes:
-        - dartcloudfunctions/backend/**/*
+        - dartstream-opensource/backend/**/*
       when: always
     - when: never
 
@@ -191,7 +191,7 @@ cypress_tests:
   rules:
     # Run only when backend has changed
     - changes:
-        - dartcloudfunctions/backend/**/*
+        - dartstream-opensource/backend/**/*
       when: always
     - when: never
 
@@ -202,7 +202,7 @@ cypress_tests:
   rules:
     # Run only when backend has changed
     - changes:
-        - dartcloudfunctions/backend/**/*
+        - dartstream-opensource/backend/**/*
       when: always
     - when: never
 
