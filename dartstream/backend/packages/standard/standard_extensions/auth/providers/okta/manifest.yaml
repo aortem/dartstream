@@ -1,5 +1,5 @@
 name: ds_okta_auth_provider
-version: "0.0.1-pre"
+version: "0.0.3"
 description: "Okta authentication provider for Dartstream."
 dependencies:
   - "Auth >=0.0.1"

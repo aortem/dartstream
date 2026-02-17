@@ -1,0 +1,15 @@
+name: ds_shelf_static_example
+description: Sample app demonstrating static file serving with ds_shelf
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+dependencies:
+  ds_shelf:
+    path: ../
+  shelf: ^1.4.2
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

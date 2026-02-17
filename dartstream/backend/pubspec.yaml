@@ -1,20 +1,10 @@
-# Purpose:
-# https://dart.dev/tools/pub/workspaces
-
-# This is the framework’s root
+# This is the framework's root
 # Contains actual code and dependencies
-# Uses the workspace: field to manually define subpackage paths (even though Dart doesn't support it natively yet outside experimental tooling)
-# Is effectively the main “entry point” for developing and testing all backend features
-# 🔹 Note:
-# The workspace: key is currently only recognized by experimental tooling or for organizational clarity.
-# Dart’s official tooling does not yet support it.
-# Provided here for documentation or internal tooling reference however dart pub won’t act on it natively.
-# [DartCodeAI](https://dartcodeai.com) will be integrated in a future state.
 
 name: ds_dartstream
 description: A meta-package that bundles all DartStream framework modules
   tooling, standard engine, auth providers, persistence, feature flags, etc.
-version: 0.0.10
+version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -22,27 +12,27 @@ environment:
 
 dependencies:
   shelf: ^1.4.2
-  shelf_router: ^1.1.0
+  shelf_router: ^1.1.4
 
   # Manifest and Registry
   yaml: ^3.1.3
   path: ^1.9.1
 
-  #   # standard engine
-  #   ds_standard_engine:   ^0.0.6
+  # Standard engine
+  ds_dartstream_standard_engine: ^0.0.1
 
   # Auth Extensions
   ds_auth_base: ^0.0.2
-  ds_auth0_auth_provider: ^0.0.1
-  # ds_cognito_auth_provider:     ^0.0.1-pre+1
-  # ds_entraid_auth_provider:     ^0.0.1-pre
-  # ds_fingerprint_auth_provider: ^0.0.1-pre
-  ds_firebase_auth_provider: ^0.0.1
-  ds_magic_auth_provider: ^0.0.1
-  # ds_okta_auth_provider:        ^0.0.1-pre
+  ds_auth0_auth_provider: ^0.0.2
+  ds_cognito_auth_provider: ^0.0.1
+  ds_entraid_auth_provider: ^0.0.1
+  ds_fingerprint_auth_provider: ^0.0.1
+  ds_firebase_auth_provider: ^0.0.2
+  ds_magic_auth_provider: ^0.0.2
+  ds_okta_auth_provider: ^0.0.3
   ping_identity_dart_auth_sdk: ^0.0.1
-  # ds_stytch_auth_provider:      ^0.0.1-pre
-  ds_transmit_auth_provider: ^0.0.2
+  ds_stytch_auth_provider: ^0.0.3
+  ds_transmit_auth_provider: ^0.0.3
 
   # Persistence - database providers (lean OSS list)
   ds_database_base: ^0.0.2
@@ -59,15 +49,15 @@ dependencies:
   ds_aws_storage_provider: ^0.0.1
   ds_gcp_storage_provider: ^0.0.1
 
-#   # feature-flags
-#   ds_ff_base:           ^0.0.1
-#   ds_ff_flagd:          ^0.0.1
-#   ds_ff_dartstream:  ^0.0.1
+# Feature flags
+# ds_ff_base: ^0.0.1
+# ds_ff_flagd: ^0.0.1
+# ds_ff_dartstream: ^0.0.1
 
 # Reactive dataflow - data streaming (lean OSS list)
-# ds_message_broker_base:      ^0.0.1
+# ds_message_broker_base: ^0.0.1
 # ds_gcp_pubsub_message_broker_provider: ^0.0.1
-# ds_websocket_base:           ^0.0.1
+# ds_websocket_base: ^0.0.1
 # ds_socket_io_websocket_provider: ^0.0.1
 
 workspace:

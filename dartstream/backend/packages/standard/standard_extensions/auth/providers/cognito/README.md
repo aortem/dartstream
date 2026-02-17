@@ -4,17 +4,17 @@ A comprehensive AWS Cognito authentication provider for the DartStream framework
 
 ## Features
 
-- ✅ **Complete DSAuthProvider Implementation** - Full feature parity with other DartStream auth providers
-- ✅ **User Authentication** - Sign up, sign in, and sign out with email/password
-- ✅ **Email Verification** - Confirm user email addresses with verification codes
-- ✅ **Password Management** - Reset forgotten passwords and update existing passwords
-- ✅ **Profile Management** - Update user profiles, emails, and custom attributes
-- ✅ **Token Management** - JWT token validation, refresh, and session management
-- ✅ **User Management** - Retrieve user information and delete user accounts
-- ✅ **Error Handling** - Comprehensive error mapping and handling
-- ✅ **Event System** - Authentication lifecycle hooks and event handling
-- ✅ **Session Management** - Secure session storage and management
-- ✅ **Mock Support** - Testing utilities for development and testing
+- **Complete DSAuthProvider Implementation** - Full feature parity with other DartStream auth providers
+- **User Authentication** - Sign up, sign in, and sign out with email/password
+- **Email Verification** - Confirm user email addresses with verification codes
+- **Password Management** - Reset forgotten passwords and update existing passwords
+- **Profile Management** - Update user profiles, emails, and custom attributes
+- **Token Management** - JWT token validation, refresh, and session management
+- **User Management** - Retrieve user information and delete user accounts
+- **Error Handling** - Comprehensive error mapping and handling
+- **Event System** - Authentication lifecycle hooks and event handling
+- **Session Management** - Secure session storage and management
+- **Mock Support** - Testing utilities for development and testing
 
 ## Installation
 
@@ -22,10 +22,8 @@ Add the Cognito provider to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ds_auth_base:
-    path: ../auth/base
-  ds_cognito_auth_provider:
-    path: ../auth/providers/cognito
+  ds_auth_base: ^0.0.2
+  ds_cognito_auth_provider: ^0.0.1
 ```
 
 ## Quick Start
@@ -340,3 +338,4 @@ This package is part of the DartStream project and is licensed under the BSD-3 L
 ## Support
 
 For issues, questions, or contributions, please visit the [DartStream GitHub repository](https://github.com/aortem/dartstream-opensource).
+

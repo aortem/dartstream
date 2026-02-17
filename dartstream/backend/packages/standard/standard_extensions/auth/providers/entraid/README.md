@@ -22,13 +22,8 @@ Add the required dependencies to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  # Base authentication package
-  ds_auth_base:
-    path: path/to/auth/base
-  
-  # EntraID provider
-  ds_entraid_auth_provider:
-    path: path/to/auth/providers/entraid
+  ds_auth_base: ^0.0.2
+  ds_entraid_auth_provider: ^0.0.1
 ```
 
 ## Entry-point registration (recommended)

@@ -1,4 +1,4 @@
-= Welcome to Intellitoggle Docs
+= Dartstream API Reference
 :page-layout: default
 
-This is the introduction to your Intelliotggle project.
+This page will document the public Dartstream APIs and module references.

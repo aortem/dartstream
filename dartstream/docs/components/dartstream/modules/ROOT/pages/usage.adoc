@@ -1,4 +1,4 @@
-= Welcome to Dartstream Docs
+= Dartstream Usage
 :page-layout: default
 
-This is the introduction to your DartStream project.
+This page will document usage patterns and examples for Dartstream.

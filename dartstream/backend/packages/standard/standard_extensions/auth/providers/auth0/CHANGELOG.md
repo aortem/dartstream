@@ -1,3 +1,9 @@
+## 0.0.2
+
+### Updated
+- Dependency constraints: `auth0_dart_auth_sdk` ^0.0.4, `ds_auth_base` ^0.0.2, `ds_standard_features` ^0.1.5
+- Dev dependency: `test` ^1.29.0
+
 ## 0.0.1
 
 ### Added
