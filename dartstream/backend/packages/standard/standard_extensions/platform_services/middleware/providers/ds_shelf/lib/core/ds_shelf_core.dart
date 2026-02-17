@@ -8,6 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 class DSShelfCore {
   final List<shelf.Middleware> _middlewares = [];
   final Router _router = Router();
+  final List<String> _registeredRoutes = [];
 
   /// Initialize core middleware and server configurations.
   DSShelfCore() {
@@ -36,6 +37,7 @@ class DSShelfCore {
 
   /// Default core routes (e.g. health-check).
   void _configureCoreRoutes() {
+    _registeredRoutes.add('GET\t/health');
     _router.get('/health', (shelf.Request request) {
       return shelf.Response.ok('OK');
     });
@@ -43,6 +45,22 @@ class DSShelfCore {
 
   /// Utility to register a GET route easily.
   void addGetRoute(String path, shelf.Handler handler) {
+    _registeredRoutes.add('GET\t$path');
     _router.get(path, handler);
+  }
+
+  /// Prints all registered routes to the console.
+  void printRoutes() {
+    print('╔════════════════════════════════════════════════════╗');
+    print('║             Registered Routes                      ║');
+    print('╠════════════════════════════════════════════════════╣');
+    if (_registeredRoutes.isEmpty) {
+      print('║ No routes registered.                              ║');
+    } else {
+      for (final route in _registeredRoutes) {
+        print('║ $route'.padRight(52) + ' ║');
+      }
+    }
+    print('╚════════════════════════════════════════════════════╝');
   }
 }
