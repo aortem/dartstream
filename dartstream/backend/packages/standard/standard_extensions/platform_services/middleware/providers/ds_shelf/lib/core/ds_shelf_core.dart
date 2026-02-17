@@ -49,6 +49,25 @@ class DSShelfCore {
     _router.get(path, handler);
   }
 
+  /// Registers a static file handler.
+  ///
+  /// [fileSystemPath] is the directory to serve files from (e.g., 'public').
+  /// [routePath] is the URL prefix to mount the handler on (defaults to '/').
+  void addStaticRoute(String fileSystemPath, {String routePath = '/'}) {
+    _registeredRoutes.add('STATIC\t$routePath ($fileSystemPath)');
+    
+    // Create the static handler using shelf_static directly
+    // We assume default document is index.html for root mounts
+    var staticHandler = shelf.createStaticHandler(
+      fileSystemPath,
+      defaultDocument: 'index.html',
+    );
+
+    // Mount the handler.
+    // shelf_router's mount expects a prefix.
+    _router.mount(routePath, staticHandler);
+  }
+
   /// Prints all registered routes to the console.
   void printRoutes() {
     print('╔════════════════════════════════════════════════════╗');
