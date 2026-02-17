@@ -20,7 +20,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ds_stytch_auth_provider: ^0.0.3
+  ds_stytch_auth_provider: ^0.0.4
 ```
 
 ## Entry-point registration (recommended)
