@@ -176,7 +176,7 @@ validation_trigger_docs:
 cypress_tests:
   stage: unit_testing
   trigger:
-    include: tools/pipelines/qa-testing/backend/child-ci-qa-unit.yml
+    include: tools/pipelines/qa-testing/child-ci-qa-unit.yml
   rules:
     # Run only when backend has changed
     - changes:
@@ -187,7 +187,7 @@ cypress_tests:
 cypress_tests:
   stage: integration_testing
   trigger:
-    include: tools/pipelines/qa-testing/backend/child-ci-qa-integration.yml
+    include: tools/pipelines/qa-testing/child-ci-qa-integration.yml
   rules:
     # Run only when backend has changed
     - changes:
@@ -198,7 +198,7 @@ cypress_tests:
 cypress_tests:
   stage: e2e_testing
   trigger:
-    include: tools/pipelines/qa-testing/backend/child-ci-qa-e2e.yml
+    include: tools/pipelines/qa-testing/child-ci-qa-e2e.yml
   rules:
     # Run only when backend has changed
     - changes:
