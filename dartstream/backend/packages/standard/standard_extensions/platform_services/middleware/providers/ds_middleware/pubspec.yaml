@@ -16,3 +16,4 @@ dependencies:
 
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
+  shelf: ^1.4.0
