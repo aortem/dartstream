@@ -1,6 +1,11 @@
-import 'dart:io';
 
+<<<<<<< HEAD
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
+=======
+
+import 'app/models/ds_custom_middleware_model.dart';
+
+>>>>>>> development
 
 /// Base class for middleware components.
 abstract class DsCustomMiddleware {

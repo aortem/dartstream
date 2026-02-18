@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DartStream | Middleware Demo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="background-glow"></div>
+
+    <main class="glass-container">
+      <header>
+        <div class="logo"><span class="ds-text">Dart</span>Stream</div>
+        <h1>Middleware Framework</h1>
+        <p class="subtitle">Next-generation request handling for Dart</p>
+      </header>
+
+      <section class="demo-grid">
+        <!-- Time Demo -->
+        <div class="card glass">
+          <div class="card-icon">🕒</div>
+          <h3>DateTime Serialization</h3>
+          <p>Verify custom TypeHandlers for core Dart types.</p>
+          <div class="result-box" id="time-result">Press fetch to test...</div>
+          <button class="btn-primary" onclick="fetchTime()">
+            Fetch Remote Time
+          </button>
+        </div>
+
+        <!-- User Demo -->
+        <div class="card glass">
+          <div class="card-icon">👤</div>
+          <h3>Custom Type Deserialization</h3>
+          <p>Send a User object and receive an "aged" version back.</p>
+          <div class="input-group">
+            <input
+              type="text"
+              id="user-name"
+              placeholder="Name"
+              value="Alice"
+            />
+            <input type="number" id="user-age" placeholder="Age" value="25" />
+          </div>
+          <div class="result-box" id="user-result">Waiting for POST...</div>
+          <button class="btn-secondary" onclick="postUser()">
+            Update User
+          </button>
+        </div>
+      </section>
+
+      <footer>
+        <p>Powered by <code>ds_middleware</code> core</p>
+      </footer>
+    </main>
+
+    <script src="main.js"></script>
+  </body>
+</html>

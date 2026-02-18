@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
+
 class DsCustomMiddleWareRequest {
   final String method;
   final Uri uri;
@@ -51,6 +53,10 @@ class DsCustomMiddleWareRequest {
       throw UnsupportedError('Unsupported body type: ${body.runtimeType}');
     }
   }
+
+  T bodyAs<T>() {
+    return TypeHandlerRegistry.deserialize<T>(body);
+  }
 }
 
 class DsCustomMiddleWareResponse {
@@ -63,8 +69,12 @@ class DsCustomMiddleWareResponse {
   DsCustomMiddleWareResponse(this.statusCode, this.headers, this.body,
       {this.request});
 
-  static DsCustomMiddleWareResponse ok(String body) {
-    return DsCustomMiddleWareResponse(200, {}, body);
+  static DsCustomMiddleWareResponse ok(dynamic body) {
+    dynamic serializedBody = body;
+    if (body != null) {
+       serializedBody = TypeHandlerRegistry.serialize(body);
+    }
+    return DsCustomMiddleWareResponse(200, {}, serializedBody);
   }
 
   static DsCustomMiddleWareResponse notFound() {

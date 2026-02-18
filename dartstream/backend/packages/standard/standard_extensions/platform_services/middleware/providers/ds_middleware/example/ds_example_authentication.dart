@@ -1,6 +1,6 @@
 import 'package:ds_middleware/ds_custom_middleware.dart';
 
-class DsCustomMiddleWareAuthenticationMiddleware implements dsCustomMiddleware {
+class DsCustomMiddleWareAuthenticationMiddleware implements DsCustomMiddleware {
   final List<String> authenticatedUsers;
 
   DsCustomMiddleWareAuthenticationMiddleware(this.authenticatedUsers);

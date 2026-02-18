@@ -1,6 +1,11 @@
 import 'dart:convert';
+<<<<<<< HEAD
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
+=======
+import '../../app/models/ds_custom_middleware_model.dart';
+
+>>>>>>> development
 
 class DsHttpHelpers {
   static DsCustomMiddleWareResponse jsonResponse(dynamic data,
