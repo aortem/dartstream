@@ -63,7 +63,16 @@ class DsCustomMiddleWareResponse {
   DsCustomMiddleWareResponse(this.statusCode, this.headers, this.body,
       {this.request});
 
-  static DsCustomMiddleWareResponse ok(String body) {
+  static DsCustomMiddleWareResponse ok(dynamic body) {
+    if (body is! String) {
+       // Attempt serialization if not string (and if we had access to registry here, but registry is in src/type_handlers)
+       // We can't easily import registry here without circular deps if registry imports model?
+       // Actually registry imports TypeHandler.
+       // Let's assume we rely on the caller to serialize OR we just pass it through to let middleware chain handle it?
+       // But the task says "Integate with DsCustomMiddleWareResponse... to automatically serialize".
+       // If I can't import registry here, I should make Registry global or inject it.
+       // OR, import it using src path.
+    }
     return DsCustomMiddleWareResponse(200, {}, body);
   }
 

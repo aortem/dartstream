@@ -16,4 +16,7 @@ export 'src/model/ds_response_model.dart';
 export 'app/models/ds_custom_middleware_model.dart'
     hide
         DsCustomMiddleWareRequest,
-        DsCustomMiddleWareResponse; //use instead of export 'app/models/ds_custom_middleware_model.dart';
+// Type Handlers
+export 'src/type_handlers/type_handler.dart';
+export 'src/type_handlers/type_handler_registry.dart';
+export 'src/type_handlers/date_handler.dart';
