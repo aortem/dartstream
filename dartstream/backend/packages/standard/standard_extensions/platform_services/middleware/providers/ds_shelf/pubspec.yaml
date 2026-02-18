@@ -5,7 +5,7 @@ version: 0.0.1-pre+4
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 resolution: workspace
 
@@ -25,4 +25,5 @@ dependencies:
   # They might be part of your dev_dependencies for code generation or testing.
 # Dev dependencies are added in sections alphabetically and according to features.
 # dev_dependencies:
-
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

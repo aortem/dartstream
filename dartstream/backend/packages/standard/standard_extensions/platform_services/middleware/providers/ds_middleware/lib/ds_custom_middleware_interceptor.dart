@@ -1,8 +1,12 @@
-import 'dart:io';
+
 
 import 'ds_custom_middleware_base.dart';
-import 'src/model/ds_request_model.dart';
-import 'src/model/ds_response_model.dart';
+<<<<<<< HEAD
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
+=======
+import 'app/models/ds_custom_middleware_model.dart';
+
+>>>>>>> development
 import 'src/routing/dynamic_routing.dart';
 import 'src/routing/index_routing.dart';
 import 'src/routing/nested_router.dart';

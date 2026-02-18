@@ -6,7 +6,7 @@ repository: https://github.com/aortem/dartstream
 resolution: workspace
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 dependencies:
   ds_auth_base: ^0.0.2

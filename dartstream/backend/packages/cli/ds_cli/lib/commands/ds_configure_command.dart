@@ -417,7 +417,7 @@ jobs:
     - uses: actions/checkout@v3
     - uses: dart-lang/setup-dart@v1
       with:
-        sdk: 3.10.9
+        sdk: 3.11.0
     - run: dart pub get
     - run: dart test
     - run: dart analyze

@@ -26,6 +26,10 @@ export 'core/config/app_config.dart';
 
 export 'extensions/cors/ds_shelf_cors_middleware.dart';
 
+//Export our Body Parser Libraries
+
+export 'extensions/body_parser/ds_shelf_body_parser.dart';
+
 //Export our Utilities Libraries
 
 export 'extensions/utilities/ds_shelf_base_utils.dart';

@@ -1,5 +1,5 @@
-name: ds_shelf_static_example
-description: Sample app demonstrating static file serving with ds_shelf
+name: ds_shelf_example
+description: Example application demonstrating ds_shelf capabilities.
 version: 0.0.1
 publish_to: none
 
@@ -10,6 +10,8 @@ dependencies:
   ds_shelf:
     path: ../
   shelf: ^1.4.2
+  shelf_router: ^1.1.4
+  dotenv: ^4.2.0
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4

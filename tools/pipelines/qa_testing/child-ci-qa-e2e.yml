@@ -1,0 +1,20 @@
+stages:
+  - validate
+  - e2e_testing
+  - cleanup
+
+End2End Testing:
+  stage: e2e_testing
+  image: cypress/browsers:node-22.19.0-chrome-140.0.7339.127-1-ff-142.0.1-edge-140.0.3485.54-1
+  script:
+    - cd intellitoggle/frontend
+    - npm install
+    - npm run build
+    # Use Nuxt preview server instead of static serve
+    - npm run preview &
+    # Wait until Nuxt is ready before Cypress runs
+    - npx wait-on http://localhost:3000
+    - npm run cypress:run
+  rules:
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: always
