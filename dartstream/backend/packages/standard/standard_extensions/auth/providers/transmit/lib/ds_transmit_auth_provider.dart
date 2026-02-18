@@ -17,27 +17,50 @@ class DSTransmitAuthProvider implements DSAuthProvider {
   final DSTransmitTokenManager _tokenManager = DSTransmitTokenManager();
   DSAuthUser? _currentUser;
   bool _isInitialized = false;
+  bool _isDevMode = false;
 
   @override
-Future<void> initialize(Map<String, dynamic> config) async {
-  // ✅ DEV MODE BYPASS
-  if (config['__dev__'] == true) {
-    print('Transmit Auth Provider initialized in DEV mode (skipped config)');
-    return;
-  }
+  Future<void> initialize(Map<String, dynamic> config) async {
+    // ✅ DEV MODE BYPASS
+    if (config['__dev__'] == true) {
+      print('Transmit Auth Provider initialized in DEV mode (skipped config)');
+      _isDevMode = true;
+      _isInitialized = true;
+      return;
+    }
 
-  // 🔒 PROD VALIDATION
-  if (config['clientId'] == null || config['clientSecret'] == null) {
-    throw Exception('Missing required Transmit SDK configuration');
-  }
+    // 🔒 PROD VALIDATION
+    if (config['clientId'] == null || config['clientSecret'] == null) {
+      throw Exception('Missing required Transmit SDK configuration');
+    }
 
-  // real initialization continues here
-}
+    // real initialization continues here (mocked for now as we don't have the SDK source)
+    _isInitialized = true;
+  }
 
 
   @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Transmit SDK not initialized');
+
+    if (_isDevMode) {
+      // Mock sign in for dev mode
+      print('Dev mode: Signing in user $username');
+      final accessToken = 'mock_access_token_${DateTime.now().millisecondsSinceEpoch}';
+      _tokenManager.saveToken(accessToken);
+      _sessionManager.createSession(accessToken);
+
+      _currentUser = DSAuthUser(
+        id: 'mock_user_$username',
+        email: username,
+        displayName: username,
+        customAttributes: {'provider': 'transmit', 'mode': 'dev'},
+      );
+      
+      _eventHandlers.onLoginSuccess();
+      await onLoginSuccess(_currentUser!);
+      return;
+    }
 
     final response = await _apiClient.post(
       endpoint: '/authenticate/password',
@@ -77,6 +100,18 @@ Future<void> initialize(Map<String, dynamic> config) async {
   @override
   Future<void> signOut() async {
     if (!_isInitialized) throw Exception('Transmit SDK not initialized');
+    
+    if (_isDevMode) {
+      // Mock sign out for dev mode
+      print('Dev mode: Signing out');
+      _tokenManager.clearToken();
+      _sessionManager.endSession();
+      _currentUser = null;
+      _eventHandlers.onLogout();
+      await onLogout();
+      return;
+    }
+
     final token = _tokenManager.getToken();
     if (token == null) return;
 
@@ -103,6 +138,14 @@ Future<void> initialize(Map<String, dynamic> config) async {
   @override
   Future<String> refreshToken(String refreshToken) async {
     if (!_isInitialized) throw Exception('Transmit SDK not initialized');
+
+    if (_isDevMode) {
+       // Mock refresh token for dev mode
+       print('Dev mode: Refreshing token');
+       final newAccessToken = 'mock_access_token_refreshed_${DateTime.now().millisecondsSinceEpoch}';
+       _tokenManager.saveToken(newAccessToken);
+       return newAccessToken;
+    }
 
     final response = await _apiClient.post(
       endpoint: '/token/refresh',
@@ -133,6 +176,13 @@ Future<void> initialize(Map<String, dynamic> config) async {
   @override
   Future<bool> verifyToken([String? token]) async {
     if (!_isInitialized) throw Exception('Transmit SDK not initialized');
+    
+    if (_isDevMode) {
+      // Mock verify token for dev mode
+      final t = token ?? _tokenManager.getToken();
+      return t != null && t.startsWith('mock_access_token');
+    }
+
     final activeToken = token ?? _tokenManager.getToken();
     if (activeToken == null) return false;
 
