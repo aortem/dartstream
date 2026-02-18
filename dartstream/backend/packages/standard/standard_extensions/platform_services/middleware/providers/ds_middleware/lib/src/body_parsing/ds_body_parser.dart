@@ -1,5 +1,5 @@
 import 'dart:convert';
-import '../model/ds_request_model.dart';
+import '../../app/models/ds_custom_middleware_model.dart';
 
 class DsBodyParser {
   static Future<dynamic> parse(DsCustomMiddleWareRequest request) async {

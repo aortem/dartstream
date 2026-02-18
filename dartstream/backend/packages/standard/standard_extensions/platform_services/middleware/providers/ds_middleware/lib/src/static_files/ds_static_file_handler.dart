@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:path/path.dart' as path;
-import '../model/ds_request_model.dart';
-import '../model/ds_response_model.dart';
+import '../../app/models/ds_custom_middleware_model.dart';
+
 
 class DsStaticFileHandler {
   final String basePath;

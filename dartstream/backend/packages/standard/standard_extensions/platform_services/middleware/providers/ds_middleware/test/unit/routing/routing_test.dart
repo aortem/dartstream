@@ -1,4 +1,4 @@
-import 'package:ds_middleware/src/model/ds_request_model.dart';
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 import 'package:ds_middleware/src/routing/dynamic_routing.dart';
 import 'package:ds_middleware/src/routing/index_routing.dart';
 import 'package:ds_middleware/src/routing/nested_router.dart';

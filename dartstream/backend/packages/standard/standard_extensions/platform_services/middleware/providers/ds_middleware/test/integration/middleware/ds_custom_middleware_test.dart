@@ -1,7 +1,7 @@
-//import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 
-import '../example/ds_example_authentication.dart';
+import '../../../example/ds_example_authentication.dart';
 
 void main() {
   group('Authentication Middleware Test', () {
@@ -15,7 +15,7 @@ void main() {
 
       // Create a sample authenticated request
       var request = DsCustomMiddleWareRequest('GET',
-          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {});
+          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, <String, String>{});
 
       // Call the handle method of AuthenticationMiddleware with the authenticated request
       var response =
@@ -39,7 +39,7 @@ void main() {
 
       // Create a sample unauthenticated request
       var request = DsCustomMiddleWareRequest(
-          'GET', Uri.parse('/authenticated/resource'), {}, {});
+          'GET', Uri.parse('/authenticated/resource'), {}, {}, <String, String>{});
 
       // Call the handle method of AuthenticationMiddleware with the unauthenticated request
       var response =
