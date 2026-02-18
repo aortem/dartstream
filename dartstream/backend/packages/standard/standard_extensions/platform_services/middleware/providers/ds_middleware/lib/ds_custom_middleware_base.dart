@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'src/model/ds_request_model.dart';
-import 'src/model/ds_response_model.dart';
+import 'app/models/ds_custom_middleware_model.dart';
+import 'app/models/ds_custom_middleware_model.dart';
 
 /// Base class for middleware components.
 abstract class DsCustomMiddleware {

@@ -1,4 +1,4 @@
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_middleware/ds_custom_middleware.dart';
 
 class DsCustomMiddleWareAuthenticationMiddleware implements dsCustomMiddleware {
   final List<String> authenticatedUsers;

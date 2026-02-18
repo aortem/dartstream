@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import '../../src/type_handlers/type_handler_registry.dart';
+
 class DsCustomMiddleWareRequest {
   final String method;
   final Uri uri;
@@ -18,8 +20,8 @@ class DsCustomMiddleWareRequest {
         uri,
         headers ?? this.headers,
         body,
-        routeParams: routeParams,
-        queryParams);
+        queryParams,
+        routeParams: routeParams);
   }
 
   // Added new 'copyWith' method
@@ -36,8 +38,8 @@ class DsCustomMiddleWareRequest {
       uri ?? this.uri,
       headers ?? this.headers,
       body ?? this.body,
-      routeParams: routeParams ?? this.routeParams,
       queryParams ?? this.queryParams,
+      routeParams: routeParams ?? this.routeParams,
     );
   }
 
@@ -51,19 +53,28 @@ class DsCustomMiddleWareRequest {
       throw UnsupportedError('Unsupported body type: ${body.runtimeType}');
     }
   }
+
+  /// Deserializes the body to type [T] using [TypeHandlerRegistry].
+  T bodyAs<T>() {
+    // If body is already T, return it
+    if (body is T) return body as T;
+    
+    // Otherwise try to deserialize
+    return TypeHandlerRegistry.deserialize<T>(body);
+  }
 }
 
 class DsCustomMiddleWareResponse {
   final int statusCode;
   final Map<String, String> headers;
-  final body;
+  final dynamic body;
   // Add the request property
   final DsCustomMiddleWareRequest? request;
 
-  DsCustomMiddleWareResponse(this.statusCode, this.headers, this.body,
-      {this.request});
+  DsCustomMiddleWareResponse(this.statusCode, this.headers, dynamic body,
+      {this.request}) : body = TypeHandlerRegistry.serialize(body);
 
-  static DsCustomMiddleWareResponse ok(String body) {
+  static DsCustomMiddleWareResponse ok(dynamic body) {
     return DsCustomMiddleWareResponse(200, {}, body);
   }
 

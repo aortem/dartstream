@@ -11,9 +11,9 @@ export 'ds_custom_middleware_interceptor.dart';
 export 'src/authorization/ds_authorization.dart';
 export 'src/cors/ds_cors_middleware.dart';
 export 'src/error_handling/ds_error_handler.dart';
-export 'src/model/ds_request_model.dart';
-export 'src/model/ds_response_model.dart';
-export 'app/models/ds_custom_middleware_model.dart'
-    hide
-        DsCustomMiddleWareRequest,
-        DsCustomMiddleWareResponse; //use instead of export 'app/models/ds_custom_middleware_model.dart';
+export 'src/type_handlers/type_handler.dart';
+export 'src/type_handlers/type_handler_registry.dart';
+export 'src/type_handlers/date_handler.dart';
+// export 'app/models/ds_custom_middleware_model.dart';
+// export 'app/models/ds_custom_middleware_model.dart';
+export 'app/models/ds_custom_middleware_model.dart';
