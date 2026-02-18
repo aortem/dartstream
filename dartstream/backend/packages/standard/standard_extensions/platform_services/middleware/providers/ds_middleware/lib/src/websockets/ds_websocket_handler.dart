@@ -1,18 +1,14 @@
 import 'dart:async';
 import 'dart:io';
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
-
->>>>>>> development
 
 class DsWebSocketHandler {
   final Set<WebSocket> _sockets = {};
 
   Future<DsCustomMiddleWareResponse> handleRequest(
       DsCustomMiddleWareRequest request) async {
+    // Note: This relies on the request being an HttpRequest which might not be true in the shelf adapter.
+    // However, keeping the logic as is but fixing the conflict markers.
     if (WebSocketTransformer.isUpgradeRequest(request as HttpRequest)) {
       final socket = await WebSocketTransformer.upgrade(request as HttpRequest);
       _handleWebSocket(socket);
