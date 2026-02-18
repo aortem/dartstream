@@ -1,8 +1,8 @@
-import 'package:ds_custom_middleware/src/model/ds_request_model.dart';
-import 'package:ds_custom_middleware/src/routing/dynamic_routing.dart';
-import 'package:ds_custom_middleware/src/routing/index_routing.dart';
-import 'package:ds_custom_middleware/src/routing/nested_router.dart';
-import 'package:ds_custom_middleware/src/routing/print_router.dart';
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
+import 'package:ds_middleware/src/routing/dynamic_routing.dart';
+import 'package:ds_middleware/src/routing/index_routing.dart';
+import 'package:ds_middleware/src/routing/nested_router.dart';
+import 'package:ds_middleware/src/routing/print_router.dart';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 
 void main() {
@@ -24,7 +24,7 @@ void main() {
         'GET',
         Uri.parse('/users/123'),
         {},
-        null,
+        null, {},
       );
 
       final response = await router.handleRequest(request);
@@ -38,7 +38,7 @@ void main() {
         'GET',
         Uri.parse('/index'),
         {},
-        null,
+        null, {},
       );
 
       final response = await indexRouter.handleIndexRequest(request);
@@ -52,7 +52,7 @@ void main() {
         'GET',
         Uri.parse('/print/someinfo'),
         {'Accept': 'text/plain'},
-        null,
+        null, {},
       );
 
       final response = await printRouter.handlePrintRequest(request);
@@ -67,7 +67,7 @@ void main() {
         'GET',
         Uri.parse('/users/123/profile'),
         {},
-        null,
+        null, {},
       );
 
       final response = await nestedRouter.handleNestedRequest(request);
@@ -81,7 +81,7 @@ void main() {
         'GET',
         Uri.parse('/unknown'),
         {},
-        null,
+        null, {},
       );
 
       final response = await router.handleRequest(request);
