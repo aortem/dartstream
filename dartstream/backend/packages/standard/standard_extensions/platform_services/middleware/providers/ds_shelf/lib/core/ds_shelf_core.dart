@@ -49,6 +49,12 @@ class DSShelfCore {
     _router.get(path, handler);
   }
 
+  /// Utility to register a POST route easily.
+  void addPostRoute(String path, shelf.Handler handler) {
+    _registeredRoutes.add('POST\t$path');
+    _router.post(path, handler);
+  }
+
   /// Registers a static file handler.
   ///
   /// [fileSystemPath] is the directory to serve files from (e.g., 'public').
