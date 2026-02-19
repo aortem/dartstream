@@ -1,8 +1,5 @@
 import 'dart:io';
-import 'package:shelf/shelf.dart';
-import 'package:shelf/shelf_io.dart';
-import 'package:shelf_router/shelf_router.dart';
-import 'package:shelf_static/shelf_static.dart';
+import 'package:ds_shelf/ds_shelf.dart';
 import 'package:ds_concurrency/multi_threading_extension.dart';
 
 void main(List<String> args) async {
