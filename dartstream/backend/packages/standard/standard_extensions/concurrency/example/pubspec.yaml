@@ -1,0 +1,12 @@
+name: backend_concurrency_demo
+description: A sample application demonstrating Dartstream's multi-threading capabilities.
+version: 1.0.0
+environment:
+  sdk: "^3.11.0"
+
+dependencies:
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  ds_concurrency:
+    path: ../
+  shelf_static: ^1.1.3
