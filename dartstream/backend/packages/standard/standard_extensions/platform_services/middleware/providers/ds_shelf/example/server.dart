@@ -13,7 +13,6 @@ void main() async {
   server.addMiddleware(dsShelfBodyParserMiddleware());
 
   // 1. Register API Routes
-  // Merging feature: returning timestamp (from development) + simple message
   server.addGetRoute('/api/hello', (Request request) {
      return Response.ok(
       '{"message": "Hello from DartStream API!", "timestamp": "${DateTime.now().toIso8601String()}"}',
@@ -21,7 +20,7 @@ void main() async {
     );
   });
 
-  // Echo route (from HEAD)
+  // Echo route
   server.addPostRoute('/echo', (Request request) async {
     final parsedBody = request.context['ds_shelf.body'];
     
@@ -57,7 +56,7 @@ void main() async {
     print('Warning: public directory not found for static files. Static serving disabled.');
   }
 
-  // 3. Print Routes (Feature from HEAD)
+  // 3. Print Routes
   print('\n🖨️  Registered Routes:');
   server.printRoutes();
 
