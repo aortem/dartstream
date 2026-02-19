@@ -1,35 +1,93 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DartStream Static Files</title>
-    <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; text-align: center; margin-top: 50px; background-color: #f4f4f9; color: #333; }
-        h1 { color: #2c3e50; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        button { background-color: #3498db; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; transition: background 0.3s; }
-        button:hover { background-color: #2980b9; }
-        #api-response { margin-top: 20px; padding: 15px; background: #ecf0f1; border-radius: 5px; text-align: left; font-family: monospace; white-space: pre-wrap; display: none; }
-        #api-response.show { display: block; }
-        .status { margin-top: 10px; font-weight: bold; }
-    </style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DartStream Static Files Demo</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <h1>🚀 DartStream Static Files Demo</h1>
-        <p>This file is served by <strong>ds_shelf</strong> static handler.</p>
-        
-        <hr>
-        
-        <h2>🔗 Backend Connection Verification</h2>
-        <p>Click the button below to fetch data from the DartStream backend API.</p>
-        
-        <button id="test-api">Ping Backend API</button>
-        <div id="api-status" class="status"></div>
-        <div id="api-response"></div>
+      <header>
+        <div class="logo-container">
+          <img src="logo.svg" alt="DartStream Logo" class="logo" />
+        </div>
+        <h1>🎉 Static Files Working!</h1>
+        <p class="subtitle">DartStream middleware is serving this page</p>
+      </header>
+
+      <main>
+        <section class="demo-section">
+          <h2>✅ Verification Checklist</h2>
+          <ul class="checklist">
+            <li>✓ HTML file loaded successfully</li>
+            <li>✓ CSS stylesheet applied</li>
+            <li id="js-check">⏳ JavaScript loading...</li>
+            <li id="svg-check">✓ SVG image displayed</li>
+          </ul>
+        </section>
+
+        <section class="demo-section">
+          <h2>🔗 Test Links</h2>
+          <div class="links">
+            <a href="/" class="btn">Home (index.html)</a>
+            <a href="/about.html" class="btn">About Page</a>
+            <a href="/api/hello" class="btn btn-api">API Endpoint</a>
+          </div>
+        </section>
+
+        <section class="demo-section">
+            <h2>🔗 Backend Connection Verification</h2>
+            <p>Click the button below to fetch data from the DartStream backend API.</p>
+            <div class="api-box">
+                <button id="test-api" class="btn btn-primary">Ping Backend API</button>
+                <div id="api-status" class="status-indicator">Waiting for user...</div>
+            </div>
+            <pre id="api-response" class="api-response"></pre>
+        </section>
+
+        <section class="demo-section">
+          <h2>📁 Static File Types Tested</h2>
+          <table class="file-types">
+            <thead>
+              <tr>
+                <th>File Type</th>
+                <th>Example</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>HTML</td>
+                <td>index.html</td>
+                <td class="status-ok">✓ Loaded</td>
+              </tr>
+              <tr>
+                <td>CSS</td>
+                <td>styles.css</td>
+                <td class="status-ok">✓ Applied</td>
+              </tr>
+              <tr>
+                <td>JavaScript</td>
+                <td>script.js</td>
+                <td id="js-status" class="status-pending">⏳ Loading</td>
+              </tr>
+              <tr>
+                <td>SVG</td>
+                <td>logo.svg</td>
+                <td class="status-ok">✓ Displayed</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </main>
+
+      <footer>
+        <p>Powered by <strong>DartStream</strong> • Static Files Feature</p>
+        <p class="timestamp">Page loaded at: <span id="timestamp"></span></p>
+      </footer>
     </div>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>

@@ -13,12 +13,15 @@ void main() async {
   server.addMiddleware(dsShelfBodyParserMiddleware());
 
   // 1. Register API Routes
+  // Merging feature: returning timestamp (from development) + simple message
   server.addGetRoute('/api/hello', (Request request) {
-    return Response.ok('{"message": "Hello from DartStream Backend!"}',
-        headers: {'content-type': 'application/json'});
+     return Response.ok(
+      '{"message": "Hello from DartStream API!", "timestamp": "${DateTime.now().toIso8601String()}"}',
+      headers: {'Content-Type': 'application/json'},
+    );
   });
 
-  // Echo route
+  // Echo route (from HEAD)
   server.addPostRoute('/echo', (Request request) async {
     final parsedBody = request.context['ds_shelf.body'];
     
@@ -38,28 +41,35 @@ void main() async {
   });
 
   // 2. Register Static Files
-  // Static route disabled due to crash on startup. TODO: Fix static route path.
-  /*
-  // Ensure you have a 'public' folder in your execution directory
+  // Attempting to resolve path correctly to avoid crash
+  // If running from root, 'example/public' is correct. If running from example/, 'public' is correct.
+  String? staticPath;
   if (Directory('example/public').existsSync()) {
-    server.addStaticRoute('example/public');
+    staticPath = 'example/public';
   } else if (Directory('public').existsSync()) {
-    server.addStaticRoute('public');
-  } else {
-    print('Warning: public directory not found for static files.');
+    staticPath = 'public';
   }
-  */
 
-  // 3. Print Routes
+  if (staticPath != null) {
+    server.addStaticRoute(staticPath);
+    print('📁 Static files will be served from: $staticPath');
+  } else {
+    print('Warning: public directory not found for static files. Static serving disabled.');
+  }
+
+  // 3. Print Routes (Feature from HEAD)
   print('\n🖨️  Registered Routes:');
   server.printRoutes();
 
   // 4. Start Server
   final handler = server.handler;
   final port = int.parse(Platform.environment['PORT'] ?? '8080');
-  await shelf_io.serve(handler, 'localhost', port);
+  await shelf_io.serve(handler, InternetAddress.loopbackIPv4, port);
 
   print('\n✅ Server running at http://localhost:$port');
   print('  • http://localhost:$port/api/hello  (API endpoint)');
   print('  • http://localhost:$port/echo       (Echo endpoint)');
+  if (staticPath != null) {
+     print('  • http://localhost:$port/           (index.html)');
+  }
 }

@@ -23,6 +23,13 @@ class RequestInterceptor extends DsCustomMiddleware {
     DsCustomMiddleWareRequest request,
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
   ) async {
+    // Check for static files first
+    final staticHandler = DsStaticFileHandler();
+    final staticResponse = await staticHandler.handle(request);
+    if (staticResponse != null) {
+      return staticResponse;
+    }
+
     // Choose which router to use based on the request path
     if (request.uri.path == '/' || request.uri.path == '/index') {
       return _indexRouter.handleIndexRequest(request);
