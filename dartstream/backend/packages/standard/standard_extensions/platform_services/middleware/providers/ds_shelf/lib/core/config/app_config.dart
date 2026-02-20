@@ -15,7 +15,12 @@ class AppConfig {
 
   /// Loads ALLOWED_ORIGINS from .env as a comma-separated list.
   factory AppConfig.load() {
-    final env = DotEnv()..load();
+    final env = DotEnv(includePlatformEnvironment: true, quiet: true);
+    try {
+      env.load();
+    } catch (e) {
+      print('Warning: could not load .env file: $e');
+    }
     final raw = env['ALLOWED_ORIGINS'] ?? '';
     final origins = raw
         .split(',')
