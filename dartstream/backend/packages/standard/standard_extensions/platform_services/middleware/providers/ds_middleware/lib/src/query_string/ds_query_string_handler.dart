@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
->>>>>>> development
 
 class DsQueryStringHandler {
   static Map<String, String> parse(DsCustomMiddleWareRequest request) {
