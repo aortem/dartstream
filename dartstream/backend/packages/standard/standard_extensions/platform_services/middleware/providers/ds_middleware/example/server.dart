@@ -6,7 +6,7 @@ import 'package:ds_middleware/ds_custom_middleware.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
-// --- 1. Define Custom Types And Handlers ---
+
 
 class User {
   final String name;
@@ -43,7 +43,7 @@ class UserHandler implements TypeHandler<User> {
   bool canHandle(dynamic value) => value is User;
 }
 
-// --- 2. Define Middleware/Handler Logic ---
+
 
 final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
 final corsMiddleware = DsCorsMiddleware();
