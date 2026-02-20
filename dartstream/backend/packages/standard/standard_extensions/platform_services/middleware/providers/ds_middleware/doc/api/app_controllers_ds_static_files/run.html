@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no">
+  <meta name="description" content="API docs for the run function from the ds_static_files library, for the Dart programming language.">
+  <title>run function - ds_static_files library - Dart API</title>
+
+
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet">
+  
+  <link rel="stylesheet" href="../static-assets/github.css?v1">
+  <link rel="stylesheet" href="../static-assets/styles.css?v1">
+  <link rel="icon" href="../static-assets/favicon.png?v1">
+  
+</head>
+
+<body data-base-href="../" data-using-base-href="false" class="light-theme">
+<div id="overlay-under-drawer"></div>
+<header id="title">
+  <span id="sidenav-left-toggle" class="material-symbols-outlined" role="button" tabindex="0">menu</span>
+  <ol class="breadcrumbs gt-separated dark hidden-xs">
+    <li><a href="../index.html">ds_middleware</a></li>
+    <li><a href="../app_controllers_ds_static_files/">app\controllers\ds_static_files.dart</a></li>
+    <li class="self-crumb">run function</li>
+  </ol>
+  <div class="self-name">run</div>
+  <form class="search navbar-right" role="search">
+    <input type="text" id="search-box" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+  <button class="toggle" id="theme-button" title="Toggle between light and dark mode" aria-label="Light and dark mode toggle">
+    <span id="dark-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      dark_mode
+    </span>
+    <span id="light-theme-button" class="material-symbols-outlined" aria-hidden="true">
+      light_mode
+    </span>
+  </button>
+</header>
+<main>
+  <div
+      id="dartdoc-main-content"
+      class="main-content"
+      data-above-sidebar="app_controllers_ds_static_files&#47;app_controllers_ds_static_files-library-sidebar.html"
+      data-below-sidebar="">
+      <div>
+<h1><span class="kind-function">run</span> function 
+ 
+</h1></div>
+
+    <section class="multi-line-signature">
+        
+<span class="returntype"><a href="https://api.dart.dev/stable/3.11.0/dart-core/Future-class.html">Future</a><span class="signature">&lt;<wbr><span class="type-parameter"><a href="https://api.dart.dev/stable/3.11.0/dart-io/HttpServer-class.html">HttpServer</a></span>&gt;</span></span>
+<span class="name ">run</span>(<wbr><ol class="parameter-list single-line"> <li><span class="parameter" id="run-param-handler"><span class="type-annotation"><a href="../app_controllers_ds_static_files/Handler-class.html">Handler</a></span> <span class="parameter-name">handler</span>, </span></li>
+<li><span class="parameter" id="run-param-ip"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.11.0/dart-io/InternetAddress-class.html">InternetAddress</a></span> <span class="parameter-name">ip</span>, </span></li>
+<li><span class="parameter" id="run-param-port"><span class="type-annotation"><a href="https://api.dart.dev/stable/3.11.0/dart-core/int-class.html">int</a></span> <span class="parameter-name">port</span></span></li>
+</ol>)
+
+        
+
+    </section>
+    
+
+
+    
+<section class="summary source-code" id="source">
+  <h2><span>Implementation</span></h2>
+  <pre class="language-dart"><code class="language-dart">Future&lt;HttpServer&gt; run(Handler handler, InternetAddress ip, int port) async {
+  final server = await HttpServer.bind(ip, port);
+  print(&#39;Server running on ${ip.address}:$port&#39;);
+
+  server.listen((HttpRequest request) {
+    final uri = request.uri;
+    if (uri.path.startsWith(&#39;&#47;images&#39;)) {
+      final filePath = uri.path.replaceFirst(&#39;&#47;images&#39;, &#39;&#39;);
+      final file = File(&#39;${Directory.current.path}&#47;api&#47;images$filePath&#39;);
+      file.exists().then((exists) {
+        if (exists) {
+          &#47;&#47; Serve the file directly
+          file.openRead().pipe(request.response);
+        } else {
+          &#47;&#47; File not found
+          request.response
+            ..statusCode = HttpStatus.notFound
+            ..write(&#39;File not found&#39;)
+            ..close();
+        }
+      });
+    } else {
+      &#47;&#47; Pass other requests to the provided handler
+      handler.handleRequest(request);
+    }
+  });
+
+  return server;
+}</code></pre>
+</section>
+
+
+  </div> <!-- /.main-content -->
+  <div id="dartdoc-sidebar-left" class="sidebar sidebar-offcanvas-left">
+    <!-- The search input and breadcrumbs below are only responsively visible at low resolutions. -->
+<header id="header-search-sidebar" class="hidden-l">
+  <form class="search-sidebar" role="search">
+    <input type="text" id="search-sidebar" autocomplete="off" disabled class="form-control typeahead" placeholder="Loading search...">
+  </form>
+</header>
+<ol class="breadcrumbs gt-separated dark hidden-l" id="sidebar-nav">
+    <li><a href="../index.html">ds_middleware</a></li>
+    <li><a href="../app_controllers_ds_static_files/">ds_static_files</a></li>
+    <li class="self-crumb">run function</li>
+</ol>
+
+    <h5>ds_static_files library</h5>
+    <div id="dartdoc-sidebar-left-content"></div>
+  </div><!--/.sidebar-offcanvas-left-->
+  <div id="dartdoc-sidebar-right" class="sidebar sidebar-offcanvas-right">
+  </div><!--/.sidebar-offcanvas-->
+</main>
+<footer>
+  <span class="no-break">
+    ds_middleware
+      0.0.1-pre
+  </span>
+  
+</footer>
+
+
+<script src="../static-assets/highlight.pack.js?v1"></script>
+<script src="../static-assets/docs.dart.js"></script>
+
+</body>
+</html>
+
