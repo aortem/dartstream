@@ -5,15 +5,31 @@ repository: https://github.com/aortem/dartstream
 
 environment:
   sdk: ^3.11.0
+<<<<<<< HEAD
+
+# resolution: workspace
+=======
+>>>>>>> development
 
 # resolution: workspace
 
-# Dependencies are added in sections alphabetically and according to features.
 dependencies:
   ds_standard_features: ^0.1.6
   ds_tools_testing: ^0.1.4
+<<<<<<< HEAD
 #  ds_tools_general: ^0.0.1-pre
+=======
+  ds_shelf:
+    path: ../ds_shelf
+  mime: ^1.0.0
+>>>>>>> development
 
-# Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
+<<<<<<< HEAD
   shelf: ^1.4.0
+=======
+  test: ^1.24.0
+  ds_tools_testing: ^0.1.4
+  mockito: ^5.0.0
+  mocktail: ^1.0.3
+>>>>>>> development

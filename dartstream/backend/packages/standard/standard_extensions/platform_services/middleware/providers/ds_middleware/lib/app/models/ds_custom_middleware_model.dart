@@ -1,6 +1,10 @@
 import 'dart:convert';
 
+<<<<<<< HEAD
 import '../../src/type_handlers/type_handler_registry.dart';
+=======
+import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
+>>>>>>> development
 
 class DsCustomMiddleWareRequest {
   final String method;
@@ -54,12 +58,16 @@ class DsCustomMiddleWareRequest {
     }
   }
 
+<<<<<<< HEAD
   /// Deserializes the body to type [T] using [TypeHandlerRegistry].
   T bodyAs<T>() {
     // If body is already T, return it
     if (body is T) return body as T;
     
     // Otherwise try to deserialize
+=======
+  T bodyAs<T>() {
+>>>>>>> development
     return TypeHandlerRegistry.deserialize<T>(body);
   }
 }
@@ -75,7 +83,15 @@ class DsCustomMiddleWareResponse {
       {this.request}) : body = TypeHandlerRegistry.serialize(body);
 
   static DsCustomMiddleWareResponse ok(dynamic body) {
+<<<<<<< HEAD
     return DsCustomMiddleWareResponse(200, {}, body);
+=======
+    dynamic serializedBody = body;
+    if (body != null) {
+       serializedBody = TypeHandlerRegistry.serialize(body);
+    }
+    return DsCustomMiddleWareResponse(200, {}, serializedBody);
+>>>>>>> development
   }
 
   static DsCustomMiddleWareResponse notFound() {

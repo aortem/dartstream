@@ -8,6 +8,7 @@ import 'package:shelf_router/shelf_router.dart';
 class DSShelfCore {
   final List<shelf.Middleware> _middlewares = [];
   final Router _router = Router();
+  final List<String> _registeredRoutes = [];
 
   /// Initialize core middleware and server configurations.
   DSShelfCore() {
@@ -36,6 +37,7 @@ class DSShelfCore {
 
   /// Default core routes (e.g. health-check).
   void _configureCoreRoutes() {
+    _registeredRoutes.add('GET\t/health');
     _router.get('/health', (shelf.Request request) {
       return shelf.Response.ok('OK');
     });
@@ -43,6 +45,47 @@ class DSShelfCore {
 
   /// Utility to register a GET route easily.
   void addGetRoute(String path, shelf.Handler handler) {
+    _registeredRoutes.add('GET\t$path');
     _router.get(path, handler);
+  }
+
+  /// Utility to register a POST route easily.
+  void addPostRoute(String path, shelf.Handler handler) {
+    _registeredRoutes.add('POST\t$path');
+    _router.post(path, handler);
+  }
+
+  /// Registers a static file handler.
+  ///
+  /// [fileSystemPath] is the directory to serve files from (e.g., 'public').
+  /// [routePath] is the URL prefix to mount the handler on (defaults to '/').
+  void addStaticRoute(String fileSystemPath, {String routePath = '/'}) {
+    _registeredRoutes.add('STATIC\t$routePath ($fileSystemPath)');
+    
+    // Create the static handler using shelf_static directly
+    // We assume default document is index.html for root mounts
+    var staticHandler = shelf.createStaticHandler(
+      fileSystemPath,
+      defaultDocument: 'index.html',
+    );
+
+    // Mount the handler.
+    // shelf_router's mount expects a prefix.
+    _router.mount(routePath, staticHandler);
+  }
+
+  /// Prints all registered routes to the console.
+  void printRoutes() {
+    print('╔════════════════════════════════════════════════════╗');
+    print('║             Registered Routes                      ║');
+    print('╠════════════════════════════════════════════════════╣');
+    if (_registeredRoutes.isEmpty) {
+      print('║ No routes registered.                              ║');
+    } else {
+      for (final route in _registeredRoutes) {
+        print('║ $route'.padRight(52) + ' ║');
+      }
+    }
+    print('╚════════════════════════════════════════════════════╝');
   }
 }

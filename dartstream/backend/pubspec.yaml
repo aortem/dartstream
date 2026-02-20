@@ -51,7 +51,6 @@ dependencies:
 
 # Feature flags
 # ds_ff_base: ^0.0.1
-# ds_ff_flagd: ^0.0.1
 # ds_ff_dartstream: ^0.0.1
 
 # Reactive dataflow - data streaming (lean OSS list)

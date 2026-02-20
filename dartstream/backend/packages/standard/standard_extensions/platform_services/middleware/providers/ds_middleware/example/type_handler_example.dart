@@ -95,6 +95,10 @@ void main() async {
     // So top level map won't be serialized by registry.
     // However, if we pass the User object directly:
   });
+<<<<<<< HEAD
+=======
+  print('   Complex Body:    ${response.body}');
+>>>>>>> development
   
   // Test direct object response
   final directResponse = DsCustomMiddleWareResponse.ok(responseUser);
