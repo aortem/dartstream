@@ -1,8 +1,6 @@
 import 'dart:io';
 import 'package:mime/mime.dart'; // Requires 'mime' package
-import '../model/ds_request_model.dart';
-import '../model/ds_response_model.dart';
-import '../../ds_custom_middleware_base.dart';
+import '../../app/models/ds_custom_middleware_model.dart';
 
 /// Middleware/Handler for serving static files.
 class DsStaticFileHandler {

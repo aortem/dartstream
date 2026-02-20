@@ -6,6 +6,7 @@ import 'src/routing/dynamic_routing.dart';
 import 'src/routing/index_routing.dart';
 import 'src/routing/nested_router.dart';
 import 'src/routing/print_router.dart';
+import 'src/handlers/ds_static_file_handler.dart';
 
 class RequestInterceptor extends DsCustomMiddleware {
   final Router _router = Router();
