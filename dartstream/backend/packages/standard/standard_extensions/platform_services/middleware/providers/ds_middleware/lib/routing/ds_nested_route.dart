@@ -6,8 +6,10 @@ void dsMainDynamic() async {
 
   server.listen((HttpRequest request) {
     final path = request.uri.path;
-    final segments =
-        path.split('/').where((segment) => segment.isNotEmpty).toList();
+    final segments = path
+        .split('/')
+        .where((segment) => segment.isNotEmpty)
+        .toList();
 
     if (segments.isEmpty) {
       handleRoot(request);
@@ -70,7 +72,6 @@ void handleNotFound(HttpRequest request) {
     ..write('404 Not Found')
     ..close();
 }
-
 
 // localhost:8080/about
 // localhost:8080/about/route1

@@ -24,7 +24,9 @@ class DsRouteParamHandler {
   }
 
   DsCustomMiddleWareRequest addParamsToRequest(
-      DsCustomMiddleWareRequest request, String routePattern) {
+    DsCustomMiddleWareRequest request,
+    String routePattern,
+  ) {
     final params = extractParams(routePattern, request.uri.path);
     return request.copyWith(routeParams: params);
   }

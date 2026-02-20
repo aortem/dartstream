@@ -1,48 +1,6 @@
-<<<<<<< HEAD
-import 'dart:convert';
-import 'dart:io';
-=======
-<<<<<<< HEAD
-import 'dart:io';
-import 'package:ds_shelf/ds_shelf.dart';
-import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
-
-void main() async {
-  // 1. Setup a directory for downloads
-  final downloadDir = Directory('downloads_example');
-  if (!downloadDir.existsSync()) {
-    downloadDir.createSync();
-  }
-  
-  // Create a dummy file
-  File('${downloadDir.path}/hello.txt').writeAsStringSync('Hello from DartStream Download!');
-
-  // 2. Create the router
-  final app = Router();
-  
-  // Add the download route
-  // Note: The handler expects the request to have a route param named 'file'
-  app.get('/download/<file>', createDownloadHandler(downloadDir.path));
-  
-  app.get('/', (Request request) {
-    return Response.ok('Visit /download/hello.txt to test downloading.');
-  });
-
-  // 3. Create the server
-  final handler = Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(app.call);
-
-  final server = await shelf_io.serve(handler, 'localhost', 8080);
-  print('Serving at http://${server.address.host}:${server.port}');
-  print('Try downloading: http://localhost:8080/download/hello.txt');
-=======
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
->>>>>>> development
-
 import 'package:ds_middleware/ds_custom_middleware.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
@@ -75,7 +33,7 @@ class UserHandler implements TypeHandler<User> {
       return User.fromJson(value);
     }
     if (value is String) {
-       return User.fromJson(jsonDecode(value));
+      return User.fromJson(jsonDecode(value));
     }
     throw FormatException('Cannot deserialize User from $value');
   }
@@ -86,26 +44,17 @@ class UserHandler implements TypeHandler<User> {
 
 // --- 2. Define Middleware/Handler Logic ---
 
-<<<<<<< HEAD
-=======
-final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
+final staticFileHandler = DsStaticFileHandler(
+  path.join(Directory.current.path, 'example', 'web'),
+);
 final corsMiddleware = DsCorsMiddleware();
 
->>>>>>> development
 /// A simple adapter that converts Shelf Request -> DsRequest -> Handler -> DsResponse -> Shelf Response
 Future<Response> shelfAdapter(Request shelfRequest) async {
   try {
     // 1. Convert Shelf Request to DsCustomMiddleWareRequest
-<<<<<<< HEAD
-    // Note: We need to read body. efficient body reading depends on use case.
-    // For this example, we read as String.
     final bodyString = await shelfRequest.readAsString();
-    
-    // Parse JSON if content-type is json, otherwise keep string
-=======
-    final bodyString = await shelfRequest.readAsString();
-    
->>>>>>> development
+
     dynamic body;
     if (shelfRequest.mimeType == 'application/json' && bodyString.isNotEmpty) {
       body = jsonDecode(bodyString);
@@ -119,92 +68,61 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       shelfRequest.headers,
       body,
       shelfRequest.url.queryParameters,
-<<<<<<< HEAD
-      routeParams: {} // Route params would come from router if we had one wrapping this
-    );
-
-    // 2. Route/Handle logic
-    DsCustomMiddleWareResponse dsResponse;
-    
-    if (dsRequest.uri.path == '/user' && dsRequest.method == 'POST') {
-      // Endpoint: Receive User, Return User (modified)
-      try {
-        final user = dsRequest.bodyAs<User>();
-        print('Received User: $user');
-        
-        final responseUser = User(user.name, user.age + 1); // Aging logic
-=======
-      routeParams: {}
+      routeParams: {},
     );
 
     // 2. Handle CORS Options
     if (dsRequest.method == 'OPTIONS') {
-       final corsResponse = await corsMiddleware.handle(dsRequest, (req) async => DsCustomMiddleWareResponse.ok(''));
-       return Response(corsResponse.statusCode, headers: corsResponse.headers, body: '');
+      final corsResponse = await corsMiddleware.handle(
+        dsRequest,
+        (req) async => DsCustomMiddleWareResponse.ok(''),
+      );
+      return Response(
+        corsResponse.statusCode,
+        headers: corsResponse.headers,
+        body: '',
+      );
     }
 
     // 3. Route/Handle logic
     DsCustomMiddleWareResponse dsResponse;
-    
+
     if (dsRequest.uri.path == '/user' && dsRequest.method == 'POST') {
       try {
         final user = dsRequest.bodyAs<User>();
         print('Received User: $user');
         final responseUser = User(user.name, user.age + 1);
->>>>>>> development
         dsResponse = DsCustomMiddleWareResponse.ok(responseUser);
       } catch (e) {
-        dsResponse = DsCustomMiddleWareResponse(400, {}, {'error': 'Invalid User: $e'});
+        dsResponse = DsCustomMiddleWareResponse(400, {}, {
+          'error': 'Invalid User: $e',
+        });
       }
-<<<<<<< HEAD
-    } else if (dsRequest.uri.path == '/' || dsRequest.uri.path == '/index') {
-      // Endpoint: Root
-      dsResponse = DsCustomMiddleWareResponse.ok('''
-      <html>
-        <head><title>DartStream Localhost Example</title></head>
-        <body style="font-family: sans-serif; padding: 20px;">
-          <h1>DartStream Middleware Example</h1>
-          <p>Server is running!</p>
-          <ul>
-            <li><a href="/time">Get Time (/time)</a> - Returns a DateTime object serialized by DateHandler.</li>
-            <li><strong>POST /user</strong> - Send a JSON body {"name": "...", "age": ...} to test UserHandler.</li>
-          </ul>
-        </body>
-      </html>
-      ''');
-      dsResponse.headers['content-type'] = 'text/html';
-    } else if (dsRequest.uri.path == '/time' && dsRequest.method == 'GET') {
-      // Endpoint: Return DateTime
-      dsResponse = DsCustomMiddleWareResponse.ok(DateTime.now());
-=======
     } else if (dsRequest.uri.path == '/time' && dsRequest.method == 'GET') {
       dsResponse = DsCustomMiddleWareResponse.ok(DateTime.now());
-    } else if (dsRequest.uri.path == '/' || dsRequest.uri.path == '/index.html' || dsRequest.uri.path.startsWith('/assets/') || dsRequest.uri.path.endsWith('.css') || dsRequest.uri.path.endsWith('.js')) {
-       // Map root to index.html
-       var effectiveRequest = dsRequest;
-       if (dsRequest.uri.path == '/') {
-          effectiveRequest = dsRequest.copyWith(
-            uri: dsRequest.uri.replace(path: '/index.html')
-          );
-       }
-       // Serve static files
-       dsResponse = await staticFileHandler.handleRequest(effectiveRequest);
->>>>>>> development
+    } else if (dsRequest.uri.path == '/' ||
+        dsRequest.uri.path == '/index.html' ||
+        dsRequest.uri.path.startsWith('/assets/') ||
+        dsRequest.uri.path.endsWith('.css') ||
+        dsRequest.uri.path.endsWith('.js')) {
+      // Map root to index.html
+      var effectiveRequest = dsRequest;
+      if (dsRequest.uri.path == '/') {
+        effectiveRequest = dsRequest.copyWith(
+          uri: dsRequest.uri.replace(path: '/index.html'),
+        );
+      }
+      // Serve static files
+      dsResponse = await staticFileHandler.handleRequest(effectiveRequest);
     } else {
       dsResponse = DsCustomMiddleWareResponse.notFound();
     }
 
-<<<<<<< HEAD
-    // 3. Convert DsResponse to Shelf Response
-    // TypeHandlerRegistry.serialize(body) is already called in DsCustomMiddleWareResponse constructor!
-    // So dsResponse.body is already serialized (e.g. Map or String).
-    
-    String finalBody;
-    if (dsResponse.body is String) {
-      finalBody = dsResponse.body;
-=======
     // 4. Apply CORS to regular response
-    dsResponse = await corsMiddleware.handle(dsRequest, (req) async => dsResponse);
+    dsResponse = await corsMiddleware.handle(
+      dsRequest,
+      (req) async => dsResponse,
+    );
 
     // 5. Convert DsResponse to Shelf Response
     dynamic finalBody;
@@ -212,19 +130,14 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       finalBody = dsResponse.body;
     } else if (dsResponse.body == null) {
       finalBody = '';
->>>>>>> development
     } else {
       finalBody = jsonEncode(dsResponse.body);
     }
 
     return Response(
       dsResponse.statusCode,
-<<<<<<< HEAD
       headers: dsResponse.headers,
       body: finalBody,
-=======
-      headers: dsResponse.headers,      body: finalBody,
->>>>>>> development
     );
   } catch (e, stack) {
     print('Error: $e\n$stack');
@@ -238,25 +151,12 @@ void main() async {
   TypeHandlerRegistry.register<User>(UserHandler());
   print('Handlers registered.');
 
-<<<<<<< HEAD
-  // Check dependencies
-  // We need 'shelf' and 'shelf_io' which we added to dev_dependencies.
-
-=======
->>>>>>> development
   final handler = const Pipeline()
       .addMiddleware(logRequests())
       .addHandler(shelfAdapter);
 
-<<<<<<< HEAD
-  final server = await shelf_io.serve(handler, 'localhost', 8085);
-  print('Server listening on http://${server.address.host}:${server.port}');
-  print('Try these commands:');
-  print('  curl -X GET http://localhost:8080/time');
-  print('  curl -X POST -H "Content-Type: application/json" -d \'{"name": "Alice", "age": 30}\' http://localhost:8080/user');
-=======
   final server = await shelf_io.serve(handler, 'localhost', 8086);
-  print('Premium Sample Server listening on http://${server.address.host}:${server.port}');
->>>>>>> development
->>>>>>> development
+  print(
+    'Premium Sample Server listening on http://${server.address.host}:${server.port}',
+  );
 }

@@ -25,11 +25,9 @@ class DsCustomMiddleWareResponse {
 
   /// Creates an unauthorized response.
   static DsCustomMiddleWareResponse unauthorized() {
-    return DsCustomMiddleWareResponse(
-      401,
-      {'www-authenticate': 'Bearer'},
-      'Unauthorized',
-    );
+    return DsCustomMiddleWareResponse(401, {
+      'www-authenticate': 'Bearer',
+    }, 'Unauthorized');
   }
 
   /// Creates a copy of the response with optional updates.

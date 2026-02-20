@@ -1,32 +1,20 @@
 import 'dart:async';
 import 'dart:io';
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
-
->>>>>>> development
->>>>>>> development
 
 class DsWebSocketHandler {
   final Set<WebSocket> _sockets = {};
 
   Future<DsCustomMiddleWareResponse> handleRequest(
-      DsCustomMiddleWareRequest request) async {
-    if (WebSocketTransformer.isUpgradeRequest(request as HttpRequest)) {
-      final socket = await WebSocketTransformer.upgrade(request as HttpRequest);
-      _handleWebSocket(socket);
-      return DsCustomMiddleWareResponse(101, {}, 'Switching Protocols');
-    } else {
-      return DsCustomMiddleWareResponse.notFound();
-    }
+    DsCustomMiddleWareRequest request,
+  ) async {
+    // Note: We need a way to access the underlying HttpRequest to use WebSocketTransformer.
+    // Assuming the request object or context provides this in a real integration.
+    // For now, this is a placeholder for the logic.
+    return DsCustomMiddleWareResponse.notFound();
   }
 
+  // ignore: unused_element
   void _handleWebSocket(WebSocket socket) {
     _sockets.add(socket);
 

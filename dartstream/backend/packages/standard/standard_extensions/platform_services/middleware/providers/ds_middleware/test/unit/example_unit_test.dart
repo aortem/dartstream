@@ -34,8 +34,8 @@ void main() {
     late UserService userService;
 
     setUpAll(() {
-       // Register fallback values if needed for custom types
-       // mt.registerFallbackValue(CustomType());
+      // Register fallback values if needed for custom types
+      // mt.registerFallbackValue(CustomType());
     });
 
     setUp(() {
@@ -55,7 +55,8 @@ void main() {
 
     test('returns user name when user is found', () async {
       // Stub the mock to return a user
-      mt.when(() => mockDb.getUser('123'))
+      mt
+          .when(() => mockDb.getUser('123'))
           .thenAnswer((_) async => {'name': 'Alice', 'id': '123'});
 
       final result = await userService.getUserName('123');

@@ -1,23 +1,15 @@
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
 
->>>>>>> development
->>>>>>> development
-
-
-
 class NestedRouter {
-  Future<DsCustomMiddleWareResponse> handleNestedRequest(DsCustomMiddleWareRequest request) async {
-    if (request.uri.path.startsWith('/users/') && request.uri.path.contains('/profile')) {
+  Future<DsCustomMiddleWareResponse> handleNestedRequest(
+    DsCustomMiddleWareRequest request,
+  ) async {
+    if (request.uri.path.startsWith('/users/') &&
+        request.uri.path.contains('/profile')) {
       final userId = request.uri.path.split('/')[2];
-      return DsCustomMiddleWareResponse.ok('Fetching profile for user with ID $userId...');
+      return DsCustomMiddleWareResponse.ok(
+        'Fetching profile for user with ID $userId...',
+      );
     } else {
       return DsCustomMiddleWareResponse.notFound();
     }

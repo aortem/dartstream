@@ -10,7 +10,8 @@ class CustomClass {
   final String value;
   CustomClass(this.value);
   Map<String, dynamic> toJson() => {'value': value};
-  static CustomClass fromJson(Map<String, dynamic> json) => CustomClass(json['value']);
+  static CustomClass fromJson(Map<String, dynamic> json) =>
+      CustomClass(json['value']);
 }
 
 class CustomClassHandler implements TypeHandler<CustomClass> {
@@ -34,7 +35,7 @@ class CustomClassHandler implements TypeHandler<CustomClass> {
 void main() {
   group('TypeHandlerRegistry Tests', () {
     setUp(() {
-      // Clear handlers might not be possible if static? 
+      // Clear handlers might not be possible if static?
       // Actually TypeHandlerRegistry._handlers is static final Map.
       // We can just overwrite or add new ones.
     });
@@ -63,28 +64,24 @@ void main() {
 
     test('DsCustomMiddleWareRequest bodyAs<T>', () {
       TypeHandlerRegistry.register<CustomClass>(CustomClassHandler());
-      final request = DsCustomMiddleWareRequest(
-        'POST',
-        Uri.parse('/'),
-        {},
-        {'value': 'test'},
-        {},
-      );
-      
+      final request = DsCustomMiddleWareRequest('POST', Uri.parse('/'), {}, {
+        'value': 'test',
+      }, {});
+
       final result = request.bodyAs<CustomClass>();
       expect(result, isA<CustomClass>());
       expect(result.value, equals('test'));
     });
 
     test('DsCustomMiddleWareResponse auto-serialization', () {
-       TypeHandlerRegistry.register<CustomClass>(CustomClassHandler());
-       final obj = CustomClass('response');
-       final response = DsCustomMiddleWareResponse.ok(obj);
-       // The factory might trigger serialization if implemented in DsCustomMiddleWareResponse.ok
-       // Check implementation plan: "Modify DsCustomMiddleWareResponse ... to automatically serialize"
-       // Let's verify if that was actually implemented in the code.
-       // Assuming it was:
-       expect(response.body, equals({'value': 'response'}));
+      TypeHandlerRegistry.register<CustomClass>(CustomClassHandler());
+      final obj = CustomClass('response');
+      final response = DsCustomMiddleWareResponse.ok(obj);
+      // The factory might trigger serialization if implemented in DsCustomMiddleWareResponse.ok
+      // Check implementation plan: "Modify DsCustomMiddleWareResponse ... to automatically serialize"
+      // Let's verify if that was actually implemented in the code.
+      // Assuming it was:
+      expect(response.body, equals({'value': 'response'}));
     });
   });
 }

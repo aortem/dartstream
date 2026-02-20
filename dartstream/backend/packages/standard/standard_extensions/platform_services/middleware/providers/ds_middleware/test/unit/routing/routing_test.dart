@@ -24,16 +24,8 @@ void main() {
         'GET',
         Uri.parse('/users/123'),
         {},
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
         null,
-        {}, 
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
+        {},
       );
 
       final response = await router.handleRequest(request);
@@ -47,16 +39,8 @@ void main() {
         'GET',
         Uri.parse('/index'),
         {},
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
         null,
         {},
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
       );
 
       final response = await indexRouter.handleIndexRequest(request);
@@ -70,23 +54,17 @@ void main() {
         'GET',
         Uri.parse('/print/someinfo'),
         {'Accept': 'text/plain'},
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
         null,
         {},
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
       );
 
       final response = await printRouter.handlePrintRequest(request);
 
       expect(response.statusCode, 200);
       expect(
-          response.body, 'Request details have been printed to the console.');
+        response.body,
+        'Request details have been printed to the console.',
+      );
     });
 
     test('Nested Routing Test', () async {
@@ -94,16 +72,8 @@ void main() {
         'GET',
         Uri.parse('/users/123/profile'),
         {},
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
         null,
         {},
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
       );
 
       final response = await nestedRouter.handleNestedRequest(request);
@@ -117,16 +87,8 @@ void main() {
         'GET',
         Uri.parse('/unknown'),
         {},
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/routing/routing_test.dart
-        null, {},
-=======
         null,
         {},
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
->>>>>>> development:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/unit/routing/routing_test.dart
       );
 
       final response = await router.handleRequest(request);

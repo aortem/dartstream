@@ -7,12 +7,12 @@ import 'package:ds_middleware/ds_custom_middleware.dart';
 class AddHeaderMiddleware implements DsCustomMiddleware {
   @override
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request,
-      Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next) async {
-    
+    DsCustomMiddleWareRequest request,
+    Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
+  ) async {
     // Process request
     final response = await next(request);
-    
+
     // Modify response
     response.headers['X-Processed-By'] = 'DartStream';
     return response;
@@ -27,11 +27,11 @@ void main() {
       // ARRANGE
       final middleware = AddHeaderMiddleware();
       final request = DsCustomMiddleWareRequest(
-        'GET', 
-        Uri.parse('http://localhost/test'), 
-        {}, 
-        null, 
-        {}
+        'GET',
+        Uri.parse('http://localhost/test'),
+        {},
+        null,
+        {},
       );
 
       // ACT: simulate the middleware chain

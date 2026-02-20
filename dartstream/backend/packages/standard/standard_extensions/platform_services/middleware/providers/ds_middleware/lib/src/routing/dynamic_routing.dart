@@ -1,19 +1,9 @@
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
 
->>>>>>> development
->>>>>>> development
-
-
 class Router {
-  Future<DsCustomMiddleWareResponse> handleRequest(DsCustomMiddleWareRequest request) async {
+  Future<DsCustomMiddleWareResponse> handleRequest(
+    DsCustomMiddleWareRequest request,
+  ) async {
     final path = request.uri.path;
     final params = parsePath(path);
 
@@ -22,7 +12,9 @@ class Router {
     } else if (path.startsWith('/users/') && path.length > 7) {
       final userId = params['users'];
       if (userId != null) {
-        return DsCustomMiddleWareResponse.ok('Fetching user with ID $userId...');
+        return DsCustomMiddleWareResponse.ok(
+          'Fetching user with ID $userId...',
+        );
       } else {
         return DsCustomMiddleWareResponse.notFound();
       }

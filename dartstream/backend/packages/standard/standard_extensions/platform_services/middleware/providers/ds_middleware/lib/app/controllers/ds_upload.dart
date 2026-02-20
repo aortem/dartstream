@@ -2,7 +2,6 @@ import 'dart:io';
 
 //Standard Testing Tools
 
-
 //General Tools
 import 'package:mime/mime.dart';
 
@@ -28,9 +27,9 @@ void main(List<String> arguments) async {
       for (var part in parts) {
         print(part.headers);
         final contentDisposition = part.headers['content-disposition'];
-        final filename = RegExp(r'filename="([^"]*)"')
-            .firstMatch(contentDisposition ?? '')
-            ?.group(1);
+        final filename = RegExp(
+          r'filename="([^"]*)"',
+        ).firstMatch(contentDisposition ?? '')?.group(1);
         final content = await part.toList();
 
         if (!Directory(uploadDirectory).existsSync()) {

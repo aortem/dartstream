@@ -13,7 +13,8 @@ class DsQueryStringHandler {
   }
 
   DsCustomMiddleWareRequest addQueryParamsToRequest(
-      DsCustomMiddleWareRequest request) {
+    DsCustomMiddleWareRequest request,
+  ) {
     final queryParams = parseQueryString(request.uri.query);
     return request.copyWith(queryParams: queryParams);
   }

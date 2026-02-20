@@ -56,14 +56,14 @@ void main() {
 
     test('Request bodyAs<T>', () {
       TypeHandlerRegistry.register<User>(UserHandler());
-      
+
       final userMap = {'name': 'Alice', 'age': 30};
       final request = DsCustomMiddleWareRequest(
-        'POST', 
-        Uri.parse('/users'), 
-        {}, 
+        'POST',
+        Uri.parse('/users'),
+        {},
         userMap, // Body is Map
-        {}
+        {},
       );
 
       final user = request.bodyAs<User>();
@@ -73,15 +73,15 @@ void main() {
 
     test('Response Automatic Serialization', () {
       TypeHandlerRegistry.register<User>(UserHandler());
-      
+
       final user = User('Bob', 25);
       final response = DsCustomMiddleWareResponse.ok(user);
-      
+
       // The body should be automatically serialized to Map
       expect(response.body, isA<Map<String, dynamic>>());
       expect(response.body['name'], equals('Bob'));
     });
-    
+
     test('Response with unknown type returns raw value', () {
       final response = DsCustomMiddleWareResponse.ok(12345);
       expect(response.body, equals(12345));
