@@ -7,10 +7,11 @@ class DsWebSocketHandler {
 
   Future<DsCustomMiddleWareResponse> handleRequest(
       DsCustomMiddleWareRequest request) async {
-    // Note: This relies on the request being an HttpRequest which might not be true in the shelf adapter.
-    // However, keeping the logic as is but fixing the conflict markers.
-    if (WebSocketTransformer.isUpgradeRequest(request as HttpRequest)) {
-      final socket = await WebSocketTransformer.upgrade(request as HttpRequest);
+    final httpRequest = request.context['shelf.io.http_request'];
+
+    if (httpRequest is HttpRequest &&
+        WebSocketTransformer.isUpgradeRequest(httpRequest)) {
+      final socket = await WebSocketTransformer.upgrade(httpRequest);
       _handleWebSocket(socket);
       return DsCustomMiddleWareResponse(101, {}, 'Switching Protocols');
     } else {

@@ -67,7 +67,8 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       shelfRequest.headers,
       body,
       shelfRequest.url.queryParameters,
-      routeParams: {}
+      routeParams: {},
+      context: shelfRequest.context,
     );
 
     // 2. Handle CORS Options

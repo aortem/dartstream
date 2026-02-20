@@ -5,7 +5,6 @@ library ds_custom_middleware;
 // Export Base DsCustomMiddleware components so users don't have to import them separately
 export 'ds_custom_middleware_base.dart';
 export 'ds_custom_middleware_interceptor.dart';
-export 'app/middleware/ds_custom_core_middleware.dart';
 export 'app/models/ds_custom_middleware_model.dart';
 
 // Source Features
