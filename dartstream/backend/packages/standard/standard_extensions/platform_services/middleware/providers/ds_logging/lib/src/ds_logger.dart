@@ -49,9 +49,6 @@ class DSLogger {
     _internalLogger.level = _toPackageLevel(level);
   }
 
-  bool _isLevelEnabled(pkg_logging.Level level) {
-    return _toLogLevel(level).index >= _currentLevel.index;
-  }
 
   pkg_logging.Level _toPackageLevel(LogLevel level) {
     switch (level) {
@@ -67,12 +64,5 @@ class DSLogger {
         return pkg_logging.Level.SHOUT;
     }
   }
-
-  LogLevel _toLogLevel(pkg_logging.Level level) {
-    if (level <= pkg_logging.Level.FINE) return LogLevel.debug;
-    if (level <= pkg_logging.Level.INFO) return LogLevel.info;
-    if (level <= pkg_logging.Level.WARNING) return LogLevel.warning;
-    if (level <= pkg_logging.Level.SEVERE) return LogLevel.error;
-    return LogLevel.critical;
-  }
 }
+

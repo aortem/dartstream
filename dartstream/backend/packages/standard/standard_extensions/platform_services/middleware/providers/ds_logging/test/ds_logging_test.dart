@@ -1,6 +1,5 @@
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:ds_logging/ds_logging.dart';
-import 'dart:async';
 
 void main() {
   group('DSLogger', () {

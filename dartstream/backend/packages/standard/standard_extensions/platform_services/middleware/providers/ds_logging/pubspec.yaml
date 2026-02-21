@@ -12,4 +12,6 @@ dependencies:
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4
+  ds_shelf:
+    path: ../ds_shelf
   lints: ^3.0.0
