@@ -1,0 +1,15 @@
+name: ds_logging
+description: Standardized hierarchical logging for DartStream, wrapping package:logging.
+version: 0.0.1
+publish_to: none
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  logging: ^1.2.0
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4
+  lints: ^3.0.0
