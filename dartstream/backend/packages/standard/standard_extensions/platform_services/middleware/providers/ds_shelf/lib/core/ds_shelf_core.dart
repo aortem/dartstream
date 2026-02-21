@@ -74,6 +74,21 @@ class DSShelfCore {
     _router.mount(routePath, staticHandler);
   }
 
+  /// Registers a WebSocket route.
+  /// 
+  /// [path] is the URL path for the WebSocket connection.
+  /// [handler] is the shelf handler that upgrades to WebSocket.
+  void addWebSocketRoute(String path, shelf.Handler handler) {
+    _registeredRoutes.add('WS\t$path');
+    _router.all(path, handler);
+  }
+
+  /// Mounts a handler at a specific path.
+  void mount(String path, shelf.Handler handler) {
+    _registeredRoutes.add('MOUNT\t$path');
+    _router.mount(path, handler);
+  }
+
   /// Prints all registered routes to the console.
   void printRoutes() {
     print('╔════════════════════════════════════════════════════╗');

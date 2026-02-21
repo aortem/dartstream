@@ -1,0 +1,19 @@
+name: ds_websockets
+description: WebSocket support for DartStream, including Socket.IO and Soketi adapters.
+version: 0.0.1
+publish_to: none
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  ds_shelf:
+    path: ../ds_shelf
+  shelf_web_socket: ^3.0.0
+  web_socket_channel: ^3.0.1
+  stream_channel: ^2.1.2
+  json_rpc_2: ^3.0.2
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4
