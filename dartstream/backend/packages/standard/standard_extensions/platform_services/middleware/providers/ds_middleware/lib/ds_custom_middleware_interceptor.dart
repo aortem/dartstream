@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 ﻿import 'ds_custom_middleware_base.dart';
-=======
-
-import 'ds_custom_middleware_base.dart';
->>>>>>> development
 import 'app/models/ds_custom_middleware_model.dart';
 import 'src/routing/dynamic_routing.dart';
 import 'src/routing/index_routing.dart';
