@@ -1,4 +1,4 @@
-import 'ds_custom_middleware_base.dart';
+﻿import 'ds_custom_middleware_base.dart';
 import 'app/models/ds_custom_middleware_model.dart';
 import 'src/routing/dynamic_routing.dart';
 import 'src/routing/index_routing.dart';
@@ -18,13 +18,11 @@ class RequestInterceptor extends DsCustomMiddleware {
     DsCustomMiddleWareRequest request,
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
   ) async {
-    // Check for static files first
     final response = await _staticHandler.handleRequest(request);
     if (response.statusCode != 404) {
       return response;
     }
 
-    // Choose which router to use based on the request path
     if (request.uri.path == '/' || request.uri.path == '/index') {
       return _indexRouter.handleIndexRequest(request);
     } else if (request.uri.path.startsWith('/print')) {

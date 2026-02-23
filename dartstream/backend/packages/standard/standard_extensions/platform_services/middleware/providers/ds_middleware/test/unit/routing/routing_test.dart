@@ -24,7 +24,7 @@ void main() {
         'GET',
         Uri.parse('/users/123'),
         {},
-        null, 
+        null,
         {},
       );
 
@@ -54,7 +54,7 @@ void main() {
         'GET',
         Uri.parse('/print/someinfo'),
         {'Accept': 'text/plain'},
-        null, 
+        null,
         {},
       );
 
@@ -70,7 +70,7 @@ void main() {
         'GET',
         Uri.parse('/users/123/profile'),
         {},
-        null, 
+        null,
         {},
       );
 
@@ -85,7 +85,7 @@ void main() {
         'GET',
         Uri.parse('/unknown'),
         {},
-        null, 
+        null,
         {},
       );
 
