@@ -3,9 +3,20 @@ import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:ds_middleware/ds_custom_middleware.dart';
+<<<<<<< HEAD
 import 'package:shelf/shelf.dart';
+=======
+import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
+import 'package:ds_shelf/ds_shelf.dart';
+>>>>>>> development
 import 'package:shelf/shelf_io.dart' as shelf_io;
+import 'package:ds_error_handling/ds_error_handling.dart';
 
+<<<<<<< HEAD
+=======
+// --- 1. Custom Models ---
+
+>>>>>>> development
 class User {
   final String name;
   final int age;
@@ -41,13 +52,18 @@ class UserHandler implements TypeHandler<User> {
   bool canHandle(dynamic value) => value is User;
 }
 
+<<<<<<< HEAD
 final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
+=======
+// --- 2. Request Handling Logic ---
+
+final staticFileHandler = DsStaticFileHandler(publicDir: path.join(Directory.current.path, 'example', 'web'));
+>>>>>>> development
 final corsMiddleware = DsCorsMiddleware();
 
-/// A simple adapter that converts Shelf Request -> DsRequest -> Handler -> DsResponse -> Shelf Response
+/// Adapter to bridge Shelf and DartStream Middleware
 Future<Response> shelfAdapter(Request shelfRequest) async {
   try {
-    // 1. Convert Shelf Request to DsCustomMiddleWareRequest
     final bodyString = await shelfRequest.readAsString();
     
     dynamic body;
@@ -67,13 +83,11 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       context: shelfRequest.context,
     );
 
-    // 2. Handle CORS Options
     if (dsRequest.method == 'OPTIONS') {
        final corsResponse = await corsMiddleware.handle(dsRequest, (req) async => DsCustomMiddleWareResponse.ok(''));
        return Response(corsResponse.statusCode, headers: corsResponse.headers, body: '');
     }
 
-    // 3. Route/Handle logic
     DsCustomMiddleWareResponse dsResponse;
     
     if (dsRequest.uri.path == '/user' && dsRequest.method == 'POST') {
@@ -88,7 +102,6 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
     } else if (dsRequest.uri.path == '/time' && dsRequest.method == 'GET') {
       dsResponse = DsCustomMiddleWareResponse.ok(DateTime.now());
     } else if (dsRequest.uri.path == '/' || dsRequest.uri.path == '/index.html' || dsRequest.uri.path.startsWith('/assets/') || dsRequest.uri.path.endsWith('.css') || dsRequest.uri.path.endsWith('.js')) {
-       // Map root to index.html
        var effectiveRequest = dsRequest;
        if (dsRequest.uri.path == '/') {
           effectiveRequest = dsRequest.copyWith(
@@ -101,10 +114,8 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       dsResponse = DsCustomMiddleWareResponse.notFound();
     }
 
-    // 4. Apply CORS to regular response
     dsResponse = await corsMiddleware.handle(dsRequest, (req) async => dsResponse);
 
-    // 5. Convert DsResponse to Shelf Response
     dynamic finalBody;
     if (dsResponse.body is String || dsResponse.body is List<int>) {
       finalBody = dsResponse.body;
@@ -121,7 +132,7 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
     );
   } catch (e, stack) {
     print('Error: $e\n$stack');
-    return Response.internalServerError(body: 'Internal Server Error: $e');
+    rethrow;
   }
 }
 
@@ -129,11 +140,27 @@ void main() async {
   // Register Handlers
   TypeHandlerRegistry.register<DateTime>(DateHandler());
   TypeHandlerRegistry.register<User>(UserHandler());
-  print('Handlers registered.');
+  print('Custom type handlers registered.');
 
+<<<<<<< HEAD
   final handler = const Pipeline()
       .addMiddleware(logRequests())
       .addHandler(shelfAdapter);
+=======
+  // 3. Setup Router
+  final router = Router();
+  
+  // Register download route
+  router.get('/download/<file>', createDownloadHandler(downloadDir.path));
+
+  // Forward everything else to existing adapter
+  router.mount('/', shelfAdapter);
+
+  final handler = Pipeline()
+      .addMiddleware(logRequests())
+      .addMiddleware(dsErrorMiddleware())
+      .addHandler(router.call);
+>>>>>>> development
 
   final server = await shelf_io.serve(handler, 'localhost', 8086);
   print('Premium Sample Server listening on http://${server.address.host}:${server.port}');

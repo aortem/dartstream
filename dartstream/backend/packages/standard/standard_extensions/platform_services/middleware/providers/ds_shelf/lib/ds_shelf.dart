@@ -4,6 +4,7 @@ library ds_shelf;
 // Export Base Shelf Component so users don't have to import them separately
 
 export 'package:shelf/shelf.dart';
+export 'package:shelf/shelf_io.dart';
 export 'package:shelf_packages_handler/shelf_packages_handler.dart';
 export 'package:shelf_proxy/shelf_proxy.dart';
 export 'package:shelf_router/shelf_router.dart';
