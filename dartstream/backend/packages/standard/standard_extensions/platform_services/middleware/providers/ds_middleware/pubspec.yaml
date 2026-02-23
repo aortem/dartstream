@@ -19,5 +19,8 @@ dependencies:
   path: any
   logging: any
 dev_dependencies:
+  test: ^1.24.0
+  ds_error_handling:
+    path: ../../../../error_handling
   mockito: ^5.0.0
   mocktail: ^1.0.3

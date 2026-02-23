@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DartStream Concurrency Demo</title>
+    <style>
+      body {
+        font-family: sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .card {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 10px;
+        border-radius: 5px;
+      }
+      button {
+        padding: 8px 15px;
+        cursor: pointer;
+      }
+      #log {
+        background: #f0f0f0;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #999;
+        font-family: monospace;
+      }
+      .row {
+        display: flex;
+        gap: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>DartStream Multi-Threading Demo</h1>
+
+    <div class="card">
+      <h3>Heavy Task (Isolate)</h3>
+      <p>
+        Calculates Fibonacci(40) on a worker isolate. Should take ~2-3s but NOT
+        block UI or other requests.
+      </p>
+      <button onclick="runHeavy()">Run Heavy Task</button>
+    </div>
+
+    <div class="card">
+      <h3>Light Task (Isolate)</h3>
+      <p>
+        Echoes a message immediately. Use this while Heavy Task is running to
+        prove concurrency.
+      </p>
+      <button onclick="runLight()">Run Light Task</button>
+    </div>
+
+    <h3>Activity Log:</h3>
+    <div id="log"></div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
