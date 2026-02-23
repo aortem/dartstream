@@ -1,8 +1,8 @@
 stages:
   - setup
   - validation
-  # - unit_testing
-  # - integration_testing
+  - unit_testing
+  - integration_testing
   - e2e_testing
   # - frontend
   # - backend
@@ -170,16 +170,39 @@ validation_trigger_docs:
 #     - when: never
 
 # -------------------------------------------------------------------
-# Cypress E2E Tests (Frontend Only)
+# Cypress Tests - Unit/Integration/End2End
 # -------------------------------------------------------------------
+
+cypress_tests:
+  stage: unit_testing
+  trigger:
+    include: tools/pipelines/qa-testing/child-ci-qa-unit.yml
+  rules:
+    # Run only when backend has changed
+    - changes:
+        - dartstream-opensource/backend/**/*
+      when: always
+    - when: never
+
+cypress_tests:
+  stage: integration_testing
+  trigger:
+    include: tools/pipelines/qa-testing/child-ci-qa-integration.yml
+  rules:
+    # Run only when backend has changed
+    - changes:
+        - dartstream-opensource/backend/**/*
+      when: always
+    - when: never
+
 cypress_tests:
   stage: e2e_testing
   trigger:
     include: tools/pipelines/qa-testing/child-ci-qa-e2e.yml
   rules:
-    # Run only when frontend has changed
+    # Run only when backend has changed
     - changes:
-        - dartstream/frontend/**/*
+        - dartstream-opensource/backend/**/*
       when: always
     - when: never
 

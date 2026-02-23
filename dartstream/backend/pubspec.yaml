@@ -8,7 +8,7 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.9
+  sdk: ^3.11.0
 
 dependencies:
   shelf: ^1.4.2
@@ -51,7 +51,6 @@ dependencies:
 
 # Feature flags
 # ds_ff_base: ^0.0.1
-# ds_ff_flagd: ^0.0.1
 # ds_ff_dartstream: ^0.0.1
 
 # Reactive dataflow - data streaming (lean OSS list)
@@ -85,7 +84,6 @@ workspace:
   - packages/standard/standard_extensions/persistence/storage/providers/gcp
   - packages/standard/standard_extensions/platform_services/discovery/
   - packages/standard/standard_extensions/platform_services/feature_flags/base
-  - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
   - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
   - packages/standard/standard_extensions/platform_services/middleware/base
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware

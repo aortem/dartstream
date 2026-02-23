@@ -1,13 +1,27 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:shelf/shelf_io.dart';
 import 'package:ds_shelf/ds_shelf.dart';
+import 'package:shelf/shelf_io.dart' as shelf_io;
 
 void main() async {
-  final router = Router();
+  print('🚀 Starting DartStream Static Files Demo Server...');
 
-  // Route to echo back the parsed body
-  router.post('/echo', (Request request) async {
+  final server = DSShelfCore();
+
+  // Add middlewares
+  server.addMiddleware(dsShelfCorsMiddleware());
+  server.addMiddleware(dsShelfBodyParserMiddleware());
+
+  // 1. Register API Routes
+  server.addGetRoute('/api/hello', (Request request) {
+     return Response.ok(
+      '{"message": "Hello from DartStream API!", "timestamp": "${DateTime.now().toIso8601String()}"}',
+      headers: {'Content-Type': 'application/json'},
+    );
+  });
+
+  // Echo route
+  server.addPostRoute('/echo', (Request request) async {
     final parsedBody = request.context['ds_shelf.body'];
     
     if (parsedBody == null) {
@@ -25,25 +39,36 @@ void main() async {
     }), headers: {'content-type': 'application/json'});
   });
 
-  // Simple GET route for health check
-  router.get('/health', (Request request) {
-    return Response.ok('Server is up and running');
-  });
+  // 2. Register Static Files
+  // Attempting to resolve path correctly to avoid crash
+  // If running from root, 'example/public' is correct. If running from example/, 'public' is correct.
+  String? staticPath;
+  if (Directory('example/public').existsSync()) {
+    staticPath = 'example/public';
+  } else if (Directory('public').existsSync()) {
+    staticPath = 'public';
+  }
 
-  // Serve index.html at root
-  router.get('/', (Request request) async {
-    final file = File('index.html');
-    if (await file.exists()) {
-      return Response.ok(await file.readAsString(), headers: {'content-type': 'text/html'});
-    }
-    return Response.notFound('index.html not found');
-  });
+  if (staticPath != null) {
+    server.addStaticRoute(staticPath);
+    print('📁 Static files will be served from: $staticPath');
+  } else {
+    print('Warning: public directory not found for static files. Static serving disabled.');
+  }
 
-  final handler = const Pipeline()
-      .addMiddleware(dsShelfCorsMiddleware())
-      .addMiddleware(dsShelfBodyParserMiddleware())
-      .addHandler(router);
+  // 3. Print Routes
+  print('\n🖨️  Registered Routes:');
+  server.printRoutes();
 
-  final server = await serve(handler, InternetAddress.loopbackIPv4, 8081);
-  print('Listening on http://localhost:${server.port}');
+  // 4. Start Server
+  final handler = server.handler;
+  final port = int.parse(Platform.environment['PORT'] ?? '8080');
+  await shelf_io.serve(handler, InternetAddress.loopbackIPv4, port);
+
+  print('\n✅ Server running at http://localhost:$port');
+  print('  • http://localhost:$port/api/hello  (API endpoint)');
+  print('  • http://localhost:$port/echo       (Echo endpoint)');
+  if (staticPath != null) {
+     print('  • http://localhost:$port/           (index.html)');
+  }
 }
