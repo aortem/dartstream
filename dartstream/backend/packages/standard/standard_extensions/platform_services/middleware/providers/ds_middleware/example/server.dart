@@ -1,45 +1,10 @@
-<<<<<<< HEAD
-import 'dart:io';
-import 'package:ds_shelf/ds_shelf.dart';
-import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
-
-void main() async {
-  // 1. Setup a directory for downloads
-  final downloadDir = Directory('downloads_example');
-  if (!downloadDir.existsSync()) {
-    downloadDir.createSync();
-  }
-  
-  // Create a dummy file
-  File('${downloadDir.path}/hello.txt').writeAsStringSync('Hello from DartStream Download!');
-
-  // 2. Create the router
-  final app = Router();
-  
-  // Add the download route
-  // Note: The handler expects the request to have a route param named 'file'
-  app.get('/download/<file>', createDownloadHandler(downloadDir.path));
-  
-  app.get('/', (Request request) {
-    return Response.ok('Visit /download/hello.txt to test downloading.');
-  });
-
-  // 3. Create the server
-  final handler = Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(app.call);
-
-  final server = await shelf_io.serve(handler, 'localhost', 8080);
-  print('Serving at http://${server.address.host}:${server.port}');
-  print('Try downloading: http://localhost:8080/download/hello.txt');
-=======
 import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:ds_middleware/ds_custom_middleware.dart';
-import 'package:shelf/shelf.dart';
+import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
+import 'package:ds_shelf/ds_shelf.dart'; // Replaces direct shelf imports
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
 // --- 1. Define Custom Types And Handlers ---
@@ -81,7 +46,7 @@ class UserHandler implements TypeHandler<User> {
 
 // --- 2. Define Middleware/Handler Logic ---
 
-final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
+final staticFileHandler = DsStaticFileHandler(publicDir: path.join(Directory.current.path, 'example', 'web'));
 final corsMiddleware = DsCorsMiddleware();
 
 /// A simple adapter that converts Shelf Request -> DsRequest -> Handler -> DsResponse -> Shelf Response
@@ -135,7 +100,7 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
           );
        }
        // Serve static files
-       dsResponse = await staticFileHandler.handleRequest(effectiveRequest);
+       dsResponse = (await staticFileHandler.handle(effectiveRequest)) ?? DsCustomMiddleWareResponse.notFound();
     } else {
       dsResponse = DsCustomMiddleWareResponse.notFound();
     }
@@ -164,16 +129,33 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
 }
 
 void main() async {
-  // Register Handlers
+  // 1. Setup Download Directory
+  final downloadDir = Directory('downloads_example');
+  if (!downloadDir.existsSync()) {
+    downloadDir.createSync();
+  }
+  File('${downloadDir.path}/hello.txt').writeAsStringSync('Hello from DartStream Download!');
+
+  // 2. Register Custom Handlers
   TypeHandlerRegistry.register<DateTime>(DateHandler());
   TypeHandlerRegistry.register<User>(UserHandler());
   print('Handlers registered.');
 
-  final handler = const Pipeline()
-      .addMiddleware(logRequests())
-      .addHandler(shelfAdapter);
+  // 3. Setup Router
+  final router = Router();
+  
+  // Register download route
+  router.get('/download/<file>', createDownloadHandler(downloadDir.path));
 
-  final server = await shelf_io.serve(handler, 'localhost', 8086);
+  // Forward everything else to existing adapter
+  // We use mount with a root prefix to capture everything else
+  router.mount('/', shelfAdapter);
+
+  final handler = Pipeline()
+      .addMiddleware(logRequests())
+      .addHandler(router.call);
+
+  final server = await shelf_io.serve(handler, 'localhost', 8080);
   print('Premium Sample Server listening on http://${server.address.host}:${server.port}');
->>>>>>> development
+  print('Try downloading: http://localhost:8080/download/hello.txt');
 }
