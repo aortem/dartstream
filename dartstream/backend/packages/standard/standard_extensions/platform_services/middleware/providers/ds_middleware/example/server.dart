@@ -4,7 +4,7 @@ import 'package:path/path.dart' as path;
 
 import 'package:ds_middleware/ds_custom_middleware.dart';
 import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
-import 'package:ds_shelf/ds_shelf.dart';
+import 'package:ds_shelf/ds_shelf.dart'; // Replaces direct shelf imports
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:ds_error_handling/ds_error_handling.dart';
 
@@ -96,6 +96,7 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
             uri: dsRequest.uri.replace(path: '/index.html')
           );
        }
+       // Serve static files
        dsResponse = (await staticFileHandler.handle(effectiveRequest)) ?? DsCustomMiddleWareResponse.notFound();
     } else {
       dsResponse = DsCustomMiddleWareResponse.notFound();
@@ -124,18 +125,26 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
 }
 
 void main() async {
+  // 1. Setup Download Directory
   final downloadDir = Directory('downloads_example');
   if (!downloadDir.existsSync()) {
     downloadDir.createSync();
   }
   File('${downloadDir.path}/hello.txt').writeAsStringSync('Hello from DartStream Download!');
 
+  // 2. Register Custom Handlers
   TypeHandlerRegistry.register<DateTime>(DateHandler());
   TypeHandlerRegistry.register<User>(UserHandler());
   print('Custom type handlers registered.');
 
+  // 3. Setup Router
   final router = Router();
+  
+  // Register download route
   router.get('/download/<file>', createDownloadHandler(downloadDir.path));
+
+  // Forward everything else to existing adapter
+  // We use mount with a root prefix to capture everything else
   router.mount('/', shelfAdapter);
 
   final handler = Pipeline()
@@ -145,5 +154,5 @@ void main() async {
 
   final server = await shelf_io.serve(handler, 'localhost', 8080);
   print('Premium Sample Server listening on http://${server.address.host}:${server.port}');
-  print('Test file download: http://localhost:8080/download/hello.txt');
+  print('Try downloading: http://localhost:8080/download/hello.txt');
 }

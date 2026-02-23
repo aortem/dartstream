@@ -11,13 +11,15 @@ environment:
 
 dependencies:
   ds_standard_features: ^0.1.6
-  mime: ^1.0.0
-
-dev_dependencies:
-  test: ^1.24.0
   ds_tools_testing: ^0.1.4
   ds_shelf:
     path: ../ds_shelf
+  mime: ^1.0.0
+
+  path: any
+  logging: any
+dev_dependencies:
+  test: ^1.24.0
   ds_error_handling:
     path: ../../../../error_handling
   mockito: ^5.0.0
