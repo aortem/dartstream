@@ -8,7 +8,6 @@ class DsErrorHandler {
     try {
       return await next(request);
     } catch (e) {
-      print('Error caught: $e');
       return DsCustomMiddleWareResponse(
         500,
         {'Content-Type': 'application/json'},

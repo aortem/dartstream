@@ -30,7 +30,6 @@ class DsWebSocketHandler {
         _sockets.remove(socket);
       },
       onError: (error) {
-        print('WebSocket error: $error');
         _sockets.remove(socket);
       },
     );
