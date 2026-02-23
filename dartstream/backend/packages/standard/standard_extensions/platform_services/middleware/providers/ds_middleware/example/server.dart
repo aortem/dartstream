@@ -4,7 +4,7 @@ import 'package:path/path.dart' as path;
 
 import 'package:ds_middleware/ds_custom_middleware.dart';
 import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
-import 'package:ds_shelf/ds_shelf.dart'; // Replaces direct shelf imports
+import 'package:ds_shelf/ds_shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 import 'package:ds_error_handling/ds_error_handling.dart';
 
@@ -144,7 +144,6 @@ void main() async {
   router.get('/download/<file>', createDownloadHandler(downloadDir.path));
 
   // Forward everything else to existing adapter
-  // We use mount with a root prefix to capture everything else
   router.mount('/', shelfAdapter);
 
   final handler = Pipeline()
