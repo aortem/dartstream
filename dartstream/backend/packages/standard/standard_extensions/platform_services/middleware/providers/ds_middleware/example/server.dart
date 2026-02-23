@@ -6,8 +6,6 @@ import 'package:ds_middleware/ds_custom_middleware.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
 
-
-
 class User {
   final String name;
   final int age;
@@ -42,8 +40,6 @@ class UserHandler implements TypeHandler<User> {
   @override
   bool canHandle(dynamic value) => value is User;
 }
-
-
 
 final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
 final corsMiddleware = DsCorsMiddleware();
@@ -120,7 +116,8 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
 
     return Response(
       dsResponse.statusCode,
-      headers: dsResponse.headers,      body: finalBody,
+      headers: dsResponse.headers,
+      body: finalBody,
     );
   } catch (e, stack) {
     print('Error: $e\n$stack');
