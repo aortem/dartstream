@@ -1,7 +1,5 @@
 import '../../app/models/ds_custom_middleware_model.dart';
 
-
-
 class NestedRouter {
   Future<DsCustomMiddleWareResponse> handleNestedRequest(DsCustomMiddleWareRequest request) async {
     if (request.uri.path.startsWith('/users/') && request.uri.path.contains('/profile')) {

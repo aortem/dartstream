@@ -1,31 +1,28 @@
-
-import 'ds_custom_middleware_base.dart';
+﻿import 'ds_custom_middleware_base.dart';
 import 'app/models/ds_custom_middleware_model.dart';
 import 'src/routing/dynamic_routing.dart';
 import 'src/routing/index_routing.dart';
 import 'src/routing/nested_router.dart';
 import 'src/routing/print_router.dart';
-import 'src/handlers/ds_static_file_handler.dart';
+import 'src/static_files/ds_static_file_handler.dart';
 
 class RequestInterceptor extends DsCustomMiddleware {
   final Router _router = Router();
   final IndexRouter _indexRouter = IndexRouter();
   final PrintRouter _printRouter = PrintRouter();
   final NestedRouter _nestedRouter = NestedRouter();
+  final DsStaticFileHandler _staticHandler = DsStaticFileHandler('example/web');
 
   @override
   Future<DsCustomMiddleWareResponse> handle(
     DsCustomMiddleWareRequest request,
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
   ) async {
-    // Check for static files first
-    final staticHandler = DsStaticFileHandler();
-    final staticResponse = await staticHandler.handle(request);
-    if (staticResponse != null) {
-      return staticResponse;
+    final response = await _staticHandler.handleRequest(request);
+    if (response.statusCode != 404) {
+      return response;
     }
 
-    // Choose which router to use based on the request path
     if (request.uri.path == '/' || request.uri.path == '/index') {
       return _indexRouter.handleIndexRequest(request);
     } else if (request.uri.path.startsWith('/print')) {

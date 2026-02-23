@@ -1,6 +1,5 @@
 import '../../app/models/ds_custom_middleware_model.dart';
 
-
 class Router {
   Future<DsCustomMiddleWareResponse> handleRequest(DsCustomMiddleWareRequest request) async {
     final path = request.uri.path;

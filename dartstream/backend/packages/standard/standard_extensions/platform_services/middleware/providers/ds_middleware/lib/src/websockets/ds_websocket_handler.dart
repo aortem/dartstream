@@ -7,8 +7,11 @@ class DsWebSocketHandler {
 
   Future<DsCustomMiddleWareResponse> handleRequest(
       DsCustomMiddleWareRequest request) async {
-    if (WebSocketTransformer.isUpgradeRequest(request as HttpRequest)) {
-      final socket = await WebSocketTransformer.upgrade(request as HttpRequest);
+    final httpRequest = request.context['shelf.io.http_request'];
+
+    if (httpRequest is HttpRequest &&
+        WebSocketTransformer.isUpgradeRequest(httpRequest)) {
+      final socket = await WebSocketTransformer.upgrade(httpRequest);
       _handleWebSocket(socket);
       return DsCustomMiddleWareResponse(101, {}, 'Switching Protocols');
     } else {
@@ -27,7 +30,6 @@ class DsWebSocketHandler {
         _sockets.remove(socket);
       },
       onError: (error) {
-        print('WebSocket error: $error');
         _sockets.remove(socket);
       },
     );

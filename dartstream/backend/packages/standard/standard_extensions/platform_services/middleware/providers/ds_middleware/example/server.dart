@@ -1,14 +1,10 @@
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 
 import 'package:ds_middleware/ds_custom_middleware.dart';
-import 'package:ds_middleware/app/controllers/ds_download_handler.dart';
-import 'package:ds_shelf/ds_shelf.dart';
+import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as shelf_io;
-import 'package:ds_error_handling/ds_error_handling.dart';
-
-// --- 1. Custom Models ---
 
 class User {
   final String name;
@@ -36,7 +32,7 @@ class UserHandler implements TypeHandler<User> {
       return User.fromJson(value);
     }
     if (value is String) {
-       return User.fromJson(jsonDecode(value));
+      return User.fromJson(jsonDecode(value));
     }
     throw FormatException('Cannot deserialize User from $value');
   }
@@ -45,16 +41,14 @@ class UserHandler implements TypeHandler<User> {
   bool canHandle(dynamic value) => value is User;
 }
 
-// --- 2. Request Handling Logic ---
-
-final staticFileHandler = DsStaticFileHandler(publicDir: path.join(Directory.current.path, 'example', 'web'));
+final staticFileHandler = DsStaticFileHandler(path.join(Directory.current.path, 'example', 'web'));
 final corsMiddleware = DsCorsMiddleware();
 
 /// Adapter to bridge Shelf and DartStream Middleware
 Future<Response> shelfAdapter(Request shelfRequest) async {
   try {
     final bodyString = await shelfRequest.readAsString();
-    
+
     dynamic body;
     if (shelfRequest.mimeType == 'application/json' && bodyString.isNotEmpty) {
       body = jsonDecode(bodyString);
@@ -68,16 +62,17 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
       shelfRequest.headers,
       body,
       shelfRequest.url.queryParameters,
-      routeParams: {}
+      routeParams: {},
+      context: shelfRequest.context,
     );
 
     if (dsRequest.method == 'OPTIONS') {
-       final corsResponse = await corsMiddleware.handle(dsRequest, (req) async => DsCustomMiddleWareResponse.ok(''));
-       return Response(corsResponse.statusCode, headers: corsResponse.headers, body: '');
+      final corsResponse = await corsMiddleware.handle(dsRequest, (req) async => DsCustomMiddleWareResponse.ok(''));
+      return Response(corsResponse.statusCode, headers: corsResponse.headers, body: '');
     }
 
     DsCustomMiddleWareResponse dsResponse;
-    
+
     if (dsRequest.uri.path == '/user' && dsRequest.method == 'POST') {
       try {
         final user = dsRequest.bodyAs<User>();
@@ -90,14 +85,11 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
     } else if (dsRequest.uri.path == '/time' && dsRequest.method == 'GET') {
       dsResponse = DsCustomMiddleWareResponse.ok(DateTime.now());
     } else if (dsRequest.uri.path == '/' || dsRequest.uri.path == '/index.html' || dsRequest.uri.path.startsWith('/assets/') || dsRequest.uri.path.endsWith('.css') || dsRequest.uri.path.endsWith('.js')) {
-       var effectiveRequest = dsRequest;
-       if (dsRequest.uri.path == '/') {
-          effectiveRequest = dsRequest.copyWith(
-            uri: dsRequest.uri.replace(path: '/index.html')
-          );
-       }
-       // Serve static files
-       dsResponse = (await staticFileHandler.handle(effectiveRequest)) ?? DsCustomMiddleWareResponse.notFound();
+      var effectiveRequest = dsRequest;
+      if (dsRequest.uri.path == '/') {
+        effectiveRequest = dsRequest.copyWith(uri: dsRequest.uri.replace(path: '/index.html'));
+      }
+      dsResponse = await staticFileHandler.handleRequest(effectiveRequest);
     } else {
       dsResponse = DsCustomMiddleWareResponse.notFound();
     }
@@ -120,38 +112,19 @@ Future<Response> shelfAdapter(Request shelfRequest) async {
     );
   } catch (e, stack) {
     print('Error: $e\n$stack');
-    rethrow;
+    return Response.internalServerError(body: 'Internal Server Error: $e');
   }
 }
 
 void main() async {
-  // 1. Setup Download Directory
-  final downloadDir = Directory('downloads_example');
-  if (!downloadDir.existsSync()) {
-    downloadDir.createSync();
-  }
-  File('${downloadDir.path}/hello.txt').writeAsStringSync('Hello from DartStream Download!');
-
-  // 2. Register Custom Handlers
   TypeHandlerRegistry.register<DateTime>(DateHandler());
   TypeHandlerRegistry.register<User>(UserHandler());
-  print('Custom type handlers registered.');
+  print('Handlers registered.');
 
-  // 3. Setup Router
-  final router = Router();
-  
-  // Register download route
-  router.get('/download/<file>', createDownloadHandler(downloadDir.path));
-
-  // Forward everything else to existing adapter
-  router.mount('/', shelfAdapter);
-
-  final handler = Pipeline()
+  final handler = const Pipeline()
       .addMiddleware(logRequests())
-      .addMiddleware(dsErrorMiddleware())
-      .addHandler(router.call);
+      .addHandler(shelfAdapter);
 
-  final server = await shelf_io.serve(handler, 'localhost', 8080);
+  final server = await shelf_io.serve(handler, 'localhost', 8086);
   print('Premium Sample Server listening on http://${server.address.host}:${server.port}');
-  print('Try downloading: http://localhost:8080/download/hello.txt');
 }
