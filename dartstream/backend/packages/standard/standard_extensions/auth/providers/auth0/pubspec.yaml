@@ -14,5 +14,5 @@ dependencies:
   ds_standard_features: ^0.1.5
 
 dev_dependencies:
-  test: ^1.29.0
+  ds_tools_testing: ^0.1.4
 
