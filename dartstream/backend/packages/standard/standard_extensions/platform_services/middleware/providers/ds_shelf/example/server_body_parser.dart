@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:shelf/shelf_io.dart';
 import 'package:ds_shelf/ds_shelf.dart';
 
 void main() async {
