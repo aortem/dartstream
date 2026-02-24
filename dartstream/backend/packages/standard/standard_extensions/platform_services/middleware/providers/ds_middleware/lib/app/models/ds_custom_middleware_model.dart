@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
 
 class DsCustomMiddleWareRequest {
@@ -7,26 +6,32 @@ class DsCustomMiddleWareRequest {
   final Uri uri;
   final Map<String, String> headers;
   final body;
-  final Map<String, String> routeParams; // Added routeParams field
-  final Map<String, String> queryParams; // Added queryParams field
-  final Map<String, dynamic> context; // Added context field
+  final Map<String, String> routeParams;
+  final Map<String, String> queryParams;
+  final Map<String, dynamic> context;
 
   DsCustomMiddleWareRequest(
-      this.method, this.uri, this.headers, this.body, this.queryParams,
-      {this.routeParams = const {}, this.context = const {}});
+    this.method,
+    this.uri,
+    this.headers,
+    this.body,
+    this.queryParams, {
+    this.routeParams = const {},
+    this.context = const {},
+  });
+
   DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
-    // Create a new Request object with the updated headers
     return DsCustomMiddleWareRequest(
-        method,
-        uri,
-        headers ?? this.headers,
-        body,
-        queryParams,
-        routeParams: routeParams,
-        context: context);
+      method,
+      uri,
+      headers ?? this.headers,
+      body,
+      queryParams,
+      routeParams: routeParams,
+      context: context,
+    );
   }
 
-  // Added new 'copyWith' method
   DsCustomMiddleWareRequest copyWith({
     String? method,
     Uri? uri,
@@ -47,7 +52,6 @@ class DsCustomMiddleWareRequest {
     );
   }
 
-  //add read to support body parsing
   Stream<List<int>> read() {
     if (body is String) {
       return Stream.value(utf8.encode(body as String));
@@ -59,6 +63,7 @@ class DsCustomMiddleWareRequest {
   }
 
   T bodyAs<T>() {
+    if (body is T) return body as T;
     return TypeHandlerRegistry.deserialize<T>(body);
   }
 }
@@ -66,19 +71,18 @@ class DsCustomMiddleWareRequest {
 class DsCustomMiddleWareResponse {
   final int statusCode;
   final Map<String, String> headers;
-  final body;
-  // Add the request property
+  final dynamic body;
   final DsCustomMiddleWareRequest? request;
 
-  DsCustomMiddleWareResponse(this.statusCode, this.headers, this.body,
-      {this.request});
+  DsCustomMiddleWareResponse(
+    this.statusCode,
+    this.headers,
+    dynamic body, {
+    this.request,
+  }) : body = TypeHandlerRegistry.serialize(body);
 
   static DsCustomMiddleWareResponse ok(dynamic body) {
-    dynamic serializedBody = body;
-    if (body != null) {
-       serializedBody = TypeHandlerRegistry.serialize(body);
-    }
-    return DsCustomMiddleWareResponse(200, {}, serializedBody);
+    return DsCustomMiddleWareResponse(200, {}, body);
   }
 
   static DsCustomMiddleWareResponse notFound() {
@@ -86,8 +90,9 @@ class DsCustomMiddleWareResponse {
   }
 
   static DsCustomMiddleWareResponse unauthorized() {
-    return DsCustomMiddleWareResponse(
-        401, {'www-authenticate': 'Bearer'}, 'Unauthorized');
+    return DsCustomMiddleWareResponse(401, {
+      'www-authenticate': 'Bearer',
+    }, 'Unauthorized');
   }
 
   DsCustomMiddleWareResponse copyWith({
@@ -96,7 +101,6 @@ class DsCustomMiddleWareResponse {
     dynamic body,
     DsCustomMiddleWareRequest? request,
   }) {
-    // Create a new Response object with the updated properties
     return DsCustomMiddleWareResponse(
       statusCode ?? this.statusCode,
       headers ?? this.headers,

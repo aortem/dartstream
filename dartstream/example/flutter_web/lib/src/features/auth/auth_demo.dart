@@ -11,7 +11,6 @@ class AuthDemo extends StatefulWidget {
     required this.authManager,
   });
 
-  @override
   State<AuthDemo> createState() => _AuthDemoState();
 }
 
@@ -20,7 +19,6 @@ class _AuthDemoState extends State<AuthDemo> {
   String? _error;
   bool _loading = true;
 
-  @override
   void initState() {
     super.initState();
     _loadCurrentUser();
@@ -60,7 +58,7 @@ class _AuthDemoState extends State<AuthDemo> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _error = e is DSAuthError ? e.message : e.toString();
+          _error = e.toString();
           _currentUser = null;
           _loading = false;
         });
@@ -78,7 +76,6 @@ class _AuthDemoState extends State<AuthDemo> {
     });
   }
 
-  @override
   Widget build(BuildContext context) {
     if (_loading) {
       return const Scaffold(

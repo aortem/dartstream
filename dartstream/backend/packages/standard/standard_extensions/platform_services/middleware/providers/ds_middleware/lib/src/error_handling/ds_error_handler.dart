@@ -8,27 +8,21 @@ class DsErrorHandler {
     try {
       return await next(request);
     } catch (e) {
-      return DsCustomMiddleWareResponse(
-        500,
-        {'Content-Type': 'application/json'},
-        '{"error": "Internal Server Error"}',
-      );
+      return DsCustomMiddleWareResponse(500, {
+        'Content-Type': 'application/json',
+      }, '{"error": "Internal Server Error"}');
     }
   }
 
   DsCustomMiddleWareResponse handleNotFound() {
-    return DsCustomMiddleWareResponse(
-      404,
-      {'Content-Type': 'application/json'},
-      '{"error": "Not Found"}',
-    );
+    return DsCustomMiddleWareResponse(404, {
+      'Content-Type': 'application/json',
+    }, '{"error": "Not Found"}');
   }
 
   DsCustomMiddleWareResponse handleBadRequest(String message) {
-    return DsCustomMiddleWareResponse(
-      400,
-      {'Content-Type': 'application/json'},
-      '{"error": "Bad Request", "message": "$message"}',
-    );
+    return DsCustomMiddleWareResponse(400, {
+      'Content-Type': 'application/json',
+    }, '{"error": "Bad Request", "message": "$message"}');
   }
 }

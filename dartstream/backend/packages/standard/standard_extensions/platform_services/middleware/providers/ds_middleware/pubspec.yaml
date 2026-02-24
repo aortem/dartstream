@@ -23,3 +23,4 @@ dev_dependencies:
     path: ../../../../error_handling
   mockito: ^5.0.0
   mocktail: ^1.0.3
+  shelf: ^1.4.0

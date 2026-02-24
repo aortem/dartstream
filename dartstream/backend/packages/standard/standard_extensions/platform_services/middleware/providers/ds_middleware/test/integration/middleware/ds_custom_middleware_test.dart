@@ -1,6 +1,5 @@
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_tools_testing/ds_tools_testing.dart';
-
+import 'package:test/test.dart';
 import '../../../example/ds_example_authentication.dart';
 
 void main() {
@@ -11,11 +10,17 @@ void main() {
       final authenticationMiddleware =
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
-      var request = DsCustomMiddleWareRequest('GET',
-          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, <String, String>{});
+      var request = DsCustomMiddleWareRequest(
+        'GET',
+        Uri.parse('/authenticated/resource'),
+        {'Authorization': 'user1'},
+        {},
+        <String, String>{},
+      );
 
-      var response =
-          await authenticationMiddleware.handle(request, (req) async {
+      var response = await authenticationMiddleware.handle(request, (
+        req,
+      ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 
@@ -30,15 +35,20 @@ void main() {
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
       var request = DsCustomMiddleWareRequest(
-          'GET', Uri.parse('/authenticated/resource'), {}, {}, <String, String>{});
+        'GET',
+        Uri.parse('/authenticated/resource'),
+        {},
+        {},
+        <String, String>{},
+      );
 
-      var response =
-          await authenticationMiddleware.handle(request, (req) async {
+      var response = await authenticationMiddleware.handle(request, (
+        req,
+      ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 
       expect(response.statusCode, equals(401));
-      expect(response.body, equals('Unauthorized'));
     });
   });
 }

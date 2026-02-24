@@ -3,17 +3,12 @@ import '../../../../../dartstream_backend/packages/standard/extensions/auth/base
 
 // Mock implementation of DSAuthProvider for testing
 class MockAuthProvider implements DSAuthProvider {
-  @override
   Future<void> signIn(String username, String password) async {
     // Simulated behavior
   }
-
-  @override
   Future<void> signOut() async {
     // Simulated behavior
   }
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     return DSAuthUser(
       id: userId,
@@ -21,8 +16,6 @@ class MockAuthProvider implements DSAuthProvider {
       displayName: 'Test User',
     );
   }
-
-  @override
   Future<bool> verifyToken(String token) async {
     return token == 'valid_token';
   }

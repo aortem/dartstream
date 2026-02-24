@@ -5,9 +5,9 @@ import 'package:openid_client/openid_client.dart';
 class PingProvider {
   // Ping Identity configuration
   // Replace these with your actual Ping Identity environment values
-  final String issuerUrl = "https://auth.pingone.com/YOUR_ENV_ID/as";
-  final String clientId = "YOUR_CLIENT_ID";
-  final List<String> scopes = ["openid", "profile", "email"];
+  final String issuerUrl = 'https://auth.pingone.com/YOUR_ENV_ID/as';
+  final String clientId = 'YOUR_CLIENT_ID';
+  final List<String> scopes = ['openid', 'profile', 'email'];
 
   // Store the authenticated credential
   Credential? _credential;

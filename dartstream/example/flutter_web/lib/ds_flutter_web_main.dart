@@ -35,7 +35,6 @@ Future<void> main() async {
 class DartStreamAuthDemo extends StatefulWidget {
   const DartStreamAuthDemo({super.key});
 
-  @override
   State<DartStreamAuthDemo> createState() => _DartStreamAuthDemoState();
 }
 
@@ -45,12 +44,10 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
   bool _initialized = false;
   String? _error;
 
-  @override
   void initState() {
     super.initState();
   }
 
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     if (!_initialized && _error == null) {
@@ -125,7 +122,6 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     if (!_initialized) {
       return MaterialApp(
@@ -180,7 +176,6 @@ class _DartStreamAuthDemoState extends State<DartStreamAuthDemo> {
     );
   }
 
-  @override
   void dispose() {
     if (_initialized) {
       _core?.dispose();

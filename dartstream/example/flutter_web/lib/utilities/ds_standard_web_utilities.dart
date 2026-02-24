@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html' as html;
 import 'dart:math' show pow, log;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:web/web.dart' as web;
 
 /// Utility functions for Flutter web implementation.
 /// Provides commonly used web-specific utilities and helper functions.
@@ -17,7 +18,7 @@ class DSWebUtilities {
 
   /// Gets current browser name
   static String getBrowserName() {
-    final userAgent = html.window.navigator.userAgent.toLowerCase();
+    final userAgent = web.window.navigator.userAgent.toLowerCase();
     if (userAgent.contains('firefox')) return 'Firefox';
     if (userAgent.contains('chrome')) return 'Chrome';
     if (userAgent.contains('safari')) return 'Safari';
@@ -28,19 +29,19 @@ class DSWebUtilities {
 
   /// Gets browser version
   static String getBrowserVersion() {
-    return html.window.navigator.appVersion;
+    return web.window.navigator.appVersion;
   }
 
   /// URL and Navigation Utilities ============================================
 
   /// Gets current URL
   static String getCurrentUrl() {
-    return html.window.location.href;
+    return web.window.location.href;
   }
 
   /// Gets base URL without query parameters
   static String getBaseUrl() {
-    final uri = Uri.parse(html.window.location.href);
+    final uri = Uri.parse(web.window.location.href);
     return uri.origin + uri.path;
   }
 
@@ -72,39 +73,63 @@ class DSWebUtilities {
 
   /// Saves data to local storage
   static Future<void> saveToLocalStorage(String key, String value) async {
-    html.window.localStorage[key] = value;
+    final storage = web.window.localStorage;
+    if (storage == null) {
+      throw StateError('Local storage is not available');
+    }
+    storage.setItem(key, value);
   }
 
   /// Gets data from local storage
   static String? getFromLocalStorage(String key) {
-    return html.window.localStorage[key];
+    final storage = web.window.localStorage;
+    if (storage == null) {
+      throw StateError('Local storage is not available');
+    }
+    return storage.getItem(key);
   }
 
   /// Removes data from local storage
   static void removeFromLocalStorage(String key) {
-    html.window.localStorage.remove(key);
+    final storage = web.window.localStorage;
+    if (storage == null) {
+      throw StateError('Local storage is not available');
+    }
+    storage.removeItem(key);
   }
 
   /// Clears all local storage
   static void clearLocalStorage() {
-    html.window.localStorage.clear();
+    final storage = web.window.localStorage;
+    if (storage == null) {
+      throw StateError('Local storage is not available');
+    }
+    storage.clear();
   }
 
   /// Session storage utilities
   static Future<void> saveToSessionStorage(String key, String value) async {
-    html.window.sessionStorage[key] = value;
+    final storage = web.window.sessionStorage;
+    if (storage == null) {
+      throw StateError('Session storage is not available');
+    }
+    storage.setItem(key, value);
   }
 
   /// Gets data from session storage
   static String? getFromSessionStorage(String key) {
-    return html.window.sessionStorage[key];
+    final storage = web.window.sessionStorage;
+    if (storage == null) {
+      throw StateError('Session storage is not available');
+    }
+    return storage.getItem(key);
   }
 
   /// Device and Screen Utilities ==========================================
 
   /// Checks if running on mobile browser
   static bool get isMobileDevice {
-    final userAgent = html.window.navigator.userAgent.toLowerCase();
+    final userAgent = web.window.navigator.userAgent.toLowerCase();
     return userAgent.contains('mobile') ||
         userAgent.contains('android') ||
         userAgent.contains('iphone');
@@ -112,7 +137,7 @@ class DSWebUtilities {
 
   /// Gets device pixel ratio
   static num get devicePixelRatio {
-    return html.window.devicePixelRatio;
+    return web.window.devicePixelRatio;
   }
 
   /// Gets screen dimensions
@@ -123,8 +148,8 @@ class DSWebUtilities {
   /// Gets viewport dimensions
   static Size getViewportSize() {
     return Size(
-      html.window.innerWidth?.toDouble() ?? 0,
-      html.window.innerHeight?.toDouble() ?? 0,
+      web.window.innerWidth?.toDouble() ?? 0,
+      web.window.innerHeight?.toDouble() ?? 0,
     );
   }
 
@@ -212,12 +237,13 @@ class DSWebUtilities {
 
   /// Copies text to clipboard
   static Future<void> copyToClipboard(String text) async {
-    await html.window.navigator.clipboard?.writeText(text);
+    await Clipboard.setData(ClipboardData(text: text));
   }
 
   /// Gets text from clipboard
   static Future<String> getFromClipboard() async {
-    return await html.window.navigator.clipboard?.readText() ?? '';
+    final data = await Clipboard.getData('text/plain');
+    return data?.text ?? '';
   }
 
   /// Download Utilities ============================================
@@ -227,10 +253,11 @@ class DSWebUtilities {
 
   /// Downloads data as file
   static void downloadData(List<int> bytes, String filename) {
-    final blob = html.Blob([bytes]);
-    final url = html.Url.createObjectUrlFromBlob(blob);
-    downloadFile(url, filename);
-    html.Url.revokeObjectUrl(url);
+    final dataUrl = Uri.dataFromBytes(
+      bytes,
+      mimeType: 'application/octet-stream',
+    ).toString();
+    downloadFile(dataUrl, filename);
   }
 
   /// Security Utilities ===========================================

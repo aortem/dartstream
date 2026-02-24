@@ -266,7 +266,7 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   }
 
   Future<void> updateUserProfile(String userId, Map<String, dynamic> updates) async {
-    final user = _mockUsers.values.firstWhere(
+    _mockUsers.values.firstWhere(
       (u) => u.id == userId,
       orElse: () => throw DSAuthError(
         'User not found',

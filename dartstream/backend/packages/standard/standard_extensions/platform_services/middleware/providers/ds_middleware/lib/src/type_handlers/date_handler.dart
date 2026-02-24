@@ -12,7 +12,9 @@ class DateHandler implements TypeHandler<DateTime> {
     if (value is String) {
       return DateTime.parse(value);
     }
-    throw FormatException('Expected String for DateTime deserialization, got ${value.runtimeType}');
+    throw FormatException(
+      'Expected String for DateTime deserialization, got ${value.runtimeType}',
+    );
   }
 
   @override
