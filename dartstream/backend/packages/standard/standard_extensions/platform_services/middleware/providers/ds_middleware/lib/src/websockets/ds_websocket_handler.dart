@@ -6,15 +6,19 @@ class DsWebSocketHandler {
   final Set<WebSocket> _sockets = {};
 
   Future<DsCustomMiddleWareResponse> handleRequest(
-    DsCustomMiddleWareRequest request,
-  ) async {
-    // Note: We need a way to access the underlying HttpRequest to use WebSocketTransformer.
-    // Assuming the request object or context provides this in a real integration.
-    // For now, this is a placeholder for the logic.
-    return DsCustomMiddleWareResponse.notFound();
+      DsCustomMiddleWareRequest request) async {
+    final httpRequest = request.context['shelf.io.http_request'];
+
+    if (httpRequest is HttpRequest &&
+        WebSocketTransformer.isUpgradeRequest(httpRequest)) {
+      final socket = await WebSocketTransformer.upgrade(httpRequest);
+      _handleWebSocket(socket);
+      return DsCustomMiddleWareResponse(101, {}, 'Switching Protocols');
+    } else {
+      return DsCustomMiddleWareResponse.notFound();
+    }
   }
 
-  // ignore: unused_element
   void _handleWebSocket(WebSocket socket) {
     _sockets.add(socket);
 
@@ -26,7 +30,6 @@ class DsWebSocketHandler {
         _sockets.remove(socket);
       },
       onError: (error) {
-        print('WebSocket error: $error');
         _sockets.remove(socket);
       },
     );

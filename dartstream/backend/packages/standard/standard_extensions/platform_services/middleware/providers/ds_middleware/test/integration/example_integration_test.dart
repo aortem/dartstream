@@ -1,4 +1,4 @@
-import 'package:ds_tools_testing/ds_tools_testing.dart';
+import 'package:test/test.dart';
 import 'package:ds_middleware/ds_custom_middleware.dart';
 
 // --- 1. Code Under Test ---
@@ -29,9 +29,9 @@ void main() {
       final request = DsCustomMiddleWareRequest(
         'GET',
         Uri.parse('http://localhost/test'),
-        {},
+        <String, String>{},
         null,
-        {},
+        <String, String>{},
       );
 
       // ACT: simulate the middleware chain

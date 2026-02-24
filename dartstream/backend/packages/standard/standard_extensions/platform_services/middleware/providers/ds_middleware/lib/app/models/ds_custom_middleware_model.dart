@@ -8,6 +8,7 @@ class DsCustomMiddleWareRequest {
   final body;
   final Map<String, String> routeParams;
   final Map<String, String> queryParams;
+  final Map<String, dynamic> context;
 
   DsCustomMiddleWareRequest(
     this.method,
@@ -16,6 +17,7 @@ class DsCustomMiddleWareRequest {
     this.body,
     this.queryParams, {
     this.routeParams = const {},
+    this.context = const {},
   });
 
   DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
@@ -26,6 +28,7 @@ class DsCustomMiddleWareRequest {
       body,
       queryParams,
       routeParams: routeParams,
+      context: context,
     );
   }
 
@@ -36,6 +39,7 @@ class DsCustomMiddleWareRequest {
     dynamic body,
     Map<String, String>? routeParams,
     Map<String, String>? queryParams,
+    Map<String, dynamic>? context,
   }) {
     return DsCustomMiddleWareRequest(
       method ?? this.method,
@@ -44,6 +48,7 @@ class DsCustomMiddleWareRequest {
       body ?? this.body,
       queryParams ?? this.queryParams,
       routeParams: routeParams ?? this.routeParams,
+      context: context ?? this.context,
     );
   }
 
