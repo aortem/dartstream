@@ -1,0 +1,42 @@
+{
+  "name": "dartstream",
+  "displayName": "DartStream Helper",
+  "description": "IDE tools for the DartStream Full-stack Framework",
+  "version": "0.1.0",
+  "publisher": "aortem",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onCommand:dartstream.helloWorld",
+    "onCommand:dartstream.initProject"
+  ],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "dartstream.helloWorld",
+        "title": "DartStream: Hello World",
+        "category": "DartStream"
+      },
+      {
+        "command": "dartstream.initProject",
+        "title": "DartStream: Initialize Project",
+        "category": "DartStream"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "dart",
+        "path": "./snippets/dart.json"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.75.0"
+  }
+}
