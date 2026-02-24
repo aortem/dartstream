@@ -11,6 +11,10 @@ import 'ds_flutter_mobile_auth_adapter.dart';
 /// DSFlutterMobileCore is the entry point for Flutter Mobile integration
 class DSFlutterMobileCore {
   static bool _isInitialized = false;
+  static DSFlutterMobileAuthAdapter? _authAdapter;
+
+  /// Exposes the configured auth adapter after initialization.
+  static DSFlutterMobileAuthAdapter? get authAdapter => _authAdapter;
 
   /// Initializes the Flutter Mobile framework
   static Future<void> initialize({
@@ -27,7 +31,7 @@ class DSFlutterMobileCore {
     DSAuthManager.registerProvider('azure', DSAzureADB2CAuthProvider());
 
     // Set up the default auth provider
-    final authAdapter = DSFlutterMobileAuthAdapter(defaultAuthProvider);
+    _authAdapter = DSFlutterMobileAuthAdapter(defaultAuthProvider);
 
     // Optionally enable logging
     if (enableLogging) {

@@ -3,7 +3,6 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:ds_auth_base/ds_auth_manager.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 

@@ -197,7 +197,6 @@ class DSPingErrorMapper {
       return 'Please choose a stronger password.';
 
     case errorNetworkError:
-    case 503:
       return 'Unable to connect. Please check your internet connection.';
 
     default:

@@ -13,12 +13,10 @@ class MockExtension extends ExtensionManifest with LifecycleHook {
           'mock_entry_point',
         );
 
-  @override
   void onInitialize() {
     print('MockExtension initialized.');
   }
 
-  @override
   void onDispose() {
     print('MockExtension disposed.');
   }
