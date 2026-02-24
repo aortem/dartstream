@@ -9,10 +9,11 @@ class DsCustomMiddleWareRequest {
   final body;
   final Map<String, String> routeParams; // Added routeParams field
   final Map<String, String> queryParams; // Added queryParams field
+  final Map<String, dynamic> context; // Added context field
 
   DsCustomMiddleWareRequest(
       this.method, this.uri, this.headers, this.body, this.queryParams,
-      {this.routeParams = const {}});
+      {this.routeParams = const {}, this.context = const {}});
   DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
     // Create a new Request object with the updated headers
     return DsCustomMiddleWareRequest(
@@ -20,8 +21,9 @@ class DsCustomMiddleWareRequest {
         uri,
         headers ?? this.headers,
         body,
+        queryParams,
         routeParams: routeParams,
-        queryParams);
+        context: context);
   }
 
   // Added new 'copyWith' method
@@ -32,14 +34,16 @@ class DsCustomMiddleWareRequest {
     dynamic body,
     Map<String, String>? routeParams,
     Map<String, String>? queryParams,
+    Map<String, dynamic>? context,
   }) {
     return DsCustomMiddleWareRequest(
       method ?? this.method,
       uri ?? this.uri,
       headers ?? this.headers,
       body ?? this.body,
-      routeParams: routeParams ?? this.routeParams,
       queryParams ?? this.queryParams,
+      routeParams: routeParams ?? this.routeParams,
+      context: context ?? this.context,
     );
   }
 

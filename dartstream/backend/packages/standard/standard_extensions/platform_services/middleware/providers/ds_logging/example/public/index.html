@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DartStream | Logging Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --primary: #6366f1;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --debug: #94a3b8;
+            --info: #22c55e;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --critical: #ec4899;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        header {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+        }
+
+        p { color: var(--text-muted); font-size: 1.1rem; }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 32px;
+        }
+
+        .controls {
+            background: var(--surface);
+            padding: 32px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .btn-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        button {
+            padding: 12px 20px;
+            border-radius: 12px;
+            border: none;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text);
+            font-family: inherit;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        button.primary {
+            background: var(--primary);
+            grid-column: span 2;
+        }
+
+        button.primary:hover {
+            background: #4f46e5;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.3);
+        }
+
+        .console {
+            background: #000;
+            border-radius: 24px;
+            padding: 24px;
+            height: 500px;
+            font-family: 'JetBrains Mono', monospace;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.6);
+        }
+
+        .log-entry {
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .level-tag {
+            font-weight: 700;
+            min-width: 80px;
+            display: inline-block;
+        }
+
+        .log-debug { color: var(--debug); }
+        .log-info { color: var(--info); }
+        .log-warning { color: var(--warning); }
+        .log-error { color: var(--error); }
+        .log-critical { color: var(--critical); font-weight: 900; }
+
+        .timestamp { color: #475569; font-size: 0.8rem; }
+        .msg { color: #e2e8f0; }
+
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: var(--primary);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+            transform: translateY(100px);
+            transition: transform 0.3s ease-out;
+        }
+
+        .toast.show { transform: translateY(0); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DartStream Logger</h1>
+            <p>Interactive standardized logging implementation demo</p>
+        </header>
+
+        <div class="dashboard">
+            <div class="controls">
+                <div class="control-group">
+                    <label>Test Endpoints</label>
+                    <div class="btn-grid">
+                        <button onclick="trigger('/hello')">Say Hello</button>
+                        <button onclick="trigger('/error')">Simulate Error</button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label>Log Level Configuration</label>
+                    <div class="btn-grid">
+                        <button onclick="trigger('/level-debug')" style="border-color: var(--debug)">Set DEBUG</button>
+                        <button onclick="trigger('/level-info')" style="border-color: var(--info)">Set INFO</button>
+                    </div>
+                </div>
+
+                <div class="control-group" style="margin-top: auto;">
+                    <button class="primary" onclick="clearConsole()">Clear Console View</button>
+                </div>
+            </div>
+
+            <div class="console" id="console">
+                <div class="log-entry">
+                    <span class="timestamp">[System]</span>
+                    <span class="msg">Web Console Initialized. Check Terminal for actual backend logs.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast">Request Sent!</div>
+
+    <script>
+        const consoleEl = document.getElementById('console');
+        const toastEl = document.getElementById('toast');
+
+        async function trigger(path) {
+            showToast(`Requesting ${path}...`);
+            try {
+                const start = Date.now();
+                const res = await fetch(path);
+                const text = await res.text();
+                const duration = Date.now() - start;
+
+                appendLog(res.status >= 400 ? 'error' : 'info', 
+                         `Response from ${path}: ${text} (${duration}ms)`);
+            } catch (e) {
+                appendLog('critical', `Failed to reach server: ${e.message}`);
+            }
+        }
+
+        function appendLog(level, message) {
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = 'log-entry';
+            div.innerHTML = `
+                <span class="timestamp">[${time}]</span>
+                <span class="level-tag log-${level}">${level.toUpperCase()}</span>
+                <span class="msg">${message}</span>
+            `;
+            consoleEl.appendChild(div);
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+
+        function showToast(msg) {
+            toastEl.textContent = msg;
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 2000);
+        }
+
+        function clearConsole() {
+            consoleEl.innerHTML = '';
+            appendLog('info', 'Console cleared.');
+        }
+
+        // Initial welcome message
+        setTimeout(() => {
+            appendLog('info', 'Dashboard ready. Interact with the buttons to generate server-side logs.');
+        }, 500);
+    </script>
+</body>
+</html>
