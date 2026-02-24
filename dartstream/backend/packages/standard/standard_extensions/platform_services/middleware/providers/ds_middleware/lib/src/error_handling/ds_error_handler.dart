@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
-
->>>>>>> development
 
 class DsErrorHandler {
   Future<DsCustomMiddleWareResponse> handle(
@@ -14,7 +8,6 @@ class DsErrorHandler {
     try {
       return await next(request);
     } catch (e) {
-      print('Error caught: $e');
       return DsCustomMiddleWareResponse(
         500,
         {'Content-Type': 'application/json'},
