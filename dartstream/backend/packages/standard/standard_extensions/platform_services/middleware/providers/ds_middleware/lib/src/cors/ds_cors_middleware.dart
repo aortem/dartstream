@@ -35,7 +35,8 @@ class DsCorsMiddleware {
   }
 
   DsCustomMiddleWareResponse _handlePreflight(
-      DsCustomMiddleWareRequest request) {
+    DsCustomMiddleWareRequest request,
+  ) {
     final headers = {
       'Access-Control-Allow-Origin': request.headers['Origin'] ?? '*',
       'Access-Control-Allow-Methods': allowedMethods.join(', '),
@@ -46,7 +47,9 @@ class DsCorsMiddleware {
   }
 
   DsCustomMiddleWareResponse _addCorsHeaders(
-      DsCustomMiddleWareResponse response, String origin) {
+    DsCustomMiddleWareResponse response,
+    String origin,
+  ) {
     final headers = Map<String, String>.from(response.headers);
     headers['Access-Control-Allow-Origin'] = origin;
     headers['Access-Control-Allow-Credentials'] = allowCredentials.toString();

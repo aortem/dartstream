@@ -6,7 +6,8 @@ class DsWebSocketHandler {
   final Set<WebSocket> _sockets = {};
 
   Future<DsCustomMiddleWareResponse> handleRequest(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     final httpRequest = request.context['shelf.io.http_request'];
 
     if (httpRequest is HttpRequest &&

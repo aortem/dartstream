@@ -9,14 +9,10 @@ class MockFirebaseAuthProvider implements DSAuthProvider {
   DSAuthUser? _currentUser;
   final Map<String, DSAuthUser> _users = {};
   final Map<String, String> _credentials = {};
-
-  @override
   Future<void> initialize(Map<String, dynamic> config) async {
     _isInitialized = true;
     print('Mock Firebase Auth Provider initialized');
   }
-
-  @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -27,14 +23,10 @@ class MockFirebaseAuthProvider implements DSAuthProvider {
       throw DSAuthError('Invalid credentials');
     }
   }
-
-  @override
   Future<void> signOut() async {
     _currentUser = null;
     print('Mock sign out successful');
   }
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     final user = _users[userId];
     if (user == null) {
@@ -42,16 +34,12 @@ class MockFirebaseAuthProvider implements DSAuthProvider {
     }
     return user;
   }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUser == null) {
       throw DSAuthError('No user is currently signed in');
     }
     return _currentUser!;
   }
-
-  @override
   Future<void> createAccount(String email, String password, {String? displayName}) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -69,27 +57,19 @@ class MockFirebaseAuthProvider implements DSAuthProvider {
     _credentials[email] = password;
     print('Mock account created for: $email');
   }
-
-  @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
     return token.startsWith('mock_token_') && _currentUser != null;
   }
-
-  @override
   Future<String> refreshToken(String refreshToken) async {
     if (_currentUser == null) {
       throw DSAuthError('No user signed in');
     }
     return 'mock_token_${DateTime.now().millisecondsSinceEpoch}';
   }
-
-  @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     print('Login success hook called for: ${user.email}');
   }
-
-  @override
   Future<void> onLogout() async {
     print('Logout hook called');
   }

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:args/command_runner.dart';
 import 'package:ds_discovery_provider/main.dart';
-import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
 import 'package:yaml/yaml.dart';
 
 /// CLI Command for Dartstream to discover and manage extensions dynamically.
@@ -83,10 +82,8 @@ class DSDiscoveryCommand extends Command {
       // Initialize lifecycle hooks
       print('\n🎯 Initializing lifecycle hooks...');
       for (final extension in registry.extensions) {
-        if (extension is LifecycleHook) {
-          extension.onInitialize();
+        extension.onInitialize();
           print('   ✓ ${extension.name} initialized');
-        }
       }
 
       print('\n✅ Discovery complete!');
@@ -229,7 +226,7 @@ class DSDiscoveryCommand extends Command {
     }
 
     final configContent = File(configPath).readAsStringSync();
-    final config = loadYaml(configContent) as Map;
+    loadYaml(configContent);
 
     // Generate registration code
     final registrationPath = p.join(

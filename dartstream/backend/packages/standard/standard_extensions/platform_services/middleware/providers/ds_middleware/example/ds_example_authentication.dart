@@ -7,9 +7,9 @@ class DsCustomMiddleWareAuthenticationMiddleware implements DsCustomMiddleware {
 
   @override
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request,
-      Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest)
-          next) async {
+    DsCustomMiddleWareRequest request,
+    Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
+  ) async {
     // Check if the request requires authentication
     if (!request.uri.path.startsWith('/public')) {
       // Check if the user is authenticated

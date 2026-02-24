@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'dart:html';
+import 'package:web/web.dart' as web;
 
 /// Framework overrides for Flutter web implementation.
 /// Provides web-specific overrides for standard DartStream functionality.
@@ -58,7 +58,7 @@ class WebStorageOverride implements StorageProvider {
       // Convert value to string for storage
       final serializedValue = _serializeValue(value);
       // Use web storage API
-      window.localStorage[key] = serializedValue;
+      web.window.localStorage.setItem(key, serializedValue);
     } catch (e) {
       print('Web storage write error: $e');
       rethrow;
@@ -69,7 +69,7 @@ class WebStorageOverride implements StorageProvider {
   Future<dynamic> read(String key) async {
     try {
       // Read from web storage
-      final value = window.localStorage[key];
+      final value = web.window.localStorage.getItem(key);
       if (value == null) return null;
       // Deserialize stored value
       return _deserializeValue(value);
@@ -82,7 +82,7 @@ class WebStorageOverride implements StorageProvider {
   @override
   Future<void> delete(String key) async {
     try {
-      window.localStorage.remove(key);
+      web.window.localStorage.removeItem(key);
     } catch (e) {
       print('Web storage delete error: $e');
       rethrow;
@@ -92,7 +92,8 @@ class WebStorageOverride implements StorageProvider {
   // Helper methods
   bool _isWebStorageAvailable() {
     try {
-      return window.localStorage != null;
+      web.window.localStorage;
+      return true;
     } catch (_) {
       return false;
     }
