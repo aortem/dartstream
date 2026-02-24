@@ -6,7 +6,6 @@ import 'home_screen.dart';
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
-  @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
@@ -15,7 +14,6 @@ class _LoginScreenState extends State<LoginScreen> {
   String provider = 'okta';
   bool isEmailEmpty = true;
 
-  @override
   void dispose() {
     emailController.dispose();
     super.dispose();
@@ -50,7 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('DartStream Login')),

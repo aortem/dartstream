@@ -51,8 +51,6 @@ class IsolatePoolManager {
         }
       } else if (message is IsolateTaskResponse) {
         _responseHandler.handleResponse(message);
-      } else {
-        print('IsolatePoolManager: Received unknown message from worker $index: $message');
       }
     });
 

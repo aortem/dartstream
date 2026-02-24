@@ -18,7 +18,10 @@ dependencies:
     sdk: flutter 
   web: ^0.5.1
   ds_auth_base:
-    path: ../../standard/standard_extensions/auth/base
+    path: ../../backend/packages/standard/standard_extensions/auth/base
   google_auth_provider:
-    path: ../../standard/standard_extensions/auth/providers/google
+    path: ../../backend/packages/standard/standard_extensions/auth/providers/google
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
 

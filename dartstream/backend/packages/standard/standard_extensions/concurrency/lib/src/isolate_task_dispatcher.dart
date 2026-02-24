@@ -25,7 +25,6 @@ class IsolateTaskDispatcher implements IsolateTaskResponseHandler {
       return completer.future;
   }
 
-  @override
   void handleResponse(IsolateTaskResponse response) {
       if (_pendingTasks.containsKey(response.taskId)) {
           final completer = _pendingTasks.remove(response.taskId)!;

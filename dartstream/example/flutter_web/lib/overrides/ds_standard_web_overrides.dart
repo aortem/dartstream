@@ -58,11 +58,7 @@ class WebStorageOverride implements StorageProvider {
       // Convert value to string for storage
       final serializedValue = _serializeValue(value);
       // Use web storage API
-      final storage = web.window.localStorage;
-      if (storage == null) {
-        throw Exception('Web storage is not available');
-      }
-      storage.setItem(key, serializedValue);
+      web.window.localStorage.setItem(key, serializedValue);
     } catch (e) {
       print('Web storage write error: $e');
       rethrow;
@@ -73,11 +69,7 @@ class WebStorageOverride implements StorageProvider {
   Future<dynamic> read(String key) async {
     try {
       // Read from web storage
-      final storage = web.window.localStorage;
-      if (storage == null) {
-        throw Exception('Web storage is not available');
-      }
-      final value = storage.getItem(key);
+      final value = web.window.localStorage.getItem(key);
       if (value == null) return null;
       // Deserialize stored value
       return _deserializeValue(value);
@@ -90,11 +82,7 @@ class WebStorageOverride implements StorageProvider {
   @override
   Future<void> delete(String key) async {
     try {
-      final storage = web.window.localStorage;
-      if (storage == null) {
-        throw Exception('Web storage is not available');
-      }
-      storage.removeItem(key);
+      web.window.localStorage.removeItem(key);
     } catch (e) {
       print('Web storage delete error: $e');
       rethrow;
@@ -104,7 +92,8 @@ class WebStorageOverride implements StorageProvider {
   // Helper methods
   bool _isWebStorageAvailable() {
     try {
-      return web.window.localStorage != null;
+      web.window.localStorage;
+      return true;
     } catch (_) {
       return false;
     }

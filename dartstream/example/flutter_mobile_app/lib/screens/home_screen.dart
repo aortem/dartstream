@@ -9,12 +9,10 @@ class HomeScreen extends StatefulWidget {
 
   const HomeScreen({super.key, required this.user});
 
-  @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
   void initState() {
     super.initState();
 
@@ -30,7 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -159,7 +156,6 @@ class DashboardCard extends StatelessWidget {
 
   const DashboardCard({super.key, required this.icon, required this.title});
 
-  @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 3,
