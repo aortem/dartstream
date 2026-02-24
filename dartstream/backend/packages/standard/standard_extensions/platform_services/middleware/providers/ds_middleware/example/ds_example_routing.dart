@@ -10,9 +10,10 @@ class DsCustomMiddleWareRouter {
   }
 
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest)
-        handler = (req) async {
+    handler = (req) async {
       return DsCustomMiddleWareResponse.notFound();
     };
 

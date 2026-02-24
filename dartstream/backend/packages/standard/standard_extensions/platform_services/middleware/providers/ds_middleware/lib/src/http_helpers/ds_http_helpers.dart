@@ -2,30 +2,31 @@ import 'dart:convert';
 import '../../app/models/ds_custom_middleware_model.dart';
 
 class DsHttpHelpers {
-  static DsCustomMiddleWareResponse jsonResponse(dynamic data,
-      {int statusCode = 200}) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {'Content-Type': 'application/json'},
-      json.encode(data),
-    );
+  static DsCustomMiddleWareResponse jsonResponse(
+    dynamic data, {
+    int statusCode = 200,
+  }) {
+    return DsCustomMiddleWareResponse(statusCode, {
+      'Content-Type': 'application/json',
+    }, json.encode(data));
   }
 
   static Future<Map<String, dynamic>> parseJsonBody(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     if (request.headers['Content-Type'] != 'application/json') {
       throw FormatException('Expecting JSON body');
     }
     return json.decode(request.body as String);
   }
 
-  static DsCustomMiddleWareResponse redirect(String location,
-      {int statusCode = 302}) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {'Location': location},
-      'Redirecting to $location',
-    );
+  static DsCustomMiddleWareResponse redirect(
+    String location, {
+    int statusCode = 302,
+  }) {
+    return DsCustomMiddleWareResponse(statusCode, {
+      'Location': location,
+    }, 'Redirecting to $location');
   }
 
   static String getClientIp(DsCustomMiddleWareRequest request) {

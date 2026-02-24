@@ -3,10 +3,12 @@ import '../../app/models/ds_custom_middleware_model.dart';
 class RouteParams {
   final Map<String, String> _paramDefinitions = {};
   final Map<String, Function(Map<String, String>, DsCustomMiddleWareRequest)>
-      _handlers = {};
+  _handlers = {};
 
-  void addRoute(String path,
-      Function(Map<String, String>, DsCustomMiddleWareRequest) handler) {
+  void addRoute(
+    String path,
+    Function(Map<String, String>, DsCustomMiddleWareRequest) handler,
+  ) {
     final parts = path.split('/');
     final paramNames = <String>[];
     for (var i = 0; i < parts.length; i++) {
@@ -21,7 +23,8 @@ class RouteParams {
   }
 
   Future<DsCustomMiddleWareResponse> handleRequest(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     final path = request.uri.path;
     for (var pattern in _paramDefinitions.keys) {
       final match = RegExp(pattern).firstMatch(path);

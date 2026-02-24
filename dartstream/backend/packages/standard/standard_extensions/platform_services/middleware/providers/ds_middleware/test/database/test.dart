@@ -1,1 +1,0 @@
-//You have to connect to a cloud database in order to use the project.

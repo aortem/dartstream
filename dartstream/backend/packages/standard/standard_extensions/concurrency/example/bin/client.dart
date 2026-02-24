@@ -10,14 +10,22 @@ void main() async {
 
   // 1. Start heavy calculation (Fibonacci 40)
   print('[Client] Sending request to /fib/40 (Heavy Task)...');
-  final heavyTaskFuture = _measureRequest(client, '$baseUrl/fib/40', 'Heavy Task');
+  final heavyTaskFuture = _measureRequest(
+    client,
+    '$baseUrl/fib/40',
+    'Heavy Task',
+  );
 
   // 2. Wait a bit to ensure heavy task is running on server
   await Future.delayed(Duration(milliseconds: 500));
 
   // 3. Send light request (Echo)
   print('[Client] Sending request to /echo/concurrent (Light Task)...');
-  final lightTaskFuture = _measureRequest(client, '$baseUrl/echo/concurrent', 'Light Task');
+  final lightTaskFuture = _measureRequest(
+    client,
+    '$baseUrl/echo/concurrent',
+    'Light Task',
+  );
 
   // Wait for both
   await Future.wait([heavyTaskFuture, lightTaskFuture]);

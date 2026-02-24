@@ -1,4 +1,4 @@
-import '../../app/models/ds_custom_middleware_model.dart';
+import '../models/ds_custom_middleware_model.dart';
 
 class DsCorsMiddleware {
   final List<String> allowedOrigins;
@@ -17,42 +17,45 @@ class DsCorsMiddleware {
     DsCustomMiddleWareRequest request,
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
   ) async {
-    final origin = request.headers['Origin'];
-    if (origin == null || !_isAllowedOrigin(origin)) {
-      return await next(request);
-    }
-
     if (request.method == 'OPTIONS') {
       return _handlePreflight(request);
     }
 
     final response = await next(request);
-    return _addCorsHeaders(response, origin);
-  }
-
-  bool _isAllowedOrigin(String origin) {
-    return allowedOrigins.contains('*') || allowedOrigins.contains(origin);
+    return _addCorsHeaders(response);
   }
 
   DsCustomMiddleWareResponse _handlePreflight(
     DsCustomMiddleWareRequest request,
   ) {
-    final headers = {
-      'Access-Control-Allow-Origin': request.headers['Origin'] ?? '*',
-      'Access-Control-Allow-Methods': allowedMethods.join(', '),
-      'Access-Control-Allow-Headers': allowedHeaders.join(', '),
-      'Access-Control-Allow-Credentials': allowCredentials.toString(),
-    };
-    return DsCustomMiddleWareResponse(204, headers, null);
+    return DsCustomMiddleWareResponse(204, _corsHeaders(request), null);
   }
 
   DsCustomMiddleWareResponse _addCorsHeaders(
     DsCustomMiddleWareResponse response,
-    String origin,
   ) {
-    final headers = Map<String, String>.from(response.headers);
-    headers['Access-Control-Allow-Origin'] = origin;
-    headers['Access-Control-Allow-Credentials'] = allowCredentials.toString();
+    final headers = Map<String, String>.from(response.headers)
+      ..addAll(_corsHeaders(null));
     return response.copyWith(headers: headers);
+  }
+
+  Map<String, String> _corsHeaders(DsCustomMiddleWareRequest? request) {
+    final origin = request?.headers['origin'];
+    final headers = <String, String>{
+      'Access-Control-Allow-Origin':
+          allowedOrigins.contains('*') ||
+              (origin != null && allowedOrigins.contains(origin))
+          ? origin ?? '*'
+          : allowedOrigins.first,
+      'Access-Control-Allow-Methods': allowedMethods.join(', '),
+      'Access-Control-Allow-Headers': allowedHeaders.join(', '),
+      'Access-Control-Allow-Credentials': allowCredentials.toString(),
+    };
+
+    if (request?.method == 'OPTIONS') {
+      headers['Access-Control-Max-Age'] = '86400'; // 24 hours
+    }
+
+    return headers;
   }
 }
