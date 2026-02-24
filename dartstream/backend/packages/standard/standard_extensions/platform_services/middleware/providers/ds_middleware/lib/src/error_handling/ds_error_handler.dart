@@ -8,11 +8,9 @@ class DsErrorHandler {
     try {
       return await next(request);
     } catch (e) {
-      return DsCustomMiddleWareResponse(
-        500,
-        {'Content-Type': 'application/json'},
-        '{"error": "Internal Server Error"}',
-      );
+      return DsCustomMiddleWareResponse(500, {
+        'Content-Type': 'application/json',
+      }, '{"error": "Internal Server Error"}');
     }
   }
 

@@ -11,7 +11,10 @@ void main() async {
     final dsRequest = DsCustomMiddleWareRequest(
       request.method,
       request.uri,
-      request.headers.toString().split('\n').fold<Map<String, String>>({}, (map, line) {
+      request.headers.toString().split('\n').fold<Map<String, String>>({}, (
+        map,
+        line,
+      ) {
         final parts = line.split(': ');
         if (parts.length == 2) map[parts[0]] = parts[1];
         return map;
@@ -29,13 +32,13 @@ void main() async {
     response.headers.forEach((key, value) {
       request.response.headers.add(key, value);
     });
-    
+
     if (response.body is String) {
-       request.response.write(response.body);
+      request.response.write(response.body);
     } else if (response.body is List<int>) {
-       request.response.add(response.body as List<int>);
+      request.response.add(response.body as List<int>);
     } else if (response.body != null) {
-       request.response.write(response.body.toString());
+      request.response.write(response.body.toString());
     }
 
     await request.response.close();

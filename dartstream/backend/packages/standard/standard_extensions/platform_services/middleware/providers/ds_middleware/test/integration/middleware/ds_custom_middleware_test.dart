@@ -10,11 +10,17 @@ void main() {
       final authenticationMiddleware =
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
-      var request = DsCustomMiddleWareRequest('GET',
-          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, <String, String>{});
+      var request = DsCustomMiddleWareRequest(
+        'GET',
+        Uri.parse('/authenticated/resource'),
+        {'Authorization': 'user1'},
+        {},
+        <String, String>{},
+      );
 
-      var response =
-          await authenticationMiddleware.handle(request, (req) async {
+      var response = await authenticationMiddleware.handle(request, (
+        req,
+      ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 
@@ -29,10 +35,16 @@ void main() {
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
       var request = DsCustomMiddleWareRequest(
-          'GET', Uri.parse('/authenticated/resource'), {}, {}, <String, String>{});
+        'GET',
+        Uri.parse('/authenticated/resource'),
+        {},
+        {},
+        <String, String>{},
+      );
 
-      var response =
-          await authenticationMiddleware.handle(request, (req) async {
+      var response = await authenticationMiddleware.handle(request, (
+        req,
+      ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 

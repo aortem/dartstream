@@ -1,4 +1,4 @@
-﻿import 'package:test/test.dart';
+import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart' as mt;
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 
@@ -35,7 +35,8 @@ void main() {
     });
 
     test('returns user name when user is found', () async {
-      mt.when(() => mockDb.getUser('123'))
+      mt
+          .when(() => mockDb.getUser('123'))
           .thenAnswer((_) async => {'name': 'Alice'});
       final result = await userService.getUserName('123');
       expect(result, equals('Alice'));
