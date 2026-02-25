@@ -1,6 +1,8 @@
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:test/test.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
+
 import '../../../example/ds_example_authentication.dart';
+
 
 void main() {
   group('Authentication Middleware Test', () {

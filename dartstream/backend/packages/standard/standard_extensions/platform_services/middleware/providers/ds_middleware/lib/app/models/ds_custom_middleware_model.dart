@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
+import 'package:shelf/src/request.dart';
 
 class DsCustomMiddleWareRequest {
   final String method;
@@ -57,6 +58,8 @@ class DsCustomMiddleWareRequest {
       return Stream.value(utf8.encode(body as String));
     } else if (body is List<int>) {
       return Stream.value(body as List<int>);
+    } else if (body == null) {
+      return Stream.empty();
     } else {
       throw UnsupportedError('Unsupported body type: ${body.runtimeType}');
     }
