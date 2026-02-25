@@ -34,7 +34,6 @@ void main() {
       final serialized = TypeHandlerRegistry.serialize(obj);
       expect(serialized, equals({'value': 'hello'}));
     });
-
     test('DsCustomMiddleWareResponse auto-serialization', () {
       TypeHandlerRegistry.register<CustomClass>(CustomClassHandler());
       final obj = CustomClass('response');

@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DartStream | Real-time Chat</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #22c55e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            width: 100%;
+            max-width: 900px;
+            height: 85vh;
+            background: var(--surface);
+            border-radius: 24px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        header {
+            padding: 24px 32px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(to right, #818cf8, #c084fc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        #status {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ef4444;
+            box-shadow: 0 0 10px #ef4444;
+        }
+
+        .status-dot.connected {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        #messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.1) transparent;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 15px;
+            position: relative;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.05);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: var(--primary);
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.system {
+            align-self: center;
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 13px;
+            font-style: italic;
+        }
+
+        .user-tag {
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+            opacity: 0.7;
+        }
+
+        .timestamp {
+            font-size: 10px;
+            margin-top: 4px;
+            display: block;
+            opacity: 0.5;
+            text-align: right;
+        }
+
+        footer {
+            padding: 24px 32px;
+            background: rgba(0, 0, 0, 0.2);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .input-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 4px;
+            display: flex;
+            gap: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.2s;
+        }
+
+        .input-wrapper:focus-within {
+            border-color: var(--primary);
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            padding: 12px 16px;
+            color: white;
+            font-family: inherit;
+            outline: none;
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+        }
+
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <header>
+            <div class="logo">DartStream</div>
+            <div id="status">
+                <div class="status-dot" id="dot"></div>
+                <span id="statusText">Connecting...</span>
+            </div>
+        </header>
+
+        <div id="messages"></div>
+
+        <footer>
+            <div class="input-wrapper">
+                <input type="text" id="userInput" placeholder="Type your message..." autocomplete="off">
+                <button onclick="send()">Send</button>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        const messagesDiv = document.getElementById('messages');
+        const input = document.getElementById('userInput');
+        const dot = document.getElementById('dot');
+        const statusText = document.getElementById('statusText');
+        
+        let myId = null;
+        const socket = new WebSocket(`ws://${window.location.host}/ws`);
+
+        socket.onopen = () => {
+            dot.classList.add('connected');
+            statusText.textContent = 'Connected';
+        };
+
+        socket.onmessage = (event) => {
+            const payload = JSON.parse(event.data);
+            addMessage(payload);
+        };
+
+        socket.onclose = () => {
+            dot.classList.remove('connected');
+            statusText.textContent = 'Disconnected';
+        };
+
+        function addMessage(data) {
+            const div = document.createElement('div');
+            
+            if (data.event === 'system') {
+                div.className = 'message system';
+                div.textContent = data.data.message;
+                if (data.data.userId) myId = data.data.userId;
+            } else if (data.event === 'chat') {
+                const isMe = data.data.user === myId;
+                div.className = `message ${isMe ? 'sent' : 'received'}`;
+                
+                const time = new Date(data.data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                
+                div.innerHTML = `
+                    <span class="user-tag">${isMe ? 'You' : data.data.user}</span>
+                    <span class="content">${data.data.message}</span>
+                    <span class="timestamp">${time}</span>
+                `;
+            }
+
+            messagesDiv.appendChild(div);
+            messagesDiv.scrollTo({ top: messagesDiv.scrollHeight, behavior: 'smooth' });
+        }
+
+        function send() {
+            const text = input.value.trim();
+            if (text && socket.readyState === WebSocket.OPEN) {
+                socket.send(JSON.stringify({
+                    event: 'chat',
+                    data: text
+                }));
+                input.value = '';
+            }
+        }
+
+        input.onkeypress = (e) => { if(e.key === 'Enter') send(); };
+    </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+name: ds_websockets_example
+description: Example of using ds_websockets.
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  ds_websockets:
+    path: ..
+  ds_shelf:
+    path: ../../ds_shelf
+  shelf: ^1.4.2

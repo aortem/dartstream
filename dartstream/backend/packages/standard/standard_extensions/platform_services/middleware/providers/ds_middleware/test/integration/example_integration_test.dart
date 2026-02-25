@@ -1,9 +1,6 @@
 import 'package:test/test.dart';
 import 'package:ds_middleware/ds_custom_middleware.dart';
 
-// --- 1. Code Under Test ---
-
-// A simple middleware that adds a header
 class AddHeaderMiddleware implements DsCustomMiddleware {
   @override
   Future<DsCustomMiddleWareResponse> handle(
@@ -19,12 +16,9 @@ class AddHeaderMiddleware implements DsCustomMiddleware {
   }
 }
 
-// --- 2. The Integration Test ---
-
 void main() {
   group('Middleware Integration', () {
     test('AddHeaderMiddleware adds x-processed-by header', () async {
-      // ARRANGE
       final middleware = AddHeaderMiddleware();
       final request = DsCustomMiddleWareRequest(
         'GET',
