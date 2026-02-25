@@ -1,5 +1,3 @@
-// lib/src/cors/ds_cors_middleware.dart
-
 import 'package:shelf/shelf.dart';
 import 'ds_shelf_cors_defaults.dart';
 import 'ds_shelf_origin_checker.dart';
@@ -11,21 +9,40 @@ import 'ds_shelf_actual.dart';
 /// [checker] determines if an incoming Origin is allowed.
 Middleware dsShelfCorsMiddleware({
   DsShelfOriginChecker checker = dsShelfOriginAllowAll,
+  bool allowCredentials = false,
+  List<String>? exposedHeaders,
 }) {
   return (Handler inner) {
     return (Request request) async {
       final origin = request.headers[dsShelfOriginHeader];
-      if (origin == null || !checker(origin)) {
-        // Not a CORS request or origin disallowed: pass through
+
+      // Not a CORS request
+      if (origin == null) {
         return inner(request);
       }
-      if (request.method == 'OPTIONS') {
-        // Preflight request
-        return dsShelfCorsPreflightResponse(request);
+
+      // Origin not allowed
+      if (!checker(origin)) {
+        return inner(request);
       }
+
+      // Preflight request
+      if (request.method.toUpperCase() == 'OPTIONS') {
+        return dsShelfCorsPreflightResponse(
+          request,
+          allowCredentials: allowCredentials,
+        );
+      }
+
       // Actual request
       final response = await inner(request);
-      return dsShelfCorsApplyActual(response, origin);
+
+      return dsShelfCorsApplyActual(
+        response,
+        origin,
+        allowCredentials: allowCredentials,
+        exposedHeaders: exposedHeaders,
+      );
     };
   };
 }
