@@ -29,6 +29,7 @@ class DsHttpHelpers {
     }, 'Redirecting to $location');
   }
 
+  /// Get client IP from request
   static String getClientIp(DsCustomMiddleWareRequest request) {
     return request.headers['X-Forwarded-For'] ?? 'Unknown';
   }
