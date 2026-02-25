@@ -7,9 +7,8 @@ class DsCustomMiddleWareRequest {
   final Uri uri;
   final Map<String, String> headers;
   final body;
-  final Map<String, String> routeParams;
-  final Map<String, String> queryParams;
-  final Map<String, dynamic> context;
+  final Map<String, dynamic>? routeParams;// Added routeParams field
+  final Map<String, String> queryParams; // Added queryParams field
 
   DsCustomMiddleWareRequest(
     this.method,
@@ -38,7 +37,7 @@ class DsCustomMiddleWareRequest {
     Uri? uri,
     Map<String, String>? headers,
     dynamic body,
-    Map<String, String>? routeParams,
+    Map<String, dynamic>? routeParams,
     Map<String, String>? queryParams,
     Map<String, dynamic>? context,
   }) {
