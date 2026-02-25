@@ -45,7 +45,7 @@ class UserApi {
   /// POST /
   Future<Response> _create(Request request) async {
     final body = await request.readAsString();
-    final data = jsonDecode(body) as Map<String, dynamic>;
+    jsonDecode(body);
     
     // TODO: Implement create logic
     
@@ -58,7 +58,7 @@ class UserApi {
   /// PUT /:id
   Future<Response> _update(Request request, String id) async {
     final body = await request.readAsString();
-    final data = jsonDecode(body) as Map<String, dynamic>;
+    jsonDecode(body);
     
     // TODO: Implement update logic
     

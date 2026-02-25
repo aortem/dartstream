@@ -13,6 +13,7 @@ class DSShelfCore {
   DSShelfCore() {
     // Initialize core middleware and configurations that every server will use
     _setupCoreMiddleware();
+    _configureCoreRoutes();
   }
 
   // A method for adding middleware to the server. This could be used by subclasses or during server setup.

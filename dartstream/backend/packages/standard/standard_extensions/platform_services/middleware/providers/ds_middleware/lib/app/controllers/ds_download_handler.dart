@@ -39,7 +39,8 @@ Handler createDownloadHandler(String baseDir) {
       fileStream,
       headers: {
         'Content-Type': mimeType,
-        'Content-Disposition': 'attachment; filename="${p.basename(resolvedPath)}"',
+        'Content-Disposition':
+            'attachment; filename="${p.basename(resolvedPath)}"',
       },
     );
   };

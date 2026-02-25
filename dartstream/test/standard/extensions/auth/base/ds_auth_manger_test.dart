@@ -8,44 +8,25 @@ import '../../../../../dartstream_backend/packages/standard/extensions/auth/base
 import '../../../../../dartstream_backend/packages/standard/extensions/auth/base/lib/ds_auth_provider.dart';
 
 class MockAuthProvider implements DSAuthProvider {
-  @override
   Future<void> initialize(Map<String, dynamic> config) async {}
-
-  @override
   Future<void> signIn(String username, String password) async {}
-
-  @override
   Future<void> signOut() async {}
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     return DSAuthUser(
         id: userId, email: 'test@example.com', displayName: 'Test User');
   }
-
-  @override
   Future<bool> verifyToken([String? token]) async {
     return token == 'valid_token';
   }
-
-  @override
   Future<String> refreshToken(String refreshToken) async {
     return 'new_token';
   }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     return DSAuthUser(
         id: 'current_user', email: 'current@example.com', displayName: 'Current User');
   }
-
-  @override
   Future<void> createAccount(String email, String password, {String? displayName}) async {}
-
-  @override
   Future<void> onLoginSuccess(DSAuthUser user) async {}
-
-  @override
   Future<void> onLogout() async {}
 }
 

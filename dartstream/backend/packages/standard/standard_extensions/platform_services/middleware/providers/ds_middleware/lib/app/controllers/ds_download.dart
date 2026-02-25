@@ -2,7 +2,6 @@ import 'dart:io';
 
 //Standard Testing Tools
 
-
 //General Tools
 import 'package:mime/mime.dart';
 
@@ -27,12 +26,15 @@ void main(List<String> arguments) async {
 
       if (await file.exists()) {
         var fileStream = file.openRead();
-        String mimeType = lookupMimeType(fileToDownload) ??
+        String mimeType =
+            lookupMimeType(fileToDownload) ??
             'application/octet-stream'; // Provide a default MIME type if lookup fails
         request.response
           ..headers.set('Content-Type', mimeType)
-          ..headers.set('Content-Disposition',
-              'attachment; filename="${fileToDownload.split('/').last}"');
+          ..headers.set(
+            'Content-Disposition',
+            'attachment; filename="${fileToDownload.split('/').last}"',
+          );
         await request.response.addStream(fileStream);
         await request.response.close();
       } else {

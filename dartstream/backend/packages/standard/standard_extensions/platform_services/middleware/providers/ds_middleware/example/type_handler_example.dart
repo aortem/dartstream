@@ -30,7 +30,7 @@ class UserHandler implements TypeHandler<User> {
     }
     // Handle stringified JSON if needed
     if (value is String) {
-       return User.fromJson(jsonDecode(value));
+      return User.fromJson(jsonDecode(value));
     }
     throw FormatException('Cannot deserialize User from $value');
   }
@@ -50,17 +50,17 @@ void main() async {
 
   // 2. Simulate Request Handling (Deserialization)
   print('2. Simulating Request (Deserialization)...');
-  
+
   // Simulate incoming JSON body
   final incomingBody = {'name': 'Charlie', 'age': 28};
-  
+
   final request = DsCustomMiddleWareRequest(
     'POST',
     Uri.parse('/users'),
     {'Content-Type': 'application/json'},
-    incomingBody, 
+    incomingBody,
     {},
-    routeParams: {}
+    routeParams: {},
   );
 
   try {
@@ -68,11 +68,11 @@ void main() async {
     final user = request.bodyAs<User>();
     print('   Request Body: $incomingBody');
     print('   Deserialized: $user');
-    
+
     if (user.name == 'Charlie' && user.age == 28) {
-        print('   [SUCCESS] User deserialized correctly.');
+      print('   [SUCCESS] User deserialized correctly.');
     } else {
-        print('   [FAILURE] User deserialization incorrect.');
+      print('   [FAILURE] User deserialization incorrect.');
     }
   } catch (e) {
     print('   [ERROR] Deserialization failed: $e');
@@ -81,44 +81,40 @@ void main() async {
 
   // 3. Simulate Response Handling (Serialization)
   print('3. Simulating Response (Serialization)...');
-  
+
   final responseUser = User('Alice', 32);
   final timestamp = DateTime.now().toUtc();
-  
+
   // Create response with object
   final response = DsCustomMiddleWareResponse.ok({
     'user': responseUser,
     'timestamp': timestamp,
-    // Note: The map itself isn't a custom type, 
-    // but we want to see if we can handle nested? 
-    // Current implementation only checks top-level type in Registry.serialize().
-    // So top level map won't be serialized by registry.
-    // However, if we pass the User object directly:
   });
+
   print('   Complex Body:    ${response.body}');
-  
+
   // Test direct object response
   final directResponse = DsCustomMiddleWareResponse.ok(responseUser);
-  
+
   print('   Original Object: $responseUser');
   print('   Response Body:   ${directResponse.body}');
-    
-  if (directResponse.body is Map<String, dynamic> && 
+
+  if (directResponse.body is Map<String, dynamic> &&
       directResponse.body['name'] == 'Alice') {
-      print('   [SUCCESS] User serialized correctly to Map.');
+    print('   [SUCCESS] User serialized correctly to Map.');
   } else {
-      print('   [FAILURE] User serialization incorrect: ${directResponse.body}');
+    print('   [FAILURE] User serialization incorrect: ${directResponse.body}');
   }
-  
+
   // Test DateTime response
   final dateResponse = DsCustomMiddleWareResponse.ok(timestamp);
   print('   Original Date:   $timestamp');
   print('   Response Body:   ${dateResponse.body}');
-  
-   if (dateResponse.body is String) {
-      print('   [SUCCESS] DateTime serialized correctly to String.');
+
+  if (dateResponse.body is String) {
+    print('   [SUCCESS] DateTime serialized correctly to String.');
   } else {
-      print('   [FAILURE] DateTime serialization incorrect.');
+    print('   [FAILURE] DateTime serialization incorrect.');
   }
 
   print('\n--- End of Example ---');

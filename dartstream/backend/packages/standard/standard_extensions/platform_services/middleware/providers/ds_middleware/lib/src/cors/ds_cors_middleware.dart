@@ -1,10 +1,4 @@
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
-
->>>>>>> development
 
 class DsCorsMiddleware {
   final List<String> allowedOrigins;
@@ -41,7 +35,8 @@ class DsCorsMiddleware {
   }
 
   DsCustomMiddleWareResponse _handlePreflight(
-      DsCustomMiddleWareRequest request) {
+    DsCustomMiddleWareRequest request,
+  ) {
     final headers = {
       'Access-Control-Allow-Origin': request.headers['Origin'] ?? '*',
       'Access-Control-Allow-Methods': allowedMethods.join(', '),
@@ -52,7 +47,9 @@ class DsCorsMiddleware {
   }
 
   DsCustomMiddleWareResponse _addCorsHeaders(
-      DsCustomMiddleWareResponse response, String origin) {
+    DsCustomMiddleWareResponse response,
+    String origin,
+  ) {
     final headers = Map<String, String>.from(response.headers);
     headers['Access-Control-Allow-Origin'] = origin;
     headers['Access-Control-Allow-Credentials'] = allowCredentials.toString();

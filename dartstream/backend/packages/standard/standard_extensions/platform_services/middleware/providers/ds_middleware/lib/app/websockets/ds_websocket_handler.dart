@@ -6,10 +6,14 @@ class DsWebSocketHandler {
   final Set<WebSocket> _sockets = {};
 
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     if (!_isWebSocketUpgradeRequest(request)) {
       return DsCustomMiddleWareResponse(
-          400, {}, 'Not a WebSocket upgrade request');
+        400,
+        {},
+        'Not a WebSocket upgrade request',
+      );
     }
 
     final socket = await _upgradeToWebSocket(request);
@@ -33,9 +37,11 @@ class DsWebSocketHandler {
   }
 
   Future<WebSocket> _upgradeToWebSocket(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     var socket = await WebSocket.connect(
-        'ws://${request.uri.authority}${request.uri.path}');
+      'ws://${request.uri.authority}${request.uri.path}',
+    );
     return socket;
   }
 

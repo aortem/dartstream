@@ -10,14 +10,10 @@ class MockAuth0AuthProvider implements DSAuthProvider {
   final Map<String, DSAuthUser> _users = {};
   final Map<String, String> _credentials = {};
   final Map<String, String> _refreshTokens = {};
-
-  @override
   Future<void> initialize(Map<String, dynamic> config) async {
     _isInitialized = true;
     print('Mock Auth0 Auth Provider initialized');
   }
-
-  @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -28,14 +24,10 @@ class MockAuth0AuthProvider implements DSAuthProvider {
       throw DSAuthError('Invalid credentials');
     }
   }
-
-  @override
   Future<void> signOut() async {
     _currentUser = null;
     print('Mock Auth0 sign out successful');
   }
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     final user = _users.values.firstWhere(
       (u) => u.id == userId,
@@ -43,16 +35,12 @@ class MockAuth0AuthProvider implements DSAuthProvider {
     );
     return user;
   }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUser == null) {
       throw DSAuthError('No user is currently signed in');
     }
     return _currentUser!;
   }
-
-  @override
   Future<void> createAccount(String email, String password, {String? displayName}) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -76,8 +64,6 @@ class MockAuth0AuthProvider implements DSAuthProvider {
     _refreshTokens[email] = 'refresh_token_${DateTime.now().millisecondsSinceEpoch}';
     print('Mock Auth0 account created for: $email');
   }
-
-  @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
     
@@ -87,8 +73,6 @@ class MockAuth0AuthProvider implements DSAuthProvider {
     }
     return false;
   }
-
-  @override
   Future<String> refreshToken(String refreshToken) async {
     if (_currentUser == null) {
       throw DSAuthError('No user signed in');
@@ -101,13 +85,9 @@ class MockAuth0AuthProvider implements DSAuthProvider {
     
     throw DSAuthError('Invalid refresh token');
   }
-
-  @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     print('Auth0 login success hook called for: ${user.email}');
   }
-
-  @override
   Future<void> onLogout() async {
     print('Auth0 logout hook called');
   }

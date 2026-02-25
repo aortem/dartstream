@@ -1,7 +1,10 @@
 // Import base authentication interfaces and types from DartStream core
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
+// Import http client for API calls
+
 import 'src/ds_session_manager.dart';
+
 
 /// Microsoft EntraID (Azure AD B2C) authentication provider implementation for DartStream.
 class DSEntraIDAuthProvider implements DSAuthProvider {
@@ -263,7 +266,7 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   }
 
   Future<void> updateUserProfile(String userId, Map<String, dynamic> updates) async {
-    final user = _mockUsers.values.firstWhere(
+    _mockUsers.values.firstWhere(
       (u) => u.id == userId,
       orElse: () => throw DSAuthError(
         'User not found',
@@ -377,8 +380,7 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   }
 
   Future<List<Map<String, dynamic>>> getAuditLogs(String userId) async {
-    // Verify user exists
-    _mockUsers.values.firstWhere(
+    final user = _mockUsers.values.firstWhere(
       (u) => u.id == userId,
       orElse: () => throw DSAuthError(
         'User not found',

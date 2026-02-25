@@ -1,9 +1,5 @@
 import 'dart:convert';
-<<<<<<< HEAD
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
-=======
 import '../../app/models/ds_custom_middleware_model.dart';
->>>>>>> development
 
 class DsBodyParser {
   static Future<dynamic> parse(DsCustomMiddleWareRequest request) async {
@@ -32,7 +28,8 @@ class DsBodyParser {
   }
 
   static Future<Map<String, dynamic>> _parseMultipartFormData(
-      String body) async {
+    String body,
+  ) async {
     // This is a simplified implementation. In a real-world scenario,
     // you'd need to handle file uploads and more complex parsing.
     final result = <String, dynamic>{};

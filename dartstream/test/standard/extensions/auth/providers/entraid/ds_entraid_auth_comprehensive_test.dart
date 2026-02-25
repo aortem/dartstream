@@ -12,14 +12,10 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
   final Map<String, String> _refreshTokens = {};
   final Map<String, List<String>> _userGroups = {};
   final Map<String, Map<String, dynamic>> _userAttributes = {};
-
-  @override
   Future<void> initialize(Map<String, dynamic> config) async {
     _isInitialized = true;
     print('Mock EntraID Auth Provider initialized');
   }
-
-  @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -30,14 +26,10 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
       throw DSAuthError('Invalid credentials');
     }
   }
-
-  @override
   Future<void> signOut() async {
     _currentUser = null;
     print('Mock EntraID sign out successful');
   }
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     final user = _users.values.firstWhere(
       (u) => u.id == userId,
@@ -45,16 +37,12 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
     );
     return user;
   }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUser == null) {
       throw DSAuthError('No user is currently signed in');
     }
     return _currentUser!;
   }
-
-  @override
   Future<void> createAccount(String email, String password, {String? displayName}) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -87,8 +75,6 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
     };
     print('Mock EntraID account created for: $email');
   }
-
-  @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
     
@@ -98,8 +84,6 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
     }
     return false;
   }
-
-  @override
   Future<String> refreshToken(String refreshToken) async {
     if (_currentUser == null) {
       throw DSAuthError('No user signed in');
@@ -112,13 +96,9 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
     
     throw DSAuthError('Invalid refresh token');
   }
-
-  @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     print('EntraID login success hook called for: ${user.email}');
   }
-
-  @override
   Future<void> onLogout() async {
     print('EntraID logout hook called');
   }
@@ -239,7 +219,6 @@ class MockEntraIDAuthProvider implements DSAuthProvider {
 void main() {
   group('Enhanced EntraID Auth Provider Tests', () {
     late MockEntraIDAuthProvider mockProvider;
-    late DSAuthManager authManager;
 
     setUp(() async {
       mockProvider = MockEntraIDAuthProvider();
@@ -264,7 +243,6 @@ void main() {
           clientId: 'test-client-id',
         ),
       );
-      authManager = DSAuthManager('entraid');
     });
 
     tearDown(() {
