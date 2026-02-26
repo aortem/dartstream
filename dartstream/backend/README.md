@@ -41,6 +41,19 @@ DSStorageManager.registerProvider(
 );
 final storage = DSStorageManager('gcs');
 await storage.uploadFile('path/to/object', dataBytes);
+
+// 4) Use message brokers (Pub/Sub)
+registerGcpPubSubMessageBroker({
+  'name': 'pubsub',
+  'projectId': 'my-gcp-project',
+  'serviceAccountPath': '/path/to/service-account.json',
+});
+final broker = DSMessageBrokerManager('pubsub');
+await broker.initialize({
+  'projectId': 'my-gcp-project',
+  'serviceAccountPath': '/path/to/service-account.json',
+});
+await broker.publish('topic-name', 'hello world');
 ```
 
 ---
