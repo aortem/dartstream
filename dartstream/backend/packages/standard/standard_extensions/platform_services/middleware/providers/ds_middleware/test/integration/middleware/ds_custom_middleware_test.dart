@@ -12,17 +12,14 @@ void main() {
       final authenticationMiddleware =
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
-      var request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/authenticated/resource'),
-        {'Authorization': 'user1'},
-        {},
-        <String, String>{},
-      );
-
-      var response = await authenticationMiddleware.handle(request, (
-        req,
-      ) async {
+      // Create a sample authenticated request
+      var request = DsCustomMiddleWareRequest('GET',
+<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/ds_custom_middleware_test.dart
+          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, {});
+=======
+          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, <String, String>{});
+      var response =
+        // This is a dummy handler, it should not be called for an authenticated request
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 

@@ -10,25 +10,26 @@ class DsCustomMiddleWareRequest {
   final Map<String, dynamic>? routeParams;// Added routeParams field
   final Map<String, String> queryParams; // Added queryParams field
 
-  DsCustomMiddleWareRequest(
-    this.method,
-    this.uri,
-    this.headers,
+  DsCustomMiddleWareRequest({
+    required this.method,
+    required this.uri,
+    required this.headers,
     this.body,
-    this.queryParams, {
     this.routeParams = const {},
-    this.context = const {},
+    this.queryParams = const {},
   });
 
-  DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
+  DsCustomMiddleWareRequest change({
+    Map<String, String>? headers,
+    dynamic body,
+  }) {
     return DsCustomMiddleWareRequest(
-      method,
-      uri,
-      headers ?? this.headers,
-      body,
-      queryParams,
+      method: method,
+      uri: uri,
+      headers: headers ?? this.headers,
+      body: body ?? this.body,
       routeParams: routeParams,
-      context: context,
+      queryParams: queryParams,
     );
   }
 
@@ -42,13 +43,12 @@ class DsCustomMiddleWareRequest {
     Map<String, dynamic>? context,
   }) {
     return DsCustomMiddleWareRequest(
-      method ?? this.method,
-      uri ?? this.uri,
-      headers ?? this.headers,
-      body ?? this.body,
-      queryParams ?? this.queryParams,
+      method: method ?? this.method,
+      uri: uri ?? this.uri,
+      headers: headers ?? this.headers,
+      body: body ?? this.body,
       routeParams: routeParams ?? this.routeParams,
-      context: context ?? this.context,
+      queryParams: queryParams ?? this.queryParams,
     );
   }
 
