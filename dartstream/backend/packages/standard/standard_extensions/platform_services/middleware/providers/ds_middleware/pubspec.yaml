@@ -4,11 +4,10 @@ version: 0.0.1-pre
 publish_to: none
 repository: https://github.com/aortem/dartstream
 
+
 environment:
   sdk: ^3.11.0
-
-# resolution: workspace
-
+resolution: workspace
 dependencies:
   ds_standard_features: ^0.1.6
   ds_shelf:
@@ -17,10 +16,11 @@ dependencies:
 
   path: any
   logging: any
+  # Streaming
+  googleapis: ^15.0.0
+  googleapis_auth: ^2.0.0
 dev_dependencies:
   test: ^1.24.0
-  ds_error_handling:
-    path: ../../../../error_handling
   mockito: ^5.0.0
   mocktail: ^1.0.3
   shelf: ^1.4.0

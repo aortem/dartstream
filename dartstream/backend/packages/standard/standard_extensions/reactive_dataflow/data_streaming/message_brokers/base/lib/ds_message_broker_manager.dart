@@ -129,4 +129,6 @@ class DSMessageBrokerManager {
     log('Disposing message broker provider...');
     return _provider.dispose();
   }
+
+  static Object? getProvider(String s) {}
 }

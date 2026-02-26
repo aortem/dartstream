@@ -8,7 +8,7 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: '^3.11.0'
 
 dependencies:
   shelf: ^1.4.2
@@ -49,20 +49,16 @@ dependencies:
   ds_aws_storage_provider: ^0.0.1
   ds_gcp_storage_provider: ^0.0.1
 
-  # Platform Services - Feature flags
+  # Feature flags
   # ds_ff_base: ^0.0.1
   # ds_ff_dartstream: ^0.0.1
 
-  # Platform Services - Middleware
-
-  # Platform Services - Discovery
-
-
   # Reactive dataflow - data streaming (lean OSS list)
-  # ds_message_broker_base: ^0.0.1
-  # ds_gcp_pubsub_message_broker_provider: ^0.0.1
+  ds_message_broker_base: ^0.0.1
+  ds_gcp_pubsub_message_broker_provider: ^0.0.1
   # ds_websocket_base: ^0.0.1
   # ds_socket_io_websocket_provider: ^0.0.1
+
 
 workspace:
   - packages/standard/standard_engine/
