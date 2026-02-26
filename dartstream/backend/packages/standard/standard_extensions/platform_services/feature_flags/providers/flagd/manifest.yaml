@@ -1,0 +1,7 @@
+name: ds_flagd_provider
+version: "0.0.1-pre+1"
+description: "Flagd feature flag provider for Dartstream."
+dependencies:
+  - "FeatureFlags >=0.0.1"
+entry_point: "lib/ds_flagd_entry.dart"
+level: thirdParty

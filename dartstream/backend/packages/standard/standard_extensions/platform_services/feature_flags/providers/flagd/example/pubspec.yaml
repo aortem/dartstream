@@ -1,0 +1,13 @@
+name: ds_flagd_provider_example
+description: Example usage of the flagd feature flag provider for Dartstream.
+version: 0.0.1-pre+1
+publish_to: none
+
+environment:
+  sdk: ^3.10.9
+
+dependencies:
+  ds_flagd_provider:
+    path: ../
+  ds_feature_flags_base:
+    path: ../../../base

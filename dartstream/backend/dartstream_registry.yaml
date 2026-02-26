@@ -1,0 +1,506 @@
+## The Manifest highlights the features and packages that are supported by the framework.
+## To register your own extensions, you'll need to add them to the list.
+## We support "Core" and "thirdParty" Packages.
+## Core packages have first class framework support. Third Party packages are added as a convenience.
+
+lastUpdated: "2026-02-25T19:41:49.841180"
+
+extensions:
+
+  - name: ds_plugin_third_party_plugin_1
+    display_name: ds_plugin_third_party_plugin_1
+    version: 1.0.0
+    description: 'Third-party integration plugin 1 for Dartstream.'
+    path: packages/enhanced/plugins/third_party_plugin_1
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_plugin_third_party_plugin_1.dart'
+    level: thirdParty
+    type: plugin
+    optional: true
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_plugin_third_party_plugin_2
+    display_name: ds_plugin_third_party_plugin_2
+    version: 1.0.0
+    description: 'Third-party integration plugin 2 for Dartstream.'
+    path: packages/enhanced/plugins/third_party_plugin_2
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_plugin_third_party_plugin_2.dart'
+    level: thirdParty
+    type: plugin
+    optional: true
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_registry_integration
+    display_name: ds_registry_integration
+    version: 1.0.0
+    description: 'Optional registry integration module for Dartstream.'
+    path: packages/enhanced/registry_integration
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_registry_integration.dart'
+    level: core
+    type: core
+    optional: true
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: custom_analytics
+    display_name: custom_analytics
+    version: 1.0.0
+    description: 'Sample custom analytics integration for Dartstream.'
+    path: packages/enhanced/samples/custom_analytics
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/custom_analytics.dart'
+    level: thirdParty
+    type: plugin
+    optional: true
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: custom_feature_flag_integration
+    display_name: custom_feature_flag_integration
+    version: 1.0.0
+    description: 'Sample feature flag integration for Dartstream.'
+    path: packages/enhanced/samples/feature_flag_integration
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/custom_feature_flag_integration.dart'
+    level: thirdParty
+    type: core
+    optional: true
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_auth0_auth_provider
+    display_name: ds_auth0_auth_provider
+    version: 0.0.1
+    description: 'Auth0 authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/auth0
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_auth0_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_cognito_auth_provider
+    display_name: ds_cognito_auth_provider
+    version: 0.0.1-pre+1
+    description: 'Amazon authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/cognito
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_cognito_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_entraid_auth_provider
+    display_name: ds_entraid_auth_provider
+    version: 0.0.1-pre
+    description: 'Azure authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/entraid
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_entraid_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_fingerprint_auth_provider
+    display_name: ds_fingerprint_auth_provider
+    version: 0.0.1-pre
+    description: 'Fingerprint authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/fingerprint
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_fingerprint_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_firebase_auth_provider
+    display_name: ds_firebase_auth_provider
+    version: 0.0.1
+    description: 'Google authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/firebase
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_firebase_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_magic_auth_provider
+    display_name: ds_magic_auth_provider
+    version: 0.0.1
+    description: 'DartStream package for Magic authentication provider.'
+    path: packages/standard/standard_extensions/auth/providers/magic
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_magic_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_okta_auth_provider
+    display_name: ds_okta_auth_provider
+    version: 0.0.1-pre
+    description: 'Fingerprint authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/okta
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_okta_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ping_identity_dart_auth_sdk
+    display_name: ping_identity_dart_auth_sdk
+    version: 0.0.1
+    description: 'Ping Identity Auth SDK for DartStream'
+    path: packages/standard/standard_extensions/auth/providers/ping
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_ping_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_stytch_auth_provider
+    display_name: ds_stytch_auth_provider
+    version: 0.0.1-pre
+    description: 'Fingerprint authentication provider for Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/stytch
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_stytch_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_transmit_auth_provider
+    display_name: ds_transmit_auth_provider
+    version: 0.0.2
+    description: 'Transmit Authentication Provider For Dartstream.'
+    path: packages/standard/standard_extensions/auth/providers/transmit
+    dependencies:
+      - Auth >=0.0.1
+    entry_point: 'lib/ds_transmit_auth_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_firebase_database
+    display_name: ds_firebase_database
+    version: 0.0.1
+    description: 'Firestore database provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/database/providers/firebase
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_firebase_database_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_mongo_database
+    display_name: ds_mongo_database
+    version: 0.0.1
+    description: 'MongoDB database provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/database/providers/mongo
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_mongo_database_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_postgres_database
+    display_name: ds_postgres_database
+    version: 0.0.1
+    description: 'PostgreSQL database provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/database/providers/postgres
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_postgres_database_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_logging_base
+    display_name: ds_logging_base
+    version: 0.0.1
+    description: 'Base logging interfaces and manager for DartStream.'
+    path: packages/standard/standard_extensions/persistence/logging/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_logging_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_otlp_logging_provider
+    display_name: ds_otlp_logging_provider
+    version: 0.0.1
+    description: 'OpenTelemetry (OTLP) logging provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/logging/providers/otlp
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_otlp_logging_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_sentry_logging_provider
+    display_name: ds_sentry_logging_provider
+    version: 0.0.1
+    description: 'Sentry logging provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/logging/providers/sentry
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_sentry_logging_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_storage_base
+    display_name: ds_storage_base
+    version: 0.0.1
+    description: 'Base storage interfaces and manager for DartStream.'
+    path: packages/standard/standard_extensions/persistence/storage/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_storage_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_aws_storage_provider
+    display_name: ds_aws_storage_provider
+    version: 0.0.1
+    description: 'S3-compatible storage provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/storage/providers/aws
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_storage_aws_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_gcp_storage_provider
+    display_name: ds_gcp_storage_provider
+    version: 0.0.1
+    description: 'Google Cloud Storage provider for DartStream.'
+    path: packages/standard/standard_extensions/persistence/storage/providers/gcp
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_storage_gcp_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_flagd_provider
+    display_name: ds_flagd_provider
+    version: 0.0.1-pre+1
+    description: 'Provides an integration with Flagd, enabling Dartstream to manage and evaluate feature flags dynamically.'
+    path: packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
+    dependencies:
+      - FeatureFlags >=0.0.1
+    entry_point: 'lib/ds_flagd_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_intellitoggle_provider
+    display_name: ds_intellitoggle_provider
+    version: 0.0.1-pre+1
+    description: 'Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically.'
+    path: packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
+    dependencies:
+      - FeatureFlags >= 0.0.1
+    entry_point: 'lib/ds_intellitoggle_entry.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_shelf
+    display_name: ds_shelf
+    version: 0.0.1-pre+4
+    description: 'Core Shelf Components Within Larger DartStream Ecosystem.'
+    path: packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
+    dependencies:
+      - Core >= 0.0.1
+    entry_point: 'lib/ds_dartstream.dart'
+    level: thirdParty
+    type: plugin
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_message_broker_base
+    display_name: ds_message_broker_base
+    version: 0.0.1
+    description: 'Base interfaces and manager for DartStream message brokers.'
+    path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_message_broker_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_gcp_pubsub_message_broker_provider
+    display_name: ds_gcp_pubsub_message_broker_provider
+    version: 0.0.1
+    description: 'Google Cloud Pub/Sub message broker provider for DartStream.'
+    path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_message_broker_gcp_pubsub_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_websocket_base
+    display_name: ds_websocket_base
+    version: 0.0.1
+    description: 'Base interfaces and manager for DartStream WebSocket providers.'
+    path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_websocket_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_socket_io_websocket_provider
+    display_name: ds_socket_io_websocket_provider
+    version: 0.0.1
+    description: 'Socket.IO WebSocket provider for DartStream.'
+    path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_websocket_socket_io_entry.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_events_base
+    display_name: ds_events_base
+    version: 0.0.1
+    description: 'Base event interfaces and manager for DartStream.'
+    path: packages/standard/standard_extensions/reactive_dataflow/events/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_events_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+  - name: ds_notifications_base
+    display_name: ds_notifications_base
+    version: 0.0.1
+    description: 'Base notification interfaces and manager for DartStream.'
+    path: packages/standard/standard_extensions/reactive_dataflow/notifications/base
+    dependencies:
+      - Core >=0.0.1
+    entry_point: 'lib/ds_notifications_base_export.dart'
+    level: core
+    type: core
+    optional: false
+    compatible: true
+    compatible_with:
+      - dart: ">=3.0.0 <4.0.0"
+
+
+
