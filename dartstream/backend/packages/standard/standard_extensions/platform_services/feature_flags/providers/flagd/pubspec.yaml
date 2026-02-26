@@ -14,4 +14,8 @@ dependencies:
   http: ^1.2.2
   ds_feature_flags_base:
     path: ../../base
+  ds_standard_features: ^0.1.6
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4
 

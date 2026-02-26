@@ -53,7 +53,7 @@ await storage.uploadFile('path/to/object', dataBytes);
 | Standard Engine        | `ds_dartstream_standard_engine` |
 | Authentication         | `ds_auth_base`, `ds_auth0_auth_provider`, `ds_cognito_auth_provider`, `ds_firebase_auth_provider`, `ds_magic_auth_provider`, `ds_okta_auth_provider`, `ds_stytch_auth_provider`, `ds_transmit_auth_provider`, `ds_fingerprint_auth_provider`, `ds_entraid_auth_provider`, `ping_identity_dart_auth_sdk` |
 | Persistence            | `ds_database_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_otlp_logging_provider`, `ds_sentry_logging_provider`, `ds_aws_storage_provider`, `ds_gcp_storage_provider` |
-| Feature Flags          | `ds_ff_base`, `ds_ff_flagd`, `ds_ff_dartstream` |
+| Feature Flags          | `ds_feature_flags_base`, `ds_flagd_provider`, `ds_intellitoggle_provider` |
 | Reactive Dataflow      | `ds_message_broker_base`, `ds_gcp_pubsub_message_broker_provider`, `ds_websocket_base`, `ds_socket_io_websocket_provider` |
 | AI Modules (Preview)   | Semantic-release, AI-driven test generation, docs-sync, CLI assistant (coming soon!) |
 
