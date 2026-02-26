@@ -1,8 +1,11 @@
 // lib/src/core/ds_shelf_core.dart
+import 'dart:io';
 
-//import 'package:ds_shelf/ds_shelf.dart' as shelf;
 import '../ds_shelf.dart' as shelf;
 import 'package:shelf_router/shelf_router.dart';
+
+typedef DSFileRouteHandlerFactory =
+    shelf.Handler Function(File file, String routePath, String method);
 
 /// Core DSL for building a ds_shelf-powered server with middleware and routing.
 class DSShelfCore {
@@ -55,27 +58,78 @@ class DSShelfCore {
     _router.post(path, handler);
   }
 
+  /// Registers routes discovered from files in [routesDirectory].
+  ///
+  /// File-name conventions:
+  /// - `index.dart` maps to the directory root.
+  /// - `[id].dart` maps to `/<id>`.
+  /// - Optional method suffix: `name.get.dart`, `name.post.dart`, etc.
+  ///
+  /// Route handlers are provided by [handlerFactory], keeping this feature
+  /// optional and additive to explicit route registration.
+  void addFileBasedRoutes(
+    String routesDirectory, {
+    String baseRoute = '/',
+    bool recursive = true,
+    required DSFileRouteHandlerFactory handlerFactory,
+  }) {
+    final dir = Directory(routesDirectory);
+    if (!dir.existsSync()) {
+      throw ArgumentError.value(
+        routesDirectory,
+        'routesDirectory',
+        'Directory does not exist.',
+      );
+    }
+
+    final discoveredFiles = dir
+        .listSync(recursive: recursive)
+        .whereType<File>()
+        .where((file) => file.path.toLowerCase().endsWith('.dart'))
+        .toList()
+      ..sort((a, b) => a.path.compareTo(b.path));
+
+    for (final file in discoveredFiles) {
+      final parsed = _parseFileBasedRoute(
+        rootDirectoryPath: dir.path,
+        filePath: file.path,
+        baseRoute: baseRoute,
+      );
+
+      final routePath = parsed.$1;
+      final method = parsed.$2;
+      final isIndexRoute = parsed.$3;
+      final handler = handlerFactory(file, routePath, method);
+      _registerDiscoveredRoute(method, routePath, handler);
+      if (isIndexRoute && routePath != '/') {
+        _registerDiscoveredRoute(method, '$routePath/', handler);
+      }
+
+      final relativePath = file.path.substring(dir.path.length).replaceAll(
+            RegExp(r'^[\\/]+'),
+            '',
+          );
+      _registeredRoutes.add('$method\t$routePath ($relativePath)');
+    }
+  }
+
   /// Registers a static file handler.
   ///
   /// [fileSystemPath] is the directory to serve files from (e.g., 'public').
   /// [routePath] is the URL prefix to mount the handler on (defaults to '/').
   void addStaticRoute(String fileSystemPath, {String routePath = '/'}) {
     _registeredRoutes.add('STATIC\t$routePath ($fileSystemPath)');
-    
-    // Create the static handler using shelf_static directly
-    // We assume default document is index.html for root mounts
-    var staticHandler = shelf.createStaticHandler(
+
+    final staticHandler = shelf.createStaticHandler(
       fileSystemPath,
       defaultDocument: 'index.html',
     );
 
-    // Mount the handler.
-    // shelf_router's mount expects a prefix.
     _router.mount(routePath, staticHandler);
   }
 
   /// Registers a WebSocket route.
-  /// 
+  ///
   /// [path] is the URL path for the WebSocket connection.
   /// [handler] is the shelf handler that upgrades to WebSocket.
   void addWebSocketRoute(String path, shelf.Handler handler) {
@@ -91,16 +145,130 @@ class DSShelfCore {
 
   /// Prints all registered routes to the console.
   void printRoutes() {
-    print('╔════════════════════════════════════════════════════╗');
-    print('║             Registered Routes                      ║');
-    print('╠════════════════════════════════════════════════════╣');
+    print('====================================================');
+    print('             Registered Routes');
+    print('====================================================');
     if (_registeredRoutes.isEmpty) {
-      print('║ No routes registered.                              ║');
+      print('No routes registered.');
     } else {
       for (final route in _registeredRoutes) {
-        print('║ $route'.padRight(52) + ' ║');
+        print(route);
       }
     }
-    print('╚════════════════════════════════════════════════════╝');
+    print('====================================================');
+  }
+
+  (String, String, bool) _parseFileBasedRoute({
+    required String rootDirectoryPath,
+    required String filePath,
+    required String baseRoute,
+  }) {
+    final relative = filePath
+        .substring(rootDirectoryPath.length)
+        .replaceAll(RegExp(r'^[\\/]+'), '');
+    final segments = relative.split(RegExp(r'[\\/]'));
+    final fileName = segments.removeLast();
+    final stem = fileName.substring(0, fileName.length - '.dart'.length);
+    final methodParsed = _extractMethod(stem);
+    final routeStem = methodParsed.$1;
+    final method = methodParsed.$2;
+
+    final isIndexRoute = routeStem == 'index';
+    if (!isIndexRoute) {
+      segments.add(routeStem);
+    }
+
+    final transformedSegments =
+        segments.where((s) => s.isNotEmpty).map(_toRouteSegment).toList();
+    final route = _joinRoute(baseRoute, transformedSegments);
+    return (route, method, isIndexRoute);
+  }
+
+  (String, String) _extractMethod(String stem) {
+    final parts = stem.split('.');
+    if (parts.length <= 1) {
+      return (stem, 'GET');
+    }
+
+    final last = parts.last.toUpperCase();
+    switch (last) {
+      case 'GET':
+      case 'POST':
+      case 'PUT':
+      case 'PATCH':
+      case 'DELETE':
+      case 'ALL':
+        return (parts.sublist(0, parts.length - 1).join('.'), last);
+      default:
+        return (stem, 'GET');
+    }
+  }
+
+  String _toRouteSegment(String segment) {
+    if (segment.startsWith('[') && segment.endsWith(']')) {
+      final inner = segment.substring(1, segment.length - 1);
+      if (inner.startsWith('...') && inner.length > 3) {
+        final catchAll = inner.substring(3);
+        return '<$catchAll|.*>';
+      }
+      if (inner.isNotEmpty) {
+        return '<$inner>';
+      }
+    }
+    return segment;
+  }
+
+  String _joinRoute(String baseRoute, List<String> discoveredSegments) {
+    final normalizedBase = _normalizeRoute(baseRoute);
+    if (discoveredSegments.isEmpty) {
+      return normalizedBase;
+    }
+
+    final suffix = discoveredSegments.join('/');
+    if (normalizedBase == '/') {
+      return '/$suffix';
+    }
+    return '$normalizedBase/$suffix';
+  }
+
+  String _normalizeRoute(String route) {
+    if (route.isEmpty) {
+      return '/';
+    }
+
+    var normalized = route.startsWith('/') ? route : '/$route';
+    while (normalized.length > 1 && normalized.endsWith('/')) {
+      normalized = normalized.substring(0, normalized.length - 1);
+    }
+    return normalized;
+  }
+
+  void _registerDiscoveredRoute(
+    String method,
+    String path,
+    shelf.Handler handler,
+  ) {
+    switch (method) {
+      case 'GET':
+        _router.get(path, handler);
+        return;
+      case 'POST':
+        _router.post(path, handler);
+        return;
+      case 'PUT':
+        _router.put(path, handler);
+        return;
+      case 'PATCH':
+        _router.patch(path, handler);
+        return;
+      case 'DELETE':
+        _router.delete(path, handler);
+        return;
+      case 'ALL':
+        _router.all(path, handler);
+        return;
+      default:
+        _router.get(path, handler);
+    }
   }
 }
