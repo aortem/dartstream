@@ -48,8 +48,9 @@ class DSShelfCore {
 
   /// Utility to register a GET route easily.
   void addGetRoute(String path, shelf.Handler handler) {
-    _registeredRoutes.add('GET\t$path');
-    _router.get(path, handler);
+    final normalizedPath = _normalizeDynamicRoutePattern(path);
+    _registeredRoutes.add('GET\t$normalizedPath');
+    _router.get(normalizedPath, handler);
   }
 
   /// Utility to register a POST route easily.
@@ -118,14 +119,15 @@ class DSShelfCore {
   /// [fileSystemPath] is the directory to serve files from (e.g., 'public').
   /// [routePath] is the URL prefix to mount the handler on (defaults to '/').
   void addStaticRoute(String fileSystemPath, {String routePath = '/'}) {
-    _registeredRoutes.add('STATIC\t$routePath ($fileSystemPath)');
+    final mountPath = _normalizeMountPrefix(routePath);
+    _registeredRoutes.add('STATIC\t$mountPath ($fileSystemPath)');
 
     final staticHandler = shelf.createStaticHandler(
       fileSystemPath,
       defaultDocument: 'index.html',
     );
 
-    _router.mount(routePath, staticHandler);
+    _router.mount(mountPath, staticHandler);
   }
 
   /// Registers a WebSocket route.
@@ -133,14 +135,33 @@ class DSShelfCore {
   /// [path] is the URL path for the WebSocket connection.
   /// [handler] is the shelf handler that upgrades to WebSocket.
   void addWebSocketRoute(String path, shelf.Handler handler) {
-    _registeredRoutes.add('WS\t$path');
-    _router.all(path, handler);
+    final normalizedPath = _normalizeDynamicRoutePattern(path);
+    _registeredRoutes.add('WS\t$normalizedPath');
+    _router.all(normalizedPath, handler);
   }
 
   /// Mounts a handler at a specific path.
   void mount(String path, shelf.Handler handler) {
-    _registeredRoutes.add('MOUNT\t$path');
-    _router.mount(path, handler);
+    final mountPath = _normalizeMountPrefix(path);
+    _registeredRoutes.add('MOUNT\t$mountPath');
+    _router.mount(mountPath, handler);
+    if (mountPath != '/') {
+      final exactPath = mountPath.substring(0, mountPath.length - 1);
+      _router.all(exactPath, (request) {
+        final redirected = request.requestedUri.replace(
+          path: '${request.requestedUri.path}/',
+        );
+        return shelf.Response.movedPermanently(redirected.toString());
+      });
+    }
+  }
+
+  /// Mounts a child [Router] at a specific path prefix.
+  ///
+  /// This is useful for explicit nested route trees, e.g. mounting a
+  /// `/users` router that defines `/<id>` and `/profile` children.
+  void mountRouter(String path, Router router) {
+    mount(path, router.call);
   }
 
   /// Prints all registered routes to the console.
@@ -243,32 +264,63 @@ class DSShelfCore {
     return normalized;
   }
 
+  String _normalizeMountPrefix(String path) {
+    final normalized = _normalizeRoute(path);
+    if (normalized == '/') {
+      return normalized;
+    }
+    return '$normalized/';
+  }
+
   void _registerDiscoveredRoute(
     String method,
     String path,
     shelf.Handler handler,
   ) {
+    final normalizedPath = _normalizeDynamicRoutePattern(path);
     switch (method) {
       case 'GET':
-        _router.get(path, handler);
+        _router.get(normalizedPath, handler);
         return;
       case 'POST':
-        _router.post(path, handler);
+        _router.post(normalizedPath, handler);
         return;
       case 'PUT':
-        _router.put(path, handler);
+        _router.put(normalizedPath, handler);
         return;
       case 'PATCH':
-        _router.patch(path, handler);
+        _router.patch(normalizedPath, handler);
         return;
       case 'DELETE':
-        _router.delete(path, handler);
+        _router.delete(normalizedPath, handler);
         return;
       case 'ALL':
-        _router.all(path, handler);
+        _router.all(normalizedPath, handler);
         return;
       default:
-        _router.get(path, handler);
+        _router.get(normalizedPath, handler);
     }
+  }
+
+  String _normalizeDynamicRoutePattern(String path) {
+    final hadTrailingSlash = path.length > 1 && path.endsWith('/');
+    final normalized = _normalizeRoute(path);
+    if (normalized == '/') {
+      return '/';
+    }
+
+    final segments = normalized.split('/');
+    for (var i = 0; i < segments.length; i++) {
+      final segment = segments[i];
+      if (segment.startsWith(':') && segment.length > 1) {
+        segments[i] = '<${segment.substring(1)}>';
+      }
+    }
+
+    final transformed = segments.join('/');
+    if (hadTrailingSlash && transformed != '/') {
+      return '$transformed/';
+    }
+    return transformed;
   }
 }
