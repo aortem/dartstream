@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import '../model/ds_request_model.dart';
 import '../model/ds_response_model.dart';
+import '../../app/models/ds_custom_middleware_model.dart';
 
 class DsHttpHelpers {
   /// -------------------
