@@ -30,10 +30,7 @@ class DsErrorHandler {
       statusCode,
       {'Content-Type': 'application/json'},
       jsonEncode({
-        'error': {
-          'message': message,
-          'statusCode': statusCode,
-        }
+        'error': {'message': message, 'statusCode': statusCode},
       }),
     );
   }

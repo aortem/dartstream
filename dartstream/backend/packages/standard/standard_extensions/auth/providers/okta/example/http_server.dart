@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:ds_auth_base/ds_auth_base_export.dart';
 import '../lib/ds_okta_auth_provider.dart';
 
 final provider = DSOktaAuthProvider();

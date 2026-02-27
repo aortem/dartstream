@@ -1,8 +1,8 @@
-import 'package:test/test.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:ds_stytch_auth_provider/ds_stytch_auth_export.dart';
 
 void main() {
-  group('DSStytchAuthProvider (mock)', () {
+  group('DSStytchAuthProvider - Mock Tests', () {
     late DSStytchAuthProvider provider;
 
     setUp(() async {
@@ -11,7 +11,8 @@ void main() {
     });
 
     test('can create and login a user', () async {
-      await provider.createAccount('test@mail.com', '123456', displayName: 'Test User');
+      await provider.createAccount('test@mail.com', '123456',
+          displayName: 'Test User');
       await provider.signIn('test@mail.com', '123456');
 
       final user = await provider.getCurrentUser();

@@ -26,12 +26,14 @@ class DsCorsMiddleware {
   }
 
   DsCustomMiddleWareResponse _handlePreflight(
-      DsCustomMiddleWareRequest request) {
+    DsCustomMiddleWareRequest request,
+  ) {
     return DsCustomMiddleWareResponse(204, _corsHeaders(request), null);
   }
 
   DsCustomMiddleWareResponse _addCorsHeaders(
-      DsCustomMiddleWareResponse response) {
+    DsCustomMiddleWareResponse response,
+  ) {
     final headers = Map<String, String>.from(response.headers)
       ..addAll(_corsHeaders(null));
     return response.copyWith(headers: headers);
@@ -40,7 +42,8 @@ class DsCorsMiddleware {
   Map<String, String> _corsHeaders(DsCustomMiddleWareRequest? request) {
     final origin = request?.headers['origin'];
     final headers = <String, String>{
-      'Access-Control-Allow-Origin': allowedOrigins.contains('*') ||
+      'Access-Control-Allow-Origin':
+          allowedOrigins.contains('*') ||
               (origin != null && allowedOrigins.contains(origin))
           ? origin ?? '*'
           : allowedOrigins.first,

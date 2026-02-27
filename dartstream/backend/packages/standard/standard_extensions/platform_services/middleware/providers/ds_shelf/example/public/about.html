@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - DartStream Static Files</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <img src="logo.svg" alt="DartStream Logo" class="logo">
+            </div>
+            <h1>📖 About This Demo</h1>
+            <p class="subtitle">Static file serving implementation details</p>
+        </header>
+
+        <main>
+            <section class="demo-section">
+                <h2>🎯 Purpose</h2>
+                <p style="line-height: 1.8; font-size: 1.1em;">
+                    This sample application demonstrates the static file serving capability 
+                    implemented in DartStream's <code>ds_shelf</code> middleware package.
+                </p>
+            </section>
+
+            <section class="demo-section">
+                <h2>✨ Features Demonstrated</h2>
+                <ul class="checklist">
+                    <li>✓ Serving HTML files from the <code>public/</code> directory</li>
+                    <li>✓ Serving CSS stylesheets with correct MIME types</li>
+                    <li>✓ Serving JavaScript files with proper content types</li>
+                    <li>✓ Serving SVG images</li>
+                    <li>✓ Mixing static files with dynamic API routes</li>
+                    <li>✓ Default document support (index.html)</li>
+                </ul>
+            </section>
+
+            <section class="demo-section">
+                <h2>🔧 Implementation</h2>
+                <p style="line-height: 1.8; font-size: 1.1em; margin-bottom: 15px;">
+                    The server uses the new <code>addStaticRoute()</code> method:
+                </p>
+                <pre style="background: #1e1e1e; color: #00ff00; padding: 20px; border-radius: 8px; overflow-x: auto; font-family: 'Courier New', monospace;">
+final server = DSShelfCore();
+server.addStaticRoute('public');
+                </pre>
+            </section>
+
+            <section class="demo-section">
+                <h2>🔗 Navigation</h2>
+                <div class="links">
+                    <a href="/" class="btn">← Back to Home</a>
+                    <a href="/api/hello" class="btn btn-api">Test API</a>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <p>Powered by <strong>DartStream</strong> • Static Files Feature</p>
+        </footer>
+    </div>
+</body>
+</html>

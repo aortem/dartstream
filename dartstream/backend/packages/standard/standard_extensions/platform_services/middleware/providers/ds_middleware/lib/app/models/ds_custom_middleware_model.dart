@@ -1,69 +1,89 @@
 import 'dart:convert';
+import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
+import 'package:shelf/src/request.dart';
 
 class DsCustomMiddleWareRequest {
   final String method;
   final Uri uri;
   final Map<String, String> headers;
   final body;
-  final Map<String, String> routeParams; // Added routeParams field
+  final Map<String, dynamic>? routeParams;// Added routeParams field
   final Map<String, String> queryParams; // Added queryParams field
 
-  DsCustomMiddleWareRequest(
-      this.method, this.uri, this.headers, this.body, this.queryParams,
-      {this.routeParams = const {}});
-  DsCustomMiddleWareRequest change({Map<String, String>? headers}) {
-    // Create a new Request object with the updated headers
+  DsCustomMiddleWareRequest({
+    required this.method,
+    required this.uri,
+    required this.headers,
+    this.body,
+    this.routeParams = const {},
+    this.queryParams = const {},
+  });
+
+  DsCustomMiddleWareRequest change({
+    Map<String, String>? headers,
+    dynamic body,
+  }) {
     return DsCustomMiddleWareRequest(
-        method,
-        uri,
-        headers ?? this.headers,
-        body,
-        routeParams: routeParams,
-        queryParams);
+      method: method,
+      uri: uri,
+      headers: headers ?? this.headers,
+      body: body ?? this.body,
+      routeParams: routeParams,
+      queryParams: queryParams,
+    );
   }
 
-  // Added new 'copyWith' method
   DsCustomMiddleWareRequest copyWith({
     String? method,
     Uri? uri,
     Map<String, String>? headers,
     dynamic body,
-    Map<String, String>? routeParams,
+    Map<String, dynamic>? routeParams,
     Map<String, String>? queryParams,
+    Map<String, dynamic>? context,
   }) {
     return DsCustomMiddleWareRequest(
-      method ?? this.method,
-      uri ?? this.uri,
-      headers ?? this.headers,
-      body ?? this.body,
+      method: method ?? this.method,
+      uri: uri ?? this.uri,
+      headers: headers ?? this.headers,
+      body: body ?? this.body,
       routeParams: routeParams ?? this.routeParams,
-      queryParams ?? this.queryParams,
+      queryParams: queryParams ?? this.queryParams,
     );
   }
 
-  //add read to support body parsing
   Stream<List<int>> read() {
     if (body is String) {
       return Stream.value(utf8.encode(body as String));
     } else if (body is List<int>) {
       return Stream.value(body as List<int>);
+    } else if (body == null) {
+      return Stream.empty();
     } else {
       throw UnsupportedError('Unsupported body type: ${body.runtimeType}');
     }
+  }
+
+  T bodyAs<T>() {
+    if (body is T) return body as T;
+    return TypeHandlerRegistry.deserialize<T>(body);
   }
 }
 
 class DsCustomMiddleWareResponse {
   final int statusCode;
   final Map<String, String> headers;
-  final body;
-  // Add the request property
+  final dynamic body;
   final DsCustomMiddleWareRequest? request;
 
-  DsCustomMiddleWareResponse(this.statusCode, this.headers, this.body,
-      {this.request});
+  DsCustomMiddleWareResponse(
+    this.statusCode,
+    this.headers,
+    dynamic body, {
+    this.request,
+  }) : body = TypeHandlerRegistry.serialize(body);
 
-  static DsCustomMiddleWareResponse ok(String body) {
+  static DsCustomMiddleWareResponse ok(dynamic body) {
     return DsCustomMiddleWareResponse(200, {}, body);
   }
 
@@ -72,8 +92,9 @@ class DsCustomMiddleWareResponse {
   }
 
   static DsCustomMiddleWareResponse unauthorized() {
-    return DsCustomMiddleWareResponse(
-        401, {'www-authenticate': 'Bearer'}, 'Unauthorized');
+    return DsCustomMiddleWareResponse(401, {
+      'www-authenticate': 'Bearer',
+    }, 'Unauthorized');
   }
 
   DsCustomMiddleWareResponse copyWith({
@@ -82,7 +103,6 @@ class DsCustomMiddleWareResponse {
     dynamic body,
     DsCustomMiddleWareRequest? request,
   }) {
-    // Create a new Response object with the updated properties
     return DsCustomMiddleWareResponse(
       statusCode ?? this.statusCode,
       headers ?? this.headers,

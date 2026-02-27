@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Body Parser Demo</title>
+    <style>
+      body {
+        font-family:
+          "Inter",
+          system-ui,
+          -apple-system,
+          sans-serif;
+        background: #0a0a0c;
+        color: #e0e0e0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        padding: 2rem;
+      }
+      .container {
+        max-width: 800px;
+        width: 100%;
+        background: rgba(20, 20, 25, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        background: linear-gradient(45deg, #00f2fe, #4facfe);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 2rem;
+        text-align: center;
+      }
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      button {
+        padding: 0.75rem 1.5rem;
+        border-radius: 8px;
+        border: none;
+        background: #2a2a35;
+        color: white;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-weight: 600;
+      }
+      button:hover {
+        background: #3f3f4e;
+        transform: translateY(-2px);
+      }
+      button.primary {
+        background: linear-gradient(45deg, #4facfe 0%, #00f2fe 100%);
+        color: #0a0a0c;
+      }
+      button.primary:hover {
+        box-shadow: 0 0 15px rgba(79, 172, 254, 0.4);
+      }
+      .response-container {
+        background: #000;
+        border-radius: 8px;
+        padding: 1rem;
+        overflow-x: auto;
+        border: 1px solid #333;
+      }
+      pre {
+        margin: 0;
+        color: #a9ffaf;
+      }
+      .status {
+        margin-top: 1rem;
+        font-size: 0.9rem;
+        color: #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Body Parser Demo</h1>
+
+      <div class="controls">
+        <button onclick="sendJson()">Send JSON</button>
+        <button onclick="sendForm()">Send Form (URL Encoded)</button>
+        <button onclick="sendText()">Send Plain Text</button>
+        <button onclick="sendInvalidJson()">Send Invalid JSON</button>
+      </div>
+
+      <div class="response-container">
+        <pre id="output">Click a button to send a request...</pre>
+      </div>
+
+      <div class="status" id="status">
+        Server Target: http://localhost:8081/echo
+      </div>
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8081/echo";
+
+      async function post(contentType, body) {
+        const output = document.getElementById("output");
+        output.textContent = "Sending...";
+
+        try {
+          const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": contentType,
+            },
+            body: body,
+          });
+
+          const data = await response.json();
+          output.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          output.textContent =
+            "Error: " +
+            err.message +
+            "\n\nMake sure the server is running at " +
+            API_URL;
+        }
+      }
+
+      function sendJson() {
+        post(
+          "application/json",
+          JSON.stringify({
+            name: "John Doe",
+            age: 30,
+            skills: ["DartStream", "Shelf"],
+          }),
+        );
+      }
+
+      function sendForm() {
+        const params = new URLSearchParams();
+        params.append("user", "svetlana");
+        params.append("action", "testing_body_parser");
+        post("application/x-www-form-urlencoded", params.toString());
+      }
+
+      function sendText() {
+        post("text/plain", "This is a simple plain text message.");
+      }
+
+      function sendInvalidJson() {
+        post("application/json", '{ "invalid": json ');
+      }
+    </script>
+  </body>
+</html>

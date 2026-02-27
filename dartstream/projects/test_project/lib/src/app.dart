@@ -8,7 +8,6 @@ import 'router/route_config.dart';
 class App extends StatelessWidget {
   const App({super.key});
 
-  @override
   Widget build(BuildContext context) {
     // Define routes with guards
     final routes = [

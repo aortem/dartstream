@@ -1,15 +1,15 @@
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_middleware/ds_custom_middleware.dart';
 
-class DsCustomMiddleWareAuthenticationMiddleware implements dsCustomMiddleware {
+class DsCustomMiddleWareAuthenticationMiddleware implements DsCustomMiddleware {
   final List<String> authenticatedUsers;
 
   DsCustomMiddleWareAuthenticationMiddleware(this.authenticatedUsers);
 
   @override
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request,
-      Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest)
-          next) async {
+    DsCustomMiddleWareRequest request,
+    Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest) next,
+  ) async {
     // Check if the request requires authentication
     if (!request.uri.path.startsWith('/public')) {
       // Check if the user is authenticated

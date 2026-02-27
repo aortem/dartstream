@@ -9,7 +9,6 @@ class RegisterScreen extends StatefulWidget {
     required this.authManager,
   });
 
-  @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
@@ -51,17 +50,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (!mounted) return;
 
       setState(() {
-        if (e is DSAuthError) {
-          _error = e.message;
-        } else {
-          _error = e.toString();
-        }
+        _error = e.toString();
         _loading = false;
       });
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -177,7 +171,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();

@@ -4,10 +4,12 @@ library ds_shelf;
 // Export Base Shelf Component so users don't have to import them separately
 
 export 'package:shelf/shelf.dart';
+export 'package:shelf/shelf_io.dart';
 export 'package:shelf_packages_handler/shelf_packages_handler.dart';
 export 'package:shelf_proxy/shelf_proxy.dart';
 export 'package:shelf_router/shelf_router.dart';
 export 'package:shelf_static/shelf_static.dart';
+export 'extensions/static/ds_shelf_static_handler.dart';
 export 'package:shelf_test_handler/shelf_test_handler.dart';
 
 //Export our Core Libraries
@@ -24,6 +26,10 @@ export 'core/config/app_config.dart';
 //Export our CORS Libraries
 
 export 'extensions/cors/ds_shelf_cors_middleware.dart';
+
+//Export our Body Parser Libraries
+
+export 'extensions/body_parser/ds_shelf_body_parser.dart';
 
 //Export our Utilities Libraries
 

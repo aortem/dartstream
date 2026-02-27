@@ -2,8 +2,9 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
 // Import http client for API calls
-import 'dart:convert';
-import 'dart:io';
+
+import 'src/ds_session_manager.dart';
+
 
 import 'src/ds_error_mapper.dart';
 import 'src/ds_event_handlers.dart';
@@ -270,7 +271,7 @@ class DSEntraIDAuthProvider implements DSAuthProvider {
   }
 
   Future<void> updateUserProfile(String userId, Map<String, dynamic> updates) async {
-    final user = _mockUsers.values.firstWhere(
+    _mockUsers.values.firstWhere(
       (u) => u.id == userId,
       orElse: () => throw DSAuthError(
         'User not found',

@@ -11,14 +11,10 @@ class MockCognitoAuthProvider implements DSAuthProvider {
   final Map<String, String> _credentials = {};
   final Map<String, String> _refreshTokens = {};
   final Map<String, String> _confirmationCodes = {};
-
-  @override
   Future<void> initialize(Map<String, dynamic> config) async {
     _isInitialized = true;
     print('Mock Cognito Auth Provider initialized');
   }
-
-  @override
   Future<void> signIn(String username, String password) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -29,14 +25,10 @@ class MockCognitoAuthProvider implements DSAuthProvider {
       throw DSAuthError('Invalid credentials');
     }
   }
-
-  @override
   Future<void> signOut() async {
     _currentUser = null;
     print('Mock Cognito sign out successful');
   }
-
-  @override
   Future<DSAuthUser> getUser(String userId) async {
     final user = _users.values.firstWhere(
       (u) => u.id == userId,
@@ -44,16 +36,12 @@ class MockCognitoAuthProvider implements DSAuthProvider {
     );
     return user;
   }
-
-  @override
   Future<DSAuthUser> getCurrentUser() async {
     if (_currentUser == null) {
       throw DSAuthError('No user is currently signed in');
     }
     return _currentUser!;
   }
-
-  @override
   Future<void> createAccount(String email, String password, {String? displayName}) async {
     if (!_isInitialized) throw Exception('Provider not initialized');
     
@@ -81,8 +69,6 @@ class MockCognitoAuthProvider implements DSAuthProvider {
     _confirmationCodes[email] = '123456';
     print('Mock Cognito account created for: $email');
   }
-
-  @override
   Future<bool> verifyToken([String? token]) async {
     if (token == null) return _currentUser != null;
     
@@ -98,8 +84,6 @@ class MockCognitoAuthProvider implements DSAuthProvider {
     
     return false;
   }
-
-  @override
   Future<String> refreshToken(String refreshToken) async {
     if (_currentUser == null) {
       throw DSAuthError('No user signed in');
@@ -112,13 +96,9 @@ class MockCognitoAuthProvider implements DSAuthProvider {
     
     throw DSAuthError('Invalid refresh token');
   }
-
-  @override
   Future<void> onLoginSuccess(DSAuthUser user) async {
     print('Cognito login success hook called for: ${user.email}');
   }
-
-  @override
   Future<void> onLogout() async {
     print('Cognito logout hook called');
   }

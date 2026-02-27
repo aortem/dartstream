@@ -7,8 +7,6 @@ library ds_enhanced_authentication_features;
 
 //BASE MIDDLEWARE LIBRIARIES - USE ONLY ONE
 
-//The Base DS and Custom Shelf Library.
-import 'package:ds_shelf/ds_shelf.dart';
 //import 'package:ds_custom/ds_custom.dart';
 
 //---AUTHENTICATION---
