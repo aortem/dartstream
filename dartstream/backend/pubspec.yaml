@@ -8,7 +8,7 @@ version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.10.9
+  sdk: '^3.11.0'
 
 dependencies:
   shelf: ^1.4.2
@@ -49,10 +49,15 @@ dependencies:
   ds_aws_storage_provider: ^0.0.1
   ds_gcp_storage_provider: ^0.0.1
 
-# Feature flags
-# ds_ff_base: ^0.0.1
-# ds_ff_flagd: ^0.0.1
-# ds_ff_dartstream: ^0.0.1
+  # Feature flags
+  ds_feature_flags_base: ^0.0.1
+  ds_intellitoggle_provider: ^0.0.1
+
+  # Reactive dataflow - data streaming (lean OSS list)
+  ds_message_broker_base: ^0.0.1
+  ds_gcp_pubsub_message_broker_provider: ^0.0.1
+  ds_websocket_base: ^0.0.1
+  ds_socket_io_websocket_provider: ^0.0.1
 
 # Reactive dataflow - data streaming (lean OSS list)
 # ds_message_broker_base: ^0.0.1
@@ -85,7 +90,6 @@ workspace:
   - packages/standard/standard_extensions/persistence/storage/providers/gcp
   - packages/standard/standard_extensions/platform_services/discovery/
   - packages/standard/standard_extensions/platform_services/feature_flags/base
-  - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
   - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
   - packages/standard/standard_extensions/platform_services/middleware/base
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
@@ -97,3 +101,6 @@ workspace:
   - packages/standard/standard_extensions/reactive_dataflow/events/base
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
+
+
+

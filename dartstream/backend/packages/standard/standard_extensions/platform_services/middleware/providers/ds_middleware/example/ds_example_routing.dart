@@ -1,18 +1,19 @@
-import 'package:ds_custom_middleware/ds_custom_middleware.dart';
+import 'package:ds_middleware/ds_custom_middleware.dart';
 
 class DsCustomMiddleWareRouter {
-  final List<dsCustomMiddleware> _middlewares;
+  final List<DsCustomMiddleware> _middlewares;
 
   DsCustomMiddleWareRouter() : _middlewares = [];
 
-  void addMiddleware(dsCustomMiddleware middleware) {
+  void addMiddleware(DsCustomMiddleware middleware) {
     _middlewares.add(middleware);
   }
 
   Future<DsCustomMiddleWareResponse> handle(
-      DsCustomMiddleWareRequest request) async {
+    DsCustomMiddleWareRequest request,
+  ) async {
     Future<DsCustomMiddleWareResponse> Function(DsCustomMiddleWareRequest)
-        handler = (req) async {
+    handler = (req) async {
       return DsCustomMiddleWareResponse.notFound();
     };
 

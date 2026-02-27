@@ -21,9 +21,7 @@ class HomeScreen extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              e is DSAuthError ? e.message : e.toString(),
-            ),
+            content: Text(e.toString()),
             backgroundColor: Theme.of(context).colorScheme.error,
           ),
         );
@@ -31,7 +29,6 @@ class HomeScreen extends StatelessWidget {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -116,7 +113,6 @@ class _UserInfoRow extends StatelessWidget {
     required this.value,
   });
 
-  @override
   Widget build(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,

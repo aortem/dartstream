@@ -22,7 +22,6 @@ class DartStreamApp extends StatelessWidget {
   final User? initialUser;
   const DartStreamApp({super.key, this.initialUser});
 
-  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,

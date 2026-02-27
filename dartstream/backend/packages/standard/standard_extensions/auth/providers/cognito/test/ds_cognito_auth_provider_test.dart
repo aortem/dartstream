@@ -1,4 +1,4 @@
-import 'package:test/test.dart';
+import 'package:ds_tools_testing/ds_tools_testing.dart';
 import 'package:ds_auth_base/ds_auth_provider.dart';
 import 'package:ds_cognito_auth_provider/ds_cognito_auth_export.dart';
 

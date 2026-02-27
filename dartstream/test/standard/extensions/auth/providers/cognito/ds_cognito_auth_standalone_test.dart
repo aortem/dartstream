@@ -141,7 +141,6 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
   DSAuthUser? _currentUser;
   String? _accessToken;
   String? _refreshToken;
-  String? _idToken;
 
   // Mock storage
   final Map<String, DSAuthUser> _users = {};
@@ -183,7 +182,6 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
     _currentUser = _users[username];
     _accessToken = 'cognito_access_${DateTime.now().millisecondsSinceEpoch}';
     _refreshToken = _refreshTokens[username];
-    _idToken = 'cognito_id_${DateTime.now().millisecondsSinceEpoch}';
 
     await onLoginSuccess(_currentUser!);
     print('Standalone Cognito sign-in successful for: $username');
@@ -196,7 +194,6 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
       _currentUser = null;
       _accessToken = null;
       _refreshToken = null;
-      _idToken = null;
       print('Standalone Cognito sign-out successful');
     }
   }
@@ -357,7 +354,6 @@ class StandaloneCognitoAuthProvider implements DSAuthProvider {
     _currentUser = null;
     _accessToken = null;
     _refreshToken = null;
-    _idToken = null;
     
     print('Standalone Cognito user deleted');
   }

@@ -1,19 +1,28 @@
 import 'package:test/test.dart';
 import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/ds_magic_auth_provider.dart';
-import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/src/ds_token_manager.dart';
-import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/src/ds_session_manager.dart';
-import 'package:dartstream_backend/packages/standard/standard_extensions/auth/providers/magic/lib/src/ds_error_mapper.dart';
 import 'package:dartstream_backend/packages/standard/standard_extensions/auth/base/lib/ds_auth_provider.dart';
-<<<<<<< HEAD
-=======
-import 'package:http/http.dart' as http;
-import 'package:http/testing.dart';
->>>>>>> main
-import 'dart:convert';
+
+class TestMagicAuthProvider extends DSMagicAuthProvider {
+  final Future<Map<String, dynamic>?> Function(String)? verifyOverride;
+
+  TestMagicAuthProvider({
+    required String publishableKey,
+    required String secretKey,
+    this.verifyOverride,
+  }) : super.internal(publishableKey: publishableKey, secretKey: secretKey);
+
+  @override
+  Future<Map<String, dynamic>?> verifyDIDTokenWithMagic(String didToken) {
+    if (verifyOverride != null) {
+      return verifyOverride!(didToken);
+    }
+    return super.verifyDIDTokenWithMagic(didToken);
+  }
+}
 
 void main() {
   group('DSMagicAuthProvider', () {
-    late DSMagicAuthProvider provider;
+    late TestMagicAuthProvider provider;
     const publishableKey = 'test-pub-key';
     const secretKey = 'test-secret-key';
     const testEmail = 'user@example.com';
@@ -51,10 +60,10 @@ void main() {
         verifyOverride: (_) => Future.value(testUserInfo),
 =======
     setUp(() async {
-      provider = DSMagicAuthProvider(
+      provider = TestMagicAuthProvider(
         publishableKey: publishableKey,
         secretKey: secretKey,
->>>>>>> main
+        verifyOverride: (_) async => testUserInfo,
       );
       await provider.initialize({});
     });
@@ -68,93 +77,74 @@ void main() {
     });
 
     test('signIn stores token and session on success', () async {
-<<<<<<< HEAD
-=======
-      // Mock Magic API response
-      final mockClient = MockClient((request) async {
-        expect(request.headers['Authorization'], 'Bearer $testDIDToken');
-        return http.Response(jsonEncode({'data': testUserInfo}), 200);
-      });
-      // Inject mock client into provider
-      provider = DSMagicAuthProvider(
-        publishableKey: publishableKey,
-        secretKey: secretKey,
-      );
-      await provider.initialize({});
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
->>>>>>> main
       await provider.signIn(testEmail, testDIDToken);
       final user = await provider.getCurrentUser();
       expect(user.id, testUserId);
       expect(user.email, testEmail);
+      expect(provider.isSignedIn, isTrue);
     });
 
     test('signOut clears session and token', () async {
-      provider._currentUserId = testUserId;
-      provider._currentDIDToken = testDIDToken;
+      await provider.signIn(testEmail, testDIDToken);
       await provider.signOut();
-      expect(provider._currentUserId, isNull);
-      expect(provider._currentDIDToken, isNull);
+      expect(provider.currentUserId, isNull);
+      expect(provider.currentDIDToken, isNull);
+      expect(provider.isSignedIn, isFalse);
     });
 
     test('createAccount calls signIn', () async {
-<<<<<<< HEAD
-=======
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
->>>>>>> main
       await provider.createAccount(testEmail, testDIDToken);
       final user = await provider.getCurrentUser();
       expect(user.id, testUserId);
+      expect(provider.isSignedIn, isTrue);
     });
 
     test('getCurrentUser throws if not signed in', () async {
-      provider._currentUserId = null;
-      provider._currentDIDToken = null;
+      provider.clearCurrentSession();
       expect(() => provider.getCurrentUser(), throwsA(isA<DSAuthError>()));
     });
 
     test('verifyToken returns true for valid token', () async {
-<<<<<<< HEAD
-=======
-      provider._verifyDIDTokenWithMagic = (String didToken) async =>
-          testUserInfo;
->>>>>>> main
-      provider._currentDIDToken = testDIDToken;
+      await provider.signIn(testEmail, testDIDToken);
       final result = await provider.verifyToken();
       expect(result, isTrue);
     });
 
     test('verifyToken returns false for invalid token', () async {
-<<<<<<< HEAD
       final invalidProvider = TestMagicAuthProvider(
         publishableKey: publishableKey,
         secretKey: secretKey,
         verifyOverride: (_) async => null,
       );
       await invalidProvider.initialize({});
-      invalidProvider._currentDIDToken = testDIDToken;
-      final result = await invalidProvider.verifyToken();
-=======
-      provider._verifyDIDTokenWithMagic = (String didToken) async => null;
-      provider._currentDIDToken = testDIDToken;
-      final result = await provider.verifyToken();
->>>>>>> main
+      final result = await invalidProvider.verifyToken('bad.token');
       expect(result, isFalse);
     });
 
-    test('refreshToken throws UnimplementedError', () async {
+    test('refreshToken returns token when valid', () async {
+      await provider.signIn(testEmail, testDIDToken);
+      final refreshed = await provider.refreshToken(testDIDToken);
+      expect(refreshed, equals(testDIDToken));
+    });
+
+    test('refreshToken throws on invalid token', () async {
       expect(
-        () => provider.refreshToken('dummy'),
-        throwsA(isA<UnimplementedError>()),
+        () => provider.refreshToken('invalid'),
+        throwsA(isA<DSAuthError>()),
       );
     });
 
-    test('getUser throws UnimplementedError', () async {
+    test('getUser returns current user for matching id', () async {
+      await provider.signIn(testEmail, testDIDToken);
+      final user = await provider.getUser(testUserId);
+      expect(user.id, testUserId);
+    });
+
+    test('getUser throws for unknown id', () async {
+      await provider.signIn(testEmail, testDIDToken);
       expect(
-        () => provider.getUser(testUserId),
-        throwsA(isA<UnimplementedError>()),
+        () => provider.getUser('unknown'),
+        throwsA(isA<DSAuthError>()),
       );
     });
 
@@ -167,12 +157,6 @@ void main() {
       await provider.onLoginSuccess(user);
       await provider.onLogout();
     });
-<<<<<<< HEAD
-  });
-}
-=======
-
-    // TODO: Add more comprehensive tests for error handling, edge cases, and session/token expiration
   });
 }
 >>>>>>> main

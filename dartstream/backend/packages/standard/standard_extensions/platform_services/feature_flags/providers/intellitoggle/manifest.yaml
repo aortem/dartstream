@@ -1,7 +1,7 @@
-name: ds_dartstream_provider
+name: ds_intellitoggle_provider
 version: "0.0.1-pre+1"
-description: Integration with Intellitoggle.
+description: "IntelliToggle feature flag provider for Dartstream."
 dependencies:
-  - Core >= 0.0.1
-  - FeatureFlags >= 0.0.1
-entry_point: lib/ds_dartstream.dart
+  - "FeatureFlags >=0.0.1"
+entry_point: "lib/ds_intellitoggle_entry.dart"
+level: thirdParty

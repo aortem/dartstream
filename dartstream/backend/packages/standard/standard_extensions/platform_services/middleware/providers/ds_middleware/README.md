@@ -21,3 +21,18 @@ All Dartstream packages are licensed under BSD-3, except for the *services packa
 ## Enhance with DartStream
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+
+### Query String Usage
+
+GET /products
+
+Supported query parameters:
+
+- category (String)
+- minPrice (double)
+- maxPrice (double)
+- limit (int)
+- featured (bool)
+
+Example:
+GET /products?category=electronics&minPrice=100&maxPrice=500&limit=5&featured=true

@@ -12,7 +12,6 @@ class LoginScreen extends StatefulWidget {
     required this.onLoginSuccess,
   });
 
-  @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
@@ -50,11 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
       print('Login error: $e');
 
       setState(() {
-        if (e is DSAuthError) {
-          _error = e.message;
-        } else {
-          _error = 'An unexpected error occurred. Please try again.';
-        }
+        _error = e.toString();
       });
     } finally {
       if (mounted) {
@@ -65,7 +60,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -173,7 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
