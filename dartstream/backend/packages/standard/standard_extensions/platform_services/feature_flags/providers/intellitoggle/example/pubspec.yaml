@@ -7,10 +7,8 @@ environment:
   sdk: ^3.10.9
 
 dependencies:
-  ds_intellitoggle_provider:
-    path: ../
-  ds_feature_flags_base:
-    path: ../../../base
+  ds_intellitoggle_provider: ^0.1.6
+  ds_feature_flags_base: ^0.0.1
   ds_standard_features: ^0.1.6
 
 dev_dependencies:

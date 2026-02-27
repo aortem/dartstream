@@ -50,8 +50,8 @@ dependencies:
   ds_gcp_storage_provider: ^0.0.1
 
   # Feature flags
-  ds_ff_base: ^0.0.1
-  ds_ff_dartstream: ^0.0.1
+  ds_feature_flags_base: ^0.0.1
+  ds_intellitoggle_provider: ^0.0.1
 
   # Reactive dataflow - data streaming (lean OSS list)
   ds_message_broker_base: ^0.0.1
