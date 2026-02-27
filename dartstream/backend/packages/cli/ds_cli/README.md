@@ -358,7 +358,49 @@ dart run ./bin/dartstream.dart generate --type scaffold --name Order --project t
 
 **Verify 5 files created:** model, API, service, repository, and test.
 
-#### Test 5g: File Exists Without --force
+#### Test 5g: Generate Dart Client Package (OpenAPI)
+
+Create a local spec file first (example path shown for macOS/Linux):
+
+```bash
+cat > ./openapi.json << 'EOF'
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Demo API", "version": "1.0.0" },
+  "servers": [{ "url": "https://api.example.com" }],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Health check endpoint"
+      }
+    }
+  }
+}
+EOF
+```
+
+Then run:
+
+```bash
+dart run ./bin/dartstream.dart generate --type client --name Demo --spec ./openapi.json --output ./generated_clients
+```
+
+**Verify:**
+- Package created at `./generated_clients/ds_demo_client`
+- Generated files include:
+  - `pubspec.yaml`
+  - `lib/ds_demo_client.dart`
+  - `lib/src/demo_client.dart`
+  - `test/demo_client_test.dart`
+- Run tests:
+
+```bash
+cd ./generated_clients/ds_demo_client
+dart test
+```
+
+#### Test 5h: File Exists Without --force
 
 1. Generate model User
 2. Generate model User again
