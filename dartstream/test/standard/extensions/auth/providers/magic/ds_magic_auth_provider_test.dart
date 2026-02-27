@@ -34,6 +34,31 @@ void main() {
       'publicAddress': '0x123',
     };
 
+<<<<<<< HEAD
+    class TestMagicAuthProvider extends DSMagicAuthProvider {
+      final Map<String, dynamic>? Function(String)? verifyOverride;
+
+      TestMagicAuthProvider({
+        required String publishableKey,
+        required String secretKey,
+        this.verifyOverride,
+      }) : super(publishableKey: publishableKey, secretKey: secretKey);
+
+      @override
+      Future<Map<String, dynamic>?> _verifyDIDTokenWithMagic(String didToken) {
+        if (verifyOverride != null) {
+          return verifyOverride!(didToken);
+        }
+        return super._verifyDIDTokenWithMagic(didToken);
+      }
+    }
+
+    setUp(() async {
+      provider = TestMagicAuthProvider(
+        publishableKey: publishableKey,
+        secretKey: secretKey,
+        verifyOverride: (_) => Future.value(testUserInfo),
+=======
     setUp(() async {
       provider = TestMagicAuthProvider(
         publishableKey: publishableKey,
@@ -134,3 +159,4 @@ void main() {
     });
   });
 }
+>>>>>>> main

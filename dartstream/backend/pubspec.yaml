@@ -59,6 +59,11 @@ dependencies:
   ds_websocket_base: ^0.0.1
   ds_socket_io_websocket_provider: ^0.0.1
 
+# Reactive dataflow - data streaming (lean OSS list)
+# ds_message_broker_base: ^0.0.1
+# ds_gcp_pubsub_message_broker_provider: ^0.0.1
+# ds_websocket_base: ^0.0.1
+# ds_socket_io_websocket_provider: ^0.0.1
 
 workspace:
   - packages/standard/standard_engine/

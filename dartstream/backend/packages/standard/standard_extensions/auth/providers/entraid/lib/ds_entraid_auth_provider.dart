@@ -6,6 +6,11 @@ import 'package:ds_auth_base/ds_auth_base_export.dart';
 import 'src/ds_session_manager.dart';
 
 
+import 'src/ds_error_mapper.dart';
+import 'src/ds_event_handlers.dart';
+import 'src/ds_session_manager.dart';
+import 'src/ds_token_manager.dart';
+
 /// Microsoft EntraID (Azure AD B2C) authentication provider implementation for DartStream.
 class DSEntraIDAuthProvider implements DSAuthProvider {
   static DSEntraIDAuthProvider? _instance;
