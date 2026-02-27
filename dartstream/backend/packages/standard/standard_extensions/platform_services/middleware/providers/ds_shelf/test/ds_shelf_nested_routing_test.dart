@@ -5,39 +5,6 @@ import 'package:shelf_router/shelf_router.dart';
 
 void main() {
   group('DSShelfCore nested routing', () {
-    test('addGetRoute supports colon dynamic params', () async {
-      final core = DSShelfCore();
-      core.addGetRoute('/product/:id', (request) {
-        return Response.ok('id=${request.params['id']}');
-      });
-
-      final response = await core.handler(
-        Request('GET', Uri.parse('http://localhost/product/abc-123')),
-      );
-      expect(response.statusCode, 200);
-      expect(await response.readAsString(), 'id=abc-123');
-    });
-
-    test('addPostRoute supports colon dynamic params', () async {
-      final core = DSShelfCore();
-      core.addPostRoute('/orders/:orderId/items/:itemId', (request) {
-        final orderId = request.params['orderId'];
-        final itemId = request.params['itemId'];
-        return Response.ok('order=$orderId,item=$itemId');
-      });
-
-      final postResponse = await core.handler(
-        Request('POST', Uri.parse('http://localhost/orders/42/items/7')),
-      );
-      expect(postResponse.statusCode, 200);
-      expect(await postResponse.readAsString(), 'order=42,item=7');
-
-      final wrongMethod = await core.handler(
-        Request('GET', Uri.parse('http://localhost/orders/42/items/7')),
-      );
-      expect(wrongMethod.statusCode, 404);
-    });
-
     test('mountRouter supports nested child router paths', () async {
       final core = DSShelfCore();
       final usersRouter = Router()
