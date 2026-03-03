@@ -14,13 +14,13 @@ Desktop.ini
 # Linux
 *~
 
+
 ##########################################
 # Common IDE / Editor Files
 ##########################################
 # IntelliJ / Android Studio
 *.iml
 .idea/
-.gradle/
 
 # VSCode
 .vscode/
@@ -30,20 +30,29 @@ Desktop.ini
 .classpath
 .settings/
 
+# JetBrains Fleet
+.fleet
+
+
 ##########################################
 # Flutter / Dart
 ##########################################
 # Flutter/Dart build and tool files
 /build/
-/.flutter-plugins
-.flutter-plugins-dependencies
 .dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
 .packages
 .pub-cache/
 pubspec.lock
 
 # Generated plugin registrant
 GeneratedPluginRegistrant.*
+# MANUAL REVIEW: Flutter desktop example generates these registrants/build files.
+generated_plugin_registrant.*
+generated_plugins.cmake
+
+
 
 ##########################################
 # Android (Android Compose)
@@ -55,51 +64,41 @@ GeneratedPluginRegistrant.*
 local.properties
 *.apk
 *.ap_
+
 # Android Studio Navigation editor temp files
 .navigation/
+
 
 ##########################################
 # Node.js / JavaScript / TypeScript (React, Svelte, Vue)
 ##########################################
 # Node modules, build and cache directories
 node_modules/
+.pnp/
+.pnp.js
+build/
+dist/
+coverage/
+
+# Logs created by Node tooling
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-.pnp/
-.pnp.js
-dist/
-build/
-coverage/
+lerna-debug.log*
 
-# Optional: Ignore IDE config files for JavaScript projects
-.vscode/
-.idea/
 
 ##########################################
-# Svelte-specific (if applicable)
+# Svelte-specific
 ##########################################
 .svelte-kit/
 
-##########################################
-# Vue-specific (if applicable)
-##########################################
-# Vue CLI build output
-dist/
 
 ##########################################
-# Other Common Files and Directories
+# Vue-specific
 ##########################################
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-lerna-debug.log*
+# Vue CLI build output (also uses dist/)
+# (covered by generic `dist/` above)
 
-# Temporary files
-tmp/
-temp/
 
 ##########################################
 # Nuxt.js build & cache
@@ -116,53 +115,30 @@ dist/
 .cache/
 .data/
 
-##########################################
-# From dartstream/backend/packages/standard/standard_extensions/auth/providers/cognito/.gitignore
-##########################################
-# Dart
-.dart_tool/
-.packages
-pubspec.lock
-
-# Data
-.ds_cognito_sessions/
-debug_log.txt
-test_output.txt
-analysis_errors.txt
-compilation_errors.txt
-errors.txt
-error.log
-
-# Node
-node_modules/
-example/cognito-app/node_modules/
-dist/
 
 ##########################################
-# From dartstream/backend/packages/standard/standard_extensions/auth/providers/cognito/example/cognito-app/.gitignore
+# Other Common Files and Directories
 ##########################################
 # Logs
 logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Temporary files
+tmp/
+temp/
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
-.DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.data/
+# Cypress Screenshots, Videos, and Reports
+cypress/screenshots
+
+
+##########################################
+# Local env files
+##########################################
+.env
+.env.*
+!.env.example
+
+##########################################
+# Local API tooling artifacts
+##########################################
+backend/api/apidog/
