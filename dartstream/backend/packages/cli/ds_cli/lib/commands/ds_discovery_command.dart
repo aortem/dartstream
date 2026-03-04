@@ -4,14 +4,14 @@ import 'package:args/command_runner.dart';
 import 'package:ds_discovery_provider/main.dart';
 import 'package:yaml/yaml.dart';
 
-/// CLI Command for Dartstream to discover and manage extensions dynamically.
+/// CLI command to discover and manage extensions dynamically.
 class DSDiscoveryCommand extends Command {
   @override
   final name = 'discover';
 
   @override
   final description =
-      'Discovers, validates, and dynamically registers extensions with Standard Engine.';
+      'Discovers, validates, and registers extensions from standard and enhanced directories.';
 
   DSDiscoveryCommand() {
     argParser
@@ -40,67 +40,59 @@ class DSDiscoveryCommand extends Command {
     final shouldRegister = argResults?['register'] as bool;
     final shouldValidate = argResults?['validate'] as bool;
 
-    print('🔍 Starting extension discovery...\n');
+    print('Starting extension discovery...');
 
-    // Find extensions directory
     final extensionsDirectory = _findExtensionsDirectory();
     final registryFile = _findRegistryFile();
 
-    print('📁 Extensions directory: $extensionsDirectory');
-    print('📋 Registry file: $registryFile');
+    print('Extensions directory: $extensionsDirectory');
+    print('Registry file: $registryFile');
 
     if (!Directory(extensionsDirectory).existsSync()) {
-      print('❌ Extensions directory not found.');
+      print('Extensions directory not found.');
       return;
     }
 
     try {
-      // Create registry instance
       final registry = ExtensionRegistry(
         extensionsDirectory: extensionsDirectory,
         registryFile: registryFile,
       );
 
-      // Discover extensions
       registry.discoverExtensions();
 
-      print('\n📦 Discovered extensions:');
+      print('\nDiscovered extensions:');
       _printExtensions(registry);
 
-      // Validate if requested
       if (shouldValidate) {
-        print('\n✅ Validating extensions...');
+        print('\nValidating extensions...');
         _validateExtensions(registry);
       }
 
-      // Register with Standard Engine if requested
       if (shouldRegister && projectName != null) {
-        print('\n🔧 Registering with Standard Engine...');
+        print('\nRegistering with Standard Engine...');
         await _registerWithEngine(registry, projectName);
       }
 
-      // Initialize lifecycle hooks
-      print('\n🎯 Initializing lifecycle hooks...');
+      print('\nInitializing lifecycle hooks...');
       for (final extension in registry.extensions) {
         extension.onInitialize();
           print('   ✓ ${extension.name} initialized');
       }
 
-      print('\n✅ Discovery complete!');
+      print('\nDiscovery complete.');
     } catch (e) {
-      print('❌ Error during discovery: $e');
+      print('Error during discovery: $e');
     }
   }
 
   String _findExtensionsDirectory() {
-    // Try multiple possible paths
     final paths = [
-      // From ds_cli folder, go up 3 levels
-      p.join('..', '..', '..', 'packages', 'standard', 'standard_extensions'),
-      p.join('..', '..', 'standard', 'standard_extensions'),
-      // Absolute from project root
+      // Prefer packages root so both standard and enhanced/plugins are included.
+      p.join('packages'),
+      p.join('..', '..', '..', 'packages'),
       p.join('packages', 'standard', 'standard_extensions'),
-      // Legacy paths for compatibility
+      p.join('packages', 'enhanced', 'plugins'),
       p.join('packages', 'standard', 'extensions'),
     ];
 
@@ -111,15 +103,7 @@ class DSDiscoveryCommand extends Command {
       }
     }
 
-    // Default to the correct path even if not found
-    return p.normalize(
-      p.join(
-        Directory.current.path,
-        'packages',
-        'standard',
-        'standard_extensions',
-      ),
-    );
+    return p.normalize(p.join(Directory.current.path, 'packages'));
   }
 
   String _findRegistryFile() {
@@ -136,36 +120,29 @@ class DSDiscoveryCommand extends Command {
       }
     }
 
-    return p.normalize(
-      p.join(Directory.current.path, 'dartstream_registry.yaml'),
-    );
+    return p.normalize(p.join(Directory.current.path, 'dartstream_registry.yaml'));
   }
 
   void _printExtensions(ExtensionRegistry registry) {
-    // Core extensions
     if (registry.coreExtensions.isNotEmpty) {
       print('\n  Core Extensions:');
       for (final ext in registry.coreExtensions) {
-        print('    • ${ext.name} (${ext.version})');
+        print('    - ${ext.name} (${ext.version})');
       }
     }
 
-    // Extended features
     if (registry.extendedFeatures.isNotEmpty) {
       print('\n  Extended Features:');
       for (final ext in registry.extendedFeatures) {
-        final core = ext.coreExtension != null
-            ? ' for ${ext.coreExtension}'
-            : '';
-        print('    • ${ext.name} (${ext.version})$core');
+        final core = ext.coreExtension != null ? ' for ${ext.coreExtension}' : '';
+        print('    - ${ext.name} (${ext.version})$core');
       }
     }
 
-    // Third-party enhancements
     if (registry.thirdPartyEnhancements.isNotEmpty) {
       print('\n  Third-Party Enhancements:');
       for (final ext in registry.thirdPartyEnhancements) {
-        print('    • ${ext.name} (${ext.version})');
+        print('    - ${ext.name} (${ext.version})');
       }
     }
 
@@ -178,37 +155,31 @@ class DSDiscoveryCommand extends Command {
     for (final extension in registry.extensions) {
       final errors = <String>[];
 
-      // Validate required fields
       if (extension.name.isEmpty) errors.add('Missing name');
       if (extension.version.isEmpty) errors.add('Missing version');
       if (extension.entryPoint.isEmpty) errors.add('Missing entry point');
 
-      // Validate dependencies
       if (!registry.validateDependencies(extension)) {
         errors.add('Dependency validation failed');
       }
 
-      // Check entry point exists
-      final entryPointPath = p.join(
-        registry.extensionsDirectory,
-        extension.entryPoint,
-      );
+      final entryPointPath = p.join(registry.extensionsDirectory, extension.entryPoint);
       if (!File(entryPointPath).existsSync()) {
         errors.add('Entry point not found: ${extension.entryPoint}');
       }
 
       if (errors.isNotEmpty) {
-        print('   ✗ ${extension.name}: ${errors.join(', ')}');
+        print('  FAIL ${extension.name}: ${errors.join(', ')}');
         hasErrors = true;
       } else {
-        print('   ✓ ${extension.name}: Valid');
+        print('  OK ${extension.name}: Valid');
       }
     }
 
     if (hasErrors) {
-      print('\n⚠️  Some extensions have validation errors.');
+      print('\nSome extensions have validation errors.');
     } else {
-      print('\n✅ All extensions validated successfully.');
+      print('\nAll extensions validated successfully.');
     }
   }
 
@@ -216,19 +187,15 @@ class DSDiscoveryCommand extends Command {
     ExtensionRegistry registry,
     String projectName,
   ) async {
-    // Load project configuration
     final configPath = p.join(projectName, 'config.yaml');
     if (!File(configPath).existsSync()) {
-      print(
-        '⚠️  Project configuration not found. Run "dartstream configure" first.',
-      );
+      print('Project configuration not found. Run "dartstream configure" first.');
       return;
     }
 
     final configContent = File(configPath).readAsStringSync();
     loadYaml(configContent);
 
-    // Generate registration code
     final registrationPath = p.join(
       projectName,
       'lib',
@@ -243,61 +210,40 @@ class DSDiscoveryCommand extends Command {
     buffer.writeln('// Auto-generated extension registration');
     buffer.writeln('// Generated by Dartstream Discovery');
     buffer.writeln('');
-    buffer.writeln(
-      'import \'package:ds_standard_engine/ds_standard_engine.dart\';',
-    );
-
-    // Add imports for active extensions
-    for (final ext in registry.activeExtensions) {
-      final extension = registry.extensions.firstWhere((e) => e.name == ext);
-      if (extension.level == ExtensionLevel.core) {
-        buffer.writeln('// import \'package:${ext}/${ext}.dart\';');
-      }
-    }
-
+    buffer.writeln('import \'package:ds_standard_engine/ds_standard_engine.dart\';');
     buffer.writeln('');
-    buffer.writeln(
-      'Future<void> autoRegisterExtensions(DSStandardCore core) async {',
-    );
-    buffer.writeln('  print(\'🔌 Auto-registering extensions...\');');
-    buffer.writeln('  ');
+    buffer.writeln('Future<void> autoRegisterExtensions(DSStandardCore core) async {');
+    buffer.writeln('  print(\'Auto-registering extensions...\');');
+    buffer.writeln('');
 
-    // Generate registration code for each active extension
     for (final ext in registry.activeExtensions) {
       final extension = registry.extensions.firstWhere((e) => e.name == ext);
-
       if (extension.level == ExtensionLevel.core) {
         buffer.writeln('  // Register ${extension.name}');
         buffer.writeln('  // core.registerCoreExtension(');
         buffer.writeln('  //   extension: ${_getClassName(extension.name)}(),');
-        buffer.writeln(
-          '  //   baseFeature: \'${_getBaseFeature(extension.name)}\',',
-        );
+        buffer.writeln('  //   baseFeature: \'${_getBaseFeature(extension.name)}\',');
         buffer.writeln('  // );');
-        buffer.writeln('  ');
+        buffer.writeln('');
       }
     }
 
-    buffer.writeln(
-      '  print(\'✅ Extensions registered: ${registry.activeExtensions.length}\');',
-    );
+    buffer.writeln('  print(\'Extensions registered: ${registry.activeExtensions.length}\');');
     buffer.writeln('}');
 
     registrationFile.writeAsStringSync(buffer.toString());
-    print('   ✓ Registration code generated: auto_register.dart');
+    print('  OK Registration code generated: auto_register.dart');
   }
 
   String _getClassName(String extensionName) {
-    // Convert extension name to class name
-    // ds_firebase_auth_provider -> DSFirebaseAuthProvider
     return extensionName
         .split('_')
+        .where((part) => part.isNotEmpty)
         .map((part) => part[0].toUpperCase() + part.substring(1))
         .join('');
   }
 
   String _getBaseFeature(String extensionName) {
-    // Determine base feature from extension name
     if (extensionName.contains('auth')) return 'authentication';
     if (extensionName.contains('database')) return 'database';
     if (extensionName.contains('storage')) return 'storage';
