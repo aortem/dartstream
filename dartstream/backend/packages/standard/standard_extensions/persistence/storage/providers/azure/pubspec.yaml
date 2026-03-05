@@ -1,0 +1,16 @@
+name: ds_azure_storage_provider
+description: Azure Blob Storage provider for DartStream.
+version: "0.0.1"
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.10.9
+
+resolution: workspace
+
+dependencies:
+  crypto: ^3.0.3
+  ds_storage_base: ^0.0.1
+  http: ^1.2.2
+
+entry_point: "lib/ds_storage_azure_entry.dart"

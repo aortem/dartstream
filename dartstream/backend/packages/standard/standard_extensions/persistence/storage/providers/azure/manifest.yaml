@@ -1,0 +1,7 @@
+name: ds_azure_storage_provider
+version: "0.0.1"
+description: "Azure Blob Storage provider for DartStream."
+level: "core"
+dependencies:
+  - "Core >=0.0.1"
+entry_point: "lib/ds_storage_azure_entry.dart"
