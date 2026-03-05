@@ -1,6 +1,0 @@
-name: ds_registry_integration
-description: Optional registry integration module for Dartstream.
-version: 1.0.0
-publish_to: none
-environment:
-  sdk: ^3.10.0

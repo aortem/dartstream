@@ -1,6 +1,0 @@
-name: ds_plugin_third_party_plugin_1
-description: Third-party integration plugin 1 for Dartstream.
-version: 1.0.0
-publish_to: none
-environment:
-  sdk: ^3.10.0

@@ -1,6 +1,0 @@
-name: custom_feature_flag_integration
-description: Sample feature flag integration for Dartstream.
-version: 1.0.0
-publish_to: none
-environment:
-  sdk: ^3.10.0

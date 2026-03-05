@@ -1,6 +1,0 @@
-name: custom_analytics
-description: Sample custom analytics integration for Dartstream.
-version: 1.0.0
-publish_to: none
-environment:
-  sdk: ^3.10.0
