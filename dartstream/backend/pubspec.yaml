@@ -89,6 +89,7 @@ workspace:
   - packages/standard/standard_extensions/persistence/logging/providers/sentry
   - packages/standard/standard_extensions/persistence/storage/base
   - packages/standard/standard_extensions/persistence/storage/providers/aws
+  - packages/standard/standard_extensions/persistence/storage/providers/azure
   - packages/standard/standard_extensions/persistence/storage/providers/gcp
   - packages/standard/standard_extensions/platform_services/discovery/
   - packages/standard/standard_extensions/platform_services/feature_flags/base
