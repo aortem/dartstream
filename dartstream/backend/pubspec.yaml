@@ -66,6 +66,8 @@ dependencies:
 # ds_socket_io_websocket_provider: ^0.0.1
 
 workspace:
+  - packages/cli/ds_cli
+  - packages/cli/ds_cli_util
   - packages/standard/standard_engine/
   - packages/standard/standard_extensions/auth/base
   - packages/standard/standard_extensions/auth/providers/auth0
@@ -102,6 +104,5 @@ workspace:
   - packages/standard/standard_extensions/reactive_dataflow/events/base
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
-
 
 

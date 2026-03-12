@@ -21,6 +21,9 @@ dependencies:
   ds_tools_testing: ^0.1.4
   yaml_writer: ^2.1.0
 
+dev_dependencies:
+  test: ^1.26.0
+
 entry_point: "./bin/dartstream.dart"
 
 executables:

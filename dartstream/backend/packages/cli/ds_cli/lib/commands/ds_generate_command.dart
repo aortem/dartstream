@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert';
 import 'package:args/command_runner.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
@@ -15,11 +16,31 @@ class DSGenerateCommand extends Command {
       ..addOption(
         'type',
         abbr: 't',
-        allowed: ['model', 'api', 'provider', 'extension', 'scaffold'],
+        allowed: [
+          'model',
+          'api',
+          'provider',
+          'extension',
+          'scaffold',
+          'client',
+        ],
         help: 'Type of code to generate.',
       )
       ..addOption('name', abbr: 'n', help: 'Name for generated code.')
       ..addOption('project', abbr: 'p', help: 'Project to generate code for.')
+      ..addOption(
+        'spec',
+        help: 'Path to OpenAPI/Swagger JSON or YAML file (for --type client).',
+      )
+      ..addOption(
+        'output',
+        help:
+            'Output directory for generated client package (defaults to ./generated_clients).',
+      )
+      ..addOption(
+        'base-url',
+        help: 'Base URL override for generated client package.',
+      )
       ..addFlag(
         'force',
         abbr: 'f',
@@ -33,10 +54,13 @@ class DSGenerateCommand extends Command {
     final type = argResults?['type'] as String?;
     final name = argResults?['name'] as String?;
     final projectName = argResults?['project'] as String?;
+    final specPath = argResults?['spec'] as String?;
+    final outputDir = argResults?['output'] as String?;
+    final baseUrl = argResults?['base-url'] as String?;
     final force = argResults?['force'] as bool;
 
     if (type == null || name == null) {
-      print('❌ Required: --type and --name');
+      print('ERROR: Required: --type and --name');
       print('   Example: dartstream generate --type model --name User');
       return;
     }
@@ -59,8 +83,18 @@ class DSGenerateCommand extends Command {
       case 'scaffold':
         _generateScaffold(name, projectName, force);
         break;
+      case 'client':
+        _generateClient(
+          name: name,
+          projectName: projectName,
+          specPath: specPath,
+          outputDir: outputDir,
+          baseUrl: baseUrl,
+          force: force,
+        );
+        break;
       default:
-        print('❌ Unknown type: $type');
+        print('ERROR: Unknown type: $type');
     }
   }
 
@@ -79,7 +113,7 @@ class DSGenerateCommand extends Command {
     final file = File(modelPath);
 
     if (file.existsSync() && !force) {
-      print('❌ File exists: $modelPath. Use --force to overwrite.');
+      print('ERROR: File exists: $modelPath. Use --force to overwrite.');
       return;
     }
 
@@ -153,7 +187,7 @@ class $className {
 }
 ''');
 
-    print('✅ Generated model: $modelPath');
+    print('OK: Generated model: $modelPath');
   }
 
   void _generateApi(String name, String? projectName, bool force) {
@@ -171,7 +205,7 @@ class $className {
     final file = File(apiPath);
 
     if (file.existsSync() && !force) {
-      print('❌ File exists: $apiPath. Use --force to overwrite.');
+      print('ERROR: File exists: $apiPath. Use --force to overwrite.');
       return;
     }
 
@@ -261,7 +295,7 @@ class ${className}Api {
 }
 ''');
 
-    print('✅ Generated API: $apiPath');
+    print('OK: Generated API: $apiPath');
   }
 
   void _generateProvider(String name, String? projectName, bool force) {
@@ -279,7 +313,7 @@ class ${className}Api {
     final file = File(providerPath);
 
     if (file.existsSync() && !force) {
-      print('❌ File exists: $providerPath. Use --force to overwrite.');
+      print('ERROR: File exists: $providerPath. Use --force to overwrite.');
       return;
     }
 
@@ -336,7 +370,7 @@ class DS${className}Provider {
 }
 ''');
 
-    print('✅ Generated provider: $providerPath');
+    print('OK: Generated provider: $providerPath');
   }
 
   void _generateExtension(String name, String? projectName, bool force) {
@@ -354,7 +388,7 @@ class DS${className}Provider {
     final file = File(extensionPath);
 
     if (file.existsSync() && !force) {
-      print('❌ File exists: $extensionPath. Use --force to overwrite.');
+      print('ERROR: File exists: $extensionPath. Use --force to overwrite.');
       return;
     }
 
@@ -428,8 +462,8 @@ dependencies:
   - Core >=0.0.1
 ''');
 
-    print('✅ Generated extension: $extensionPath');
-    print('✅ Generated manifest: $manifestPath');
+    print('OK: Generated extension: $extensionPath');
+    print('OK: Generated manifest: $manifestPath');
   }
 
   void _generateScaffold(String name, String? projectName, bool force) {
@@ -442,7 +476,7 @@ dependencies:
     // Load project configuration
     final configPath = p.join(actualPath, 'config.yaml');
     if (!File(configPath).existsSync()) {
-      print('❌ Project not configured. Run "dartstream configure" first.');
+      print('ERROR: Project not configured. Run "dartstream configure" first.');
       return;
     }
 
@@ -630,14 +664,512 @@ void main() {
 }
 ''');
 
-    print('\n✅ Scaffold generated for "$className":');
-    print('   • Model: lib/src/models/${resourceName}.dart');
-    print('   • API: lib/src/api/${resourceName}_api.dart');
-    print('   • Service: lib/src/services/${resourceName}_service.dart');
+    print('\nOK: Scaffold generated for "$className":');
+    print('   - Model: lib/src/models/${resourceName}.dart');
+    print('   - API: lib/src/api/${resourceName}_api.dart');
+    print('   - Service: lib/src/services/${resourceName}_service.dart');
     print(
-      '   • Repository: lib/src/repositories/${resourceName}_repository.dart',
+      '   - Repository: lib/src/repositories/${resourceName}_repository.dart',
     );
-    print('   • Test: test/models/${resourceName}_test.dart');
+    print('   - Test: test/models/${resourceName}_test.dart');
+  }
+
+  void _generateClient({
+    required String name,
+    required String? projectName,
+    required String? specPath,
+    required String? outputDir,
+    required String? baseUrl,
+    required bool force,
+  }) {
+    if (specPath == null || specPath.trim().isEmpty) {
+      print('ERROR: --spec is required for --type client');
+      print(
+        '   Example: dartstream generate --type client --name Inventory --spec ./openapi.json',
+      );
+      return;
+    }
+
+    final specFile = File(specPath);
+    if (!specFile.existsSync()) {
+      print('ERROR: Spec file not found: $specPath');
+      return;
+    }
+
+    final parsedSpec = _parseSpec(specFile.readAsStringSync());
+    if (parsedSpec == null) {
+      print(
+        'ERROR: Failed to parse spec. Provide OpenAPI JSON or YAML with a paths section.',
+      );
+      return;
+    }
+
+    final packageName = 'ds_${_toSnakeCase(name)}_client';
+    final className = 'DS${_toPascalCase(name)}Client';
+
+    final rootDir = outputDir != null && outputDir.trim().isNotEmpty
+        ? Directory(outputDir)
+        : (projectName != null
+              ? Directory(
+                  p.join(getProjectDir(projectName).path, 'generated_clients'),
+                )
+              : Directory('generated_clients'));
+    final packageDir = Directory(p.join(rootDir.path, packageName));
+
+    if (packageDir.existsSync() && !force) {
+      print(
+        'ERROR: Directory exists: ${packageDir.path}. Use --force to overwrite.',
+      );
+      return;
+    }
+
+    if (packageDir.existsSync() && force) {
+      packageDir.deleteSync(recursive: true);
+    }
+
+    final paths = parsedSpec['paths'];
+    if (paths is! Map<dynamic, dynamic>) {
+      print('ERROR: Invalid spec format: paths must be an object/map.');
+      return;
+    }
+
+    packageDir.createSync(recursive: true);
+    Directory(
+      p.join(packageDir.path, 'lib', 'src'),
+    ).createSync(recursive: true);
+    Directory(p.join(packageDir.path, 'test')).createSync(recursive: true);
+
+    final discoveredBaseUrl =
+        baseUrl ??
+        ((parsedSpec['servers'] is List &&
+                (parsedSpec['servers'] as List).isNotEmpty)
+            ? ((parsedSpec['servers'] as List).first['url']?.toString() ?? '')
+            : '');
+    final operations = _extractOperations(paths);
+    final specVersion =
+        parsedSpec['openapi']?.toString() ??
+        parsedSpec['swagger']?.toString() ??
+        'unknown';
+
+    File(p.join(packageDir.path, 'pubspec.yaml')).writeAsStringSync('''
+name: $packageName
+description: Generated Dart client package for $name API.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  meta: ^1.17.0
+
+dev_dependencies:
+  test: ^1.26.0
+''');
+
+    File(p.join(packageDir.path, 'lib', '$packageName.dart')).writeAsStringSync(
+      '''
+library $packageName;
+
+export 'src/${_toSnakeCase(name)}_client.dart';
+''',
+    );
+
+    File(
+      p.join(
+        packageDir.path,
+        'lib',
+        'src',
+        '${_toSnakeCase(name)}_client.dart',
+      ),
+    ).writeAsStringSync(
+      _buildClientFile(
+        className: className,
+        baseUrl: discoveredBaseUrl,
+        operations: operations,
+        specVersion: specVersion,
+      ),
+    );
+
+    File(p.join(packageDir.path, 'README.md')).writeAsStringSync(
+      _buildClientReadme(
+        className: className,
+        packageName: packageName,
+        specPath: specPath,
+        operations: operations,
+        baseUrl: discoveredBaseUrl,
+      ),
+    );
+
+    final firstMethod = operations.isNotEmpty
+        ? operations.first.methodName
+        : null;
+    File(
+      p.join(packageDir.path, 'test', '${_toSnakeCase(name)}_client_test.dart'),
+    ).writeAsStringSync(
+      _buildClientTestFile(
+        packageName: packageName,
+        className: className,
+        methodName: firstMethod,
+      ),
+    );
+
+    print('OK: Generated client package: ${packageDir.path}');
+    print('   - Spec version: $specVersion');
+    print('   - Endpoint methods: ${operations.length}');
+    print(
+      '   - Base URL: ${discoveredBaseUrl.isEmpty ? '(set at runtime)' : discoveredBaseUrl}',
+    );
+    print('   - Try: cd ${packageDir.path} && dart test');
+  }
+
+  Map<String, dynamic>? _parseSpec(String raw) {
+    final trimmed = raw.trim();
+    if (trimmed.isEmpty) {
+      return null;
+    }
+
+    if (trimmed.startsWith('{')) {
+      try {
+        final decoded = jsonDecode(trimmed);
+        if (decoded is Map<String, dynamic> && decoded.containsKey('paths')) {
+          return decoded;
+        }
+      } catch (_) {}
+    }
+
+    try {
+      final dynamic yamlData = loadYaml(trimmed);
+      if (yamlData is YamlMap && yamlData['paths'] is YamlMap) {
+        return _yamlToMap(yamlData);
+      }
+    } catch (_) {
+      return null;
+    }
+
+    return null;
+  }
+
+  Map<String, dynamic> _yamlToMap(YamlMap yamlMap) {
+    final result = <String, dynamic>{};
+    for (final entry in yamlMap.entries) {
+      final key = entry.key.toString();
+      final value = entry.value;
+      if (value is YamlMap) {
+        result[key] = _yamlToMap(value);
+      } else if (value is YamlList) {
+        result[key] = value.map((item) {
+          if (item is YamlMap) {
+            return _yamlToMap(item);
+          }
+          if (item is YamlList) {
+            return item.toList();
+          }
+          return item;
+        }).toList();
+      } else {
+        result[key] = value;
+      }
+    }
+    return result;
+  }
+
+  List<_ClientOperation> _extractOperations(Map<dynamic, dynamic> paths) {
+    final allowedMethods = <String>{
+      'get',
+      'post',
+      'put',
+      'patch',
+      'delete',
+      'head',
+      'options',
+    };
+    final operations = <_ClientOperation>[];
+
+    for (final pathEntry in paths.entries) {
+      final endpointPath = pathEntry.key.toString();
+      final endpointData = pathEntry.value;
+      if (endpointData is! Map) {
+        continue;
+      }
+
+      for (final methodEntry in endpointData.entries) {
+        final method = methodEntry.key.toString().toLowerCase();
+        if (!allowedMethods.contains(method)) {
+          continue;
+        }
+
+        final metadata = methodEntry.value is Map
+            ? Map<dynamic, dynamic>.from(methodEntry.value as Map)
+            : <dynamic, dynamic>{};
+        final operationId = metadata['operationId']?.toString();
+        final summary = metadata['summary']?.toString() ?? '';
+        final methodName = (operationId != null && operationId.isNotEmpty)
+            ? _toCamelCase(operationId)
+            : _buildMethodName(method, endpointPath);
+
+        operations.add(
+          _ClientOperation(
+            method: method.toUpperCase(),
+            endpointPath: endpointPath,
+            methodName: methodName,
+            summary: summary,
+          ),
+        );
+      }
+    }
+
+    return operations;
+  }
+
+  String _buildMethodName(String method, String endpointPath) {
+    final pathPart = endpointPath
+        .replaceAll(RegExp(r'^\/*'), '')
+        .replaceAll(RegExp(r'\{[^}]+\}'), 'by')
+        .replaceAll(RegExp(r'[^a-zA-Z0-9]+'), '_')
+        .replaceAll(RegExp(r'_+'), '_')
+        .replaceAll(RegExp(r'^_|_$'), '');
+    final raw = '${method}_${pathPart.isEmpty ? 'root' : pathPart}';
+    return _toCamelCase(raw);
+  }
+
+  String _toCamelCase(String input) {
+    final trimmed = input.trim();
+    if (trimmed.isEmpty) {
+      return 'endpoint';
+    }
+    if (!RegExp(r'[_\-\s]').hasMatch(trimmed) &&
+        RegExp(r'^[a-zA-Z][a-zA-Z0-9]*$').hasMatch(trimmed)) {
+      return trimmed[0].toLowerCase() + trimmed.substring(1);
+    }
+
+    final pascal = _toPascalCase(
+      input.replaceAll(RegExp(r'[^a-zA-Z0-9]+'), ' '),
+    );
+    if (pascal.isEmpty) {
+      return 'endpoint';
+    }
+    return pascal[0].toLowerCase() + pascal.substring(1);
+  }
+
+  String _buildClientFile({
+    required String className,
+    required String baseUrl,
+    required List<_ClientOperation> operations,
+    required String specVersion,
+  }) {
+    final methods = operations
+        .map(
+          (operation) =>
+              '''
+  /// ${operation.summary.isEmpty ? '${operation.method} ${operation.endpointPath}' : operation.summary}
+  Future<DSClientResponse> ${operation.methodName}({
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? query,
+    Object? body,
+  }) {
+    return _transport.send(
+      method: '${operation.method}',
+      path: _renderPath('${operation.endpointPath}'),
+      headers: headers,
+      query: query,
+      body: body,
+    );
+  }
+''',
+        )
+        .join('\n');
+
+    return '''
+import 'dart:convert';
+
+/// Generated by Dartstream CLI (`generate --type client`).
+/// Source spec version: $specVersion
+class $className {
+  $className({
+    required DSClientTransport transport,
+    String? baseUrl,
+  })  : _transport = transport,
+        _baseUrl = (baseUrl ?? _defaultBaseUrl).trim();
+
+  static const String _defaultBaseUrl = '$baseUrl';
+  final DSClientTransport _transport;
+  final String _baseUrl;
+
+  String get baseUrl => _baseUrl;
+
+$methods
+
+  String _renderPath(String path) {
+    if (_baseUrl.isEmpty) {
+      return path;
+    }
+    final normalizedBase = _baseUrl.endsWith('/')
+        ? _baseUrl.substring(0, _baseUrl.length - 1)
+        : _baseUrl;
+    final normalizedPath = path.startsWith('/') ? path : '/\$path';
+    return '\$normalizedBase\$normalizedPath';
+  }
+}
+
+class DSClientResponse {
+  DSClientResponse({
+    required this.statusCode,
+    required this.body,
+    this.headers = const {},
+  });
+
+  final int statusCode;
+  final String body;
+  final Map<String, String> headers;
+
+  dynamic jsonOrNull() {
+    if (body.trim().isEmpty) {
+      return null;
+    }
+    return jsonDecode(body);
+  }
+}
+
+abstract class DSClientTransport {
+  Future<DSClientResponse> send({
+    required String method,
+    required String path,
+    Map<String, String> headers,
+    Map<String, dynamic>? query,
+    Object? body,
+  });
+}
+
+class DSMemoryTransport implements DSClientTransport {
+  DSMemoryTransport({
+    this.defaultStatusCode = 200,
+    this.defaultBody = '{"ok":true}',
+  });
+
+  final int defaultStatusCode;
+  final String defaultBody;
+  final List<DSRequestLog> requests = <DSRequestLog>[];
+
+  @override
+  Future<DSClientResponse> send({
+    required String method,
+    required String path,
+    Map<String, String> headers = const {},
+    Map<String, dynamic>? query,
+    Object? body,
+  }) async {
+    requests.add(
+      DSRequestLog(
+        method: method,
+        path: path,
+        headers: headers,
+        query: query,
+        body: body,
+      ),
+    );
+
+    return DSClientResponse(
+      statusCode: defaultStatusCode,
+      body: defaultBody,
+      headers: const {'content-type': 'application/json'},
+    );
+  }
+}
+
+class DSRequestLog {
+  DSRequestLog({
+    required this.method,
+    required this.path,
+    required this.headers,
+    this.query,
+    this.body,
+  });
+
+  final String method;
+  final String path;
+  final Map<String, String> headers;
+  final Map<String, dynamic>? query;
+  final Object? body;
+}
+''';
+  }
+
+  String _buildClientReadme({
+    required String className,
+    required String packageName,
+    required String specPath,
+    required List<_ClientOperation> operations,
+    required String baseUrl,
+  }) {
+    final operationsText = operations.isEmpty
+        ? '- No operations were detected from `paths`.'
+        : operations
+              .map(
+                (operation) =>
+                    '- `${operation.methodName}()` => `${operation.method} ${operation.endpointPath}`',
+              )
+              .join('\n');
+    final sampleMethod = operations.isNotEmpty
+        ? operations.first.methodName
+        : null;
+    final usageLine = sampleMethod != null
+        ? 'final response = await client.$sampleMethod();'
+        : "final response = await transport.send(method: 'GET', path: '/');";
+
+    return '''
+# $packageName
+
+Generated by Dartstream CLI from:
+- Spec: `$specPath`
+- Base URL: `${baseUrl.isEmpty ? '(empty - set at runtime)' : baseUrl}`
+
+## Operations
+$operationsText
+
+## Quick Start
+```dart
+import 'package:$packageName/$packageName.dart';
+
+void main() async {
+  final transport = DSMemoryTransport();
+  final client = $className(transport: transport);
+
+  $usageLine
+  print(response.statusCode);
+}
+```
+''';
+  }
+
+  String _buildClientTestFile({
+    required String packageName,
+    required String className,
+    required String? methodName,
+  }) {
+    final invoke = methodName != null
+        ? 'final response = await client.$methodName();'
+        : "final response = await transport.send(method: 'GET', path: '/');";
+    return '''
+import 'package:test/test.dart';
+import 'package:$packageName/$packageName.dart';
+
+void main() {
+  test('generated client records requests via transport', () async {
+    final transport = DSMemoryTransport();
+    final client = $className(
+      transport: transport,
+      baseUrl: 'https://example.test',
+    );
+
+    $invoke
+
+    expect(response.statusCode, 200);
+    expect(transport.requests, isNotEmpty);
+    expect(transport.requests.first.path, startsWith('https://example.test'));
+  });
+}
+''';
   }
 
   String _toSnakeCase(String input) {
@@ -661,4 +1193,18 @@ void main() {
         )
         .join('');
   }
+}
+
+class _ClientOperation {
+  const _ClientOperation({
+    required this.method,
+    required this.endpointPath,
+    required this.methodName,
+    required this.summary,
+  });
+
+  final String method;
+  final String endpointPath;
+  final String methodName;
+  final String summary;
 }
