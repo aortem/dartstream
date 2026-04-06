@@ -1,5 +1,6 @@
-## 0.0.1
+# Changelog
 
+## [0.0.1]
 ### Added
 - First main OSS release of the backend meta-package and workspace wiring.
 - Lean OSS persistence providers: PostgreSQL, MongoDB, Firestore; AWS S3-compatible and GCP Storage; OTLP and Sentry logging.
@@ -19,8 +20,7 @@
 - Resolved self-export loops in umbrella exports and removed placeholder configs.
 - Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
 
-## 0.0.1-pre+3
-
+## [0.0.1-pre+3]
 - Remove remaining code from depreacted packages
 - Update ds_testing_tools package to .0.0.2
 - ds_database_provider.dart - Core interface for all database providers with CRUD operations
@@ -38,8 +38,7 @@
 - Updated import paths in all database files
 - Ensured consistent error handling across providers
 
-## 0.0.1-pre+2
-
+## [0.0.1-pre+2]
 - update shelf package depedencies for ds_shelf Middleware
 - update ds pre-fix for standard classes
 - remove non essential components like cicd and cloud vendor configs
@@ -50,6 +49,6 @@
 - Update Discovery command for consistency
 - Remove deprecated CLI tooling packages
 
-## 0.0.1-pre+1
-
+## [0.0.1-pre+1]
 - Initial version.
+

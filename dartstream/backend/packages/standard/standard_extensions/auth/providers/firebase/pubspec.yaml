@@ -2,6 +2,7 @@ name: ds_firebase_auth_provider
 description: Firebase authentication provider for Dartstream.
 version: 0.0.2
 repository: https://github.com/aortem/dartstream
+publish_to: none
 
 environment:
   sdk: ^3.11.0
@@ -9,8 +10,9 @@ environment:
 resolution: workspace
 
 dependencies:
-  firebase_dart_admin_auth_sdk: ^0.0.9
-  ds_auth_base: ^0.0.2
+  firebase_dart_admin_auth_sdk: ^0.1.0
+  ds_auth_base:
+    path: ../../base
   ds_standard_features: ^0.1.6
 
 dev_dependencies:
