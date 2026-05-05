@@ -1,5 +1,5 @@
 name: ds_flagd_provider_example
-description: Example usage of the flagd feature flag provider for Dartstream.
+description: Example usage of the flagd feature flag provider for DartStream.
 version: 0.0.1-pre+1
 publish_to: none
 

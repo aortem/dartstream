@@ -1,5 +1,5 @@
 name: ds_discovery_provider
-description: "Amazon authentication provider for Dartstream."
+description: Discovery provider contracts for DartStream platform services.
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 
@@ -16,4 +16,3 @@ dependencies:
   yaml: ^3.1.3
 
 entry_point: "lib/main.dart"
-

@@ -1,6 +1,6 @@
 #This pubspec file is used to import our standard features tooling.
 name: dartstream
-description: Core Testing Components For Dartstream.
+description: DartStream command-line interface for project setup and generation.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 publish_to: none
@@ -20,6 +20,9 @@ dependencies:
     path: ../ds_cli_util
   ds_tools_testing: ^0.1.4
   yaml_writer: ^2.1.0
+
+dev_dependencies:
+  test: ^1.26.0
 
 entry_point: "./bin/dartstream.dart"
 

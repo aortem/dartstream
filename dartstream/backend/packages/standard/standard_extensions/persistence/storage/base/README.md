@@ -10,6 +10,7 @@ The open-source framework only ships adapters for the most battle-tested and wid
 
 - **S3-Compatible Storage** (AWS S3, MinIO, Cloudflare R2, DigitalOcean Spaces)
 - **Google Cloud Storage (GCS)**
+- **Azure Blob Storage**
 
 Adapters for these providers may live as separate packages; if a provider package is not present in this repo, it is considered planned or maintained in a dedicated repo.
 
@@ -22,11 +23,10 @@ These are recommended stacks for teams that prefer a cloud-vendor mental model. 
 - **GCP profile**
   - Cloud Storage -> `ds_gcp_storage_provider`
 - **Azure profile**
-  - Azure Blob Storage (not in OSS)
+  - Blob Storage -> `ds_azure_storage_provider`
 
 ## Not in OSS (SaaS or community-driven)
 
-- Azure Blob Storage
 - Backblaze B2 (native SDK)
 
 ## Provider Contract
@@ -40,4 +40,3 @@ If you plan to publish a provider, ensure it includes:
 - `LICENSE` (DartStream standard)
 - `CHANGELOG.md`
 - `manifest.yaml` for registry/discovery
-

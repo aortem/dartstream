@@ -16,27 +16,29 @@ class DSOktaAuthProvider implements DSAuthProvider {
   final Map<String, String> _refreshTokens = {};
   DSAuthUser? _currentUser;
 
-@override
-Future<void> initialize(Map<String, dynamic> config) async {
-  _clientId = config['clientId'];
-  _oktaDomain = config['issuer'];
-  _redirectUri = config['redirectUri'];
-  _clientSecret = config['clientSecret'];
+  @override
+  Future<void> initialize(Map<String, dynamic> config) async {
+    _clientId = config['clientId'];
+    _oktaDomain = config['oktaDomain'] ?? config['issuer'];
+    _redirectUri = config['redirectUri'];
+    _clientSecret = config['clientSecret'];
 
-  if (_clientId == null ||
-      _oktaDomain == null ||
-      _redirectUri == null || 
-      _clientSecret == null) {
-    throw DSAuthError('Missing required Okta configuration');
+    if (_clientId == null ||
+        _oktaDomain == null ||
+        _redirectUri == null ||
+        _clientSecret == null) {
+      throw DSAuthError('Missing required Okta configuration');
+    }
+
+    _isInitialized = true;
   }
 
-  _isInitialized = true;
-}
-
-
-
   @override
-  Future<void> createAccount(String email, String password, {String? displayName}) async {
+  Future<void> createAccount(
+    String email,
+    String password, {
+    String? displayName,
+  }) async {
     if (!_isInitialized) {
       throw DSAuthError('Okta provider not initialized');
     }
@@ -65,15 +67,16 @@ Future<void> initialize(Map<String, dynamic> config) async {
     }
 
     try {
-      final userId = 'okta_${username.replaceAll('@', '_').replaceAll('.', '_')}';
-      
+      final userId =
+          'okta_${username.replaceAll('@', '_').replaceAll('.', '_')}';
+
       // Check if user exists, if not create a mock user
       if (!_users.containsKey(userId)) {
         await createAccount(username, password);
       }
 
       _currentUser = _users[userId];
-      
+
       if (_currentUser != null) {
         await onLoginSuccess(_currentUser!);
       }
@@ -155,7 +158,8 @@ Future<void> initialize(Map<String, dynamic> config) async {
 
     try {
       // Mock token refresh
-      final newToken = 'refreshed_token_${_currentUser!.id}_${DateTime.now().millisecondsSinceEpoch}';
+      final newToken =
+          'refreshed_token_${_currentUser!.id}_${DateTime.now().millisecondsSinceEpoch}';
       _tokens[_currentUser!.id] = newToken;
       return newToken;
     } catch (e) {
@@ -194,7 +198,7 @@ Future<void> initialize(Map<String, dynamic> config) async {
   }
 
   // Okta-specific methods for extended functionality
-  
+
   /// Enable MFA for current user
   Future<void> enableMFA(String factorType) async {
     if (!_isInitialized) {
@@ -207,17 +211,19 @@ Future<void> initialize(Map<String, dynamic> config) async {
 
     try {
       // Mock MFA enablement
-      final updatedAttributes = Map<String, dynamic>.from(_currentUser!.customAttributes ?? {});
+      final updatedAttributes = Map<String, dynamic>.from(
+        _currentUser!.customAttributes ?? {},
+      );
       updatedAttributes['mfaEnabled'] = true;
       updatedAttributes['mfaFactor'] = factorType;
-      
+
       _currentUser = DSAuthUser(
         id: _currentUser!.id,
         email: _currentUser!.email,
         displayName: _currentUser!.displayName,
         customAttributes: updatedAttributes,
       );
-      
+
       _users[_currentUser!.id] = _currentUser!;
     } catch (e) {
       throw DSAuthError('MFA enable failed: $e');
@@ -235,17 +241,19 @@ Future<void> initialize(Map<String, dynamic> config) async {
     }
 
     try {
-      final updatedAttributes = Map<String, dynamic>.from(_currentUser!.customAttributes ?? {});
+      final updatedAttributes = Map<String, dynamic>.from(
+        _currentUser!.customAttributes ?? {},
+      );
       updatedAttributes['mfaEnabled'] = false;
       updatedAttributes.remove('mfaFactor');
-      
+
       _currentUser = DSAuthUser(
         id: _currentUser!.id,
         email: _currentUser!.email,
         displayName: _currentUser!.displayName,
         customAttributes: updatedAttributes,
       );
-      
+
       _users[_currentUser!.id] = _currentUser!;
     } catch (e) {
       throw DSAuthError('MFA disable failed: $e');
@@ -280,12 +288,14 @@ Future<void> initialize(Map<String, dynamic> config) async {
     try {
       final user = _users[userId];
       if (user != null) {
-        final updatedAttributes = Map<String, dynamic>.from(user.customAttributes ?? {});
+        final updatedAttributes = Map<String, dynamic>.from(
+          user.customAttributes ?? {},
+        );
         final groups = List<String>.from(updatedAttributes['groups'] ?? []);
         if (!groups.contains(groupId)) {
           groups.add(groupId);
           updatedAttributes['groups'] = groups;
-          
+
           _users[userId] = DSAuthUser(
             id: user.id,
             email: user.email,
@@ -308,11 +318,13 @@ Future<void> initialize(Map<String, dynamic> config) async {
     try {
       final user = _users[userId];
       if (user != null) {
-        final updatedAttributes = Map<String, dynamic>.from(user.customAttributes ?? {});
+        final updatedAttributes = Map<String, dynamic>.from(
+          user.customAttributes ?? {},
+        );
         final groups = List<String>.from(updatedAttributes['groups'] ?? []);
         groups.remove(groupId);
         updatedAttributes['groups'] = groups;
-        
+
         _users[userId] = DSAuthUser(
           id: user.id,
           email: user.email,
@@ -356,7 +368,9 @@ Future<void> initialize(Map<String, dynamic> config) async {
           'result': 'SUCCESS',
         },
         {
-          'timestamp': DateTime.now().subtract(const Duration(hours: 1)).toIso8601String(),
+          'timestamp': DateTime.now()
+              .subtract(const Duration(hours: 1))
+              .toIso8601String(),
           'event': 'user.session.start',
           'userId': userId,
           'result': 'SUCCESS',

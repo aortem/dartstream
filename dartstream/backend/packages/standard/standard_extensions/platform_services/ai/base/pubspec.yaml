@@ -1,0 +1,14 @@
+name: ds_ai_base
+description: Provider-neutral AI extension contracts for DartStream applications.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

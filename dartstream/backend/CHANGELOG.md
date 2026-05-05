@@ -1,5 +1,24 @@
-## 0.0.1
+# Changelog
 
+## [0.0.2]
+### Added
+- Added provider-neutral `ds_ai_base` contracts for AI providers, requests, responses, and manager orchestration.
+- Added provider-neutral `ds_orm_base` contracts for ORM adapters, repositories, queries, and schema metadata.
+- Added the backend `ds_dartstream` umbrella library export for standard engine, auth, persistence, feature flags, middleware, AI, and ORM surfaces.
+- Added Open Source Boundary, Package Maturity, Frontend Support, Feature Flags, AI Extensions, and ORM Integration documentation.
+
+### Changed
+- Clarified the OSS framework boundary from DartStream SaaS while keeping Aortem open-source support explicit.
+- Limited feature flag guidance to IntelliToggle and flagd as supported provider lanes.
+- Documented Drift as the first ORM adapter candidate without adding a concrete ORM dependency yet.
+
+### Fixed
+- Removed a duplicate Magic auth test outside the package-local test tree.
+- Removed a stale middleware conflict artifact and tightened touched middleware CORS/context behavior covered by focused tests.
+- Hardened package-specific release automation so development pushes only release packages with changed changelogs.
+- Made GitLab release lookups tolerant of non-list API responses.
+
+## [0.0.1]
 ### Added
 - First main OSS release of the backend meta-package and workspace wiring.
 - Lean OSS persistence providers: PostgreSQL, MongoDB, Firestore; AWS S3-compatible and GCP Storage; OTLP and Sentry logging.
@@ -19,8 +38,7 @@
 - Resolved self-export loops in umbrella exports and removed placeholder configs.
 - Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
 
-## 0.0.1-pre+3
-
+## [0.0.1-pre+3]
 - Remove remaining code from depreacted packages
 - Update ds_testing_tools package to .0.0.2
 - ds_database_provider.dart - Core interface for all database providers with CRUD operations
@@ -38,8 +56,7 @@
 - Updated import paths in all database files
 - Ensured consistent error handling across providers
 
-## 0.0.1-pre+2
-
+## [0.0.1-pre+2]
 - update shelf package depedencies for ds_shelf Middleware
 - update ds pre-fix for standard classes
 - remove non essential components like cicd and cloud vendor configs
@@ -50,6 +67,6 @@
 - Update Discovery command for consistency
 - Remove deprecated CLI tooling packages
 
-## 0.0.1-pre+1
-
+## [0.0.1-pre+1]
 - Initial version.
+

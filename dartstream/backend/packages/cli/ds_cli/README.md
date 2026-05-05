@@ -1,14 +1,14 @@
 ## Getting Started
 
 ```bash
-cd dartstream-opensource/dartstream/backend/packages/cli/ds_cli
+cd DartStream-opensource/DartStream/backend/packages/cli/ds_cli
 dart pub get
 ```
 
 All commands are run from this directory as:
 
 ```bash
-dart run ./bin/dartstream.dart <command> [options]
+dart run ./bin/DartStream.dart <command> [options]
 ```
 
 > **Note:** Every command auto-runs a manifest/registry sync first. You'll see `🔄 Syncing manifest and registry...` before output. Warnings here are non-blocking.
@@ -34,8 +34,8 @@ dart run ./bin/dartstream.dart <command> [options]
 
 ## ⚠️ Known Bug: `configure` Cannot Find Project (FIXED)
 
-**Reported by:** Soujanya Shrestha (QA)  
-**Status:** Fix provided — pending merge  
+**Reported by:** Soujanya Shrestha (QA)
+**Status:** Fix provided — pending merge
 **Affected files:** `ds_configure_command.dart`, `project.dart`
 
 **Symptom:** After running `init` from `ds_cli`, running `configure --name <project>` fails with `❌ No project found`.
@@ -47,7 +47,7 @@ dart run ./bin/dartstream.dart <command> [options]
 2. **`project.dart` → `getProjectDir()`** (shared utility used by `setup` and `generate`) splits paths using hardcoded `/`, which breaks on Windows.
 
 **Fix summary:**
-- Added `_findDartstreamRoot()` to `ds_configure_command.dart` — walks up the directory tree until it finds `packages/` (same approach `init` already uses)
+- Added `_findDartStreamRoot()` to `ds_configure_command.dart` — walks up the directory tree until it finds `packages/` (same approach `init` already uses)
 - Both `_loadProjectConfig()` and `getProjectDir()` now search relative to the discovered root
 - Replaced hardcoded `/` splitting in `project.dart` with cross-platform `p.join()` from the `path` package
 
@@ -55,7 +55,7 @@ dart run ./bin/dartstream.dart <command> [options]
 
 ```bash
 cd backend/projects/e2e_test
-dart run ../../packages/cli/ds_cli/bin/dartstream.dart configure
+dart run ../../packages/cli/ds_cli/bin/DartStream.dart configure
 ```
 
 ---
@@ -69,11 +69,11 @@ dart run ../../packages/cli/ds_cli/bin/dartstream.dart configure
 **Run:**
 
 ```bash
-dart run ./bin/dartstream.dart list
+dart run ./bin/DartStream.dart list
 ```
 
 **Verify:**
-- Outputs `Usage: dartstream <command> [arguments]`
+- Outputs `Usage: DartStream <command> [arguments]`
 - Lists all 10 commands with descriptions
 - Commands shown: `init`, `configure`, `enable-extension`, `disable-extension`, `setup`, `discover`, `generate`, `validate`, `extensions`, `list`
 
@@ -86,7 +86,7 @@ dart run ./bin/dartstream.dart list
 **Run:**
 
 ```bash
-dart run ./bin/dartstream.dart init
+dart run ./bin/DartStream.dart init
 ```
 
 **Enter the following when prompted:**
@@ -103,7 +103,7 @@ dart run ./bin/dartstream.dart init
 - Project created at `backend/projects/test_project`
 - These files/folders exist inside the project:
   - `pubspec.yaml` — contains `ds_shelf` dependency
-  - `dartstream.yaml` — contains name, version, type, framework, middleware, created_at
+  - `DartStream.yaml` — contains name, version, type, framework, middleware, created_at
   - `lib/main.dart`
   - `README.md`
   - Directories: `lib/src/core/`, `lib/src/extensions/`, `lib/src/middleware/`, `test/`, `config/`, `bin/`, `web/assets/`
@@ -111,14 +111,14 @@ dart run ./bin/dartstream.dart init
 #### Test 2b: Flag Mode (Non-Interactive)
 
 ```bash
-dart run ./bin/dartstream.dart init --name flag_project --version stable --type new --framework flutter_web --middleware dartstream
+dart run ./bin/DartStream.dart init --name flag_project --version stable --type new --framework flutter_web --middleware DartStream
 ```
 
 **Verify:**
 - No interactive prompts appear
 - Project created at `backend/projects/flag_project`
 - `pubspec.yaml` contains `ds_custom_middleware` dependency (not ds_shelf)
-- `dartstream.yaml` has `framework: flutter_web`, `middleware: dartstream`
+- `DartStream.yaml` has `framework: flutter_web`, `middleware: DartStream`
 
 #### Test 2c: Name Sanitization
 
@@ -157,20 +157,20 @@ Run `init` selecting each framework option 1–7:
 | 6 | `vue` |
 | 7 | `svelte` |
 
-Check `dartstream.yaml` for correct `framework` value each time.
+Check `DartStream.yaml` for correct `framework` value each time.
 
 #### Test 2f: All Middleware Choices
 
 | Choice | Maps To | Pubspec Dependency |
 |--------|---------|--------------------|
-| 1 | `dartstream` | `ds_custom_middleware: ^0.0.1-pre` |
+| 1 | `DartStream` | `ds_custom_middleware: ^0.0.1-pre` |
 | 2 | `shelf` | `ds_shelf: ^0.0.1-pre+4` |
 | 3 | `custom` | `ds_custom_middleware: ^0.0.1-pre` |
 
 #### Test 2g: Existing Project Types
 
 1. Run `init`, choose type `2` (Existing Project)
-2. Choose `a` → verify `type: existing-dartstream` in dartstream.yaml
+2. Choose `a` → verify `type: existing-DartStream` in DartStream.yaml
 3. Run `init`, choose type `2` > `b` > `1` (Vue.js) → verify `type: migrate-vue`
 
 ---
@@ -184,15 +184,15 @@ Check `dartstream.yaml` for correct `framework` value each time.
 #### Test 3a: No Project Exists
 
 ```bash
-dart run ./bin/dartstream.dart configure --name nonexistent_project
+dart run ./bin/DartStream.dart configure --name nonexistent_project
 ```
 
-**Verify:** `❌ No project found. Run "dartstream init" first.`
+**Verify:** `❌ No project found. Run "DartStream init" first.`
 
 #### Test 3b: Happy Path — Local + Firebase + Firestore
 
 ```bash
-dart run ./bin/dartstream.dart configure --name test_project
+dart run ./bin/DartStream.dart configure --name test_project
 ```
 
 Answer prompts:
@@ -235,14 +235,14 @@ Answer prompts:
 #### Test 3e: CI/CD Generation (Cloud/Beta Only)
 
 ```bash
-dart run ./bin/dartstream.dart configure --name test_project --cloud-features
+dart run ./bin/DartStream.dart configure --name test_project --cloud-features
 ```
 
 1. Choose a cloud vendor (GCP/AWS/Azure)
 2. When asked about CI/CD, say `y`
 3. Choose `1` (GitHub Actions)
 
-**Verify:** `.github/workflows/dartstream.yml` created.
+**Verify:** `.github/workflows/DartStream.yml` created.
 
 4. Repeat with choice `2` (GitLab CI) → `.gitlab-ci.yml` created.
 
@@ -255,7 +255,7 @@ Go through all prompts, then at `Confirm setup? (y/n)` enter `n`.
 #### Test 3g: Skip Examples
 
 ```bash
-dart run ./bin/dartstream.dart configure --name test_project --skip-examples
+dart run ./bin/DartStream.dart configure --name test_project --skip-examples
 ```
 
 **Verify:** No prompt about examples, no files in `lib/services/`.
@@ -269,7 +269,7 @@ dart run ./bin/dartstream.dart configure --name test_project --skip-examples
 #### Test 4a: No Project
 
 ```bash
-dart run ./bin/dartstream.dart setup --name nonexistent
+dart run ./bin/DartStream.dart setup --name nonexistent
 ```
 
 **Verify:** `❌ Project "nonexistent" does not exist.`
@@ -278,7 +278,7 @@ dart run ./bin/dartstream.dart setup --name nonexistent
 
 Run setup on a project that has no `config.yaml`.
 
-**Verify:** `❌ Project not configured. Run "dartstream configure" first.`
+**Verify:** `❌ Project not configured. Run "DartStream configure" first.`
 
 #### Test 4c: Basic Middleware Setup
 
@@ -286,14 +286,14 @@ Run setup on a configured project, choose each middleware option:
 
 | Choice | Result in `lib/src/middleware/config.dart` |
 |--------|--------------------------------------------|
-| 1 (Dartstream) | `DSCustomMiddleware()` registration |
+| 1 (DartStream) | `DSCustomMiddleware()` registration |
 | 2 (Shelf) | `DSShelfMiddleware()` registration with shelf import |
 | 3 (Custom) | Commented-out template |
 
 #### Test 4d: SaaS Features Without License
 
 ```bash
-dart run ./bin/dartstream.dart setup --name test_project --features security,ai
+dart run ./bin/DartStream.dart setup --name test_project --features security,ai
 ```
 
 **Verify:** Warning about SaaS version required. Prompts to continue with basic setup.
@@ -301,7 +301,7 @@ dart run ./bin/dartstream.dart setup --name test_project --features security,ai
 #### Test 4e: SaaS Features With License
 
 ```bash
-dart run ./bin/dartstream.dart setup --name test_project --saas --features security,performance,ai,gaming,analytics
+dart run ./bin/DartStream.dart setup --name test_project --saas --features security,performance,ai,gaming,analytics
 ```
 
 **Verify:** All 5 features show confirmation messages.
@@ -313,7 +313,7 @@ dart run ./bin/dartstream.dart setup --name test_project --saas --features secur
 #### Test 5a: Missing Required Flags
 
 ```bash
-dart run ./bin/dartstream.dart generate
+dart run ./bin/DartStream.dart generate
 ```
 
 **Verify:** `❌ Required: --type and --name`
@@ -321,7 +321,7 @@ dart run ./bin/dartstream.dart generate
 #### Test 5b: Generate Model
 
 ```bash
-dart run ./bin/dartstream.dart generate --type model --name User
+dart run ./bin/DartStream.dart generate --type model --name User
 ```
 
 **Verify:** `lib/src/models/user.dart` created with User class, fromJson, toJson, copyWith, equality.
@@ -329,7 +329,7 @@ dart run ./bin/dartstream.dart generate --type model --name User
 #### Test 5c: Generate API
 
 ```bash
-dart run ./bin/dartstream.dart generate --type api --name Product
+dart run ./bin/DartStream.dart generate --type api --name Product
 ```
 
 **Verify:** `lib/src/api/product_api.dart` created with GET/POST/PUT/DELETE endpoints.
@@ -337,7 +337,7 @@ dart run ./bin/dartstream.dart generate --type api --name Product
 #### Test 5d: Generate Provider
 
 ```bash
-dart run ./bin/dartstream.dart generate --type provider --name Payment
+dart run ./bin/DartStream.dart generate --type provider --name Payment
 ```
 
 **Verify:** `lib/src/providers/ds_payment_provider.dart` created.
@@ -345,7 +345,7 @@ dart run ./bin/dartstream.dart generate --type provider --name Payment
 #### Test 5e: Generate Extension
 
 ```bash
-dart run ./bin/dartstream.dart generate --type extension --name Analytics
+dart run ./bin/DartStream.dart generate --type extension --name Analytics
 ```
 
 **Verify:** Extension file + `manifest.yaml` created with LifecycleHook interface.
@@ -353,12 +353,54 @@ dart run ./bin/dartstream.dart generate --type extension --name Analytics
 #### Test 5f: Generate Scaffold (Full CRUD)
 
 ```bash
-dart run ./bin/dartstream.dart generate --type scaffold --name Order --project test_project
+dart run ./bin/DartStream.dart generate --type scaffold --name Order --project test_project
 ```
 
 **Verify 5 files created:** model, API, service, repository, and test.
 
-#### Test 5g: File Exists Without --force
+#### Test 5g: Generate Dart Client Package (OpenAPI)
+
+Create a local spec file first (example path shown for macOS/Linux):
+
+```bash
+cat > ./openapi.json << 'EOF'
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Demo API", "version": "1.0.0" },
+  "servers": [{ "url": "https://api.example.com" }],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "getHealth",
+        "summary": "Health check endpoint"
+      }
+    }
+  }
+}
+EOF
+```
+
+Then run:
+
+```bash
+dart run ./bin/DartStream.dart generate --type client --name Demo --spec ./openapi.json --output ./generated_clients
+```
+
+**Verify:**
+- Package created at `./generated_clients/ds_demo_client`
+- Generated files include:
+  - `pubspec.yaml`
+  - `lib/ds_demo_client.dart`
+  - `lib/src/demo_client.dart`
+  - `test/demo_client_test.dart`
+- Run tests:
+
+```bash
+cd ./generated_clients/ds_demo_client
+dart test
+```
+
+#### Test 5h: File Exists Without --force
 
 1. Generate model User
 2. Generate model User again
@@ -372,10 +414,10 @@ dart run ./bin/dartstream.dart generate --type scaffold --name Order --project t
 ### 6. `validate` — Validate Project & Extensions
 
 ```bash
-dart run ./bin/dartstream.dart validate --project test_project
-dart run ./bin/dartstream.dart validate --level core
-dart run ./bin/dartstream.dart validate --strict
-dart run ./bin/dartstream.dart validate --providers
+dart run ./bin/DartStream.dart validate --project test_project
+dart run ./bin/DartStream.dart validate --level core
+dart run ./bin/DartStream.dart validate --strict
+dart run ./bin/DartStream.dart validate --providers
 ```
 
 **Verify:** Project structure validation, extension validation by level, strict code analysis warnings, provider version listing.
@@ -385,10 +427,10 @@ dart run ./bin/dartstream.dart validate --providers
 ### 7. `extensions` — List Extensions
 
 ```bash
-dart run ./bin/dartstream.dart extensions
-dart run ./bin/dartstream.dart extensions --level core
-dart run ./bin/dartstream.dart extensions --inactive
-dart run ./bin/dartstream.dart extensions --json
+dart run ./bin/DartStream.dart extensions
+dart run ./bin/DartStream.dart extensions --level core
+dart run ./bin/DartStream.dart extensions --inactive
+dart run ./bin/DartStream.dart extensions --json
 ```
 
 ---
@@ -396,9 +438,9 @@ dart run ./bin/dartstream.dart extensions --json
 ### 8. `enable-extension`
 
 ```bash
-dart run ./bin/dartstream.dart enable-extension                          # → error: no name
-dart run ./bin/dartstream.dart enable-extension ds_firebase_auth_provider # → success
-dart run ./bin/dartstream.dart enable-extension nonexistent_ext           # → not found + suggestions
+dart run ./bin/DartStream.dart enable-extension                          # → error: no name
+dart run ./bin/DartStream.dart enable-extension ds_firebase_auth_provider # → success
+dart run ./bin/DartStream.dart enable-extension nonexistent_ext           # → not found + suggestions
 ```
 
 ---
@@ -406,11 +448,11 @@ dart run ./bin/dartstream.dart enable-extension nonexistent_ext           # → 
 ### 9. `disable-extension`
 
 ```bash
-dart run ./bin/dartstream.dart disable-extension                    # → error: no name
-dart run ./bin/dartstream.dart disable-extension <active_ext>       # → disabled
-dart run ./bin/dartstream.dart disable-extension <active_ext>       # → already disabled
-dart run ./bin/dartstream.dart disable-extension <core_ext>         # → error: has dependents
-dart run ./bin/dartstream.dart disable-extension <core_ext> --force # → force disabled
+dart run ./bin/DartStream.dart disable-extension                    # → error: no name
+dart run ./bin/DartStream.dart disable-extension <active_ext>       # → disabled
+dart run ./bin/DartStream.dart disable-extension <active_ext>       # → already disabled
+dart run ./bin/DartStream.dart disable-extension <core_ext>         # → error: has dependents
+dart run ./bin/DartStream.dart disable-extension <core_ext> --force # → force disabled
 ```
 
 ---
@@ -418,9 +460,9 @@ dart run ./bin/dartstream.dart disable-extension <core_ext> --force # → force 
 ### 10. `discover` — Discover Extensions
 
 ```bash
-dart run ./bin/dartstream.dart discover
-dart run ./bin/dartstream.dart discover --project test_project
-dart run ./bin/dartstream.dart discover --no-register
+dart run ./bin/DartStream.dart discover
+dart run ./bin/DartStream.dart discover --project test_project
+dart run ./bin/DartStream.dart discover --no-register
 ```
 
 ---
@@ -429,13 +471,13 @@ dart run ./bin/dartstream.dart discover --no-register
 
 ```bash
 # 1. Navigate to CLI
-cd dartstream-opensource/dartstream/backend/packages/cli/ds_cli
+cd DartStream-opensource/DartStream/backend/packages/cli/ds_cli
 
 # 2. Verify CLI
-dart run ./bin/dartstream.dart list
+dart run ./bin/DartStream.dart list
 
 # 3. Create project
-dart run ./bin/dartstream.dart init
+dart run ./bin/DartStream.dart init
 # → Name: e2e_test, New Project, Dart Web, Shelf
 
 # 4. Install dependencies
@@ -444,18 +486,18 @@ dart pub get
 
 # 5. Configure
 cd ../../packages/cli/ds_cli
-dart run ./bin/dartstream.dart configure --name e2e_test
+dart run ./bin/DartStream.dart configure --name e2e_test
 # → Firebase, Firestore, confirm Y, examples Y
 
 # 6. Generate scaffold
-dart run ./bin/dartstream.dart generate --type scaffold --name User --project e2e_test
+dart run ./bin/DartStream.dart generate --type scaffold --name User --project e2e_test
 
 # 7. Validate
-dart run ./bin/dartstream.dart validate --project e2e_test
+dart run ./bin/DartStream.dart validate --project e2e_test
 
 # 8. Discover & list extensions
-dart run ./bin/dartstream.dart discover
-dart run ./bin/dartstream.dart extensions
+dart run ./bin/DartStream.dart discover
+dart run ./bin/DartStream.dart extensions
 ```
 
 **Verify:** No errors at any step.

@@ -39,22 +39,11 @@ class DsCorsMiddleware {
     return allowedOrigins.contains('*') || allowedOrigins.contains(origin);
   }
 
-  DsCustomMiddleWareResponse _handlePreflight(
-    DsCustomMiddleWareRequest request,
-  ) {
-    final headers = {
-      'Access-Control-Allow-Origin': request.headers['Origin'] ?? '*',
-      'Access-Control-Allow-Methods': allowedMethods.join(', '),
-      'Access-Control-Allow-Headers': allowedHeaders.join(', '),
-      'Access-Control-Allow-Credentials': allowCredentials.toString(),
-    };
   DsCustomMiddleWareResponse _handlePreflight(String origin) {
     final headers = _buildCorsHeaders(origin);
 
-    headers['Access-Control-Allow-Methods'] =
-        allowedMethods.join(', ');
-    headers['Access-Control-Allow-Headers'] =
-        allowedHeaders.join(', ');
+    headers['Access-Control-Allow-Methods'] = allowedMethods.join(', ');
+    headers['Access-Control-Allow-Headers'] = allowedHeaders.join(', ');
 
     if (maxAge != null) {
       headers['Access-Control-Max-Age'] = maxAge.toString();
@@ -71,8 +60,7 @@ class DsCorsMiddleware {
     headers.addAll(_buildCorsHeaders(origin));
 
     if (exposedHeaders.isNotEmpty) {
-      headers['Access-Control-Expose-Headers'] =
-          exposedHeaders.join(', ');
+      headers['Access-Control-Expose-Headers'] = exposedHeaders.join(', ');
     }
 
     return response.copyWith(headers: headers);

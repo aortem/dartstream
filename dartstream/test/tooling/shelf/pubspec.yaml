@@ -17,7 +17,7 @@ dependencies:
   http: ^1.1.2
   dio: ^5.4.2
 
-# Middleware - Packages Built By The Dart Team
+# Middleware - Packages Maintained by Aortem
   shelf: ^1.4.1
   shelf_router: ^1.0.0
   shelf_proxy: ^1.0.0
@@ -35,7 +35,7 @@ dependencies:
 # Dev dependencies are added in sections alphabetically and according to features.
 dev_dependencies:
 
-#Shelf generator  
+#Shelf generator
   shelf_router_generator: ^1.0.0
 
 #CLI
@@ -47,4 +47,3 @@ ds_tools_testing: ^0.0.1-pre+3
 #Globally Activated Package
 executables:
    ds: ds_cli
-

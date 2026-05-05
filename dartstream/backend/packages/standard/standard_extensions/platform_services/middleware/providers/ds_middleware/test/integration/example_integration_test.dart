@@ -21,11 +21,11 @@ void main() {
     test('AddHeaderMiddleware adds x-processed-by header', () async {
       final middleware = AddHeaderMiddleware();
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('http://localhost/test'),
-        <String, String>{},
-        null,
-        <String, String>{},
+        method: 'GET',
+        uri: Uri.parse('http://localhost/test'),
+        headers: <String, String>{},
+        body: null,
+        queryParams: <String, String>{},
       );
 
       // ACT: simulate the middleware chain

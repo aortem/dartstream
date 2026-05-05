@@ -1,7 +1,6 @@
 # Changelog
 
-## 0.0.1-pre+1
-
+## [0.0.1-pre+1]
 - Initial pre-release of the IntelliToggle feature flag provider for DartStream.
 - Implements `DSFeatureFlagProvider` interface using the official IntelliToggle OpenFeature SDK.
 - Supports boolean, string, number, and JSON flag evaluation.

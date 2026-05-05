@@ -1,0 +1,15 @@
+name: ds_demo_client
+description: Generated Dart client package for Demo API.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+  meta: ^1.17.0
+
+dev_dependencies:
+  test: ^1.26.0

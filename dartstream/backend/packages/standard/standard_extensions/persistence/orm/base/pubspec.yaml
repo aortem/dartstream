@@ -1,0 +1,14 @@
+name: ds_orm_base
+description: Provider-neutral ORM adapter contracts for DartStream persistence.
+version: 0.0.1
+repository: https://github.com/aortem/dartstream
+
+environment:
+  sdk: ^3.11.0
+
+resolution: workspace
+
+dependencies:
+
+dev_dependencies:
+  ds_tools_testing: ^0.1.4

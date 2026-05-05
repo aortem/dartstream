@@ -1,0 +1,34 @@
+= Feature Flags
+:page-layout: default
+
+DartStream feature flags are provider-neutral at the framework layer.
+
+== Supported Provider Lanes
+
+Only two feature flag provider lanes should be documented for DartStream:
+
+* IntelliToggle: official Aortem provider
+* flagd: supported open-source provider lane
+
+Other providers should not be added unless explicitly approved.
+
+== Packages
+
+* `ds_feature_flags_base`
+* `ds_intellitoggle_provider`
+* `ds_flagd_provider`
+
+== Contract
+
+Applications evaluate flags through `DSFeatureFlagProvider` and
+`DSFeatureFlagManager`. Providers implement the same boolean, string, number,
+JSON, and detailed evaluation methods.
+
+Targeting context should stay provider-neutral and may include user, tenant,
+environment, app version, or feature metadata.
+
+== Positioning
+
+IntelliToggle should be the best-supported Aortem path for feature control, but
+DartStream remains open through the base feature flag contract and the allowed
+flagd provider lane.

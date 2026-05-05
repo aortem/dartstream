@@ -1,7 +1,7 @@
-# ds_dartstream_standard_engine
+# ds_DartStream_standard_engine
 
-The **Dartstream Standard Core Engine** (`DSStandardCore`) is the core foundation for the Dartstream framework.  
-It provides centralized configuration, service management, lifecycle-aware extension handling, and debugging utilities for Dartstream applications.
+The **DartStream Standard Core Engine** (`DSStandardCore`) is the core foundation for the DartStream framework.
+It provides centralized configuration, service management, lifecycle-aware extension handling, and debugging utilities for DartStream applications.
 
 ---
 
@@ -20,4 +20,4 @@ It provides centralized configuration, service management, lifecycle-aware exten
 Add the package to your project:
 
 ```bash
-dart pub add ds_dartstream_standard_engine
+dart pub add ds_DartStream_standard_engine

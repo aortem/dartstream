@@ -1,25 +1,24 @@
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 
-import '../../../example/ds_example_authentication.dart';
-
+import '../example/ds_example_authentication.dart';
 
 void main() {
   group('Authentication Middleware Test', () {
-    test('Authenticated request', () async {
-      final List<String> authenticatedUsers = ['user1', 'user2'];
-
+    test('authenticated request calls next handler', () async {
+      final authenticatedUsers = ['user1', 'user2'];
       final authenticationMiddleware =
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
-      // Create a sample authenticated request
-      var request = DsCustomMiddleWareRequest('GET',
-<<<<<<< HEAD:dartstream/backend/packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware/test/ds_custom_middleware_test.dart
-          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, {});
-=======
-          Uri.parse('/authenticated/resource'), {'Authorization': 'user1'}, {}, <String, String>{});
-      var response =
-        // This is a dummy handler, it should not be called for an authenticated request
+      final request = DsCustomMiddleWareRequest(
+        method: 'GET',
+        uri: Uri.parse('/authenticated/resource'),
+        headers: {'Authorization': 'user1'},
+      );
+
+      final response = await authenticationMiddleware.handle(request, (
+        req,
+      ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');
       });
 
@@ -27,21 +26,18 @@ void main() {
       expect(response.body, equals('Handler called'));
     });
 
-    test('Unauthenticated request', () async {
-      final List<String> authenticatedUsers = ['user1', 'user2'];
-
+    test('unauthenticated request returns unauthorized', () async {
+      final authenticatedUsers = ['user1', 'user2'];
       final authenticationMiddleware =
           DsCustomMiddleWareAuthenticationMiddleware(authenticatedUsers);
 
-      var request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/authenticated/resource'),
-        {},
-        {},
-        <String, String>{},
+      final request = DsCustomMiddleWareRequest(
+        method: 'GET',
+        uri: Uri.parse('/authenticated/resource'),
+        headers: {},
       );
 
-      var response = await authenticationMiddleware.handle(request, (
+      final response = await authenticationMiddleware.handle(request, (
         req,
       ) async {
         return DsCustomMiddleWareResponse.ok('Handler called');

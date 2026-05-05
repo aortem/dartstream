@@ -1,12 +1,14 @@
 import 'dart:async';
 
+import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
+
 /// The core module of Dartstream.
 /// Handles the foundational setup, configurations, and lifecycle of the framework.
 class DSStandardCore {
   /// Centralized configuration data for the project.
   final Map<String, dynamic> projectConfig;
 
-  // Extension registries 
+  // Extension registries
   final Map<String, dynamic> _coreExtensions = {};
 
   /// Constructor to initialize the core with configuration data.
@@ -97,19 +99,14 @@ class DSStandardCore {
     return true;
   }
 
-
   /// Gets a registered core extension
   T? getCoreExtension<T>(String name) {
     return _coreExtensions[name] as T?;
   }
 
-
-
   /// Lists all registered extensions
   Map<String, dynamic> listExtensions() {
-    return {
-      'core': _coreExtensions.keys.toList(),
-    };
+    return {'core': _coreExtensions.keys.toList()};
   }
 
   /// Debug method to inspect the current configuration and services.

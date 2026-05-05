@@ -2,15 +2,15 @@
 
 ## DS Auth0 Dart Auth SDK
 
-This package provides a DartStream-compatible Auth0 authentication integration.  
+This package provides a DartStream-compatible Auth0 authentication integration.
 It implements the core `DSAuthProvider` interface, handling Auth0's OAuth flows, session and token management, error mapping, and event emission so you can swap in Auth0 without touching your app's auth core.
 
-**Key components**  
-- **`ds_auth0_auth_export.dart`** - Re-exports the provider and all its helpers.  
-- **`DSAuth0AuthProvider`** - Implements `DSAuthProvider`; your entry point for Auth0 auth.  
-- **`src/ds_token_manager.dart`** - JWT storage, expiry tracking, validation.  
-- **`src/ds_session_manager.dart`** - Session lifecycle, device tracking, expiry logic.  
-- **`src/ds_error_mapper.dart`** - Translates Auth0 errors into `DSAuthError`.  
+**Key components**
+- **`ds_auth0_auth_export.dart`** - Re-exports the provider and all its helpers.
+- **`DSAuth0AuthProvider`** - Implements `DSAuthProvider`; your entry point for Auth0 auth.
+- **`src/ds_token_manager.dart`** - JWT storage, expiry tracking, validation.
+- **`src/ds_session_manager.dart`** - Session lifecycle, device tracking, expiry logic.
+- **`src/ds_error_mapper.dart`** - Translates Auth0 errors into `DSAuthError`.
 - **`src/ds_event_handlers.dart`** - Emits `DSAuthEvent` callbacks (signed in, token refreshed, etc.).
 
 ---
@@ -56,7 +56,7 @@ await auth0.initialize({ /* optional extra settings */ });
 await auth0.initialize({});                              // must call before others
 await auth0.signIn('user@example.com', 'password123');   // password grant
 await auth0.signOut();                                   // revoke & clear state
-await auth0.createAccount('new@user.com','pass',{        // signup  
+await auth0.createAccount('new@user.com','pass',{        // signup
   displayName: 'New User',
 });
 DSAuthUser user     = await auth0.getCurrentUser();      // throws if none
@@ -144,13 +144,9 @@ All classes in this package are prefixed with `DSAuth0...` to avoid naming colli
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All DartStream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *DartStream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 
 ## Enhance with DartStream
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
-
-
-
-

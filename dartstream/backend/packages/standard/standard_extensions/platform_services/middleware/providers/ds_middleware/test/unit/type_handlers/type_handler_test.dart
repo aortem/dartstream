@@ -1,6 +1,5 @@
 import 'package:ds_middleware/src/type_handlers/type_handler.dart';
 import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
-import 'package:ds_middleware/src/type_handlers/date_handler.dart';
 import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 import 'package:test/test.dart';
 
@@ -44,11 +43,11 @@ void main() {
     test('DsCustomMiddleWareRequest bodyAs<T>', () {
       TypeHandlerRegistry.register<CustomClass>(CustomClassHandler());
       final request = DsCustomMiddleWareRequest(
-        'POST',
-        Uri.parse('/'),
-        <String, String>{},
-        {'value': 'request'},
-        <String, String>{},
+        method: 'POST',
+        uri: Uri.parse('/'),
+        headers: <String, String>{},
+        body: {'value': 'request'},
+        queryParams: <String, String>{},
       );
       final obj = request.bodyAs<CustomClass>();
       expect(obj.value, equals('request'));

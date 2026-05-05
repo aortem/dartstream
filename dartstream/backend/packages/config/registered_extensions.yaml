@@ -3,12 +3,362 @@
 # Provides a high-level view of all registered extensions.
 # Provides a global configuration or dependency resolver.
 
-auth:
+database:
   providers:
-    - name: cognito
+    - name: firebase_database
+      full_name: ds_firebase_database
+      version: 0.0.1
+      description: "Firestore database provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/database/providers/firebase
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: mongo_database
+      full_name: ds_mongo_database
+      version: 0.0.1
+      description: "MongoDB database provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/database/providers/mongo
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: postgres_database
+      full_name: ds_postgres_database
+      version: 0.0.1
+      description: "PostgreSQL database provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/database/providers/postgres
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+events:
+  providers:
+    - name: events
+      full_name: ds_events_base
+      version: 0.0.1
+      description: "Base event interfaces and manager for DartStream."
+      path: packages/standard/standard_extensions/reactive_dataflow/events/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+feature_flags:
+  providers:
+    - name: custom_feature_flag_integration
+      full_name: custom_feature_flag_integration
+      version: 1.0.0
+      description: "Sample feature flag integration for Dartstream."
+      path: packages/enhanced/samples/feature_flag_integration
+      enabled: false
+      level: thirdParty
+      type: core
+      optional: true
+      compatible: true
+
+general:
+  providers:
+    - name: registry_integration
+      full_name: ds_registry_integration
+      version: 1.0.0
+      description: "Optional registry integration module for Dartstream."
+      path: packages/enhanced/registry_integration
+      enabled: false
+      level: core
+      type: core
+      optional: true
+      compatible: true
+
+logging:
+  providers:
+    - name: logging
+      full_name: ds_logging_base
+      version: 0.0.1
+      description: "Base logging interfaces and manager for DartStream."
+      path: packages/standard/standard_extensions/persistence/logging/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: otlp_logging
+      full_name: ds_otlp_logging_provider
+      version: 0.0.1
+      description: "OpenTelemetry (OTLP) logging provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/logging/providers/otlp
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: sentry_logging
+      full_name: ds_sentry_logging_provider
+      version: 0.0.1
+      description: "Sentry logging provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/logging/providers/sentry
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+messaging:
+  providers:
+    - name: message_broker
+      full_name: ds_message_broker_base
+      version: 0.0.1
+      description: "Base interfaces and manager for DartStream message brokers."
+      path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: gcp_pubsub_message_broker
+      full_name: ds_gcp_pubsub_message_broker_provider
+      version: 0.0.1
+      description: "Google Cloud Pub/Sub message broker provider for DartStream."
+      path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+notifications:
+  providers:
+    - name: notifications
+      full_name: ds_notifications_base
+      version: 0.0.1
+      description: "Base notification interfaces and manager for DartStream."
+      path: packages/standard/standard_extensions/reactive_dataflow/notifications/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+plugins:
+  providers:
+    - name: plugin_third_party_plugin_1
+      full_name: ds_plugin_third_party_plugin_1
+      version: 1.0.0
+      description: "Third-party integration plugin 1 for Dartstream."
+      path: packages/enhanced/plugins/third_party_plugin_1
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: true
+      compatible: true
+    - name: plugin_third_party_plugin_2
+      full_name: ds_plugin_third_party_plugin_2
+      version: 1.0.0
+      description: "Third-party integration plugin 2 for Dartstream."
+      path: packages/enhanced/plugins/third_party_plugin_2
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: true
+      compatible: true
+    - name: custom_analytics
+      full_name: custom_analytics
+      version: 1.0.0
+      description: "Sample custom analytics integration for Dartstream."
+      path: packages/enhanced/samples/custom_analytics
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: true
+      compatible: true
+    - name: auth0_auth
+      full_name: ds_auth0_auth_provider
+      version: 0.0.1
+      description: "Auth0 authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/auth0
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: cognito_auth
+      full_name: ds_cognito_auth_provider
+      version: 0.0.1-pre+1
+      description: "Amazon authentication provider for Dartstream."
       path: packages/standard/standard_extensions/auth/providers/cognito
-      enabled: true
-      config:
-        userPoolId: "us-east-1_012345678"
-        clientId: "7example890123456789012345"
-        region: "us-east-1"
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: entraid_auth
+      full_name: ds_entraid_auth_provider
+      version: 0.0.1-pre
+      description: "Azure authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/entraid
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: fingerprint_auth
+      full_name: ds_fingerprint_auth_provider
+      version: 0.0.1-pre
+      description: "Fingerprint authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/fingerprint
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: firebase_auth
+      full_name: ds_firebase_auth_provider
+      version: 0.0.1
+      description: "Google authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/firebase
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: magic_auth
+      full_name: ds_magic_auth_provider
+      version: 0.0.1
+      description: "DartStream package for Magic authentication provider."
+      path: packages/standard/standard_extensions/auth/providers/magic
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: okta_auth
+      full_name: ds_okta_auth_provider
+      version: 0.0.1-pre
+      description: "Fingerprint authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/okta
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: ping_identity_dart_auth
+      full_name: ping_identity_dart_auth_sdk
+      version: 0.0.1
+      description: "Ping Identity Auth SDK for DartStream"
+      path: packages/standard/standard_extensions/auth/providers/ping
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: stytch_auth
+      full_name: ds_stytch_auth_provider
+      version: 0.0.1-pre
+      description: "Fingerprint authentication provider for Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/stytch
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: transmit_auth
+      full_name: ds_transmit_auth_provider
+      version: 0.0.2
+      description: "Transmit Authentication Provider For Dartstream."
+      path: packages/standard/standard_extensions/auth/providers/transmit
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: dartstream
+      full_name: ds_dartstream_provider
+      version: 0.0.1-pre+1
+      description: "Provides an integration with Intellitoggle, enabling Dartstream to manage and evaluate feature flags dynamically."
+      path: packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+    - name: shelf
+      full_name: ds_shelf
+      version: 0.0.1-pre+4
+      description: "Core Shelf Components Within Larger DartStream Ecosystem."
+      path: packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
+      enabled: false
+      level: thirdParty
+      type: plugin
+      optional: false
+      compatible: true
+
+storage:
+  providers:
+    - name: storage
+      full_name: ds_storage_base
+      version: 0.0.1
+      description: "Base storage interfaces and manager for DartStream."
+      path: packages/standard/standard_extensions/persistence/storage/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: aws_storage
+      full_name: ds_aws_storage_provider
+      version: 0.0.1
+      description: "S3-compatible storage provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/storage/providers/aws
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: azure_storage
+      full_name: ds_azure_storage_provider
+      version: 0.0.1
+      description: "Azure Blob Storage provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/storage/providers/azure
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: gcp_storage
+      full_name: ds_gcp_storage_provider
+      version: 0.0.1
+      description: "Google Cloud Storage provider for DartStream."
+      path: packages/standard/standard_extensions/persistence/storage/providers/gcp
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+
+websockets:
+  providers:
+    - name: websocket
+      full_name: ds_websocket_base
+      version: 0.0.1
+      description: "Base interfaces and manager for DartStream WebSocket providers."
+      path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true
+    - name: socket_io_websocket
+      full_name: ds_socket_io_websocket_provider
+      version: 0.0.1
+      description: "Socket.IO WebSocket provider for DartStream."
+      path: packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io
+      enabled: false
+      level: core
+      type: core
+      optional: false
+      compatible: true

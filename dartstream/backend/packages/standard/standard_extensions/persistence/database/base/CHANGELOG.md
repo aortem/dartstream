@@ -1,9 +1,10 @@
-## 0.0.2
+# Changelog
 
+## [0.0.2]
 ### Changed
 - Move public API under lib/ with src/ implementation layout.
 
-## 0.0.1
-
+## [0.0.1]
 ### Added
 - Initial release.
+
