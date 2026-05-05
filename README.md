@@ -1,4 +1,3 @@
-
 <div align="center">
 
 <img src="./images/dartstream-logo.png" alt="DartStream Logo">
@@ -6,57 +5,89 @@
 
 # DartStream
 
-DartStream is a minimal, efficient, and scalable server-side framework designed for the Dart programming language. Inspired by the simplicity and flexibility of other frameworks like Dartfrog and Alfred, DartStream offers a streamlined approach to building server-side applications, making it an ideal choice for developers looking to leverage Dart's capabilities.
+DartStream is an open-source Dart-native framework for building backend
+services, Flutter and Flame experiences, and frontend-agnostic integrations
+around a stable set of engine, extension, and provider contracts.
 
-## Features
+The open-source project focuses on the framework foundation:
 
-- **Minimalistic Design**: Focus on what's necessary, making it perfect for both beginners and experienced developers.
-- **Scalability**: Designed to support applications as they grow in complexity and user base.
-- **Flexibility**: Easy to extend and customize to fit your specific needs.
-- **Performance**: Optimized for speed and efficiency, enabling high-performance applications.
+- the DartStream Standard Engine
+- extension and provider contracts
+- CLI tooling and project generation
+- authentication, persistence, middleware, feature flags, reactive dataflow,
+  AI, and ORM integration boundaries
+- reference frontends and generated client patterns
 
-## Available Versions
+DartStream SaaS is a separate managed Aortem product. It may use the
+open-source standard engine as a base, but hosted control-plane services,
+tenant operations, billing, provider credential management, and production SaaS
+operations are outside this open-source repository.
 
-DartStream is available in three versions to cater to different needs and scales:
+## Core Capabilities
 
-1. **Free - Open Source Version**: Fully functional and open for modification, perfect for individual developers and small projects.
-2. **Aortem - SAAS Version**: Offers additional features and dedicated support, ideal for enterprise-level applications.
+- **Standard Engine**: configuration, lifecycle, service registration, and
+  extension management for DartStream applications.
+- **Provider Contracts**: stable base packages for auth, persistence, storage,
+  middleware, feature flags, reactive dataflow, AI, and ORM adapters.
+- **Feature Control**: IntelliToggle is the official Aortem feature flag
+  provider. `flagd` is the only other supported open-source feature flag
+  provider lane.
+- **AI-Ready Extensions**: `ds_ai_base` provides provider-neutral AI contracts
+  so applications can integrate DartCodeAI or other current AI providers without
+  hardcoding a provider into the framework.
+- **ORM Integration**: `ds_orm_base` defines adapter contracts for current,
+  actively maintained Dart ORM/data-mapping packages without making any ORM
+  mandatory.
+- **Frontend Reach**: Flutter and Dart are first-class. Nuxt and generated
+  clients demonstrate non-Flutter frontend integration. Other examples are
+  treated according to maturity.
+
+## Getting Started
+
+The framework workspace lives under `dartstream/backend`.
+
+```bash
+cd dartstream/backend
+dart pub get
+```
+
+CLI docs and package docs are available under:
+
+- `dartstream/backend/README.md`
+- `dartstream/backend/packages/cli/ds_cli/README.md`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages`
 
 ## Documentation
 
-For detailed guides, API references, and example projects, visit our [DartStream Documentation](#). Start building with DartStream today and take advantage of its robust features and elegant syntax.
+Start with:
 
-## Examples
-
-Explore the `/example` directory in this repository to find sample applications demonstrating DartStream's capabilities in real-world scenarios.
-
-## Contributing
-
-We welcome contributions of all forms from the community! If you're interested in helping improve DartStream, please fork the repository and submit your pull requests. For more details, check out our [CONTRIBUTING.md](CONTRIBUTING.md) guide. Our team will review your pull request. Once approved, we will integrate your changes into our primary repository and push the mirrored changes on the main github branch.
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/open-source-boundary.adoc`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/package-maturity.adoc`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/frontend-support.adoc`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/feature-flags.adoc`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/ai-extensions.adoc`
+- `dartstream/docs/components/dartstream/modules/ROOT/pages/orm-integration.adoc`
 
 ## Support
 
-For support across all Aortem open-source products, including this SDK, visit our [Support Page](https://aortem.io/support).
+Aortem provides open-source support for DartStream and other Aortem
+open-source packages. For support, issue triage, and contribution guidance,
+visit the Aortem support page:
+
+https://aortem.io/support
+
+## Contributing
+
+Contributions are welcome. Keep changes scoped, preserve existing package
+boundaries, and use the maturity labels in the docs to avoid presenting
+experimental packages as production-ready.
+
+See `CONTRIBUTING.md` for contribution details.
 
 ## Licensing
 
-The **Dart5tream Framework** is licensed under a dual-license approach:
+DartStream uses the repository license model described in `LICENSE`.
 
-1. **BSD-3 License**:
-   - Applies to all packages and libraries in the Dartstream Framework.
-   - Allows use, modification, and redistribution, provided that credit is given and compliance with the BSD-3 terms is maintained.
-   - Permits usage in open-source projects, applications, and private deployments.
-
-2. **Enhanced License Version 2 (ELv2)**:
-   - Applies to all use cases where Dartstream or its derivatives are offered as part of a **cloud service**.
-   - This ensures that Dartstream cannot be directly used by cloud providers to offer competing services without explicit permission.
-   - Example restricted use cases:
-     - Offering Dartstream as a managed cloud service.
-
-### **Summary**
-- You are free to use Dartstream in your applications, including open-source and commercial projects, as long as the Dartstream is not directly offered as part of a third-party cloud service.
-- For details, refer to the [LICENSE](LICENSE.md) file.
-
-## Enhance with DartStream
-
-We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+In short, the open-source framework packages are available for application use,
+including commercial use, while offering DartStream or derivatives as a managed
+third-party cloud service requires explicit permission from Aortem.

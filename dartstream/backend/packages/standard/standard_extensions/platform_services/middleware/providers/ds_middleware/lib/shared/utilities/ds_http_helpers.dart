@@ -1,23 +1,19 @@
 import 'dart:io';
 import 'dart:convert';
-import 'package:ds_custom_middleware/app/models/ds_custom_middleware_model.dart';
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 
 class DsHttpHelpers {
-  static DsCustomMiddleWareResponse redirect(String location,
-      {int statusCode = 302}) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {'Location': location},
-      null,
-    );
+  static DsCustomMiddleWareResponse redirect(
+    String location, {
+    int statusCode = 302,
+  }) {
+    return DsCustomMiddleWareResponse(statusCode, {'Location': location}, null);
   }
 
   static DsCustomMiddleWareResponse json(dynamic data, {int statusCode = 200}) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {'Content-Type': 'application/json'},
-      jsonEncode(data),
-    );
+    return DsCustomMiddleWareResponse(statusCode, {
+      'Content-Type': 'application/json',
+    }, jsonEncode(data));
   }
 
   static Future<DsCustomMiddleWareResponse> sendFile(String path) async {
@@ -25,11 +21,9 @@ class DsHttpHelpers {
     if (await file.exists()) {
       final bytes = await file.readAsBytes();
       final contentType = _getContentType(path);
-      return DsCustomMiddleWareResponse(
-        200,
-        {'Content-Type': contentType},
-        bytes,
-      );
+      return DsCustomMiddleWareResponse(200, {
+        'Content-Type': contentType,
+      }, bytes);
     } else {
       return DsCustomMiddleWareResponse(404, {}, 'File not found');
     }
@@ -57,8 +51,10 @@ class DsHttpHelpers {
   }
 
   static Map<String, String> parseCookies(String cookieString) {
-    return cookieString.split(';').fold({},
-        (Map<String, String> acc, String cookie) {
+    return cookieString.split(';').fold({}, (
+      Map<String, String> acc,
+      String cookie,
+    ) {
       final parts = cookie.trim().split('=');
       if (parts.length == 2) acc[parts[0]] = parts[1];
       return acc;

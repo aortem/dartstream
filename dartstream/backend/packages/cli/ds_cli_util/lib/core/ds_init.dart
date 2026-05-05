@@ -1,5 +1,6 @@
 import 'dart:io';
-import 'package:ds_tools_testing/ds_tools_testing.dart';
+
+import 'package:args/command_runner.dart';
 
 class DSInit {
   void run() {
@@ -12,7 +13,10 @@ class DSInit {
 }
 
 class DSInitCommand extends Command {
+  @override
   final name = "init";
+
+  @override
   final description = "Initializes a new DartStream project.";
 
   DSInitCommand() {
@@ -21,6 +25,7 @@ class DSInitCommand extends Command {
     argParser.addOption('name', abbr: 'n', help: 'The name of the project.');
   }
 
+  @override
   void run() {
     final projectName = argResults?['name'] ?? 'default_project_name';
     final projectDir = Directory(projectName);

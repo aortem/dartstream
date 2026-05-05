@@ -1,8 +1,9 @@
 name: ds_intellitoggle_provider_example
-description: Example usage of the IntelliToggle feature flag provider for Dartstream.
+description: Example usage of the IntelliToggle feature flag provider for DartStream.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 publish_to: none
+
 environment:
   sdk: ^3.11.0
 

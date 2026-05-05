@@ -1,23 +1,36 @@
 import 'dart:convert';
+
 import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
-import 'package:shelf/src/request.dart';
 
 class DsCustomMiddleWareRequest {
   final String method;
   final Uri uri;
   final Map<String, String> headers;
   final body;
-  final Map<String, dynamic>? routeParams;// Added routeParams field
-  final Map<String, String> queryParams; // Added queryParams field
+  final Map<String, dynamic>? routeParams;
+  final Map<String, String> queryParams;
+  final Map<String, dynamic> context;
 
   DsCustomMiddleWareRequest({
     required this.method,
     required this.uri,
     required this.headers,
-    this.body,
     this.routeParams = const {},
+    this.body,
     this.queryParams = const {},
+    this.context = const {},
   });
+
+  static DsCustomMiddleWareRequest fromShelf(dynamic request) {
+    final requestUri = request.url is Uri ? request.url as Uri : Uri(path: '/');
+    return DsCustomMiddleWareRequest(
+      method: request.method as String? ?? 'GET',
+      uri: requestUri,
+      headers: Map<String, String>.from(request.headers as Map),
+      queryParams: requestUri.queryParameters,
+      context: {'shelf.request': request},
+    );
+  }
 
   DsCustomMiddleWareRequest change({
     Map<String, String>? headers,
@@ -30,6 +43,7 @@ class DsCustomMiddleWareRequest {
       body: body ?? this.body,
       routeParams: routeParams,
       queryParams: queryParams,
+      context: context,
     );
   }
 
@@ -49,6 +63,7 @@ class DsCustomMiddleWareRequest {
       body: body ?? this.body,
       routeParams: routeParams ?? this.routeParams,
       queryParams: queryParams ?? this.queryParams,
+      context: context ?? this.context,
     );
   }
 
@@ -95,6 +110,10 @@ class DsCustomMiddleWareResponse {
     return DsCustomMiddleWareResponse(401, {
       'www-authenticate': 'Bearer',
     }, 'Unauthorized');
+  }
+
+  static DsCustomMiddleWareResponse badRequest(dynamic body) {
+    return DsCustomMiddleWareResponse(400, {}, body);
   }
 
   DsCustomMiddleWareResponse copyWith({

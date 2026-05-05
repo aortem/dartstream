@@ -1,10 +1,7 @@
 import 'dart:async';
-import '../../../standard_engine/lib/core/ds_standard_core.dart';
-import '../../../standard_extensions/reactive_dataflow/lifecycle/base/lib/ds_lifecycle_base.dart';
 
-//When package is ready for pub.dev, change the import to:
-//import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
-
+import 'package:ds_dartstream_standard_engine/core/ds_standard_core.dart';
+import 'package:ds_lifecycle_base/ds_lifecycle_base.dart';
 
 /// The core module of Dartstream with extension capabilities.
 /// Handles the foundational setup, configurations, and lifecycle of the framework.
@@ -18,7 +15,8 @@ class DSStandardCoreExtensions extends DSStandardCore {
 
   /// Constructor to initialize the core with configuration data.
   /// [projectConfig] contains the initial setup for the project.
-  DSStandardCoreExtensions({required this.projectConfig}) : super(projectConfig: projectConfig);
+  DSStandardCoreExtensions({required this.projectConfig})
+    : super(projectConfig: projectConfig);
 
   /// Initializes the core framework.
   /// This method ensures all necessary components are loaded and ready.
@@ -66,7 +64,6 @@ class DSStandardCoreExtensions extends DSStandardCore {
     return projectConfig[name];
   }
 
-
   /// Registers an extended feature for an existing core extension
   /// [extension] The extended feature to register
   /// [featureName] The name of the extended feature
@@ -75,7 +72,6 @@ class DSStandardCoreExtensions extends DSStandardCore {
     required dynamic extension,
     required String featureName,
   }) {
-
     print("Registering extended feature '$featureName' for $coreExtensionName");
 
     if (!_extendedFeatures.containsKey(coreExtensionName)) {
@@ -110,7 +106,7 @@ class DSStandardCoreExtensions extends DSStandardCore {
     if (extension is LifecycleHook) {
       extension.onInitialize();
     }
-  } 
+  }
 
   /// Gets extended features for a core extension
   Map<String, List<dynamic>>? getExtendedFeatures(String coreExtensionName) {
@@ -152,7 +148,6 @@ class DSStandardCoreExtensions extends DSStandardCore {
     };
   }
 
-
   /// Debug method to inspect the current configuration and services.
   /// Provides a quick overview of the core state.
   void debug() {
@@ -166,8 +161,7 @@ class DSStandardCoreExtensions extends DSStandardCore {
     });
   }
 
-
- /*@override
+  /*@override
   Future<void> initializeComponents() async {
     await _initializeTenancy();
     await _initializeBilling();
@@ -192,5 +186,3 @@ class DSStandardCoreExtensions extends DSStandardCore {
     );
   }*/
 }
-
-

@@ -1,6 +1,6 @@
 # DartStream Logging (ds_logging_base)
 
-Base logging interfaces and provider registration for DartStream. This is the OSS telemetry logging layer aligned with the `ds_telemetry` spec in `dartstream/AGENTS.md`.
+Base logging interfaces and provider registration for DartStream. This is the OSS telemetry logging layer aligned with the `ds_telemetry` spec in `DartStream/AGENTS.md`.
 
 ## Scope (OSS Only)
 
@@ -28,8 +28,8 @@ DartStream ships logging providers that integrate with common observability stac
 
 | Provider | DartStream Package | Upstream SDK / Docs | Source |
 | --- | --- | --- | --- |
-| **OpenTelemetry (OTLP)** | `ds_otlp_logging_provider` | OTLP/HTTP JSON logs (`/v1/logs`) and Collector docs: https://opentelemetry.io/docs/collector/ | https://github.com/aortem/dartstream/tree/development/dartstream/backend/packages/standard/standard_extensions/persistence/logging/providers/otlp |
-| **Sentry** | `ds_sentry_logging_provider` | `sentry` Dart SDK: https://pub.dev/packages/sentry | https://github.com/aortem/dartstream/tree/development/dartstream/backend/packages/standard/standard_extensions/persistence/logging/providers/sentry |
+| **OpenTelemetry (OTLP)** | `ds_otlp_logging_provider` | OTLP/HTTP JSON logs (`/v1/logs`) and Collector docs: https://opentelemetry.io/docs/collector/ | https://github.com/aortem/DartStream/tree/development/DartStream/backend/packages/standard/standard_extensions/persistence/logging/providers/otlp |
+| **Sentry** | `ds_sentry_logging_provider` | `sentry` Dart SDK: https://pub.dev/packages/sentry | https://github.com/aortem/DartStream/tree/development/DartStream/backend/packages/standard/standard_extensions/persistence/logging/providers/sentry |
 
 ---
 
@@ -52,13 +52,13 @@ Note: this is the current API surface. The `ds_telemetry` spec calls for richer 
 
 ## Package Conflicts and Aliases
 
-In some cases, core dart package have naming conflicts (ie. same method, classname). For some packages, we build wrappers and use the DS prefix to avoid those conflicts.
+In some cases, core Dart packages have naming conflicts (ie. same method, classname). For some packages, we build wrappers and use the DS prefix to avoid those conflicts.
 
-In other cases, where may avoid using a package altogether. We will keep the documentation up to date as often as possible.
+In other cases, we may avoid using a package altogether. We will keep the documentation up to date as often as possible.
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the services packages, which uses the ELv2 license, and the Dartstream SDK packages, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers). See the LICENSE file for more details.
+All DartStream packages are licensed under BSD-3, except for the services packages, which uses the ELv2 license, and the DartStream SDK packages, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers). See the LICENSE file for more details.
 
 ## Enhance with DartStream
 
@@ -100,7 +100,7 @@ registerSentryLoggingProvider(sentryConfig);
 final otlpConfig = {
   'name': 'otlp',
   'endpoint': 'http://otel-collector:4318/v1/logs',
-  'serviceName': 'dartstream-api',
+  'serviceName': 'DartStream-api',
   'environment': 'production',
 };
 registerOtlpLoggingProvider(otlpConfig);
@@ -193,7 +193,7 @@ import 'package:ds_otlp_logging_provider/ds_otlp_logging_export.dart';
 final otlpConfig = {
   'name': 'otlp',
   'endpoint': 'http://otel-collector:4318/v1/logs',
-  'serviceName': 'dartstream-api',
+  'serviceName': 'DartStream-api',
   'serviceVersion': '1.2.3',
   'environment': 'production',
   'headers': {

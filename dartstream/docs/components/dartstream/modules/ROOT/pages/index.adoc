@@ -1,7 +1,14 @@
-= Dartstream Docs
+= DartStream Docs
 :page-layout: default
 
-Dartstream is a modular backend framework for Dart. This documentation covers the meta-package, standard engine, extensions, and tooling included in the workspace.
+DartStream is an open-source Dart-native framework for backend services,
+Flutter and Flame experiences, and frontend-agnostic integrations. This
+documentation covers the meta-package, standard engine, extensions, tooling,
+and provider contracts included in the workspace.
+
+DartStream SaaS is a separate managed Aortem product. It may use the
+open-source standard engine as a base, but SaaS-only control-plane, billing,
+tenant, and production operations are outside this open-source repository.
 
 == Quick Start
 
@@ -11,13 +18,13 @@ Dartstream is a modular backend framework for Dart. This documentation covers th
 dart pub add ds_dartstream
 ```
 
-2. Import the umbrella library.
+1. Import the umbrella library.
 
 ```dart
 import 'package:ds_dartstream/ds_dartstream.dart';
 ```
 
-3. Initialize the modules you need.
+1. Initialize the modules you need.
 
 ```dart
 // 1) Initialize core tooling
@@ -49,6 +56,13 @@ await storage.uploadFile('path/to/object', dataBytes);
 | Core Tooling & CLI     | `ds_tooling` (workspace & bootstrap), `ds_cli` |
 | Standard Engine        | `ds_dartstream_standard_engine` |
 | Authentication         | `ds_auth_base`, `ds_auth0_auth_provider`, `ds_cognito_auth_provider`, `ds_entraid_auth_provider`, `ds_firebase_auth_provider`, `ds_magic_auth_provider`, `ds_okta_auth_provider`, `ds_stytch_auth_provider`, `ds_transmit_auth_provider`, `ds_fingerprint_auth_provider`, `ping_identity_dart_auth_sdk` |
-| Persistence            | `ds_database_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_otlp_logging_provider`, `ds_sentry_logging_provider`, `ds_aws_storage_provider`, `ds_gcp_storage_provider` |
-| Feature Flags          | `ds_ff_base`, `ds_ff_flagd`, `ds_ff_dartstream` |
+| Persistence            | `ds_database_base`, `ds_orm_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_otlp_logging_provider`, `ds_sentry_logging_provider`, `ds_aws_storage_provider`, `ds_gcp_storage_provider` |
+| Feature Flags          | `ds_feature_flags_base`, `ds_intellitoggle_provider`, `ds_flagd_provider` |
+| AI Extensions          | `ds_ai_base` |
 | Reactive Dataflow      | `ds_message_broker_base`, `ds_gcp_pubsub_message_broker_provider`, `ds_websocket_base`, `ds_socket_io_websocket_provider` |
+
+== Support
+
+Aortem provides open-source support for DartStream and other Aortem
+open-source packages. Visit https://aortem.io/support for support and issue
+triage.

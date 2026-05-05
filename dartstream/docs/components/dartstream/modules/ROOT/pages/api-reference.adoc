@@ -1,4 +1,4 @@
-= Dartstream API Reference
+= DartStream API Reference
 :page-layout: default
 
-This page will document the public Dartstream APIs and module references.
+This page will document the public DartStream APIs and module references.

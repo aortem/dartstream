@@ -8,15 +8,78 @@ release:
     - apk add --no-cache bash curl git jq findutils
   script:
     - |
-      bash -c '
-      set -e
+      bash <<'EOF'
+      set -euo pipefail
       echo "Using bash version: $BASH_VERSION"
+
+      extract_changelog_version() {
+        awk '
+          /^## \[[0-9][^]]*\]/ {
+            line=$0
+            sub(/^## \[/, "", line)
+            sub(/\].*$/, "", line)
+            print line
+            exit
+          }
+          /^## \*\*[0-9][^*]*\*\*/ {
+            line=$0
+            sub(/^## \*\*/, "", line)
+            sub(/\*\*.*/, "", line)
+            print line
+            exit
+          }
+          /^## [0-9][^ ]*/ { print $2; exit }
+          /^# \*\*[0-9][^*]*\*\*/ {
+            line=$0
+            sub(/^# \*\*/, "", line)
+            sub(/\*\*.*/, "", line)
+            print line
+            exit
+          }
+          /^# [0-9][^ ]*/ { print $2; exit }
+        ' CHANGELOG.md
+      }
+
+      extract_release_notes() {
+        local version="$1"
+        awk -v version="$version" '
+          $0 ~ ("^## \\[" version "\\]") { flag=1; next }
+          $0 ~ ("^## \\*\\*" version "\\*\\*") { flag=1; next }
+          $0 ~ ("^## " version "([[:space:]]|$)") { flag=1; next }
+          $0 ~ ("^# \\*\\*" version "\\*\\*") { flag=1; next }
+          $0 ~ ("^# " version "([[:space:]]|$)") { flag=1; next }
+          flag && ($0 ~ /^## \[/ || $0 ~ /^## \*\*/ || $0 ~ /^## [0-9]/ || $0 ~ /^# \*\*/ || $0 ~ /^# [0-9]/) { exit }
+          flag { print }
+        ' CHANGELOG.md
+      }
 
       PROJECT_DIRS=$(find . -type f -name "pubspec.yaml" -exec dirname {} \; | sort -u)
       echo "Found candidate project directories:"
       echo "$PROJECT_DIRS"
 
       ROOT_DIR=$(pwd)
+
+      if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
+        git fetch --prune --unshallow
+      else
+        git fetch --prune
+      fi
+
+      git fetch --tags || echo "tag fetch failed, but continuing"
+
+      BASE_SHA="${CI_COMMIT_BEFORE_SHA:-}"
+      if [ -z "$BASE_SHA" ] || echo "$BASE_SHA" | grep -Eq '^0+$' || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+        BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+      fi
+
+      if [ -n "$BASE_SHA" ]; then
+        CHANGED_CHANGELOGS=$(git diff --name-only "$BASE_SHA" HEAD -- 'CHANGELOG.md' '*/CHANGELOG.md' || true)
+      else
+        CHANGED_CHANGELOGS=""
+      fi
+
+      echo "Changed package changelogs:"
+      echo "${CHANGED_CHANGELOGS:-none}"
 
       for dir in $PROJECT_DIRS; do
         echo "=========================================="
@@ -31,70 +94,104 @@ release:
         echo "Current working directory: $(pwd)"
         ls -la
 
-         if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
-          git fetch --prune --unshallow
-        else
-          git fetch --prune
+        REL_CHANGELOG="${dir#./}/CHANGELOG.md"
+        if ! printf '%s\n' "$CHANGED_CHANGELOGS" | grep -Fxq "$REL_CHANGELOG"; then
+          echo "CHANGELOG.md was not changed for ${dir}, skipping release."
+          cd "$ROOT_DIR" || exit 1
+          continue
         fi
 
-      # fetch tags (but don’t fail on tag conflicts)
-      git fetch --tags || echo "⚠️  tag fetch failed, but continuing"
+        if grep -Eq "^publish_to:[[:space:]]*['\"]?none['\"]?([[:space:]#]|$)" pubspec.yaml; then
+          echo "Package is marked publish_to: none in ${dir}, skipping release."
+          cd "$ROOT_DIR" || exit 1
+          continue
+        fi
 
-        VERSION=$(grep "^version:" pubspec.yaml | sed "s/version: //" | tr -d '[:space:]')
+        VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | tr -d '[:space:]')
         echo "Version from pubspec.yaml: $VERSION"
 
-        CHANGELOG_VERSION=$(grep -m 1 "^## " CHANGELOG.md | sed "s/^## *//; s/ .*//")
+        CHANGELOG_VERSION=$(extract_changelog_version)
         echo "Latest CHANGELOG version: $CHANGELOG_VERSION"
 
-        PUB_PACKAGE_NAME=$(grep "^name:" pubspec.yaml | sed "s/name: //")
+        if [ -z "$CHANGELOG_VERSION" ]; then
+          echo "Unable to parse CHANGELOG.md in ${dir}, skipping."
+          cd "$ROOT_DIR" || exit 1
+          continue
+        fi
+
+        if [ "$CHANGELOG_VERSION" != "$VERSION" ]; then
+          echo "Top CHANGELOG version ($CHANGELOG_VERSION) does not match pubspec version ($VERSION) in ${dir}, skipping."
+          cd "$ROOT_DIR" || exit 1
+          continue
+        fi
+
+        PUB_PACKAGE_NAME=$(grep '^name:' pubspec.yaml | sed 's/name: //')
+        PACKAGE_TAG="${PUB_PACKAGE_NAME}-v${VERSION}"
+        echo "Package release tag: ${PACKAGE_TAG}"
+
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
         PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
         if echo "$PUB_RESPONSE" | jq empty 2>/dev/null; then
-          PUB_DEV_LATEST=$(echo "$PUB_RESPONSE" | jq -r ".latest.version")
+          PUB_DEV_LATEST=$(echo "$PUB_RESPONSE" | jq -r '.latest.version')
         else
-          echo "⚠️  Failed to parse pub.dev response or package not published yet."
+          echo "Failed to parse pub.dev response or package not published yet."
           PUB_DEV_LATEST="none"
         fi
         echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
 
         LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r ".[0].tag_name")
+          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" \
+          | jq -r 'if type == "array" then (.[0].tag_name // "none") else "none" end' \
+          2>/dev/null || echo "none")
         echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        echo "Latest Git tag: $LATEST_TAG"
+        REMOTE_PACKAGE_TAG=$(git ls-remote --tags origin "refs/tags/${PACKAGE_TAG}" \
+          | awk '{ print $2 }' \
+          | sed 's#refs/tags/##' \
+          | head -n 1 || true)
+        echo "Remote package Git tag for current version: ${REMOTE_PACKAGE_TAG:-none}"
 
-        if [ "v$VERSION" != "$LATEST_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
+        if [ "$PACKAGE_TAG" != "$REMOTE_PACKAGE_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
           echo "New version detected in ${dir}. Proceeding with auto-release."
         else
           echo "Version has not been bumped in ${dir}."
           echo "Printing code changes for manual review:"
-          CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
+          if [ -n "$REMOTE_PACKAGE_TAG" ]; then
+            CODE_CHANGES=$(git diff --stat "$REMOTE_PACKAGE_TAG" HEAD || true)
+          else
+            CODE_CHANGES="No previous package tag found for ${PUB_PACKAGE_NAME}."
+          fi
           echo "$CODE_CHANGES"
           cd "$ROOT_DIR" || exit 1
           continue
         fi
 
-        git config --global user.email "${_GIT_USER}"
+        git config --global user.email "${_GIT_EMAIL:-${_GIT_USER}}"
         git config --global user.name "${_GIT_USER}"
 
-        git remote set-url origin https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@gitlab.com/dartapps/apps/dartstream/dartstream.git
+        git remote set-url origin "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
 
-        echo "Creating Git tag: v$VERSION"
-        git tag "v$VERSION"
-        echo "Pushing Git tag v$VERSION to origin"
-        git push origin "v$VERSION"
+        echo "Creating Git tag: ${PACKAGE_TAG}"
+        git tag -f "$PACKAGE_TAG"
+        echo "Pushing Git tag ${PACKAGE_TAG} to origin"
+        git push origin "$PACKAGE_TAG"
 
-        RELEASE_NOTES=$(awk "/^## \[$VERSION\]/ {flag=1; next} /^## / {if(flag){exit}} flag" CHANGELOG.md)
+        RELEASE_NOTES=$(extract_release_notes "$VERSION")
         echo "Release notes extracted:"
         echo "$RELEASE_NOTES"
 
-        echo "Creating GitLab release for tag v$VERSION"
+        if [ -z "$RELEASE_NOTES" ]; then
+          echo "No release notes extracted for $VERSION in ${dir}, skipping GitLab release creation."
+          cd "$ROOT_DIR" || exit 1
+          continue
+        fi
+
+        echo "Creating GitLab release for tag ${PACKAGE_TAG}"
         curl --request POST \
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          --data "name=Release v$VERSION" \
-          --data "tag_name=v$VERSION" \
-          --data "ref=v$VERSION" \
+          --data "name=${PUB_PACKAGE_NAME} v$VERSION" \
+          --data "tag_name=${PACKAGE_TAG}" \
+          --data "ref=${PACKAGE_TAG}" \
           --data-urlencode "description=${RELEASE_NOTES}" \
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 
@@ -102,6 +199,6 @@ release:
       done
 
       echo "All directories processed."
-      '
+      EOF
   rules:
     - if: '$CI_COMMIT_BRANCH == "development"'

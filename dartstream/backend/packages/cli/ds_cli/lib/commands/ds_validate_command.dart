@@ -32,6 +32,11 @@ class DSValidateCommand extends Command {
         'providers',
         help: 'Validate provider compatibility',
         defaultsTo: true,
+      )
+      ..addFlag(
+        'prefix-check',
+        help: 'Validate manifest naming and compatibility fields',
+        negatable: false,
       );
   }
 
@@ -57,44 +62,42 @@ class DSValidateCommand extends Command {
     final levelFilter = argResults?['level'] as String;
     final strictMode = argResults?['strict'] as bool;
     final validateProviders = argResults?['providers'] as bool;
+    final prefixCheck = argResults?['prefix-check'] as bool;
 
-    print('🔍 Starting validation...\n');
+    print('Starting validation...');
 
-    // Validate project if specified
     if (projectName != null) {
       if (!await _validateProject(projectName)) {
         return;
       }
     }
 
-    // Validate extensions
     await _validateExtensions(levelFilter, strictMode);
 
-    // Validate providers
     if (validateProviders) {
       await _validateProviders();
     }
 
-    print('\n✅ Validation complete!');
+    if (prefixCheck) {
+      await _validateManifestAndPrefixStandards();
+    }
+
+    print('\nValidation complete.');
   }
 
   Future<bool> _validateProject(String projectName) async {
-    print('📁 Validating project: $projectName');
+    print('ðŸ“ Validating project: $projectName');
 
-    // Resolve the project directory using the dartstream root
     final dartstreamRoot = _findDartstreamRoot();
     final projectPath = _resolveProjectPath(projectName, dartstreamRoot);
-
     final projectDir = Directory(projectPath);
     if (!projectDir.existsSync()) {
-      print('❌ Project directory not found: $projectName');
+      print('Project directory not found: $projectName');
       return false;
     }
 
     final errors = <String>[];
-
-    // Check required files
-    final requiredFiles = ['pubspec.yaml', 'config.yaml', 'lib/main.dart'];
+    const requiredFiles = ['pubspec.yaml', 'config.yaml', 'lib/main.dart'];
 
     for (final file in requiredFiles) {
       final path = p.join(projectPath, file);
@@ -109,15 +112,11 @@ class DSValidateCommand extends Command {
       try {
         final content = File(configPath).readAsStringSync();
         final config = loadYaml(content) as Map;
-
-        // Validate vendor-provider compatibility
         final vendor = config['vendor'] as String?;
         final auth = config['auth'] as String?;
 
-        if (vendor != null && auth != null) {
-          if (!_isCompatible(vendor, auth)) {
-            errors.add('Incompatible configuration: $vendor with $auth');
-          }
+        if (vendor != null && auth != null && !_isCompatible(vendor, auth)) {
+          errors.add('Incompatible configuration: $vendor with $auth');
         }
       } catch (e) {
         errors.add('Invalid config.yaml: $e');
@@ -131,7 +130,7 @@ class DSValidateCommand extends Command {
         final content = File(pubspecPath).readAsStringSync();
         final pubspec = loadYaml(content) as Map;
 
-        // Check for required dependencies — accept any valid dartstream core package
+        // Check for required dependencies â€” accept any valid dartstream core package
         final deps = pubspec['dependencies'] as Map?;
         final validCoreDeps = [
           'ds_standard_engine',
@@ -151,14 +150,14 @@ class DSValidateCommand extends Command {
     }
 
     if (errors.isNotEmpty) {
-      print('\n❌ Project validation failed:');
-      for (final error in errors) {
-        print('   • $error');
+      print('Project validation failed:');
+      for (final e in errors) {
+        print('  - $e');
       }
       return false;
     }
 
-    print('   ✓ Project structure valid');
+    print('Project structure valid.');
     return true;
   }
 
@@ -187,13 +186,13 @@ class DSValidateCommand extends Command {
   }
 
   Future<void> _validateExtensions(String levelFilter, bool strictMode) async {
-    print('\n📦 Validating extensions...');
+    print('\nValidating extensions...');
 
     final extensionsDir = _findExtensionsDirectory();
     final registryFile = _findRegistryFile();
 
     if (!Directory(extensionsDir).existsSync()) {
-      print('❌ Extensions directory not found');
+      print('Extensions directory not found');
       return;
     }
 
@@ -205,7 +204,6 @@ class DSValidateCommand extends Command {
 
       registry.discoverExtensions();
 
-      // Filter by level
       var extensions = registry.extensions;
       if (levelFilter != 'all') {
         extensions = extensions.where((ext) {
@@ -225,31 +223,30 @@ class DSValidateCommand extends Command {
       var hasErrors = false;
       for (final extension in extensions) {
         final result = _validateExtension(extension, registry, strictMode);
-
         if (result.errors.isNotEmpty) {
-          print('\n   ✗ ${extension.name}:');
-          for (final error in result.errors) {
-            print('      • $error');
-          }
           hasErrors = true;
+          print('  FAIL ${extension.name}');
+          for (final err in result.errors) {
+            print('    - $err');
+          }
         } else {
-          print('   ✓ ${extension.name}');
+          print('  OK ${extension.name}');
         }
 
-        if (result.warnings.isNotEmpty && strictMode) {
+        if (strictMode && result.warnings.isNotEmpty) {
           for (final warning in result.warnings) {
-            print('      ⚠️  $warning');
+            print('    WARN $warning');
           }
         }
       }
 
       if (!hasErrors) {
-        print('\n✅ All extensions valid');
+        print('All extensions valid.');
       } else {
-        print('\n⚠️  Some extensions have errors');
+        print('Some extensions have errors.');
       }
     } catch (e) {
-      print('❌ Error validating extensions: $e');
+      print('Error validating extensions: $e');
     }
   }
 
@@ -260,7 +257,6 @@ class DSValidateCommand extends Command {
   ) {
     final result = ValidationResult();
 
-    // Basic validation
     if (extension.name.isEmpty) {
       result.addError('Missing name');
     }
@@ -269,19 +265,10 @@ class DSValidateCommand extends Command {
       result.addError('Invalid version format: ${extension.version}');
     }
 
-    // Provider-specific validation
-    if (extension.name.contains('auth_provider')) {
-      _validateAuthProvider(extension, result);
-    } else if (extension.name.contains('database')) {
-      _validateDatabaseProvider(extension, result);
-    }
-
-    // Dependency validation
     if (!registry.validateDependencies(extension)) {
       result.addError('Dependency validation failed');
     }
 
-    // Entry point validation
     final entryPath = p.join(
       registry.extensionsDirectory,
       extension.entryPoint,
@@ -295,36 +282,6 @@ class DSValidateCommand extends Command {
     return result;
   }
 
-  void _validateAuthProvider(
-    ExtensionManifest extension,
-    ValidationResult result,
-  ) {
-    // Check for required auth provider structure
-    final requiredFiles = [
-      'ds_error_mapper.dart',
-      'ds_session_manager.dart',
-      'ds_token_manager.dart',
-    ];
-
-    final basePath = p.dirname(extension.entryPoint);
-    for (final file in requiredFiles) {
-      final filePath = p.join(basePath, 'src', file);
-      if (!File(filePath).existsSync()) {
-        result.addWarning('Missing standard auth file: src/$file');
-      }
-    }
-  }
-
-  void _validateDatabaseProvider(
-    ExtensionManifest extension,
-    ValidationResult result,
-  ) {
-    // Database providers should have specific methods
-    if (!extension.dependencies.any((dep) => dep.contains('Core'))) {
-      result.addWarning('Database providers should depend on Core');
-    }
-  }
-
   void _validateProviderCode(
     String filePath,
     ExtensionManifest extension,
@@ -332,8 +289,12 @@ class DSValidateCommand extends Command {
   ) {
     try {
       final content = File(filePath).readAsStringSync();
-
-      // Check for proper class structure
+      if (!content.contains('///')) {
+        result.addWarning('Missing documentation comments');
+      }
+      if (!content.contains('try') && !content.contains('catch')) {
+        result.addWarning('No error handling found');
+      }
       if (extension.name.contains('auth_provider')) {
         if (!content.contains('extends DSAuthProvider') &&
             !content.contains('implements DSAuthProvider')) {
@@ -342,23 +303,13 @@ class DSValidateCommand extends Command {
           );
         }
       }
-
-      // Check for documentation
-      if (!content.contains('///')) {
-        result.addWarning('Missing documentation comments');
-      }
-
-      // Check for proper error handling
-      if (!content.contains('try') && !content.contains('catch')) {
-        result.addWarning('No error handling found');
-      }
     } catch (e) {
       result.addError('Failed to analyze code: $e');
     }
   }
 
   Future<void> _validateProviders() async {
-    print('\n🔌 Validating providers...');
+    print('\nðŸ”Œ Validating providers...');
 
     // Use dartstream root for reliable path resolution
     final dartstreamRoot = _findDartstreamRoot();
@@ -373,7 +324,7 @@ class DSValidateCommand extends Command {
     );
 
     if (!Directory(providersPath).existsSync()) {
-      print('❌ Providers directory not found');
+      print('Providers directory not found');
       return;
     }
 
@@ -383,33 +334,88 @@ class DSValidateCommand extends Command {
         .map((dir) => p.basename(dir.path))
         .toList();
 
-    print('   Found ${providers.length} auth providers:');
+    print('Found ${providers.length} auth providers:');
 
     for (final provider in providers) {
       final pubspecPath = p.join(providersPath, provider, 'pubspec.yaml');
+      if (!File(pubspecPath).existsSync()) {
+        print('  FAIL $provider: Missing pubspec.yaml');
+        continue;
+      }
 
-      if (File(pubspecPath).existsSync()) {
-        try {
-          final content = File(pubspecPath).readAsStringSync();
-          final pubspec = loadYaml(content) as Map;
-          final version = pubspec['version'] as String?;
-
-          if (version != null && version.contains('pre')) {
-            print('   ⚠️  $provider: $version (pre-release)');
-          } else {
-            print('   ✓ $provider: $version');
-          }
-        } catch (e) {
-          print('   ✗ $provider: Invalid pubspec');
+      try {
+        final pubspec = loadYaml(File(pubspecPath).readAsStringSync()) as Map;
+        final version = pubspec['version'] as String? ?? 'unknown';
+        if (version.contains('pre')) {
+          print('  WARN $provider: $version (pre-release)');
+        } else {
+          print('  OK $provider: $version');
         }
-      } else {
-        print('   ✗ $provider: Missing pubspec.yaml');
+      } catch (_) {
+        print('  FAIL $provider: Invalid pubspec');
       }
     }
   }
 
+  Future<void> _validateManifestAndPrefixStandards() async {
+    print('\nRunning prefix and manifest checks...');
+
+    final root = Directory.current;
+    final manifests = <File>[];
+
+    await for (final entity in root.list(recursive: true, followLinks: false)) {
+      if (entity is File && p.basename(entity.path) == 'manifest.yaml') {
+        manifests.add(entity);
+      }
+    }
+
+    var failures = 0;
+
+    for (final manifestFile in manifests) {
+      final raw = loadYaml(await manifestFile.readAsString());
+      if (raw is! YamlMap) continue;
+
+      final name = (raw['name'] as String?) ?? '';
+      final type = (raw['type'] as String?) ?? '';
+      final hasOptional = raw.containsKey('optional');
+      final hasCompatible =
+          raw.containsKey('compatible') || raw.containsKey('compatible_with');
+
+      if (!name.startsWith('ds_') &&
+          !name.startsWith('ds_plugin_') &&
+          !name.startsWith('custom_')) {
+        print(
+          '  FAIL ${manifestFile.path}: name prefix does not match standards',
+        );
+        failures++;
+      }
+
+      if (type.isEmpty) {
+        print('  FAIL ${manifestFile.path}: missing type');
+        failures++;
+      }
+
+      if (!hasOptional) {
+        print('  FAIL ${manifestFile.path}: missing optional');
+        failures++;
+      }
+
+      if (!hasCompatible) {
+        print(
+          '  FAIL ${manifestFile.path}: missing compatible/compatible_with',
+        );
+        failures++;
+      }
+    }
+
+    if (failures == 0) {
+      print('Prefix and manifest checks passed.');
+    } else {
+      print('Prefix and manifest checks found $failures issue(s).');
+    }
+  }
+
   bool _isValidVersion(String version) {
-    // Accept semantic versions and pre-release versions
     final pattern = RegExp(r'^\d+\.\d+\.\d+(-[\w\.]+)?(\+[\w\.]+)?$');
     return pattern.hasMatch(version);
   }
@@ -431,6 +437,7 @@ class DSValidateCommand extends Command {
     final dartstreamRoot = _findDartstreamRoot();
 
     final paths = [
+      p.join('packages'),
       p.join('packages', 'standard', 'standard_extensions'),
       p.join(
         '..',

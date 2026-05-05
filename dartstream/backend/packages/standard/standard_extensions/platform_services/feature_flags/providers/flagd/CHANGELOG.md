@@ -1,5 +1,6 @@
-## 0.0.1-pre+1
+# Changelog
 
+## [0.0.1-pre+1]
 ### Added
 - Initial release.
 - Implemented `DSFeatureFlagProvider` integration for flagd.

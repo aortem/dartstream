@@ -7,6 +7,8 @@ repository: https://github.com/aortem/dartstream
 environment:
   sdk: ^3.11.0
 
+resolution: workspace
+
 dependencies:
   ds_shelf:
     path: ../ds_shelf

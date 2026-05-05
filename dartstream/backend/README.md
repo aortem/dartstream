@@ -1,130 +1,69 @@
-# ds_dartstream
+# DartStream Backend
 
-A meta-package that bundles the entire DartStream framework - tooling, core engine, authentication, persistence, feature flags, reactive dataflow, and more - so you can get up and running with a single dependency.
+DartStream backend is the open-source framework layer for Dart-native backend
+services, frontend integrations, provider contracts, and extension packages.
 
----
-
-## Quick Start
-
-1. Add to your project
+## Install
 
 ```bash
 dart pub add ds_dartstream
 ```
 
-2. Import the umbrella library
-
 ```dart
 import 'package:ds_dartstream/ds_dartstream.dart';
 ```
 
-3. Initialize the modules you need
+## What Is Included
 
-```dart
-// 1) Initialize core tooling
-final tooling = DSTooling();
+| Category | Packages |
+| --- | --- |
+| Core tooling and CLI | `ds_cli`, `ds_cli_util` |
+| Standard engine | `ds_dartstream_standard_engine`, `ds_dartstream_standard_engine_extension` |
+| Authentication | `ds_auth_base`, Auth0, Cognito, EntraID, Firebase, Fingerprint, Magic, Okta, Ping, Stytch, Transmit providers |
+| Persistence | `ds_database_base`, `ds_orm_base`, database providers, logging providers, storage providers |
+| Feature flags | `ds_feature_flags_base`, `ds_intellitoggle_provider`, `ds_flagd_provider` |
+| AI extensions | `ds_ai_base` |
+| Reactive dataflow | message broker, WebSocket, events, lifecycle, and notification base packages |
 
-// 2) Pick and configure an auth provider
-DSAuthManager.registerProvider(
-  'cognito',
-  DSCognitoAuthProvider(),
-  DSAuthProviderMetadata(...),
-);
-final auth = DSAuthManager('cognito');
-await auth.initialize({ /* config */ });
+## Framework Boundaries
 
-// 3) Use storage or logging
-DSStorageManager.registerProvider(
-  'gcs',
-  DSGcsStorageProvider(),
-  DSStorageProviderMetadata(type: 'gcs', region: 'us-central1'),
-);
-final storage = DSStorageManager('gcs');
-await storage.uploadFile('path/to/object', dataBytes);
+DartStream open source owns the framework contracts and developer tooling.
+DartStream SaaS is a separate managed Aortem product that may use the standard
+engine as a base, but SaaS-only control-plane, tenant, billing, credential, and
+operations concerns are outside this repository.
 
-// 4) Use message brokers (Pub/Sub)
-registerGcpPubSubMessageBroker({
-  'name': 'pubsub',
-  'projectId': 'my-gcp-project',
-  'serviceAccountPath': '/path/to/service-account.json',
-});
-final broker = DSMessageBrokerManager('pubsub');
-await broker.initialize({
-  'projectId': 'my-gcp-project',
-  'serviceAccountPath': '/path/to/service-account.json',
-});
-await broker.publish('topic-name', 'hello world');
-```
+## Feature Flags
 
----
+Feature flagging is provider-neutral through `ds_feature_flags_base`.
+IntelliToggle is the official Aortem provider. `flagd` is the only other
+approved provider lane in this open-source framework.
 
-## What's Included
+## AI Extensions
 
-| Category               | Packages |
-| ---------------------- | -------- |
-| Core Tooling & CLI     | `ds_tooling` (workspace & bootstrap), `ds_cli` |
-| Standard Engine        | `ds_dartstream_standard_engine` |
-| Authentication         | `ds_auth_base`, `ds_auth0_auth_provider`, `ds_cognito_auth_provider`, `ds_firebase_auth_provider`, `ds_magic_auth_provider`, `ds_okta_auth_provider`, `ds_stytch_auth_provider`, `ds_transmit_auth_provider`, `ds_fingerprint_auth_provider`, `ds_entraid_auth_provider`, `ping_identity_dart_auth_sdk` |
-| Persistence            | `ds_database_base`, `ds_postgres_database`, `ds_mongo_database`, `ds_firebase_database`, `ds_logging_base`, `ds_otlp_logging_provider`, `ds_sentry_logging_provider`, `ds_aws_storage_provider`, `ds_gcp_storage_provider` |
-| Feature Flags          | `ds_feature_flags_base`, `ds_flagd_provider`, `ds_intellitoggle_provider` |
-| Reactive Dataflow      | `ds_message_broker_base`, `ds_gcp_pubsub_message_broker_provider`, `ds_websocket_base`, `ds_socket_io_websocket_provider` |
-| AI Modules (Preview)   | Semantic-release, AI-driven test generation, docs-sync, CLI assistant (coming soon!) |
+AI support starts with `ds_ai_base`. DartCodeAI can be implemented as an
+official Aortem provider, but the open-source contract stays provider-neutral so
+developers can integrate other current AI providers where appropriate.
 
----
+## ORM Integration
 
-## Modules and Patterns
+ORM support starts with `ds_orm_base`. DartStream should integrate current,
+actively maintained Dart ORM/data-mapping packages through adapters rather than
+owning a full ORM implementation. Server-side frameworks that compete with
+DartStream should not be documented as preferred ORM integrations.
 
-### 1. Core Tooling
+## Documentation
 
-- Workspace orchestration (path linking, bootstrap)
-- Versioning and changelog helpers
-- Pub publish workflows
+See:
 
-### 2. Standard Engine
+- `../docs/components/dartstream/modules/ROOT/pages/open-source-boundary.adoc`
+- `../docs/components/dartstream/modules/ROOT/pages/package-maturity.adoc`
+- `../docs/components/dartstream/modules/ROOT/pages/frontend-support.adoc`
+- `../docs/components/dartstream/modules/ROOT/pages/feature-flags.adoc`
+- `../docs/components/dartstream/modules/ROOT/pages/ai-extensions.adoc`
+- `../docs/components/dartstream/modules/ROOT/pages/orm-integration.adoc`
 
-- Common abstractions, utilities, and extensions for pure Dart workloads.
+## Support
 
-### 3. Authentication
+Aortem provides open-source support for DartStream. Visit:
 
-- Base interfaces in `ds_auth_base`
-- One package per provider (Auth0, Cognito, Firebase, etc.)
-- Manager for runtime selection and initialization
-
-### 4. Persistence
-
-- Database: base interfaces plus Postgres, Mongo, and Firestore implementations
-- Storage: base interfaces plus AWS S3 and GCP Storage providers
-- Logging: base interfaces plus OTLP and Sentry providers
-
-### 5. Feature Flags
-
-- Local and remote flag evaluation
-- Integrations with flagd and IntelliToggle
-
-### 6. Reactive Dataflow
-
-- Events, Streams, WebSockets, and Message Brokers abstractions
-- Plug-and-play provider implementations
-
----
-
-## Documentation and Examples
-
-- Full API reference: https://dartstream.docs.io
-- GitHub monorepo: https://github.com/aortem/dartstream
-- Sample apps: /examples/ directory in the repo
-
----
-
-## Licensing
-
-- BSD-3 for all client-side packages
-- ELv2 for service integrations
-- See LICENSE for full details.
-
----
-
-## Acknowledgements
-
-Built and maintained by Aortem Inc. Want to contribute or report an issue?
-Submit on GitHub: https://github.com/aortem/dartstream/issues
+https://aortem.io/support

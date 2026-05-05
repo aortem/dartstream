@@ -1,0 +1,32 @@
+= Frontend Support
+:page-layout: default
+
+DartStream should support multiple frontends through one stable backend and SDK
+contract. The goal is not to maintain a different framework for every frontend.
+
+== Support Tiers
+
+[cols="1,1,2",options="header"]
+|===
+| Tier
+| Frontends
+| Meaning
+
+| First-class
+| Dart, Flutter mobile, Flutter web, Flutter desktop, Flame
+| These are the primary developer surfaces for DartStream.
+
+| Supported reference
+| Nuxt, generated Dart clients, generated TypeScript clients
+| These prove that DartStream can serve non-Flutter frontends through stable API contracts.
+
+| Experimental reference
+| Vue, Svelte, Android Compose, other frontend examples
+| These may exist as examples, but should not be presented as production-ready until QA and docs are complete.
+|===
+
+== Principle
+
+The invariant is the DartStream API and SDK contract. Frontend examples should
+demonstrate that contract rather than duplicating framework logic in each UI
+stack.

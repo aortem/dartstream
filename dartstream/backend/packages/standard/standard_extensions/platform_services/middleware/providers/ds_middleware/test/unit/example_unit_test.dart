@@ -1,6 +1,5 @@
 import 'package:test/test.dart';
 import 'package:mocktail/mocktail.dart' as mt;
-import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 
 abstract class DatabaseService {
   Future<Map<String, dynamic>?> getUser(String id);

@@ -1,5 +1,5 @@
 name: ds_transmit_auth_provider
-description: Transmit Authentication Provider For Dartstream.
+description: Transmit authentication provider for DartStream.
 version: 0.0.3
 repository: https://github.com/aortem/dartstream
 

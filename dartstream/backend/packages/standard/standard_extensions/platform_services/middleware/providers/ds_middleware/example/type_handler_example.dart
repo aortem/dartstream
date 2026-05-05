@@ -55,11 +55,11 @@ void main() async {
   final incomingBody = {'name': 'Charlie', 'age': 28};
 
   final request = DsCustomMiddleWareRequest(
-    'POST',
-    Uri.parse('/users'),
-    {'Content-Type': 'application/json'},
-    incomingBody,
-    {},
+    method: 'POST',
+    uri: Uri.parse('/users'),
+    headers: {'Content-Type': 'application/json'},
+    body: incomingBody,
+    queryParams: const {},
     routeParams: {},
   );
 

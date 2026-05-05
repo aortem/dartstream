@@ -8,23 +8,23 @@ A pure-Dart library containing the core logic, commands, and utilities used by t
 
 ## Key Components
 
-- **`createDartStreamCommandRunner()`**  
-  Returns a `CommandRunner` wired with all subcommands.  
+- **`createDartStreamCommandRunner()`**
+  Returns a `CommandRunner` wired with all subcommands.
 
-- **`SyncManifestCommand`**  
+- **`SyncManifestCommand`**
   Reads your workspace manifest (YAML/JSON), validates subpackage paths, and writes an updated manifest.
 
-- **`GenerateRegistryCommand`**  
-  Consumes the synced manifest and emits optional bundle/allowlist registry files (e.g. `auth_registry.dart`).  
+- **`GenerateRegistryCommand`**
+  Consumes the synced manifest and emits optional bundle/allowlist registry files (e.g. `auth_registry.dart`).
   Not required for standard per-provider manifest discovery.
 
-- **`ReleaseCommand`**, **`DocsSyncCommand`**, **`QaTestCommand`**, etc.  
+- **`ReleaseCommand`**, **`DocsSyncCommand`**, **`QaTestCommand`**, etc.
   Other commands for semantic releases, documentation pipelines, and AI‐powered QA testing.
 
-- **Shared Utilities**  
-  - Argument and option parsing helpers  
-  - File I/O and path resolution  
-  - Logging and colored console output  
+- **Shared Utilities**
+  - Argument and option parsing helpers
+  - File I/O and path resolution
+  - Logging and colored console output
   - Common data models (manifests, registry entries)
 
 ---
@@ -128,6 +128,4 @@ script:
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
-
-
+All DartStream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *DartStream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.

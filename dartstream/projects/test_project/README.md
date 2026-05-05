@@ -1,6 +1,6 @@
 # test_project
 
-A Dartstream project built with the Standard Engine.
+A DartStream project built with the Standard Engine.
 
 ## Getting Started
 
@@ -11,7 +11,7 @@ A Dartstream project built with the Standard Engine.
 
 2. Configure your project:
    ```bash
-   dart run dartstream configure
+   dart run DartStream configure
    ```
 
 3. Run the application:
@@ -21,8 +21,8 @@ A Dartstream project built with the Standard Engine.
 
 ## Framework
 
-This project uses **flutter_web** with Dartstream Standard Engine.
+This project uses **flutter_web** with DartStream Standard Engine.
 
 ## Version
 
-Running on Dartstream Stable version.
+Running on DartStream Stable version.

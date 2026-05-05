@@ -1,4 +1,4 @@
-import 'package:ds_custom_middleware/app/models/ds_custom_middleware_model.dart';
+import 'package:ds_middleware/app/models/ds_custom_middleware_model.dart';
 
 class DsAuthorization {
   final Map<String, List<String>> _rolePermissions = {};

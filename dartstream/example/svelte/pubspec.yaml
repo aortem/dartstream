@@ -1,7 +1,7 @@
-#This pubspec file imports is used for any dependencies for standard Dartstream features.
+#This pubspec file imports is used for any dependencies for standard DartStream features.
 
 name: ds_svelte_framework_base
-description: Packages for our svelte framework - maintained by the Aortem and Dart team.
+description: Packages for our svelte framework - maintained by Aortem.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 
@@ -11,6 +11,5 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-# STANDARD PACKAGES - Built By The Dart Team
+# STANDARD PACKAGES - Maintained by Aortem
   ds_standard_features: ^0.1.6
-
