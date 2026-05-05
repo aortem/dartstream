@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.0.2]
+## [0.0.2] - 2026-05-05
 ### Added
 - Added provider-neutral `ds_ai_base` contracts for AI providers, requests, responses, and manager orchestration.
 - Added provider-neutral `ds_orm_base` contracts for ORM adapters, repositories, queries, and schema metadata.

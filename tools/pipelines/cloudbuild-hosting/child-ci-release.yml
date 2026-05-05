@@ -14,11 +14,29 @@ release:
 
       extract_changelog_version() {
         awk '
-          match($0, /^## \[([^]]+)\]/, m) { print m[1]; exit }
-          match($0, /^## \*\*([^*]+)\*\*/, m) { print m[1]; exit }
-          match($0, /^## ([^ ]+)/, m) { print m[1]; exit }
-          match($0, /^# \*\*([^*]+)\*\*/, m) { print m[1]; exit }
-          match($0, /^# ([^ ]+)/, m) { print m[1]; exit }
+          /^## \[[^]]+\]/ {
+            line=$0
+            sub(/^## \[/, "", line)
+            sub(/\].*$/, "", line)
+            print line
+            exit
+          }
+          /^## \*\*[^*]+\*\*/ {
+            line=$0
+            sub(/^## \*\*/, "", line)
+            sub(/\*\*.*/, "", line)
+            print line
+            exit
+          }
+          /^## [^ ]+/ { print $2; exit }
+          /^# \*\*[^*]+\*\*/ {
+            line=$0
+            sub(/^# \*\*/, "", line)
+            sub(/\*\*.*/, "", line)
+            print line
+            exit
+          }
+          /^# [^ ]+/ { print $2; exit }
         ' CHANGELOG.md
       }
 
