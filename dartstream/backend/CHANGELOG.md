@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.0.4]
+### Fixed
+- Removed the GCP storage provider from the hosted umbrella dependency set so `ds_dartstream` can resolve alongside the GCP Pub/Sub message broker until their `googleapis` ranges are aligned.
+
 ## [0.0.3]
 ### Changed
 - Prepared the `ds_dartstream` umbrella package for the next public release.
