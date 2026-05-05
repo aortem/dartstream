@@ -6,6 +6,27 @@
 This page summarizes client-facing features, improvements, and fixes across DartStream releases.
 '''
 
+== v0.0.2
+
+=== Overview
+Framework boundary and extension contract release for the DartStream OSS backend meta-package.
+
+=== Highlights
+* Added provider-neutral AI extension contracts for AI providers, requests, responses, and manager orchestration.
+* Added provider-neutral ORM extension contracts for adapters, repositories, queries, and schema metadata.
+* Added the backend `ds_dartstream` umbrella library export for framework consumers.
+* Added documentation for OSS/SaaS boundaries, package maturity, frontend support, feature flags, AI extensions, and ORM integration.
+
+=== Improvements
+* Clarified that DartStream SaaS is a separate product built from the OSS framework base.
+* Documented IntelliToggle and flagd as the supported feature flag lanes.
+* Documented Drift as the first ORM adapter candidate while keeping concrete adapters out of the base package.
+* Made Aortem open-source support explicit in the framework documentation.
+
+=== Fixes
+* Removed stale duplicate test and middleware artifact files from the touched framework areas.
+* Tightened touched middleware CORS/context behavior covered by focused tests.
+
 == v0.0.1
 
 === Overview

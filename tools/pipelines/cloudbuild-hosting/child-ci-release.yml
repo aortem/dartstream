@@ -41,6 +41,28 @@ release:
 
       ROOT_DIR=$(pwd)
 
+      if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
+        git fetch --prune --unshallow
+      else
+        git fetch --prune
+      fi
+
+      git fetch --tags || echo "tag fetch failed, but continuing"
+
+      BASE_SHA="${CI_COMMIT_BEFORE_SHA:-}"
+      if [ -z "$BASE_SHA" ] || echo "$BASE_SHA" | grep -Eq '^0+$' || ! git cat-file -e "${BASE_SHA}^{commit}" 2>/dev/null; then
+        BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "")
+      fi
+
+      if [ -n "$BASE_SHA" ]; then
+        CHANGED_CHANGELOGS=$(git diff --name-only "$BASE_SHA" HEAD -- 'CHANGELOG.md' '*/CHANGELOG.md' || true)
+      else
+        CHANGED_CHANGELOGS=""
+      fi
+
+      echo "Changed package changelogs:"
+      echo "${CHANGED_CHANGELOGS:-none}"
+
       for dir in $PROJECT_DIRS; do
         echo "=========================================="
         echo "Processing directory: ${dir}"
@@ -54,13 +76,18 @@ release:
         echo "Current working directory: $(pwd)"
         ls -la
 
-        if [ "$(git rev-parse --is-shallow-repository 2>/dev/null)" = "true" ]; then
-          git fetch --prune --unshallow
-        else
-          git fetch --prune
+        REL_CHANGELOG="${dir#./}/CHANGELOG.md"
+        if ! printf '%s\n' "$CHANGED_CHANGELOGS" | grep -Fxq "$REL_CHANGELOG"; then
+          echo "CHANGELOG.md was not changed for ${dir}, skipping release."
+          cd "$ROOT_DIR" || exit 1
+          continue
         fi
 
-        git fetch --tags || echo "tag fetch failed, but continuing"
+        if grep -Eq "^publish_to:[[:space:]]*['\"]?none['\"]?([[:space:]#]|$)" pubspec.yaml; then
+          echo "Package is marked publish_to: none in ${dir}, skipping release."
+          cd "$ROOT_DIR" || exit 1
+          continue
+        fi
 
         VERSION=$(grep '^version:' pubspec.yaml | sed 's/version: //' | tr -d '[:space:]')
         echo "Version from pubspec.yaml: $VERSION"
@@ -81,6 +108,9 @@ release:
         fi
 
         PUB_PACKAGE_NAME=$(grep '^name:' pubspec.yaml | sed 's/name: //')
+        PACKAGE_TAG="${PUB_PACKAGE_NAME}-v${VERSION}"
+        echo "Package release tag: ${PACKAGE_TAG}"
+
         PUB_API_URL="https://pub.dev/api/packages/${PUB_PACKAGE_NAME}"
         PUB_RESPONSE=$(curl --silent --fail "$PUB_API_URL" || echo "")
         if echo "$PUB_RESPONSE" | jq empty 2>/dev/null; then
@@ -95,15 +125,19 @@ release:
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
         echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
-        LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
-        echo "Latest Git tag: $LATEST_TAG"
+        LATEST_PACKAGE_TAG=$(git tag --list "${PUB_PACKAGE_NAME}-v*" --sort=-v:refname | head -n 1 || true)
+        echo "Latest package Git tag: ${LATEST_PACKAGE_TAG:-none}"
 
-        if [ "v$VERSION" != "$LATEST_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
+        if [ "$PACKAGE_TAG" != "$LATEST_PACKAGE_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
           echo "New version detected in ${dir}. Proceeding with auto-release."
         else
           echo "Version has not been bumped in ${dir}."
           echo "Printing code changes for manual review:"
-          CODE_CHANGES=$(git diff --stat "$LATEST_TAG" HEAD)
+          if [ -n "$LATEST_PACKAGE_TAG" ]; then
+            CODE_CHANGES=$(git diff --stat "$LATEST_PACKAGE_TAG" HEAD || true)
+          else
+            CODE_CHANGES="No previous package tag found for ${PUB_PACKAGE_NAME}."
+          fi
           echo "$CODE_CHANGES"
           cd "$ROOT_DIR" || exit 1
           continue
@@ -114,10 +148,10 @@ release:
 
         git remote set-url origin "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
 
-        echo "Creating Git tag: v$VERSION"
-        git tag "v$VERSION"
-        echo "Pushing Git tag v$VERSION to origin"
-        git push origin "v$VERSION"
+        echo "Creating Git tag: ${PACKAGE_TAG}"
+        git tag "$PACKAGE_TAG"
+        echo "Pushing Git tag ${PACKAGE_TAG} to origin"
+        git push origin "$PACKAGE_TAG"
 
         RELEASE_NOTES=$(extract_release_notes "$VERSION")
         echo "Release notes extracted:"
@@ -129,12 +163,12 @@ release:
           continue
         fi
 
-        echo "Creating GitLab release for tag v$VERSION"
+        echo "Creating GitLab release for tag ${PACKAGE_TAG}"
         curl --request POST \
           --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          --data "name=Release v$VERSION" \
-          --data "tag_name=v$VERSION" \
-          --data "ref=v$VERSION" \
+          --data "name=${PUB_PACKAGE_NAME} v$VERSION" \
+          --data "tag_name=${PACKAGE_TAG}" \
+          --data "ref=${PACKAGE_TAG}" \
           --data-urlencode "description=${RELEASE_NOTES}" \
           "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases"
 

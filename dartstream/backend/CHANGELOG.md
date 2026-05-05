@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.2]
+### Added
+- Added provider-neutral `ds_ai_base` contracts for AI providers, requests, responses, and manager orchestration.
+- Added provider-neutral `ds_orm_base` contracts for ORM adapters, repositories, queries, and schema metadata.
+- Added the backend `ds_dartstream` umbrella library export for standard engine, auth, persistence, feature flags, middleware, AI, and ORM surfaces.
+- Added Open Source Boundary, Package Maturity, Frontend Support, Feature Flags, AI Extensions, and ORM Integration documentation.
+
+### Changed
+- Clarified the OSS framework boundary from DartStream SaaS while keeping Aortem open-source support explicit.
+- Limited feature flag guidance to IntelliToggle and flagd as supported provider lanes.
+- Documented Drift as the first ORM adapter candidate without adding a concrete ORM dependency yet.
+
+### Fixed
+- Removed a duplicate Magic auth test outside the package-local test tree.
+- Removed a stale middleware conflict artifact and tightened touched middleware CORS/context behavior covered by focused tests.
+
 ## [0.0.1]
 ### Added
 - First main OSS release of the backend meta-package and workspace wiring.

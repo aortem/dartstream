@@ -18,13 +18,13 @@ tenant, and production operations are outside this open-source repository.
 dart pub add ds_dartstream
 ```
 
-2. Import the umbrella library.
+1. Import the umbrella library.
 
 ```dart
 import 'package:ds_dartstream/ds_dartstream.dart';
 ```
 
-3. Initialize the modules you need.
+1. Initialize the modules you need.
 
 ```dart
 // 1) Initialize core tooling
