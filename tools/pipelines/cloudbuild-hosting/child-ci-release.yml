@@ -140,7 +140,9 @@ release:
         echo "Latest version on pub.dev for package ${PUB_PACKAGE_NAME}: $PUB_DEV_LATEST"
 
         LATEST_RELEASE=$(curl --silent --header "PRIVATE-TOKEN: ${GITLAB_TOKEN}" \
-          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" | jq -r '.[0].tag_name')
+          "https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/releases" \
+          | jq -r 'if type == "array" then (.[0].tag_name // "none") else "none" end' \
+          2>/dev/null || echo "none")
         echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
         LATEST_PACKAGE_TAG=$(git tag --list "${PUB_PACKAGE_NAME}-v*" --sort=-v:refname | head -n 1 || true)

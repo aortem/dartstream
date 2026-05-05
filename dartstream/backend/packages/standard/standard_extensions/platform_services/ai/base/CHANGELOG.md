@@ -9,3 +9,4 @@
 ### Changed
 
 - Normalized changelog metadata for package-specific release automation.
+- Kept the initial release entry compatible with the package release job.

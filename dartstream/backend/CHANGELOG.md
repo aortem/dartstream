@@ -16,6 +16,7 @@
 - Removed a duplicate Magic auth test outside the package-local test tree.
 - Removed a stale middleware conflict artifact and tightened touched middleware CORS/context behavior covered by focused tests.
 - Hardened package-specific release automation so development pushes only release packages with changed changelogs.
+- Made GitLab release lookups tolerant of non-list API responses.
 
 ## [0.0.1]
 ### Added
