@@ -2,13 +2,55 @@
 
 # Env
 **/*.env
+**/.env.*
+!.env.example
 
 # Ignore all IDE settings
 **/.idea/
 **/.vscode/
 
-# Ignore Dart clocal build tools
+# Ignore Dart local build tools
 **/.dart_tool/
 **/.ds_entraid_sessions/
 **/pubspec.lock
 **/tmp/pana_*
+**/*.exe
+**/*.dll
+**/*.pdb
+**/dart.bat
+
+# Generated analysis and local release artifacts
+**/analysis_outputs/
+**/analysis_report.txt
+**/error_log.txt
+**/info_issues.txt
+**/warning_issues.txt
+**/pub_outdated.txt
+**/summary.txt
+**/collaboration.txt
+**/full_analysis.txt
+**/dev-vs-main-changes.patch
+
+# Build and coverage outputs
+**/build/
+**/coverage/
+**/.pub-cache/
+
+# Node and frontend build outputs
+**/node_modules/
+**/.nuxt/
+**/.output/
+**/dist/
+**/.vite/
+**/.cache/
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+
+# Firebase local/deployment state
+**/.firebase/
+**/firebase-debug.log*
+
+# OS files
+**/.DS_Store
+**/Thumbs.db

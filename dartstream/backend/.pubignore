@@ -1,0 +1,40 @@
+# Local analysis and release review artifacts
+analysis_outputs/
+**/analysis_report.txt
+**/error_log.txt
+**/info_issues.txt
+**/warning_issues.txt
+**/pub_outdated.txt
+**/summary.txt
+**/collaboration.txt
+**/full_analysis.txt
+**/dev-vs-main-changes.patch
+
+# Local build outputs
+**/.dart_tool/
+**/pubspec.lock
+**/build/
+**/coverage/
+**/tmp/pana_*
+**/*.exe
+**/*.dll
+**/*.pdb
+**/dart.bat
+
+# Example frontend dependency/build outputs
+**/node_modules/
+**/.nuxt/
+**/.output/
+**/dist/
+**/.vite/
+**/.cache/
+**/package-lock.json
+
+# Firebase deployment state is not part of the SDK package.
+**/.firebase/
+**/.firebaserc
+**/firebase-debug.log*
+
+# OS files
+**/.DS_Store
+**/Thumbs.db
