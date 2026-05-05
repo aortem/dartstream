@@ -145,16 +145,19 @@ release:
           2>/dev/null || echo "none")
         echo "Latest GitLab release tag: ${LATEST_RELEASE}"
 
-        LATEST_PACKAGE_TAG=$(git tag --list "${PUB_PACKAGE_NAME}-v*" --sort=-v:refname | head -n 1 || true)
-        echo "Latest package Git tag: ${LATEST_PACKAGE_TAG:-none}"
+        REMOTE_PACKAGE_TAG=$(git ls-remote --tags origin "refs/tags/${PACKAGE_TAG}" \
+          | awk '{ print $2 }' \
+          | sed 's#refs/tags/##' \
+          | head -n 1 || true)
+        echo "Remote package Git tag for current version: ${REMOTE_PACKAGE_TAG:-none}"
 
-        if [ "$PACKAGE_TAG" != "$LATEST_PACKAGE_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
+        if [ "$PACKAGE_TAG" != "$REMOTE_PACKAGE_TAG" ] && { [ "$PUB_DEV_LATEST" = "none" ] || [ "$VERSION" != "$PUB_DEV_LATEST" ]; }; then
           echo "New version detected in ${dir}. Proceeding with auto-release."
         else
           echo "Version has not been bumped in ${dir}."
           echo "Printing code changes for manual review:"
-          if [ -n "$LATEST_PACKAGE_TAG" ]; then
-            CODE_CHANGES=$(git diff --stat "$LATEST_PACKAGE_TAG" HEAD || true)
+          if [ -n "$REMOTE_PACKAGE_TAG" ]; then
+            CODE_CHANGES=$(git diff --stat "$REMOTE_PACKAGE_TAG" HEAD || true)
           else
             CODE_CHANGES="No previous package tag found for ${PUB_PACKAGE_NAME}."
           fi
@@ -169,7 +172,7 @@ release:
         git remote set-url origin "https://${GITLAB_USERNAME}:${GITLAB_TOKEN}@${CI_SERVER_HOST}/${CI_PROJECT_PATH}.git"
 
         echo "Creating Git tag: ${PACKAGE_TAG}"
-        git tag "$PACKAGE_TAG"
+        git tag -f "$PACKAGE_TAG"
         echo "Pushing Git tag ${PACKAGE_TAG} to origin"
         git push origin "$PACKAGE_TAG"
 
