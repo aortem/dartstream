@@ -5,3 +5,7 @@
 ### Added
 
 - Initial AI provider, workflow, request, response, and manager contracts.
+
+### Changed
+
+- Normalized changelog metadata for package-specific release automation.

@@ -5,3 +5,7 @@
 ### Added
 
 - Initial ORM adapter, repository, query, migration, and manager contracts.
+
+### Changed
+
+- Normalized changelog metadata for package-specific release automation.
