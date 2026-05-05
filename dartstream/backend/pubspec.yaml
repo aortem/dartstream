@@ -8,7 +8,7 @@ version: 0.0.2
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: '^3.11.0'
+  sdk: ^3.11.0
 
 dependencies:
   shelf: ^1.4.2
@@ -48,6 +48,7 @@ dependencies:
   ds_sentry_logging_provider: ^0.0.1
 
   # Persistence - storage providers
+  ds_storage_base: ^0.0.1
   ds_aws_storage_provider: ^0.0.1
   ds_gcp_storage_provider: ^0.0.1
 
@@ -111,3 +112,8 @@ workspace:
   - packages/standard/standard_extensions/reactive_dataflow/events/base
   - packages/standard/standard_extensions/reactive_dataflow/lifecycle/base
   - packages/standard/standard_extensions/reactive_dataflow/notifications/base
+
+dev_dependencies:
+  test: ^1.25.8
+  mockito: ^5.4.4
+  build_runner: ^2.4.15

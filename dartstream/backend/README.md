@@ -1,17 +1,13 @@
-# ds_dartstream
+# DartStream Backend
 
-`ds_dartstream` is the workspace meta-package for the DartStream open-source
-framework. It brings together the standard engine, CLI tooling, and extension
-contracts used to build Dart-native backend services, Flutter/Flame apps, and
-frontend-agnostic integrations.
+DartStream backend is the open-source framework layer for Dart-native backend
+services, frontend integrations, provider contracts, and extension packages.
 
 ## Install
 
 ```bash
 dart pub add ds_dartstream
 ```
-
-## Import
 
 ```dart
 import 'package:ds_dartstream/ds_dartstream.dart';

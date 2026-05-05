@@ -10,9 +10,6 @@ environment:
 
 resolution: workspace
 
-# Dependencies are added in sections alphabetically and according to features.
 dependencies:
-
-
-
-# STANDARD PACKAGES - Maintained by Aortem
+  openfeature_dart_server_sdk: ^0.0.16
+  ds_standard_features: ^0.1.6

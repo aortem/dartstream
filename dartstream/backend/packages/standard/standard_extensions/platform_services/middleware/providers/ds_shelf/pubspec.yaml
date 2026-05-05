@@ -4,8 +4,10 @@ version: 0.0.1-pre+4
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: '^3.11.0'
+  sdk: ^3.11.0
+
 resolution: workspace
+
 dependencies:
   shelf: ^1.4.2
   shelf_router: ^1.1.4

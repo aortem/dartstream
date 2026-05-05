@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:ds_middleware/src/type_handlers/type_handler_registry.dart';
 
 class DsCustomMiddleWareRequest {
@@ -6,8 +7,8 @@ class DsCustomMiddleWareRequest {
   final Uri uri;
   final Map<String, String> headers;
   final body;
-  final Map<String, dynamic>? routeParams; // Added routeParams field
-  final Map<String, String> queryParams; // Added queryParams field
+  final Map<String, dynamic>? routeParams;
+  final Map<String, String> queryParams;
   final Map<String, dynamic> context;
 
   DsCustomMiddleWareRequest({

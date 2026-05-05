@@ -3,6 +3,7 @@ description: Example usage of the IntelliToggle feature flag provider for DartSt
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 publish_to: none
+
 environment:
   sdk: ^3.11.0
 

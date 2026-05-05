@@ -10,4 +10,3 @@
 - Error mapping for common IntelliToggle API errors.
 - Event handling for provider lifecycle events.
 - Example implementation and unit tests included.
-
