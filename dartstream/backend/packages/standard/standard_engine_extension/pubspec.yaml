@@ -1,6 +1,6 @@
-# The Dartstream Code Engine
+# The DartStream Code Engine
 name: ds_dartstream_standard_engine_extension
-description: The Core Engine Extension For Dartstream.
+description: Core extension contracts for the DartStream standard engine.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
@@ -14,5 +14,3 @@ dependencies:
   ds_tools_testing: ^0.1.4
 #  ds_tools_general: ^0.0.2
   ds_standard_features: ^0.1.6
-  
-

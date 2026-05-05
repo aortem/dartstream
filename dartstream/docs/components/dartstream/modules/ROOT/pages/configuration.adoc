@@ -1,11 +1,11 @@
-= Dartstream Configuration
+= DartStream Configuration
 :page-layout: default
 
 This page documents the configuration templates and where to place your runtime configuration files.
 
 == Configuration Templates
 
-Dartstream ships with environment-specific templates in the backend workspace:
+DartStream ships with environment-specific templates in the backend workspace:
 
 - `backend/packages/config/development/general/ds_general.yaml`
 - `backend/packages/config/development/middleware/ds_custom.yaml`

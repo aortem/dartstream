@@ -1,5 +1,5 @@
 name: ds_entraid_auth_provider
-description: Azure authentication provider for Dartstream.
+description: Microsoft Entra ID authentication provider for DartStream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 

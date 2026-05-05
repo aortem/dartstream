@@ -2,7 +2,7 @@
 
 ## DS Standard Packages
 
-DS Standard packages allow you to utilize core dart features maintained by the Dart team.  The depdendencies remain largely unmodified.  Dartstream extends the built-in classes and methods, therefore allowing developers the greatest composition flexibility when building their applications.
+DartStream standard packages provide Dart-native framework contracts and adapters maintained by Aortem. The packages preserve normal Dart composition patterns while adding DS-prefixed interfaces where the framework needs a stable boundary.
 
 ---
 
@@ -27,13 +27,13 @@ DartStream provides first-class integration with the following 10 authentication
 
 ## Package Conflicts and Aliases
 
-In some cases, core dart package have naming conflicts (ie. same method, classname).  For some packages, we build wrappers and use the DS prefix to avoid those conflicts.  
+In some cases, core Dart packages have naming conflicts (ie. same method, classname).  For some packages, we build wrappers and use the DS prefix to avoid those conflicts.
 
-In other cases, where may avoid using a package altogether.  We will keep the documentation up to date as often as possible.
+In other cases, we may avoid using a package altogether.  We will keep the documentation up to date as often as possible.
 
 ## Licensing
 
-All Dartstream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *Dartstream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
+All DartStream packages are licensed under BSD-3, except for the *services packages*, which uses the ELv2 license, and the *DartStream SDK packages*, which are licensed from third party software Aortem Inc. In short, this means that you can, without limitation, use any of the client packages in your app as long as you do not offer the SDK's or services as a cloud service to 3rd parties (this is typically only relevant for cloud service providers).  See the [LICENSE](LICENSE.md) file for more details.
 
 
 ## Enhance with DartStream
@@ -53,11 +53,11 @@ dependencies:
   # Base authentication package
   ds_auth_base:
     path: path/to/auth/base
-  
+
   # Choose your authentication provider SDK
   firebase_dart_admin_auth_sdk: ^0.0.2  # For Firebase
   # auth0_dart_auth_sdk: ^0.0.1          # For Auth0 (when available)
-  
+
   # Framework features
   ds_standard_features: ^0.1.6
 ```
@@ -366,7 +366,7 @@ try {
     displayName: 'John Doe',
   );
   print('Account created successfully!');
-  
+
   // Confirm email with verification code
   await cognitoProvider.confirmEmail('user@example.com', '123456');
   print('Email confirmed!');
@@ -377,7 +377,7 @@ try {
 // Sign in
 try {
   await authManager.signIn('user@example.com', 'SecurePassword123!');
-  
+
   final user = await authManager.getCurrentUser();
   print('Welcome ${user.displayName}!');
   print('User ID: ${user.id}');
@@ -482,7 +482,7 @@ AWS_REGION=us-east-1
 1. **Create User Pool**
    ```bash
    aws cognito-idp create-user-pool \
-     --pool-name "dartstream-users" \
+     --pool-name "DartStream-users" \
      --policies PasswordPolicy='{MinimumLength=8,RequireUppercase=true,RequireLowercase=true,RequireNumbers=true,RequireSymbols=true}' \
      --auto-verified-attributes email \
      --username-attributes email
@@ -492,7 +492,7 @@ AWS_REGION=us-east-1
    ```bash
    aws cognito-idp create-user-pool-client \
      --user-pool-id us-east-1_abc123def \
-     --client-name "dartstream-client" \
+     --client-name "DartStream-client" \
      --generate-secret \
      --explicit-auth-flows ADMIN_NO_SRP_AUTH USER_PASSWORD_AUTH
    ```
@@ -675,7 +675,7 @@ try {
 // Sign in with user flow
 try {
   await authManager.signIn('user@company.com', 'SecurePassword123!');
-  
+
   final user = await authManager.getCurrentUser();
   print('Welcome ${user.displayName}!');
   print('User ID: ${user.id}');
@@ -806,8 +806,8 @@ ENTRAID_SCOPE=openid profile email offline_access
    ```bash
    # Create B2C tenant in Azure Portal
    az ad b2c tenant create \
-     --resource-group "dartstream-rg" \
-     --name "dartstream-b2c" \
+     --resource-group "DartStream-rg" \
+     --name "DartStream-b2c" \
      --country-code "US" \
      --display-name "DartStream B2C"
    ```
@@ -816,7 +816,7 @@ ENTRAID_SCOPE=openid profile email offline_access
    ```bash
    # Register app in B2C tenant
    az ad app create \
-     --display-name "dartstream-app" \
+     --display-name "DartStream-app" \
      --web-redirect-uris "https://your-app.com/callback" \
      --required-resource-accesses @manifest.json
    ```
@@ -1155,7 +1155,7 @@ Future<void> migrateUser(String email, String password) async {
     final firebaseAuth = DSAuthManager('firebase');
     await firebaseAuth.signIn(email, password);
     final firebaseUser = await firebaseAuth.getCurrentUser();
-    
+
     // Create user in Auth0
     final auth0Auth = DSAuthManager('auth0');
     await auth0Auth.createAccount(
@@ -1163,10 +1163,10 @@ Future<void> migrateUser(String email, String password) async {
       password, // Use temporary password, force reset
       displayName: firebaseUser.displayName,
     );
-    
+
     // Transfer custom attributes
     // ... migration logic ...
-    
+
     print('User $email migrated successfully');
   } catch (e) {
     print('Migration failed for $email: $e');
@@ -1185,7 +1185,7 @@ Future<void> migrateFromAuth0ToFirebase(String userId) async {
   // Get Auth0 user data
   final auth0Auth = DSAuthManager('auth0');
   final auth0User = await auth0Auth.getUser(userId);
-  
+
   // Create Firebase user
   final firebaseAuth = DSAuthManager('firebase');
   await firebaseAuth.createAccount(
@@ -1193,7 +1193,7 @@ Future<void> migrateFromAuth0ToFirebase(String userId) async {
     'temporary-password', // Force password reset
     displayName: auth0User.displayName,
   );
-  
+
   // Migrate custom data
   // ... migration logic ...
 }
@@ -1207,7 +1207,7 @@ Future<void> migrateFromEntraID(String userId, String targetProvider) async {
   // Get EntraID user data
   final entraidAuth = DSAuthManager('entraid');
   final entraidUser = await entraidAuth.getUser(userId);
-  
+
   // Create user in target provider
   final targetAuth = DSAuthManager(targetProvider);
   await targetAuth.createAccount(
@@ -1215,7 +1215,7 @@ Future<void> migrateFromEntraID(String userId, String targetProvider) async {
     'temporary-password', // Force password reset
     displayName: entraidUser.displayName,
   );
-  
+
   // Migrate custom attributes
   if (entraidUser.customAttributes != null) {
     // Convert EntraID custom attributes to target provider format
@@ -1223,14 +1223,14 @@ Future<void> migrateFromEntraID(String userId, String targetProvider) async {
       entraidUser.customAttributes!,
       targetProvider,
     );
-    
+
     // Update user with migrated attributes
     await targetAuth.updateProfile(
       displayName: entraidUser.displayName,
       customAttributes: migratedAttributes,
     );
   }
-  
+
   print('User $userId migrated from EntraID to $targetProvider');
 }
 
@@ -1239,31 +1239,31 @@ Future<void> migrateToEntraID(String userId, String sourceProvider) async {
   // Get source provider user data
   final sourceAuth = DSAuthManager(sourceProvider);
   final sourceUser = await sourceAuth.getUser(userId);
-  
+
   // Create EntraID user with user flow
   final entraidAuth = DSAuthManager('entraid');
   final entraidProvider = entraidAuth.provider as DSEntraIDAuthProvider;
-  
+
   await entraidProvider.signUpWithUserFlow(
     sourceUser.email,
     'temporary-password',
     displayName: sourceUser.displayName,
     userFlowName: 'B2C_1_signupsignin',
   );
-  
+
   // Migrate custom attributes to EntraID format
   if (sourceUser.customAttributes != null) {
     final entraidAttributes = convertToEntraIDAttributes(
       sourceUser.customAttributes!,
       sourceProvider,
     );
-    
+
     await entraidProvider.updateProfile(
       displayName: sourceUser.displayName,
       customAttributes: entraidAttributes,
     );
   }
-  
+
   print('User $userId migrated from $sourceProvider to EntraID');
 }
 
@@ -1273,15 +1273,15 @@ Map<String, dynamic> convertEntraIDAttributes(
   String targetProvider,
 ) {
   final converted = <String, dynamic>{};
-  
+
   for (final entry in attributes.entries) {
     final key = entry.key;
     final value = entry.value;
-    
+
     // Convert EntraID extension attributes
     if (key.startsWith('extension_')) {
       final attributeName = key.substring(10); // Remove 'extension_' prefix
-      
+
       switch (targetProvider) {
         case 'firebase':
           converted[attributeName.toLowerCase()] = value;
@@ -1299,7 +1299,7 @@ Map<String, dynamic> convertEntraIDAttributes(
       converted[key] = value;
     }
   }
-  
+
   return converted;
 }
 
@@ -1308,11 +1308,11 @@ Map<String, dynamic> convertToEntraIDAttributes(
   String sourceProvider,
 ) {
   final converted = <String, dynamic>{};
-  
+
   for (final entry in attributes.entries) {
     final key = entry.key;
     final value = entry.value;
-    
+
     // Convert to EntraID extension attributes
     switch (sourceProvider) {
       case 'firebase':
@@ -1338,7 +1338,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
         converted['extension_$key'] = value;
     }
   }
-  
+
   return converted;
 }
 ```
@@ -1356,7 +1356,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    // Wrong
    final provider = DSFirebaseAuthProvider(/* config */);
    await provider.signIn(email, password); // Will fail
-   
+
    // Correct
    final provider = DSFirebaseAuthProvider(/* config */);
    await provider.initialize(config);
@@ -1367,7 +1367,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - using provider before Firebase app init
    final provider = DSFirebaseAuthProvider(/* config */);
-   
+
    // Correct - initialize Firebase app first
    await FirebaseApp.initializeAppWithEnvironmentVariables(/* config */);
    final provider = DSFirebaseAuthProvider(/* config */);
@@ -1377,7 +1377,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```bash
    # Ensure proper file permissions
    chmod 600 /path/to/service-account.json
-   
+
    # Verify file format (should be valid JSON)
    cat /path/to/service-account.json | jq .
    ```
@@ -1388,7 +1388,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - missing https or incorrect format
    domain: 'my-tenant.auth0.com'
-   
+
    // Correct - just the domain name
    domain: 'my-tenant.auth0.com'
    ```
@@ -1397,7 +1397,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - using public client credentials
    clientSecret: null // This won't work for backend
-   
+
    // Correct - use Regular Web Application credentials
    clientSecret: 'your-client-secret'
    ```
@@ -1406,7 +1406,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - missing or incorrect audience
    audience: ''
-   
+
    // Correct - match your API audience
    audience: 'https://your-api.com'
    ```
@@ -1417,7 +1417,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - incorrect region format
    region: 'us-east-1a'
-   
+
    // Correct - use region name only
    region: 'us-east-1'
    ```
@@ -1426,7 +1426,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - client secret required but not provided
    clientSecret: null
-   
+
    // Correct - provide client secret for backend apps
    clientSecret: 'your-client-secret'
    ```
@@ -1437,7 +1437,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - using full domain
    tenantId: 'your-tenant.onmicrosoft.com'
-   
+
    // Correct - use tenant ID only
    tenantId: 'your-tenant-id'
    ```
@@ -1446,7 +1446,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - missing B2C_ prefix
    userFlowName: 'signupsignin'
-   
+
    // Correct - include B2C_ prefix
    userFlowName: 'B2C_1_signupsignin'
    ```
@@ -1455,7 +1455,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong - using old domain format
    domain: 'your-tenant.onmicrosoft.com'
-   
+
    // Correct - use B2C login domain
    domain: 'your-tenant.b2clogin.com'
    ```
@@ -1465,7 +1465,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    // Wrong - mixing user flows with custom policies
    userFlowName: 'B2C_1_signupsignin'
    policyName: 'B2C_1A_TrustFrameworkExtensions'
-   
+
    // Correct - use either user flows OR custom policies
    userFlowName: 'B2C_1_signupsignin' // For user flows
    // OR
@@ -1478,7 +1478,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    ```dart
    // Wrong imports
    import 'package:firebase_auth/firebase_auth.dart'; // Client SDK
-   
+
    // Correct imports for backend
    import 'package:ds_auth_base/ds_auth_base_export.dart';
    import 'package:firebase_dart_admin_auth_sdk/firebase_dart_admin_auth_sdk.dart';
@@ -1489,7 +1489,7 @@ Map<String, dynamic> convertToEntraIDAttributes(
    // Wrong - registering after trying to use
    final manager = DSAuthManager('firebase'); // Will fail
    DSAuthManager.registerProvider('firebase', provider);
-   
+
    // Correct - register before using
    DSAuthManager.registerProvider('firebase', provider);
    final manager = DSAuthManager('firebase');
@@ -1517,14 +1517,14 @@ DSAuthManager.enableDebugging = true;
 Future<void> testProvider(String providerName) async {
   try {
     final authManager = DSAuthManager(providerName);
-    
+
     // Test basic operations
     print('Testing $providerName provider...');
-    
+
     // This should work without real credentials in test mode
     final isValid = await authManager.verifyToken('test-token');
     print('Token verification test: ${isValid ? 'PASSED' : 'FAILED'}');
-    
+
     print('$providerName provider test completed');
   } catch (e) {
     print('$providerName provider test failed: $e');
@@ -1536,21 +1536,21 @@ Future<void> testEntraIDFeatures() async {
   try {
     final authManager = DSAuthManager('entraid');
     final entraidProvider = authManager.provider as DSEntraIDAuthProvider;
-    
+
     print('Testing EntraID user flows...');
-    
+
     // Test user flow methods
     await entraidProvider.initiatePasswordResetFlow(
       'test@example.com',
       userFlowName: 'B2C_1_password_reset',
     );
     print('Password reset flow test: PASSED');
-    
+
     await entraidProvider.initiateProfileEditFlow(
       userFlowName: 'B2C_1_profile_edit',
     );
     print('Profile edit flow test: PASSED');
-    
+
     print('EntraID features test completed');
   } catch (e) {
     print('EntraID features test failed: $e');

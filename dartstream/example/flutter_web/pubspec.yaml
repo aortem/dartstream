@@ -1,7 +1,7 @@
-#This pubspec file imports is used for any dependencies for standard Dartstream features.
+#This pubspec file imports is used for any dependencies for standard DartStream features.
 
 name: ds_dartweb_framework_base
-description: Packages for our flutter_web framework - maintained by the Aortem and Dart team.
+description: Packages for our flutter_web framework - maintained by Aortem.
 version: 0.0.1-pre+1
 repository: https://github.com/aortem/dartstream
 publish_to: none
@@ -12,10 +12,10 @@ environment:
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 
-# STANDARD PACKAGES - Built By The Dart Team
+# STANDARD PACKAGES - Maintained by Aortem
   ds_standard_features: ^0.1.6
   flutter:
-    sdk: flutter 
+    sdk: flutter
   web: ^0.5.1
   ds_auth_base:
     path: ../../backend/packages/standard/standard_extensions/auth/base
@@ -24,4 +24,3 @@ dependencies:
 
 dev_dependencies:
   flutter_lints: ^6.0.0
-

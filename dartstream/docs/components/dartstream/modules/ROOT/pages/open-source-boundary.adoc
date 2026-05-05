@@ -1,0 +1,45 @@
+= Open Source Boundary
+:page-layout: default
+
+DartStream open source and DartStream SaaS are related but separate products.
+
+== Open Source Scope
+
+The open-source repository owns the framework foundation:
+
+* DartStream Standard Engine
+* extension and provider contracts
+* CLI tooling and project generation
+* auth, persistence, storage, middleware, feature flag, reactive dataflow, AI, and ORM base packages
+* reference frontends and generated client patterns
+* examples that can run without SaaS-only credentials
+
+== SaaS Scope
+
+DartStream SaaS is a separate managed Aortem product. It may use the open-source
+standard engine as a base, but SaaS-only behavior belongs outside this repo.
+
+SaaS-owned concerns include:
+
+* hosted control plane
+* tenant and environment management
+* billing and subscription enforcement
+* customer provider credential storage
+* production observability and operations
+* managed provider runtime and rollout controls
+
+== Boundary Rule
+
+Open-source packages should expose stable contracts. SaaS and provider-specific
+products should implement those contracts without requiring SaaS credentials for
+basic open-source use.
+
+Official Aortem adapters, including IntelliToggle and future DartCodeAI
+adapters, should remain optional integrations built on open contracts.
+
+== Support
+
+Aortem provides open-source support for DartStream. Use the Aortem support page
+for support, issue triage, and contribution direction:
+
+https://aortem.io/support

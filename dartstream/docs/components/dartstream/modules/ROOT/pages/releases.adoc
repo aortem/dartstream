@@ -1,15 +1,15 @@
 = Releases
 :navtitle: Releases
-:description: Release highlights and updates for Dartstream.
+:description: Release highlights and updates for DartStream.
 :sectnums:
 
-This page summarizes client-facing features, improvements, and fixes across Dartstream releases.
+This page summarizes client-facing features, improvements, and fixes across DartStream releases.
 '''
 
 == v0.0.1
 
 === Overview
-First main OSS release of the Dartstream backend meta-package and workspace tooling.
+First main OSS release of the DartStream backend meta-package and workspace tooling.
 
 === Highlights
 * Standard engine and extensions umbrella exports with refreshed registry manifests.
@@ -27,4 +27,4 @@ First main OSS release of the Dartstream backend meta-package and workspace tool
 * Added missing `_discoveryapis_commons` dependency for the GCP storage provider.
 
 === Notes
-This is the first stable public release of the Dartstream backend packages.
+This is the first stable public release of the DartStream backend packages.

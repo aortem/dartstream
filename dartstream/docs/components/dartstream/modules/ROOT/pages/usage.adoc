@@ -1,4 +1,4 @@
-= Dartstream Usage
+= DartStream Usage
 :page-layout: default
 
-This page will document usage patterns and examples for Dartstream.
+This page will document usage patterns and examples for DartStream.

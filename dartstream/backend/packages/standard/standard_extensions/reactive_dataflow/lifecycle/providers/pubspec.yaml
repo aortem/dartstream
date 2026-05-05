@@ -1,5 +1,5 @@
 name: ds_lifecycle_provider
-description: "Amazon authentication provider for Dartstream."
+description: Lifecycle provider implementations for DartStream reactive dataflow.
 version: "0.0.1-pre"
 repository: https://github.com/aortem/dartstream
 
@@ -11,4 +11,3 @@ environment:
 resolution: workspace
 
 entry_point: "lib/amazon_auth_provider.dart"
-

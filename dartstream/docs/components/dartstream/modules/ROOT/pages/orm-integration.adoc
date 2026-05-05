@@ -1,0 +1,39 @@
+= ORM Integration
+:page-layout: default
+
+DartStream supports ORM integration through adapter contracts rather than by
+owning a full ORM implementation.
+
+== Package
+
+`ds_orm_base` defines:
+
+* `DSOrmAdapter`
+* `DSOrmManager`
+* `DSOrmRepository`
+* `DSOrmQuery`
+* `DSOrmMutation`
+* `DSOrmMigration`
+
+== Direction
+
+DartStream should integrate current, actively maintained Dart ORM and
+data-mapping packages through adapters. The framework should not make one ORM
+mandatory for every app.
+
+Drift is a good first adapter target for local, reactive SQLite use cases.
+PostgreSQL ORM adapters can be considered only after package health,
+maintenance, and contract fit are reviewed.
+
+Server-side frameworks that compete with DartStream should not be documented as
+preferred ORM integrations.
+
+Only current packages should be documented as adapter targets. Re-check package
+maintenance, release recency, platform support, and issue health before adding a
+new adapter package.
+
+== Boundary
+
+The ORM adapter should expose typed repositories, query descriptions, and
+migration metadata. Provider-specific query builders and clients may still be
+available through `getNativeClient()` for advanced use.

@@ -1,0 +1,37 @@
+= AI Extensions
+:page-layout: default
+
+DartStream is AI-ready through provider-neutral extension contracts.
+
+== Package
+
+`ds_ai_base` defines:
+
+* `DSAIProvider`
+* `DSAIManager`
+* `DSAIRequest`
+* `DSAIResponse`
+* `DSAIWorkflowRequest`
+* `DSAIWorkflowResult`
+
+== Goal
+
+Applications should be able to add AI workflows without hardcoding DartCodeAI or
+any other provider into the framework.
+
+Examples of AI workflows:
+
+* documentation generation
+* code review assistance
+* test generation
+* release note drafting
+* application-specific assistants
+
+== Aortem Provider Direction
+
+DartCodeAI can be an official Aortem adapter built on `ds_ai_base`. Other
+current AI providers can be implemented as adapters if they are actively
+maintained and fit the DartStream contract.
+
+The open-source framework owns the contract. Provider packages own provider
+behavior.

@@ -1,5 +1,5 @@
 name: ds_intellitoggle_provider
-description: IntelliToggle feature flag provider for Dartstream.
+description: IntelliToggle feature flag provider for DartStream.
 version: 0.0.1
 repository: https://github.com/aortem/dartstream
 
@@ -16,4 +16,3 @@ dependencies:
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4
-

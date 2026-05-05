@@ -1,5 +1,5 @@
 name: ds_okta_auth_provider
-description: Okta authentication provider for Dartstream.
+description: Okta authentication provider for DartStream.
 version: 0.0.3
 repository: https://github.com/aortem/dartstream
 
