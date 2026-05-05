@@ -4,13 +4,14 @@
 name: ds_dartstream
 description: A meta-package that bundles all DartStream framework modules
   tooling, standard engine, auth providers, persistence, feature flags, etc.
-version: 0.0.2
+version: 0.0.4
 repository: https://github.com/aortem/dartstream
 
 environment:
   sdk: ^3.11.0
 
 dependencies:
+  args: ^2.4.2
   shelf: ^1.4.2
   shelf_router: ^1.1.4
 
@@ -20,7 +21,6 @@ dependencies:
 
   # Standard engine
   ds_dartstream_standard_engine: ^0.0.1
-  ds_dartstream_standard_engine_extension: ^0.0.1
 
   # Auth Extensions
   ds_auth_base: ^0.0.2
@@ -37,7 +37,6 @@ dependencies:
 
   # Persistence - database providers (lean OSS list)
   ds_database_base: ^0.0.2
-  ds_orm_base: ^0.0.1
   ds_postgres_database: ^0.0.1
   ds_mongo_database: ^0.0.1
   ds_firebase_database: ^0.0.1
@@ -50,21 +49,13 @@ dependencies:
   # Persistence - storage providers
   ds_storage_base: ^0.0.1
   ds_aws_storage_provider: ^0.0.1
-  ds_gcp_storage_provider: ^0.0.1
 
   # Feature flags
   ds_feature_flags_base: ^0.0.1
   ds_intellitoggle_provider: ^0.0.1
-  ds_flagd_provider: ^0.0.1-pre+1
-
-  # AI extensions
-  ds_ai_base: ^0.0.1
 
   # Reactive dataflow - data streaming (lean OSS list)
-  ds_events_base: ^0.0.1
-  ds_lifecycle_base: ^0.0.1
   ds_message_broker_base: ^0.0.1
-  ds_notifications_base: ^0.0.1
   ds_gcp_pubsub_message_broker_provider: ^0.0.1
   ds_websocket_base: ^0.0.1
   ds_socket_io_websocket_provider: ^0.0.1
