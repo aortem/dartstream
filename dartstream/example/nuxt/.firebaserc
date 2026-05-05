@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "dartstream-open-dev"
+  },
+  "targets": {
+    "dartstream-open-dev": {
+      "hosting": {
+        "dartstream-open-dev": [
+          "dartstream-open-dev"
+        ]
+      }
+    }
+  }
+}

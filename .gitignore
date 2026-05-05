@@ -49,7 +49,6 @@
 
 # Firebase local/deployment state
 **/.firebase/
-**/.firebaserc
 **/firebase-debug.log*
 
 # OS files
