@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.0.3]
+### Changed
+- Prepared the `ds_dartstream` umbrella package for the next public release.
+- Added package publish exclusions for local analysis, release review, Firebase, and frontend build artifacts.
+- Kept local-only package artifacts and unpublished providers out of the hosted root package contract.
+
+### Fixed
+- Removed stale local review artifacts from the open-source package tree.
+- Prevented Dart lockfiles and generated build outputs from being reintroduced into the repository.
+
 ## [0.0.2]
 ### Added
 - Added provider-neutral `ds_ai_base` contracts for AI providers, requests, responses, and manager orchestration.
@@ -69,4 +79,3 @@
 
 ## [0.0.1-pre+1]
 - Initial version.
-
