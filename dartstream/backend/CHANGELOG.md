@@ -5,6 +5,7 @@
 - Prepared the `ds_dartstream` umbrella package for the next public release.
 - Added package publish exclusions for local analysis, release review, Firebase, and frontend build artifacts.
 - Kept local-only package artifacts and unpublished providers out of the hosted root package contract.
+- Limited the hosted root exports to DartStream packages that are already published on pub.dev.
 
 ### Fixed
 - Removed stale local review artifacts from the open-source package tree.
