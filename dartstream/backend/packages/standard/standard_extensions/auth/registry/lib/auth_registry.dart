@@ -21,7 +21,7 @@ void registerAllAuthProviders() {
       domain: '', // set via config or env
       clientId: '', // set via config or env
       clientSecret: '', // set via config or env
-      audience: '' // set via config or env
+      audience: '', // set via config or env
     ),
     DSAuthProviderMetadata(type: 'cognito', region: 'us-east-1', clientId: ''),
   );
@@ -29,8 +29,8 @@ void registerAllAuthProviders() {
     'firebase',
     DSFirebaseAuthProvider(
       projectId: '', // set via config or env
-      privateKeyPath: '',  // set via config or env
-      apiKey: '' // set via config or env
+      privateKeyPath: '', // set via config or env
+      apiKey: '', // set via config or env
     ),
     DSAuthProviderMetadata(
       type: 'firebase',
@@ -58,9 +58,7 @@ void registerAllAuthProviders() {
   // Fingerprint Auth provider (update the metadata as relevant for your integration)
   DSAuthManager.registerProvider(
     'fingerprint',
-    DSFingerprintAuthProvider(
-      apiKey: '', // set via config or env
-    ),
+    DSFingerprintAuthProvider(),
     DSAuthProviderMetadata(type: 'fingerprint', region: '', clientId: ''),
   );
   // …register more providers as new ones are added

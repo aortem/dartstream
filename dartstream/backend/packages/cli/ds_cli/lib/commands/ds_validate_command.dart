@@ -32,6 +32,11 @@ class DSValidateCommand extends Command {
         'providers',
         help: 'Validate provider compatibility',
         defaultsTo: true,
+      )
+      ..addFlag(
+        'prefix-check',
+        help: 'Validate manifest naming and compatibility fields',
+        negatable: false,
       );
   }
 
@@ -81,9 +86,11 @@ class DSValidateCommand extends Command {
   }
 
   Future<bool> _validateProject(String projectName) async {
-    print('📁 Validating project: $projectName');
+    print('ðŸ“ Validating project: $projectName');
 
-    final projectDir = Directory(projectName);
+    final dartstreamRoot = _findDartstreamRoot();
+    final projectPath = _resolveProjectPath(projectName, dartstreamRoot);
+    final projectDir = Directory(projectPath);
     if (!projectDir.existsSync()) {
       print('Project directory not found: $projectName');
       return false;
@@ -123,7 +130,7 @@ class DSValidateCommand extends Command {
         final content = File(pubspecPath).readAsStringSync();
         final pubspec = loadYaml(content) as Map;
 
-        // Check for required dependencies — accept any valid dartstream core package
+        // Check for required dependencies â€” accept any valid dartstream core package
         final deps = pubspec['dependencies'] as Map?;
         final validCoreDeps = [
           'ds_standard_engine',
@@ -262,7 +269,10 @@ class DSValidateCommand extends Command {
       result.addError('Dependency validation failed');
     }
 
-    final entryPath = p.join(registry.extensionsDirectory, extension.entryPoint);
+    final entryPath = p.join(
+      registry.extensionsDirectory,
+      extension.entryPoint,
+    );
     if (!File(entryPath).existsSync()) {
       result.addError('Entry point not found: ${extension.entryPoint}');
     } else if (strictMode) {
@@ -288,7 +298,9 @@ class DSValidateCommand extends Command {
       if (extension.name.contains('auth_provider')) {
         if (!content.contains('extends DSAuthProvider') &&
             !content.contains('implements DSAuthProvider')) {
-          result.addWarning('Auth provider should extend or implement DSAuthProvider');
+          result.addWarning(
+            'Auth provider should extend or implement DSAuthProvider',
+          );
         }
       }
     } catch (e) {
@@ -297,7 +309,7 @@ class DSValidateCommand extends Command {
   }
 
   Future<void> _validateProviders() async {
-    print('\n🔌 Validating providers...');
+    print('\nðŸ”Œ Validating providers...');
 
     // Use dartstream root for reliable path resolution
     final dartstreamRoot = _findDartstreamRoot();
@@ -366,10 +378,15 @@ class DSValidateCommand extends Command {
       final name = (raw['name'] as String?) ?? '';
       final type = (raw['type'] as String?) ?? '';
       final hasOptional = raw.containsKey('optional');
-      final hasCompatible = raw.containsKey('compatible') || raw.containsKey('compatible_with');
+      final hasCompatible =
+          raw.containsKey('compatible') || raw.containsKey('compatible_with');
 
-      if (!name.startsWith('ds_') && !name.startsWith('ds_plugin_') && !name.startsWith('custom_')) {
-        print('  FAIL ${manifestFile.path}: name prefix does not match standards');
+      if (!name.startsWith('ds_') &&
+          !name.startsWith('ds_plugin_') &&
+          !name.startsWith('custom_')) {
+        print(
+          '  FAIL ${manifestFile.path}: name prefix does not match standards',
+        );
         failures++;
       }
 
@@ -384,7 +401,9 @@ class DSValidateCommand extends Command {
       }
 
       if (!hasCompatible) {
-        print('  FAIL ${manifestFile.path}: missing compatible/compatible_with');
+        print(
+          '  FAIL ${manifestFile.path}: missing compatible/compatible_with',
+        );
         failures++;
       }
     }
@@ -457,7 +476,9 @@ class DSValidateCommand extends Command {
       }
     }
 
-    return p.normalize(p.join(Directory.current.path, 'dartstream_registry.yaml'));
+    return p.normalize(
+      p.join(Directory.current.path, 'dartstream_registry.yaml'),
+    );
   }
 }
 

@@ -70,6 +70,7 @@ dependencies:
   ds_socket_io_websocket_provider: ^0.0.1
 
 workspace:
+  - generated_clients/ds_demo_client
   - packages/cli/ds_cli
   - packages/cli/ds_cli_util
   - packages/standard/standard_engine/
@@ -103,8 +104,10 @@ workspace:
   - packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle
   - packages/standard/standard_extensions/platform_services/feature_flags/providers/flagd
   - packages/standard/standard_extensions/platform_services/middleware/base
+  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_logging
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_middleware
   - packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf
+  - packages/standard/standard_extensions/platform_services/middleware/providers/ds_websockets
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub
   - packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base

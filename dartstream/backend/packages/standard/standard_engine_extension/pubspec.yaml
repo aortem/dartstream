@@ -11,6 +11,8 @@ resolution: workspace
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
+  ds_dartstream_standard_engine: ^0.0.1
+  ds_lifecycle_base: ^0.0.1
   ds_tools_testing: ^0.1.4
 #  ds_tools_general: ^0.0.2
   ds_standard_features: ^0.1.6

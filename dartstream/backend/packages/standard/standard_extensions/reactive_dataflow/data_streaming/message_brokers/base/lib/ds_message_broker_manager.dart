@@ -33,7 +33,8 @@ class DSMessageBrokerManager {
   static final Map<String, DSMessageBrokerProvider> _registeredProviders = {};
 
   /// Metadata for registered providers.
-  static final Map<String, DSMessageBrokerProviderMetadata> _providerMetadata = {};
+  static final Map<String, DSMessageBrokerProviderMetadata> _providerMetadata =
+      {};
 
   /// Enable debug logging.
   static bool enableDebugging = false;
@@ -130,5 +131,5 @@ class DSMessageBrokerManager {
     return _provider.dispose();
   }
 
-  static Object? getProvider(String s) {}
+  static Object? getProvider(String s) => null;
 }

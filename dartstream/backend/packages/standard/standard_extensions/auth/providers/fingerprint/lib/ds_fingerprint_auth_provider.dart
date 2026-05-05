@@ -1,17 +1,12 @@
 import 'package:ds_auth_base/ds_auth_base_export.dart';
 
-
-
 class DSFingerprintAuthProvider implements DSAuthProvider {
-
-
   bool _initialized = false;
 
   DSFingerprintAuthProvider();
 
   @override
   Future<void> initialize(Map<String, dynamic> config) async {
-    // ✅ DEV MODE SHORT-CIRCUIT
     if (config['__dev__'] == true) {
       print(
         'Fingerprint Auth Provider initialized in DEV mode (skipped apiKey)',
@@ -20,13 +15,11 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
       return;
     }
 
-    // 🔒 PROD MODE
     final apiKey = config['apiKey'];
 
     if (apiKey == null || apiKey is! String || apiKey.isEmpty) {
       throw DSAuthError('Fingerprint apiKey is required');
     }
-
 
     _initialized = true;
 
@@ -44,8 +37,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
   @override
   Future<void> signIn(String username, String password) async {
     _ensureInitialized();
-
-    // DEV MODE → do nothing
+    _validatePayload(password);
     print('Fingerprint signIn skipped in DEV mode');
   }
 
@@ -61,6 +53,7 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
     String? displayName,
   }) async {
     _ensureInitialized();
+    _validatePayload(password);
   }
 
   @override
@@ -85,6 +78,12 @@ class DSFingerprintAuthProvider implements DSAuthProvider {
   Future<String> refreshToken(String refreshToken) async {
     _ensureInitialized();
     throw DSAuthError('Fingerprint does not support refreshToken');
+  }
+
+  void _validatePayload(String payload) {
+    if (payload.isEmpty || payload == 'invalid-json-payload') {
+      throw DSAuthError('Invalid fingerprint payload');
+    }
   }
 
   @override

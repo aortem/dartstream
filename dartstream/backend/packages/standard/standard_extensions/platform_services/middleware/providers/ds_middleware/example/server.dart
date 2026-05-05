@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:ds_middleware/ds_custom_middleware.dart';
 
@@ -9,18 +10,18 @@ void main() async {
 
   await for (HttpRequest request in server) {
     final dsRequest = DsCustomMiddleWareRequest(
-      request.method,
-      request.uri,
-      request.headers.toString().split('\n').fold<Map<String, String>>({}, (
-        map,
-        line,
-      ) {
-        final parts = line.split(': ');
-        if (parts.length == 2) map[parts[0]] = parts[1];
-        return map;
-      }),
-      await utf8.decodeStream(request),
-      request.uri.queryParameters,
+      method: request.method,
+      uri: request.uri,
+      headers: request.headers.toString().split('\n').fold<Map<String, String>>(
+        {},
+        (map, line) {
+          final parts = line.split(': ');
+          if (parts.length == 2) map[parts[0]] = parts[1];
+          return map;
+        },
+      ),
+      body: await utf8.decodeStream(request),
+      queryParams: request.uri.queryParameters,
       context: {'shelf.io.http_request': request},
     );
 

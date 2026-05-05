@@ -1,8 +1,8 @@
-import 'package:ds_custom_middleware/src/model/ds_request_model.dart';
-import 'package:ds_custom_middleware/src/routing/dynamic_routing.dart';
-import 'package:ds_custom_middleware/src/routing/index_routing.dart';
-import 'package:ds_custom_middleware/src/routing/nested_router.dart';
-import 'package:ds_custom_middleware/src/routing/print_router.dart';
+import 'package:ds_middleware/src/model/ds_request_model.dart';
+import 'package:ds_middleware/src/routing/dynamic_routing.dart';
+import 'package:ds_middleware/src/routing/index_routing.dart';
+import 'package:ds_middleware/src/routing/nested_router.dart';
+import 'package:ds_middleware/src/routing/print_router.dart';
 import 'package:ds_tools_testing/ds_tools_testing.dart';
 
 void main() {
@@ -21,10 +21,10 @@ void main() {
 
     test('Dynamic Routing Test', () async {
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/users/123'),
-        {},
-        null,
+        method: 'GET',
+        uri: Uri.parse('/users/123'),
+        headers: {},
+        body: null,
       );
 
       final response = await router.handleRequest(request);
@@ -35,10 +35,10 @@ void main() {
 
     test('Index Routing Test', () async {
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/index'),
-        {},
-        null,
+        method: 'GET',
+        uri: Uri.parse('/index'),
+        headers: {},
+        body: null,
       );
 
       final response = await indexRouter.handleIndexRequest(request);
@@ -49,25 +49,27 @@ void main() {
 
     test('Print Routing Test', () async {
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/print/someinfo'),
-        {'Accept': 'text/plain'},
-        null,
+        method: 'GET',
+        uri: Uri.parse('/print/someinfo'),
+        headers: {'Accept': 'text/plain'},
+        body: null,
       );
 
       final response = await printRouter.handlePrintRequest(request);
 
       expect(response.statusCode, 200);
       expect(
-          response.body, 'Request details have been printed to the console.');
+        response.body,
+        'Request details have been printed to the console.',
+      );
     });
 
     test('Nested Routing Test', () async {
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/users/123/profile'),
-        {},
-        null,
+        method: 'GET',
+        uri: Uri.parse('/users/123/profile'),
+        headers: {},
+        body: null,
       );
 
       final response = await nestedRouter.handleNestedRequest(request);
@@ -78,10 +80,10 @@ void main() {
 
     test('Not Found Routing Test', () async {
       final request = DsCustomMiddleWareRequest(
-        'GET',
-        Uri.parse('/unknown'),
-        {},
-        null,
+        method: 'GET',
+        uri: Uri.parse('/unknown'),
+        headers: {},
+        body: null,
       );
 
       final response = await router.handleRequest(request);

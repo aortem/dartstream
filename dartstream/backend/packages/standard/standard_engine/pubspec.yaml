@@ -13,6 +13,7 @@ resolution: workspace
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
 # Packages needed for the app to run
+  ds_lifecycle_base: ^0.0.1
   ds_standard_features: ^0.1.6
 
 dev_dependencies:

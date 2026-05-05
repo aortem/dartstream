@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-import '../model/ds_request_model.dart';
-import '../model/ds_response_model.dart';
+
 import '../../app/models/ds_custom_middleware_model.dart';
 
 class DsHttpHelpers {
@@ -10,22 +9,34 @@ class DsHttpHelpers {
   /// -------------------
 
   /// 200 OK
-  static DsCustomMiddleWareResponse ok(dynamic body, {Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse ok(
+    dynamic body, {
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(200, headers ?? {}, body);
   }
 
   /// 201 Created
-  static DsCustomMiddleWareResponse created(dynamic body, {Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse created(
+    dynamic body, {
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(201, headers ?? {}, body);
   }
 
   /// 400 Bad Request
-  static DsCustomMiddleWareResponse badRequest(dynamic body, {Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse badRequest(
+    dynamic body, {
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(400, headers ?? {}, body);
   }
 
   /// 401 Unauthorized
-  static DsCustomMiddleWareResponse unauthorized({String message = 'Unauthorized', Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse unauthorized({
+    String message = 'Unauthorized',
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(401, {
       'www-authenticate': 'Bearer',
       ...?headers,
@@ -33,12 +44,18 @@ class DsHttpHelpers {
   }
 
   /// 404 Not Found
-  static DsCustomMiddleWareResponse notFound({String message = 'Not Found', Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse notFound({
+    String message = 'Not Found',
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(404, headers ?? {}, message);
   }
 
   /// 500 Internal Server Error
-  static DsCustomMiddleWareResponse internalError({String message = 'Internal Server Error', Map<String, String>? headers}) {
+  static DsCustomMiddleWareResponse internalError({
+    String message = 'Internal Server Error',
+    Map<String, String>? headers,
+  }) {
     return DsCustomMiddleWareResponse(500, headers ?? {}, message);
   }
 
@@ -50,14 +67,10 @@ class DsHttpHelpers {
     int statusCode = 200,
     Map<String, String>? headers,
   }) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {
-        'Content-Type': 'application/json',
-        ...?headers,
-      },
-      jsonEncode(data),
-    );
+    return DsCustomMiddleWareResponse(statusCode, {
+      'Content-Type': 'application/json',
+      ...?headers,
+    }, jsonEncode(data));
   }
 
   /// Standardized Error Response
@@ -67,10 +80,7 @@ class DsHttpHelpers {
     Map<String, String>? headers,
   }) {
     return jsonResponse(
-      {
-        'status': statusCode,
-        'error': message,
-      },
+      {'status': statusCode, 'error': message},
       statusCode: statusCode,
       headers: headers,
     );
@@ -126,15 +136,12 @@ class DsHttpHelpers {
     final defaultHeaders = {
       'Content-Type': contentType,
       'Content-Length': file.lengthSync().toString(),
-      if (fileName != null) 'Content-Disposition': 'attachment; filename="$fileName"',
+      if (fileName != null)
+        'Content-Disposition': 'attachment; filename="$fileName"',
       ...?headers,
     };
 
-    return DsCustomMiddleWareResponse(
-      200,
-      defaultHeaders,
-      file.openRead(),
-    );
+    return DsCustomMiddleWareResponse(200, defaultHeaders, file.openRead());
   }
 
   /// Stream response (large datasets)
@@ -143,31 +150,22 @@ class DsHttpHelpers {
     String contentType = 'application/octet-stream',
     Map<String, String>? headers,
   }) {
-    return DsCustomMiddleWareResponse(
-      200,
-      {
-        'Content-Type': contentType,
-        ...?headers,
-      },
-      stream,
-    );
+    return DsCustomMiddleWareResponse(200, {
+      'Content-Type': contentType,
+      ...?headers,
+    }, stream);
   }
 
   /// -------------------
   /// Header Utilities
   /// -------------------
-  
+
   /// Merge additional headers into existing response
   static DsCustomMiddleWareResponse withHeaders(
     DsCustomMiddleWareResponse response,
     Map<String, String> newHeaders,
   ) {
-    return response.copyWith(
-      headers: {
-        ...response.headers,
-        ...newHeaders,
-      },
-    );
+    return response.copyWith(headers: {...response.headers, ...newHeaders});
   }
 
   /// -------------------
@@ -175,7 +173,9 @@ class DsHttpHelpers {
   /// -------------------
 
   /// Parse JSON body from request
-  static Future<Map<String, dynamic>> parseJsonBody(DsCustomMiddleWareRequest request) async {
+  static Future<Map<String, dynamic>> parseJsonBody(
+    DsCustomMiddleWareRequest request,
+  ) async {
     if (request.headers['Content-Type'] != 'application/json') {
       throw FormatException('Expecting JSON body');
     }
@@ -183,12 +183,13 @@ class DsHttpHelpers {
   }
 
   /// Redirect response
-  static DsCustomMiddleWareResponse redirect(String location, {int statusCode = 302}) {
-    return DsCustomMiddleWareResponse(
-      statusCode,
-      {'Location': location},
-      'Redirecting to $location',
-    );
+  static DsCustomMiddleWareResponse redirect(
+    String location, {
+    int statusCode = 302,
+  }) {
+    return DsCustomMiddleWareResponse(statusCode, {
+      'Location': location,
+    }, 'Redirecting to $location');
   }
 
   /// Get client IP from request

@@ -15,11 +15,22 @@ class DsCustomMiddleWareRequest {
     required this.method,
     required this.uri,
     required this.headers,
-    this.body,
     this.routeParams = const {},
+    this.body,
     this.queryParams = const {},
     this.context = const {},
   });
+
+  static DsCustomMiddleWareRequest fromShelf(dynamic request) {
+    final requestUri = request.url is Uri ? request.url as Uri : Uri(path: '/');
+    return DsCustomMiddleWareRequest(
+      method: request.method as String? ?? 'GET',
+      uri: requestUri,
+      headers: Map<String, String>.from(request.headers as Map),
+      queryParams: requestUri.queryParameters,
+      context: {'shelf.request': request},
+    );
+  }
 
   DsCustomMiddleWareRequest change({
     Map<String, String>? headers,
@@ -99,6 +110,10 @@ class DsCustomMiddleWareResponse {
     return DsCustomMiddleWareResponse(401, {
       'www-authenticate': 'Bearer',
     }, 'Unauthorized');
+  }
+
+  static DsCustomMiddleWareResponse badRequest(dynamic body) {
+    return DsCustomMiddleWareResponse(400, {}, body);
   }
 
   DsCustomMiddleWareResponse copyWith({

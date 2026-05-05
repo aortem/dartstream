@@ -9,5 +9,6 @@
 
 # Ignore Dart clocal build tools
 **/.dart_tool/
+**/.ds_entraid_sessions/
 **/pubspec.lock
 **/tmp/pana_*
