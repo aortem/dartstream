@@ -4,7 +4,7 @@
 name: ds_dartstream
 description: A meta-package that bundles all DartStream framework modules
   tooling, standard engine, auth providers, persistence, feature flags, etc.
-version: 0.0.4
+version: 0.0.5
 repository: https://github.com/aortem/dartstream
 
 environment:
@@ -113,4 +113,4 @@ dev_dependencies:
   build_runner: ^2.4.15
 
 executables:
-  dartstream:
+  dartstream: dartstream

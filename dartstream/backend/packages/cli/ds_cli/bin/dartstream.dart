@@ -15,11 +15,18 @@ import '../lib/commands/ds_setup_command.dart';
 import '../lib/commands/ds_validate_command.dart';
 
 Future<void> syncManifestAndRegistry() async {
+  final syncManifestScript = File('../../../bin/sync_manifest.dart');
+  final generateRegistryScript = File('../../../bin/generate_registry.dart');
+  if (!syncManifestScript.existsSync() ||
+      !generateRegistryScript.existsSync()) {
+    return;
+  }
+
   print('Syncing manifest and registry...');
 
   final syncResult = await Process.run('dart', [
     'run',
-    '../../../bin/sync_manifest.dart',
+    syncManifestScript.path,
   ]);
 
   if (syncResult.exitCode != 0) {
@@ -28,7 +35,7 @@ Future<void> syncManifestAndRegistry() async {
 
   final genResult = await Process.run('dart', [
     'run',
-    '../../../bin/generate_registry.dart',
+    generateRegistryScript.path,
   ]);
 
   if (genResult.exitCode != 0) {
@@ -70,6 +77,12 @@ Future<void> main(List<String> args) async {
 }
 
 bool _skipsManifestSync(List<String> args) {
-  if (args.isEmpty) return false;
-  return args.first == 'login';
+  if (args.isEmpty) return true;
+
+  final normalizedArgs = args.map((arg) => arg.toLowerCase()).toSet();
+  if (normalizedArgs.contains('--help') || normalizedArgs.contains('-h')) {
+    return true;
+  }
+
+  return args.first == 'help' || args.first == 'login';
 }
