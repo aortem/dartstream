@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.0.5]
+### Fixed
+- Limited the hosted `ds_dartstream` global executable contract to the public
+  `dartstream` command so pub global activation does not try to compile
+  internal helper and development server scripts.
+- Restored Windows global activation so `dartstream` shims are created after
+  installation.
+
 ## [0.0.4]
 ### Fixed
 - Removed the GCP storage provider from the hosted umbrella dependency set so `ds_dartstream` can resolve alongside the GCP Pub/Sub message broker until their `googleapis` ranges are aligned.
