@@ -1,10 +1,10 @@
 name: ds_shelf
 description: Core Shelf Components Within Larger DartStream Ecosystem.
-version: 0.0.1-pre+4
+version: 0.0.2-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 resolution: workspace
 

@@ -5,7 +5,7 @@ version: 0.0.1-pre+1
 # repository: https://github.com/my_org/my_repo
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
@@ -42,7 +42,7 @@ dev_dependencies:
   cli_util: ^0.4.1
 
 #Testing Packages
-ds_tools_testing: ^0.0.1-pre+3
+  ds_tools_testing: ^0.1.4
 
 #Globally Activated Package
 executables:

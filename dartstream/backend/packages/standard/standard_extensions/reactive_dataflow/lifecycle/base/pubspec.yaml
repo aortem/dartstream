@@ -1,9 +1,9 @@
 name: ds_lifecycle_base
 description: Base lifecycle interfaces for DartStream reactive dataflow.
-version: "0.0.1"
+version: 0.0.2
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 resolution: workspace

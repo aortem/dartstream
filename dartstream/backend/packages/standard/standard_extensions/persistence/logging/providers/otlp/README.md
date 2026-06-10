@@ -7,7 +7,7 @@ OpenTelemetry (OTLP) logging provider for DartStream. This package plugs into `d
 ```yaml
 dependencies:
   ds_logging_base: ^0.0.1
-  ds_otlp_logging_provider: ^0.0.1
+  ds_otlp_logging_provider: ^0.0.2
 ```
 
 ## Usage

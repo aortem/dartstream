@@ -3,11 +3,11 @@
 
 name: ds_cli_util
 description: Main DartStream CLI utilities.
-version: 0.0.1-pre+1
+version: 0.0.2-pre+1
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 resolution: workspace
 
@@ -24,7 +24,7 @@ dependencies:
   #  TBD: ^0.0.1
 
   # DS Standard Features
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
   # DS Tools Testing
   ds_tools_testing: ^0.1.4

@@ -7,7 +7,7 @@ Google Cloud Storage provider for DartStream using the official `googleapis` cli
 ```yaml
 dependencies:
   ds_storage_base: ^0.0.1
-  ds_gcp_storage_provider: ^0.0.1
+  ds_gcp_storage_provider: ^0.0.2
 ```
 
 ## Usage

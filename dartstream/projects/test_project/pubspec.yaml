@@ -4,7 +4,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.1
 
 dependencies:
   # Provider packages
@@ -12,7 +12,7 @@ dependencies:
   ds_google_firebase_database: ^0.0.1
   # Core DartStream packages
   ds_standard_engine: ^0.0.1
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
   # Framework-specific dependencies
   flutter:

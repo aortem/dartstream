@@ -7,7 +7,7 @@ S3-compatible storage provider for DartStream (AWS S3, MinIO, Cloudflare R2, Dig
 ```yaml
 dependencies:
   ds_storage_base: ^0.0.1
-  ds_aws_storage_provider: ^0.0.1
+  ds_aws_storage_provider: ^0.0.2
 ```
 
 ## Usage

@@ -5,12 +5,12 @@ publish_to: none
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.1
 
 # Dependencies are added in sections alphabetically and according to features.
 dependencies:
   # Standard packages maintained by Aortem.
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
   flutter:
     sdk: flutter
   web: ^0.5.1

@@ -1,16 +1,16 @@
 name: ds_cognito_auth_provider
 description: Cognito authentication provider for DartStream.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/aortem/dartstream
 
 resolution: workspace
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   ds_auth_base: ^0.0.2
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4

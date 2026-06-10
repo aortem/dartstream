@@ -17,8 +17,7 @@ Providers implement the shared interface from `ds_notifications_base` and are re
 ---
 
 If you plan to publish a provider, ensure it includes:
-- `pubspec.yaml` with `sdk: ^3.10.9`
+- `pubspec.yaml` with `sdk: ^3.12.2`
 - `LICENSE` (DartStream standard)
 - `CHANGELOG.md`
 - `manifest.yaml` for registry/discovery
-
