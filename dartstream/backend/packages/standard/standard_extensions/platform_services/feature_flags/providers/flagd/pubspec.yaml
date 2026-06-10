@@ -6,7 +6,7 @@ repository: https://github.com/aortem/dartstream
 publish_to: none # Mark the package as non-publishable for local testing:
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 resolution: workspace
 
@@ -14,7 +14,7 @@ dependencies:
   http: ^1.2.2
   ds_feature_flags_base:
     path: ../../base
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4

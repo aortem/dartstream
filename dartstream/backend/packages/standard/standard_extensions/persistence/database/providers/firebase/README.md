@@ -7,7 +7,7 @@ Google Firestore database provider for DartStream using the official `googleapis
 ```yaml
 dependencies:
   ds_database_base: ^0.0.2
-  ds_firebase_database: ^0.0.1
+  ds_firebase_database: ^0.0.2
 ```
 
 ## Usage

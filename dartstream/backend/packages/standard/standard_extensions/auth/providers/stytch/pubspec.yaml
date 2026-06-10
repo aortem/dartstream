@@ -1,16 +1,16 @@
 name: ds_stytch_auth_provider
 description: Stytch authentication provider for DartStream.
-version: 0.0.4
+version: 0.0.5
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 resolution: workspace
 
 dependencies:
   ds_auth_base: ^0.0.2
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4

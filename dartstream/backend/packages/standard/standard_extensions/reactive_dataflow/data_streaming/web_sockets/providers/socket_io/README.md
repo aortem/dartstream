@@ -7,7 +7,7 @@ Socket.IO provider for DartStream using the `socket_io_client` package.
 ```yaml
 dependencies:
   ds_websocket_base: ^0.0.1
-  ds_socket_io_websocket_provider: ^0.0.1
+  ds_socket_io_websocket_provider: ^0.0.2
 ```
 
 ## Usage

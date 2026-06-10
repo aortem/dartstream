@@ -87,11 +87,11 @@ validate_commit_messages:
       if [ -n "$CI_MERGE_REQUEST_IID" ]; then
         echo "Merge request detected. Allowing merge commit messages..."
         MERGE_REGEX="^Merge branch '[a-zA-Z0-9/_-]+' into '$TARGET_BRANCHES'$"
-        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs|ci)(\([a-z0-9_-]+\))?: .{1,72}$"
         COMBINED_REGEX="($MERGE_REGEX|$REGEX)"
       else
         echo "Standard pipeline detected. Enforcing strict commit message validation..."
-        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs)(\([a-z0-9_-]+\))?: .{1,72}$"
+        REGEX="^(feat|fix|hotfix|chore|test|refactor|release|admin|docs|ci)(\([a-z0-9_-]+\))?: .{1,72}$"
       fi
 
       # Validate the last commit message

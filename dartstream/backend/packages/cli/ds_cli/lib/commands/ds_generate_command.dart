@@ -758,7 +758,7 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   meta: ^1.17.0

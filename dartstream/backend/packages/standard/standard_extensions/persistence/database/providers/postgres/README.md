@@ -7,7 +7,7 @@ PostgreSQL database provider for DartStream. Documents are stored in per-collect
 ```yaml
 dependencies:
   ds_database_base: ^0.0.2
-  ds_postgres_database: ^0.0.1
+  ds_postgres_database: ^0.0.2
 ```
 
 ## Usage

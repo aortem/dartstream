@@ -4,12 +4,12 @@ version: 0.0.1
 publish_to: none
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   ds_cognito_auth_provider:
     path: ../
   ds_auth_base: ^0.0.2
-  cognito_dart_auth_sdk: ^0.0.1
-  ds_standard_features: ^0.1.6
+  cognito_dart_auth_sdk: ^0.0.3
+  ds_standard_features: ^0.1.7
   shelf: ^1.4.2

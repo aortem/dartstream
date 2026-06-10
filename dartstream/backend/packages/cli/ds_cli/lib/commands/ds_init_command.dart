@@ -298,7 +298,7 @@ description: A DartStream project
 version: 0.1.0
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   # DartStream core

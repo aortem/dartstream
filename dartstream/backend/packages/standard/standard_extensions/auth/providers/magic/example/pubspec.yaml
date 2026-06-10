@@ -2,7 +2,7 @@ name: magic_example_server
 description: A simple backend server demonstrating Magic Auth usage.
 version: 1.0.0
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   shelf: ^1.4.2
