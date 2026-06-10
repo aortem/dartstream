@@ -21,7 +21,7 @@ Add to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  ds_auth0_auth_provider: ^0.0.2
+  ds_auth0_auth_provider: ^0.0.3
   ds_auth_base: ^0.0.2
 ```
 

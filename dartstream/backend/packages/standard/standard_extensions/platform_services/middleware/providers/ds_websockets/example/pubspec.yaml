@@ -3,7 +3,7 @@ description: Example of using ds_websockets.
 publish_to: none
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   ds_websockets:

@@ -8,7 +8,7 @@ Ensure your `pubspec.yaml` includes the necessary dev dependencies:
 
 ```yaml
 dev_dependencies:
-  ds_tools_testing: ^0.1.4
+  ds_tools_testing: ^0.1.5
   mocktail: ^1.0.3
 ```
 

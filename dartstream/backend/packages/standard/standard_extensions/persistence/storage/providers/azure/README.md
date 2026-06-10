@@ -7,7 +7,7 @@ Azure Blob Storage provider for DartStream.
 ```yaml
 dependencies:
   ds_storage_base: ^0.0.1
-  ds_azure_storage_provider: ^0.0.1
+  ds_azure_storage_provider: ^0.0.2
 ```
 
 ## Usage

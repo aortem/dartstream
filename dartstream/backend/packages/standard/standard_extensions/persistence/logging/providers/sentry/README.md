@@ -7,7 +7,7 @@ Sentry logging provider for DartStream. This package plugs into `ds_logging_base
 ```yaml
 dependencies:
   ds_logging_base: ^0.0.1
-  ds_sentry_logging_provider: ^0.0.1
+  ds_sentry_logging_provider: ^0.0.2
 ```
 
 ## Usage

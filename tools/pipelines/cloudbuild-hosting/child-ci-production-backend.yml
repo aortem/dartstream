@@ -95,7 +95,7 @@ validate_dart_sdk_version:
     - echo "$PUBSPEC_FILES"
 
     # Define the minimum required Dart SDK version
-    - MINIMUM_version="3.11.0"
+    - MINIMUM_version="3.12.2"
     - ALL_VALID="true"
 
     # Iterate over each pubspec.yaml file

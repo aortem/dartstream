@@ -5,12 +5,12 @@ repository: https://github.com/aortem/dartstream
 publish_to: none
 
 environment:
-  sdk: ^3.11.0
+  sdk: ^3.12.2
 
 dependencies:
   ds_intellitoggle_provider: ^0.0.1
   ds_feature_flags_base: ^0.0.1
-  ds_standard_features: ^0.1.6
+  ds_standard_features: ^0.1.7
 
 dev_dependencies:
   ds_tools_testing: ^0.1.4
