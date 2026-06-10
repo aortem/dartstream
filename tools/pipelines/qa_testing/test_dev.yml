@@ -7,7 +7,7 @@ stages:
 # Setup Stage
 setup:
   stage: setup
-  image: dart:stable
+  image: dart:3.12.2
   # tags:
   #   - dart
   rules:
@@ -26,7 +26,7 @@ setup:
 # Unit Tests
 unit_tests:
   stage: unit_tests
-  image: dart:stable
+  image: dart:3.12.2
   # tags:
   #   - dart
   rules:
@@ -46,7 +46,7 @@ unit_tests:
 # Integration Tests
 integration_tests:
   stage: integration_tests
-  image: dart:stable
+  image: dart:3.12.2
   #  tags:
   #    - dart
   rules:
@@ -66,7 +66,7 @@ integration_tests:
 # End-to-End Tests
 e2e_tests:
   stage: e2e_tests
-  image: dart:stable
+  image: dart:3.12.2
   #  tags:
   #    - dart
   rules:

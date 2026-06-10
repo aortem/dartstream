@@ -140,7 +140,7 @@ validate_dart_sdk_version:
 
 analyze_main:
   stage: analyze
-  image: dart:stable
+  image: dart:3.12.2
   needs: 
     - validate_commit_messages
   before_script:
