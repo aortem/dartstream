@@ -1,5 +1,5 @@
 # Define the Docker image to use.
-image: dart:3.12.2
+image: dart:stable
 
 # Define stages for the pipeline
 stages:
