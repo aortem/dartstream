@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.7
+
+- Fixed hosted `dartstream` global activation by keeping the public root
+  executable independent from unpublished workspace-only CLI packages.
+- Excluded local registry, sync, and dev-server scripts from the published
+  package executable set.
 
 ## 0.0.6
 
