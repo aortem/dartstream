@@ -4,7 +4,7 @@ version: 0.0.3
 repository: https://github.com/aortem/dartstream
 
 environment:
-  sdk: ^3.12.1
+  sdk: ^3.12.2
 resolution: workspace
 
 # Dependencies are added in sections alphabetically and according to features.
