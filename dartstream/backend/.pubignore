@@ -21,6 +21,13 @@ analysis_outputs/
 **/*.pdb
 **/dart.bat
 
+# Local workspace utilities are not public package executables.
+bin/dev_server.dart
+bin/ds_cli.dart
+bin/generate_registry.dart
+bin/sync_extensions.dart
+bin/sync_manifest.dart
+
 # Example frontend dependency/build outputs
 **/node_modules/
 **/.nuxt/
