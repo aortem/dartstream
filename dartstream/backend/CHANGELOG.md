@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.0.8
+
+- Restored the hosted `dartstream` executable to the full public command set:
+  `init`, `configure`, `setup`, `generate`, `validate`, `extensions`,
+  `discover`, `list`, `enable-extension`, `disable-extension`, and `login`.
+- Moved the public CLI runner into the published root package so global
+  activation does not depend on unpublished workspace-only packages.
+- Added hosted-runner tests for command registration, login, init/configure/
+  validate, and client generation.
+
 ## 0.0.7
 
 - Fixed hosted `dartstream` global activation by keeping the public root
