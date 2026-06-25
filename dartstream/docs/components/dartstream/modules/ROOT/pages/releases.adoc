@@ -6,6 +6,19 @@
 This page summarizes client-facing features, improvements, and fixes across DartStream releases.
 '''
 
+== v0.0.8
+
+=== Overview
+Hosted CLI runner repair for the public `ds_dartstream` package.
+
+=== Highlights
+* Restored the hosted `dartstream` executable to expose the public command set after `dart pub global activate ds_dartstream`.
+* Moved the public command runner into the published root package so global activation does not depend on unpublished workspace-only packages.
+* Added hosted-runner coverage for `init`, `configure`, `generate`, `validate`, and `login --token`.
+
+=== Notes
+On Windows, Dart writes global executables to `%LOCALAPPDATA%\Pub\Cache\bin`. Add that directory to `PATH` if `dartstream` is not recognized after activation.
+
 == v0.0.2
 
 === Overview
