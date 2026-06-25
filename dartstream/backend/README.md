@@ -13,6 +13,28 @@ dart pub add ds_dartstream
 import 'package:ds_dartstream/ds_dartstream.dart';
 ```
 
+## CLI
+
+Install the public `dartstream` executable from pub.dev:
+
+```bash
+dart pub global activate ds_dartstream
+```
+
+Verify the hosted runner after activation:
+
+```bash
+dartstream --help
+dartstream init --help
+dartstream configure --help
+dartstream validate --help
+dartstream login --token <token>
+```
+
+On Windows, Dart writes global executables to
+`%LOCALAPPDATA%\Pub\Cache\bin`. Add that directory to `PATH` if `dartstream`
+is not recognized after activation.
+
 ## What Is Included
 
 | Category | Packages |
