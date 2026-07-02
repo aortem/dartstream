@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.0.9
+
+- Released CLI login token validation in the hosted `dartstream` executable.
+- Rejected malformed `dartstream login --token` values before credentials are
+  persisted.
+
 ## 0.0.8
 
 - Restored the hosted `dartstream` executable to the full public command set:
