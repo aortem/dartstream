@@ -630,6 +630,13 @@ class DSLoginCommand extends Command<void> {
     if (token == null || token.isEmpty) {
       throw UsageException('Missing token. Pass --token <token>.', usage);
     }
+    if (!_isValidDartStreamToken(token)) {
+      throw UsageException(
+        'Invalid DartStream token. Generate a CLI token from the DartStream '
+        'dashboard and pass the secret_ value.',
+        usage,
+      );
+    }
 
     final configDir = _resolveConfigDirectory();
     await configDir.create(recursive: true);
@@ -683,6 +690,10 @@ class DSLoginCommand extends Command<void> {
 
     return Directory(_join(home.trim(), '.dartstream'));
   }
+}
+
+bool _isValidDartStreamToken(String token) {
+  return RegExp(r'^secret_[a-f0-9]{32}$', caseSensitive: false).hasMatch(token);
 }
 
 class _PublicCommand {
