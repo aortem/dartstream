@@ -4,6 +4,12 @@ import 'package:args/command_runner.dart';
 import 'package:ds_dartstream/src/cli/dartstream_cli.dart';
 
 Future<void> main(List<String> args) async {
+  final versionOutput = dartStreamCliVersionOutput(args);
+  if (versionOutput != null) {
+    stdout.writeln(versionOutput);
+    return;
+  }
+
   final runner = createDartStreamCommandRunner();
 
   try {
