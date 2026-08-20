@@ -170,39 +170,22 @@ validation_trigger_docs:
 #     - when: never
 
 # -------------------------------------------------------------------
-# Cypress Tests - Unit/Integration/End2End
+# DartStream CLI validation
 # -------------------------------------------------------------------
 
-cypress_tests:
+validate_dartstream_cli:
   stage: unit_testing
-  trigger:
-    include: tools/pipelines/qa-testing/child-ci-qa-unit.yml
+  image: dart:3.12.2
+  script:
+    - cd dartstream/backend
+    - dart pub get
+    - dart analyze
+    - dart test test/dartstream_cli_test.dart
+    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.9"
   rules:
-    # Run only when backend has changed
     - changes:
-        - dartstream-opensource/backend/**/*
-      when: always
-    - when: never
-
-cypress_tests:
-  stage: integration_testing
-  trigger:
-    include: tools/pipelines/qa-testing/child-ci-qa-integration.yml
-  rules:
-    # Run only when backend has changed
-    - changes:
-        - dartstream-opensource/backend/**/*
-      when: always
-    - when: never
-
-cypress_tests:
-  stage: e2e_testing
-  trigger:
-    include: tools/pipelines/qa-testing/child-ci-qa-e2e.yml
-  rules:
-    # Run only when backend has changed
-    - changes:
-        - dartstream-opensource/backend/**/*
+        - dartstream/backend/**/*
+        - .gitlab-ci.yml
       when: always
     - when: never
 
