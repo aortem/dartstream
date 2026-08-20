@@ -3,6 +3,15 @@ import 'dart:io';
 
 import 'package:args/command_runner.dart';
 
+const dartStreamCliVersion = '0.0.9';
+
+String? dartStreamCliVersionOutput(List<String> args) {
+  if (args.length == 1 && (args.first == '--version' || args.first == '-v')) {
+    return 'ds_dartstream $dartStreamCliVersion';
+  }
+  return null;
+}
+
 CommandRunner<void> createDartStreamCommandRunner({
   Directory? workingDirectory,
   Directory? loginConfigDirectory,
