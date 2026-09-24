@@ -1,4 +1,16 @@
+## 0.0.10
+
+- Validate CLI credentials through OAuth, support saved and CI project validation, and restrict credential files.
+- Guard unfinished configure/setup/generate/discover commands before any write.
+- Generate a runnable bin entrypoint and preserve existing files unless --force.
+
 # Changelog
+
+## Unreleased
+
+- Generate `bin/<package_name>.dart` so `dart run` starts the generated app.
+  Preserve an existing entrypoint unless `--force` is requested.
+
 
 ## 0.0.9
 

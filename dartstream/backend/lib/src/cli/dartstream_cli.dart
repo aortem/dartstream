@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'cli_session.dart';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
+import 'package:args/args.dart';
 
-const dartStreamCliVersion = '0.0.9';
+const dartStreamCliVersion = '0.0.10';
 
 String? dartStreamCliVersionOutput(List<String> args) {
   if (args.length == 1 && (args.first == '--version' || args.first == '-v')) {
@@ -15,23 +17,38 @@ String? dartStreamCliVersionOutput(List<String> args) {
 CommandRunner<void> createDartStreamCommandRunner({
   Directory? workingDirectory,
   Directory? loginConfigDirectory,
+  CliSession? session,
 }) {
   final cwd = workingDirectory ?? Directory.current;
+  final auth = session ?? CliSession(directory: loginConfigDirectory);
   return CommandRunner<void>(
       'dartstream',
       'DartStream CLI - Full-stack framework for Dart',
     )
     ..addCommand(DSInitCommand(workingDirectory: cwd))
-    ..addCommand(DSConfigureCommand(workingDirectory: cwd))
-    ..addCommand(DSSetupCommand(workingDirectory: cwd))
-    ..addCommand(DSGenerateCommand(workingDirectory: cwd))
-    ..addCommand(DSValidateCommand(workingDirectory: cwd))
+    ..addCommand(DSComingSoonCommand(DSConfigureCommand(workingDirectory: cwd)))
+    ..addCommand(DSComingSoonCommand(DSSetupCommand(workingDirectory: cwd)))
+    ..addCommand(DSComingSoonCommand(DSGenerateCommand(workingDirectory: cwd)))
+    ..addCommand(DSValidateCommand(workingDirectory: cwd, session: auth))
     ..addCommand(DSExtensionsCommand(workingDirectory: cwd))
-    ..addCommand(DSDiscoveryCommand(workingDirectory: cwd))
+    ..addCommand(DSComingSoonCommand(DSDiscoveryCommand(workingDirectory: cwd)))
     ..addCommand(DSListCommand())
     ..addCommand(DSEnableExtensionCommand(workingDirectory: cwd))
     ..addCommand(DSDisableExtensionCommand(workingDirectory: cwd))
-    ..addCommand(DSLoginCommand(configDirectory: loginConfigDirectory));
+    ..addCommand(DSLoginCommand(auth));
+}
+
+/// Disables unfinished commands before they can touch customer files.
+class DSComingSoonCommand extends Command<void> {
+  DSComingSoonCommand(this.original) { _useOriginal = true; }
+  bool _useOriginal = false;
+  final Command<void> original;
+  @override String get name => original.name;
+  @override String get description => '${original.description} (coming soon)';
+  @override ArgParser get argParser => _useOriginal ? original.argParser : super.argParser;
+  @override Future<void> run() async {
+    throw UsageException('Coming soon - see https://docs.dartstream.io/dartstream/v0.0.1/cli.html', usage);
+  }
 }
 
 class DSInitCommand extends Command<void> {
@@ -109,6 +126,13 @@ void main() {
   print('DartStream project ready.');
 }
 ''', force: force);
+    final packageName = _pubPackageName(projectName);
+    await _writeIfMissing(
+      File(_join(target.path, 'bin', '$packageName.dart')),
+      "import 'package:$packageName/main.dart' as application;\n\n"
+      'void main() => application.main();\n',
+      force: force,
+    );
     await _writeIfMissing(File(_join(target.path, 'dartstream.yaml')), '''
 name: $projectName
 type: ${argResults?['type']}
@@ -395,7 +419,8 @@ void main() {
 }
 
 class DSValidateCommand extends Command<void> {
-  DSValidateCommand({required this.workingDirectory}) {
+  DSValidateCommand({required this.workingDirectory, required this.session}) {
+    argParser.addOption('env', allowed: ['prod','dev']);
     argParser
       ..addOption('project', abbr: 'p', help: 'Project to validate.')
       ..addOption(
@@ -424,6 +449,7 @@ class DSValidateCommand extends Command<void> {
   }
 
   final Directory workingDirectory;
+  final CliSession session;
 
   @override
   final name = 'validate';
@@ -434,6 +460,12 @@ class DSValidateCommand extends Command<void> {
 
   @override
   Future<void> run() async {
+    final project = argResults?['project'] as String?;
+    if (project != null) {
+      await session.validateProject(project, env: argResults?['env'] as String?);
+      stdout.writeln('DartStream project validated.');
+      return;
+    }
     final missing = <String>[];
     for (final relative in ['pubspec.yaml', 'dartstream.yaml']) {
       if (!File(_join(workingDirectory.path, relative)).existsSync()) {
@@ -612,97 +644,20 @@ class DSListCommand extends Command<void> {
 }
 
 class DSLoginCommand extends Command<void> {
-  DSLoginCommand({this.configDirectory}) {
-    argParser
-      ..addOption(
-        'token',
-        help: 'DartStream API token to save for CLI workflows.',
-      )
-      ..addOption(
-        'api-url',
-        defaultsTo: 'https://api.dartstream.io',
-        help: 'DartStream API base URL.',
-      );
+  DSLoginCommand(this.session) {
+    argParser..addOption('client-id', help: 'Client ID shown with the CLI token.')
+      ..addOption('token', help: 'CLI credential secret.')
+      ..addOption('env', allowed: ['prod', 'dev'], defaultsTo: 'prod');
   }
-
-  final Directory? configDirectory;
-
-  @override
-  final name = 'login';
-
-  @override
-  final description = 'Authenticate this machine with a DartStream API token.';
-
-  @override
-  Future<void> run() async {
-    final token = _tokenFromArgs();
-    if (token == null || token.isEmpty) {
-      throw UsageException('Missing token. Pass --token <token>.', usage);
-    }
-    if (!_isValidDartStreamToken(token)) {
-      throw UsageException(
-        'Invalid DartStream token. Generate a CLI token from the DartStream '
-        'dashboard and pass the secret_ value.',
-        usage,
-      );
-    }
-
-    final configDir = _resolveConfigDirectory();
-    await configDir.create(recursive: true);
-
-    final credentialsFile = File(_join(configDir.path, 'credentials.json'));
-    final payload = <String, dynamic>{
-      'token': token,
-      'apiUrl': argResults?['api-url'] as String,
-      'savedAt': DateTime.now().toUtc().toIso8601String(),
-    };
-
-    await credentialsFile.writeAsString(
-      const JsonEncoder.withIndent('  ').convert(payload),
-    );
-
-    stdout.writeln('DartStream CLI login saved.');
+  final CliSession session;
+  @override final name = 'login';
+  @override final description = 'Validate and save a CLI credential.';
+  @override Future<void> run() async {
+    try {
+      await session.login(clientId: argResults?['client-id'] as String?, secret: argResults?['token'] as String?, env: argResults!['env'] as String);
+    } on ArgumentError { throw UsageException('Supply --client-id and --token, or the CLI credential environment variables.', usage); }
+    stdout.writeln('DartStream CLI login validated and saved.');
   }
-
-  String? _tokenFromArgs() {
-    final token = argResults?['token'] as String?;
-    if (token != null && token.trim().isNotEmpty) return token.trim();
-
-    final envToken = Platform.environment['DARTSTREAM_TOKEN'];
-    if (envToken != null && envToken.trim().isNotEmpty) {
-      return envToken.trim();
-    }
-
-    return null;
-  }
-
-  Directory _resolveConfigDirectory() {
-    if (configDirectory != null) return configDirectory!;
-
-    final override = Platform.environment['DARTSTREAM_CONFIG_DIR'];
-    if (override != null && override.trim().isNotEmpty) {
-      return Directory(override.trim());
-    }
-
-    if (Platform.isWindows) {
-      final appData = Platform.environment['APPDATA'];
-      if (appData != null && appData.trim().isNotEmpty) {
-        return Directory(_join(appData.trim(), 'DartStream'));
-      }
-    }
-
-    final home =
-        Platform.environment['HOME'] ?? Platform.environment['USERPROFILE'];
-    if (home == null || home.trim().isEmpty) {
-      return Directory('.dartstream');
-    }
-
-    return Directory(_join(home.trim(), '.dartstream'));
-  }
-}
-
-bool _isValidDartStreamToken(String token) {
-  return RegExp(r'^secret_[a-f0-9]{32}$', caseSensitive: false).hasMatch(token);
 }
 
 class _PublicCommand {
