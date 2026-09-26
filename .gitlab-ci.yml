@@ -180,8 +180,8 @@ validate_dartstream_cli:
     - cd dartstream/backend
     - dart pub get
     - dart analyze
-    - dart test test/dartstream_cli_test.dart
-    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.9"
+    - dart test test/dartstream_cli_test.dart test/cli_session_test.dart
+    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.10"
   rules:
     - changes:
         - dartstream/backend/**/*
