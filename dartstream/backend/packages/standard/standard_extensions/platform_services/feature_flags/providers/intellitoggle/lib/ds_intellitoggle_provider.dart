@@ -1,5 +1,4 @@
 import 'package:ds_feature_flags_base/ds_feature_flag_provider.dart';
-import 'package:openfeature_dart_server_sdk/hooks.dart';
 import 'package:openfeature_provider_intellitoggle/openfeature_provider_intellitoggle.dart';
 
 import 'src/ds_intellitoggle_config.dart';

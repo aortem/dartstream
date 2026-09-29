@@ -1,3 +1,7 @@
+## 0.0.11
+
+- Validate the framework on Dart 3.13.4 and fix body-parser handler error propagation.
+
 ## 0.0.10
 
 - Validate CLI credentials through OAuth, support saved and CI project validation, and restrict credential files.

@@ -175,13 +175,14 @@ validation_trigger_docs:
 
 validate_dartstream_cli:
   stage: unit_testing
-  image: dart:3.12.2
+  image: dart:3.13.4
   script:
     - cd dartstream/backend
     - dart pub get
     - dart analyze
     - dart test test/dartstream_cli_test.dart test/cli_session_test.dart
-    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.10"
+    - dart test packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf/test
+    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.11"
   rules:
     - changes:
         - dartstream/backend/**/*
@@ -249,5 +250,5 @@ gitlab_github_release:
   trigger:
     include: tools/pipelines/cloudbuild-hosting/child-ci-release.yml
   rules:
-    - if: '$CI_COMMIT_BRANCH == "development"'
+    - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
