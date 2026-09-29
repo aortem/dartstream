@@ -12,6 +12,10 @@
 
 ## Unreleased
 
+- Configure now merges explicit options into existing YAML while preserving
+  other settings and comments. Replacing the file requires `--force`.
+  Setup, generate and discover remain guarded pending their Phase 2 work.
+
 - Generate `bin/<package_name>.dart` so `dart run` starts the generated app.
   Preserve an existing entrypoint unless `--force` is requested.
 
