@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'cli_session.dart';
+import 'configure_file.dart';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
@@ -26,7 +27,7 @@ CommandRunner<void> createDartStreamCommandRunner({
       'DartStream CLI - Full-stack framework for Dart',
     )
     ..addCommand(DSInitCommand(workingDirectory: cwd))
-    ..addCommand(DSComingSoonCommand(DSConfigureCommand(workingDirectory: cwd)))
+    ..addCommand(DSConfigureCommand(workingDirectory: cwd))
     ..addCommand(DSComingSoonCommand(DSSetupCommand(workingDirectory: cwd)))
     ..addCommand(DSComingSoonCommand(DSGenerateCommand(workingDirectory: cwd)))
     ..addCommand(DSValidateCommand(workingDirectory: cwd, session: auth))
@@ -40,14 +41,24 @@ CommandRunner<void> createDartStreamCommandRunner({
 
 /// Disables unfinished commands before they can touch customer files.
 class DSComingSoonCommand extends Command<void> {
-  DSComingSoonCommand(this.original) { _useOriginal = true; }
+  DSComingSoonCommand(this.original) {
+    _useOriginal = true;
+  }
   bool _useOriginal = false;
   final Command<void> original;
-  @override String get name => original.name;
-  @override String get description => '${original.description} (coming soon)';
-  @override ArgParser get argParser => _useOriginal ? original.argParser : super.argParser;
-  @override Future<void> run() async {
-    throw UsageException('Coming soon - see https://docs.dartstream.io/dartstream/v0.0.1/cli.html', usage);
+  @override
+  String get name => original.name;
+  @override
+  String get description => '${original.description} (coming soon)';
+  @override
+  ArgParser get argParser =>
+      _useOriginal ? original.argParser : super.argParser;
+  @override
+  Future<void> run() async {
+    throw UsageException(
+      'Coming soon - see https://docs.dartstream.io/dartstream/v0.0.1/cli.html',
+      usage,
+    );
   }
 }
 
@@ -209,6 +220,12 @@ class DSConfigureCommand extends Command<void> {
         'skip-examples',
         defaultsTo: false,
         help: 'Skip generated example configuration.',
+      )
+      ..addFlag(
+        'force',
+        negatable: false,
+        help:
+            'Replace the entire configuration with these options and defaults.',
       );
   }
 
@@ -223,23 +240,33 @@ class DSConfigureCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final projectName =
-        _stringOption('name') ?? _basename(workingDirectory.path);
-    final file = File(_join(workingDirectory.path, 'dartstream.yaml'));
-    await file.writeAsString('''
-name: ${projectName.isEmpty ? 'dartstream_app' : projectName}
-cloud:
-  vendor: ${argResults?['vendor']}
-auth:
-  provider: ${argResults?['auth']}
-database:
-  provider: ${argResults?['database']}
-cicd:
-  provider: ${argResults?['cicd']}
-cloud_features: ${argResults?['cloud-features']}
-examples: ${!(argResults?['skip-examples'] as bool? ?? false)}
-''');
-    stdout.writeln('Configuration updated at ${file.path}.');
+    final values = <String, Object>{
+      for (final name in [
+        'name',
+        'vendor',
+        'auth',
+        'database',
+        'cicd',
+        'cloud-features',
+        'skip-examples',
+      ])
+        if (argResults!.wasParsed(name)) name: argResults![name] as Object,
+    };
+    try {
+      final changes = await configureFile(
+        File(_join(workingDirectory.path, 'dartstream.yaml')),
+        values,
+        defaultName: _basename(workingDirectory.path).isEmpty
+            ? 'dartstream_app'
+            : _basename(workingDirectory.path),
+        force: argResults!['force'] as bool,
+      );
+      stdout.writeln(
+        changes.isEmpty ? 'No configuration changes.' : changes.join('\n'),
+      );
+    } on FormatException catch (error) {
+      throw UsageException(error.message, usage);
+    }
   }
 }
 
@@ -420,7 +447,7 @@ void main() {
 
 class DSValidateCommand extends Command<void> {
   DSValidateCommand({required this.workingDirectory, required this.session}) {
-    argParser.addOption('env', allowed: ['prod','dev']);
+    argParser.addOption('env', allowed: ['prod', 'dev']);
     argParser
       ..addOption('project', abbr: 'p', help: 'Project to validate.')
       ..addOption(
@@ -462,7 +489,10 @@ class DSValidateCommand extends Command<void> {
   Future<void> run() async {
     final project = argResults?['project'] as String?;
     if (project != null) {
-      await session.validateProject(project, env: argResults?['env'] as String?);
+      await session.validateProject(
+        project,
+        env: argResults?['env'] as String?,
+      );
       stdout.writeln('DartStream project validated.');
       return;
     }
@@ -645,17 +675,30 @@ class DSListCommand extends Command<void> {
 
 class DSLoginCommand extends Command<void> {
   DSLoginCommand(this.session) {
-    argParser..addOption('client-id', help: 'Client ID shown with the CLI token.')
+    argParser
+      ..addOption('client-id', help: 'Client ID shown with the CLI token.')
       ..addOption('token', help: 'CLI credential secret.')
       ..addOption('env', allowed: ['prod', 'dev'], defaultsTo: 'prod');
   }
   final CliSession session;
-  @override final name = 'login';
-  @override final description = 'Validate and save a CLI credential.';
-  @override Future<void> run() async {
+  @override
+  final name = 'login';
+  @override
+  final description = 'Validate and save a CLI credential.';
+  @override
+  Future<void> run() async {
     try {
-      await session.login(clientId: argResults?['client-id'] as String?, secret: argResults?['token'] as String?, env: argResults!['env'] as String);
-    } on ArgumentError { throw UsageException('Supply --client-id and --token, or the CLI credential environment variables.', usage); }
+      await session.login(
+        clientId: argResults?['client-id'] as String?,
+        secret: argResults?['token'] as String?,
+        env: argResults!['env'] as String,
+      );
+    } on ArgumentError {
+      throw UsageException(
+        'Supply --client-id and --token, or the CLI credential environment variables.',
+        usage,
+      );
+    }
     stdout.writeln('DartStream CLI login validated and saved.');
   }
 }
