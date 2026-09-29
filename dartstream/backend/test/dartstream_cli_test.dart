@@ -8,8 +8,8 @@ const validCliToken = 'secret_0123456789abcdef0123456789abcdef';
 
 void main() {
   test('global version flags report the published package version', () {
-    expect(dartStreamCliVersionOutput(['--version']), 'ds_dartstream 0.0.10');
-    expect(dartStreamCliVersionOutput(['-v']), 'ds_dartstream 0.0.10');
+    expect(dartStreamCliVersionOutput(['--version']), 'ds_dartstream 0.0.11');
+    expect(dartStreamCliVersionOutput(['-v']), 'ds_dartstream 0.0.11');
     expect(dartStreamCliVersionOutput(['validate']), isNull);
   });
 

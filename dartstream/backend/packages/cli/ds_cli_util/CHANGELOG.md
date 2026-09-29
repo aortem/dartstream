@@ -1,3 +1,9 @@
+## 0.0.2-pre.2
+
+- Declare path and YAML dependencies used by the library.
+- Remove the executable declaration that pointed to a missing script. This package supplies library utilities.
+- Validate the package archive on Dart 3.13.4.
+
 # Changelog
 
 

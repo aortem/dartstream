@@ -1,3 +1,9 @@
+## 0.0.2
+
+- Declare storage, HTTP parser and MIME dependencies required by the published library.
+- Keep downstream handler errors outside request-body parsing error handling.
+- Validate middleware and framework tests on Dart 3.13.4.
+
 # Changelog
 
 

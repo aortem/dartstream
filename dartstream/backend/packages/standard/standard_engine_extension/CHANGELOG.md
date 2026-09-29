@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Align lifecycle and engine dependencies with the release candidates validated on Dart 3.13.4.
+
 # Changelog
 
 
