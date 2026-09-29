@@ -7,6 +7,8 @@ It provides centralized configuration, service management, lifecycle-aware exten
 
 ## Features
 
+Release checks include this package's own archive validation and test dependencies on Dart 3.13.4.
+
 - Core configuration management
 - Service registration and retrieval
 - Lifecycle-aware core extension registration

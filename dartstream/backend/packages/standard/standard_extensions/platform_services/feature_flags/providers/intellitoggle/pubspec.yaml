@@ -9,6 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
+  http: ^1.6.0
   ds_feature_flags_base: ^0.0.1
   ds_standard_features: ^0.1.7
   openfeature_dart_server_sdk: ^0.0.22

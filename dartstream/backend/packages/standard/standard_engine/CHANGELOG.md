@@ -1,5 +1,6 @@
 ## 0.0.3
 
+- Declare the test framework directly so archive validation works independently of the workspace root.
 - Align lifecycle and engine dependencies with the release candidates validated on Dart 3.13.4.
 
 # Changelog

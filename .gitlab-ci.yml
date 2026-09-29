@@ -119,6 +119,7 @@ validate_commit_messages:
 validation_trigger_docs:
   stage: validation
   trigger:
+    strategy: depend
     include: tools/pipelines/firebase-hosting/child-ci-production-docs.yml
   rules:
     # Run only when docs changed
@@ -182,6 +183,16 @@ validate_dartstream_cli:
     - dart analyze
     - dart test test/dartstream_cli_test.dart test/cli_session_test.dart
     - dart test packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf/test
+    - dart test packages/standard/standard_engine/test
+    - |
+      for package in "." \
+        "packages/standard/standard_extensions/reactive_dataflow/lifecycle/base" \
+        "packages/standard/standard_engine" \
+        "packages/standard/standard_engine_extension" \
+        "packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle" \
+        "packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf"; do
+        dart pub --directory="$package" publish --dry-run || exit 1
+      done
     - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.11"
   rules:
     - changes:
@@ -248,7 +259,8 @@ validate_dartstream_cli:
 gitlab_github_release:
   stage: release
   trigger:
+    strategy: depend
     include: tools/pipelines/cloudbuild-hosting/child-ci-release.yml
   rules:
     - if: '$CI_COMMIT_BRANCH == "main"'
-      when: always
+      when: on_success
