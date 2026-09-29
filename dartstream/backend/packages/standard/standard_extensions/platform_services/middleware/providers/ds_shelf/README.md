@@ -1,5 +1,7 @@
 # DartStream
 
+The published middleware package declares its storage, HTTP parsing and MIME dependencies directly; validation includes an independent package archive check on Dart 3.13.4.
+
 ## DS Standard Packages
 
 DartStream standard packages provide Dart-native framework contracts and adapters maintained by Aortem. The packages preserve normal Dart composition patterns while adding DS-prefixed interfaces where the framework needs a stable boundary.

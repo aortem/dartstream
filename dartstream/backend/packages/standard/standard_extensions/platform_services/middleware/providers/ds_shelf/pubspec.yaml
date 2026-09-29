@@ -9,6 +9,9 @@ environment:
 resolution: workspace
 
 dependencies:
+  ds_storage_base: ^0.0.1
+  http_parser: ^4.1.2
+  mime: ^1.0.6
   shelf: ^1.4.2
   shelf_router: ^1.1.4
   shelf_packages_handler: ^3.0.2

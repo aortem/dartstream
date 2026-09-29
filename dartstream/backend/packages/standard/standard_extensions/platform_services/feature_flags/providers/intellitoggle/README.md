@@ -1,5 +1,7 @@
 # DartStream IntelliToggle Feature Flag Provider
 
+Archive validation on Dart 3.13.4 checks the provider's direct HTTP dependency independently of other workspace packages.
+
 A DartStream provider for [IntelliToggle](https://www.intellitoggle.com), a Dart-native feature flag service. This package integrates IntelliToggle's OpenFeature-compliant SDK into the DartStream framework, allowing you to manage feature flags with minimal setup.
 
 ## Features

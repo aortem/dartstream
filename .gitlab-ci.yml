@@ -191,7 +191,7 @@ validate_dartstream_cli:
         "packages/standard/standard_engine_extension" \
         "packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle" \
         "packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf"; do
-        (cd "$package" && dart pub publish --dry-run) || exit 1
+        dart pub --directory="$package" publish --dry-run || exit 1
       done
     - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.11"
   rules:

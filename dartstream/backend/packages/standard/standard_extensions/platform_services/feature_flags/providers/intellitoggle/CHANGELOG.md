@@ -1,5 +1,6 @@
 ## 0.0.3
 
+- Declare the HTTP client dependency used by the published provider library.
 - Remove a redundant hooks import reported by Dart 3.13.4 analysis.
 
 # Changelog
