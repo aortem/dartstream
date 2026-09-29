@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'cli_session.dart';
 import 'configure_file.dart';
+import 'discover_extensions.dart';
 import 'dart:io';
 
 import 'package:args/command_runner.dart';
@@ -32,7 +33,7 @@ CommandRunner<void> createDartStreamCommandRunner({
     ..addCommand(DSComingSoonCommand(DSGenerateCommand(workingDirectory: cwd)))
     ..addCommand(DSValidateCommand(workingDirectory: cwd, session: auth))
     ..addCommand(DSExtensionsCommand(workingDirectory: cwd))
-    ..addCommand(DSComingSoonCommand(DSDiscoveryCommand(workingDirectory: cwd)))
+    ..addCommand(DSDiscoveryCommand(workingDirectory: cwd))
     ..addCommand(DSListCommand())
     ..addCommand(DSEnableExtensionCommand(workingDirectory: cwd))
     ..addCommand(DSDisableExtensionCommand(workingDirectory: cwd))
@@ -567,7 +568,11 @@ class DSExtensionsCommand extends Command<void> {
 class DSDiscoveryCommand extends Command<void> {
   DSDiscoveryCommand({required this.workingDirectory}) {
     argParser
-      ..addOption('project', abbr: 'p', help: 'Project name.')
+      ..addOption(
+        'project',
+        abbr: 'p',
+        help: 'Project directory (defaults to the current directory).',
+      )
       ..addFlag('register', abbr: 'r', defaultsTo: true)
       ..addFlag('validate', abbr: 'v', defaultsTo: true);
   }
@@ -582,29 +587,36 @@ class DSDiscoveryCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    stdout.writeln('Starting extension discovery...');
-    final candidates = <String>{};
-    final packagesDir = Directory(_join(workingDirectory.path, 'packages'));
-    if (packagesDir.existsSync()) {
-      for (final entity in packagesDir.listSync(recursive: true)) {
-        if (entity is File && _basename(entity.path) == 'pubspec.yaml') {
-          candidates.add(_basename(Directory(entity.parent.path).path));
-        }
+    if (argResults?['validate'] == false) {
+      throw UsageException(
+        'Manifest validation is required; --no-validate is unsupported.',
+        usage,
+      );
+    }
+    final target = argResults?['project'] as String?;
+    final directory = target == null
+        ? workingDirectory
+        : Directory(_resolvePath(workingDirectory, target));
+    try {
+      final discovered = discoverExtensions(
+        directory,
+        register: argResults?['register'] == true,
+      );
+      for (final extension in discovered) {
+        stdout.writeln(
+          '${extension['name']} ${extension['version']} ${extension['entry_point']}',
+        );
       }
+      stdout.writeln(
+        'Discovered ${discovered.length} local extension manifests. '
+        '${argResults?['register'] == true ? 'Registry updated when needed.' : 'Registry unchanged.'} '
+        'Extension code was not loaded.',
+      );
+    } on FormatException catch (error) {
+      throw UsageException(error.message, usage);
+    } on FileSystemException catch (error) {
+      throw UsageException(error.message, usage);
     }
-
-    if (argResults?['register'] == true) {
-      final state = {
-        'extensions': [
-          for (final name in candidates) {'name': name, 'enabled': true},
-        ],
-      };
-      await _writeExtensionState(workingDirectory, state);
-    }
-
-    stdout.writeln(
-      'Discovery complete. Registered extensions: ${candidates.length}.',
-    );
   }
 }
 
