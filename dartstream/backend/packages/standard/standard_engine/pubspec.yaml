@@ -19,3 +19,4 @@ dependencies:
 dev_dependencies:
 # Packages only needed for development/testing
   ds_tools_testing: ^0.1.4
+  test: ^1.25.8
