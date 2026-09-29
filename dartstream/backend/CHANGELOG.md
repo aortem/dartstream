@@ -14,7 +14,9 @@
 
 - Configure now merges explicit options into existing YAML while preserving
   other settings and comments. Replacing the file requires `--force`.
-  Setup, generate and discover remain guarded pending their Phase 2 work.
+  Setup and generate remain guarded pending their Phase 2 work.
+- Discover now validates local manifests and entry points, preserves registry metadata
+  and disabled extensions, and supports read-only discovery. No extension code is executed.
 
 - Generate `bin/<package_name>.dart` so `dart run` starts the generated app.
   Preserve an existing entrypoint unless `--force` is requested.
