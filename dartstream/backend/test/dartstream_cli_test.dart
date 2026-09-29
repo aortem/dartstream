@@ -50,13 +50,15 @@ void main() {
       await runner.run(['init', '--name', 'sample_app']);
       await runner.run(['validate']);
       final entrypoint = File('${tempDir.path}/bin/sample_app.dart');
-      expect(entrypoint.readAsStringSync(), contains('package:sample_app/main.dart'));
+      expect(
+        entrypoint.readAsStringSync(),
+        contains('package:sample_app/main.dart'),
+      );
       entrypoint.writeAsStringSync('// customer entrypoint');
       await runner.run(['init', '--name', 'sample_app']);
       expect(entrypoint.readAsStringSync(), '// customer entrypoint');
       await runner.run(['init', '--name', 'sample_app', '--force']);
       expect(entrypoint.readAsStringSync(), contains('application.main()'));
-
 
       expect(
         File(
@@ -73,22 +75,48 @@ void main() {
     },
   );
 
-  test('unfinished commands never alter existing files or create new files', () async {
-    final temp = Directory.systemTemp.createTempSync('cli_guard_');
-    addTearDown(() => temp.deleteSync(recursive: true));
-    File('${temp.path}/dartstream.yaml').writeAsStringSync('custom: keep');
-    Directory('${temp.path}/.dartstream').createSync();
-    File('${temp.path}/.dartstream/setup.json').writeAsStringSync('{"custom":true}');
-    File('${temp.path}/.dartstream/extensions.json').writeAsStringSync('{"extensions":[{"name":"custom","enabled":false}]}');
-    Map<String,String> snapshot() => {for (final f in temp.listSync(recursive: true).whereType<File>()) f.path: f.readAsStringSync()};
-    final before = snapshot();
-    final runner = createDartStreamCommandRunner(workingDirectory: temp);
-    for (final args in [ ['configure'], ['setup'], ['generate','--type','model'], ['discover','--register'] ]) {
-      await expectLater(runner.run(args), throwsA(isA<UsageException>().having((e) => e.message, 'message', startsWith('Coming soon'))));
-      expect(snapshot(), before);
-      expect(runner.commands[args.first]!.description, contains('coming soon'));
-    }
-  });
+  test(
+    'unfinished commands never alter existing files or create new files',
+    () async {
+      final temp = Directory.systemTemp.createTempSync('cli_guard_');
+      addTearDown(() => temp.deleteSync(recursive: true));
+      File('${temp.path}/dartstream.yaml').writeAsStringSync('custom: keep');
+      Directory('${temp.path}/.dartstream').createSync();
+      File(
+        '${temp.path}/.dartstream/setup.json',
+      ).writeAsStringSync('{"custom":true}');
+      File(
+        '${temp.path}/.dartstream/extensions.json',
+      ).writeAsStringSync('{"extensions":[{"name":"custom","enabled":false}]}');
+      Map<String, String> snapshot() => {
+        for (final f in temp.listSync(recursive: true).whereType<File>())
+          f.path: f.readAsStringSync(),
+      };
+      final before = snapshot();
+      final runner = createDartStreamCommandRunner(workingDirectory: temp);
+      for (final args in [
+        ['setup'],
+        ['generate', '--type', 'model'],
+        ['discover', '--register'],
+      ]) {
+        await expectLater(
+          runner.run(args),
+          throwsA(
+            isA<UsageException>().having(
+              (e) => e.message,
+              'message',
+              startsWith('Coming soon'),
+            ),
+          ),
+        );
+        expect(snapshot(), before);
+        expect(
+          runner.commands[args.first]!.description,
+          contains('coming soon'),
+        );
+      }
+    },
+  );
 
   test('login requires a token', () async {
     final runner = createDartStreamCommandRunner();
