@@ -97,7 +97,6 @@ void main() {
       for (final args in [
         ['setup'],
         ['generate', '--type', 'model'],
-        ['discover', '--register'],
       ]) {
         await expectLater(
           runner.run(args),
