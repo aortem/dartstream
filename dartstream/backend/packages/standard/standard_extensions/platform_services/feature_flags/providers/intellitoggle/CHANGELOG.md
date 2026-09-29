@@ -1,3 +1,7 @@
+## 0.0.3
+
+- Remove a redundant hooks import reported by Dart 3.13.4 analysis.
+
 # Changelog
 
 

@@ -5,7 +5,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:args/args.dart';
 
-const dartStreamCliVersion = '0.0.10';
+const dartStreamCliVersion = '0.0.11';
 
 String? dartStreamCliVersionOutput(List<String> args) {
   if (args.length == 1 && (args.first == '--version' || args.first == '-v')) {

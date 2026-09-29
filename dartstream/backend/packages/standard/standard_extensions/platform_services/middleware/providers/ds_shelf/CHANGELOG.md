@@ -1,3 +1,8 @@
+## 0.0.2
+
+- Keep downstream handler errors outside request-body parsing error handling.
+- Validate middleware and framework tests on Dart 3.13.4.
+
 # Changelog
 
 

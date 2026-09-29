@@ -238,3 +238,6 @@ This package is part of the DartStream project and is licensed under the BSD-3 L
 For issues with the DartStream integration, visit the [DartStream repository](https://github.com/aortem/dartstream-opensource).
 
 For issues with IntelliToggle itself, visit the [IntelliToggle project](https://gitlab.com/dartapps/apps/intellitoggle/intellitoggle).
+
+
+Dart 3.13.4 analysis uses the hooks API exported by the IntelliToggle provider.

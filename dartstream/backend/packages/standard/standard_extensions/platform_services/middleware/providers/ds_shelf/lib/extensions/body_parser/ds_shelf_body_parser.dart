@@ -15,77 +15,43 @@ Middleware dsShelfBodyParserMiddleware() {
           request.method == 'OPTIONS') {
         return inner(request);
       }
-
       final contentTypeHeader = request.headers['content-type'];
-      if (contentTypeHeader == null) {
-        return inner(request);
-      }
-
+      if (contentTypeHeader == null) return inner(request);
       final contentType = contentTypeHeader.toLowerCase();
-
+      var parsedRequest = request;
       try {
-        // 🔥 HANDLE MULTIPART FIRST
         if (contentType.contains('multipart/form-data')) {
-          final parsedBody =
-              await _parseMultipart(request, contentTypeHeader);
-
-          return inner(request.change(
-            context: {
-              ...request.context,
-              'ds_shelf.body': parsedBody,
-            },
-          ));
-        }
-
-        // JSON
-        if (contentType.contains('application/json')) {
+          final parsedBody = await _parseMultipart(request, contentTypeHeader);
+          parsedRequest = request.change(
+            context: {...request.context, 'ds_shelf.body': parsedBody},
+          );
+        } else if (contentType.contains('application/json') ||
+            contentType.contains('application/x-www-form-urlencoded') ||
+            contentType.contains('text/plain')) {
           final content = await request.readAsString();
-          if (content.isEmpty) return inner(request);
-
-          final decoded = jsonDecode(content);
-
-          return inner(request.change(
-            body: content,
-            context: {
-              ...request.context,
-              'ds_shelf.body': decoded,
-            },
-          ));
-        }
-
-        // URL encoded
-        if (contentType.contains('application/x-www-form-urlencoded')) {
-          final content = await request.readAsString();
-          if (content.isEmpty) return inner(request);
-
-          final decoded = Uri.splitQueryString(content);
-
-          return inner(request.change(
-            body: content,
-            context: {
-              ...request.context,
-              'ds_shelf.body': decoded,
-            },
-          ));
-        }
-
-        // Plain text
-        if (contentType.contains('text/plain')) {
-          final content = await request.readAsString();
-
-          return inner(request.change(
-            body: content,
-            context: {
-              ...request.context,
-              'ds_shelf.body': content,
-            },
-          ));
+          if (content.isNotEmpty || contentType.contains('text/plain')) {
+            final Object? decoded;
+            if (contentType.contains('application/json')) {
+              decoded = jsonDecode(content);
+            } else if (contentType.contains(
+              'application/x-www-form-urlencoded',
+            )) {
+              decoded = Uri.splitQueryString(content);
+            } else {
+              decoded = content;
+            }
+            parsedRequest = request.change(
+              body: content,
+              context: {...request.context, 'ds_shelf.body': decoded},
+            );
+          }
         }
       } catch (_) {
         return Response.badRequest(body: 'Invalid request body');
       }
-
-      return inner(request);
+      // Application failures belong to the application's error middleware.
+      // Only request parsing failures should become an invalid-body response.
+      return inner(parsedRequest);
     };
   };
 }
@@ -93,7 +59,8 @@ Middleware dsShelfBodyParserMiddleware() {
 Handler dsShelfFileUploadHandler() {
   return (Request request) async {
     final contentTypeHeader = request.headers['content-type'];
-    if (contentTypeHeader == null || !contentTypeHeader.contains('multipart/form-data')) {
+    if (contentTypeHeader == null ||
+        !contentTypeHeader.contains('multipart/form-data')) {
       return Response(400, body: 'Content-Type must be multipart/form-data');
     }
 
@@ -117,32 +84,40 @@ Handler dsShelfFileUploadHandler() {
       final fileName = disposition.parameters['filename'];
       if (fileName == null) continue;
 
-      final sanitizedFileName = fileName.replaceAll(RegExp(r'[^a-zA-Z0-9\.\-_]'), '_');
-      final fileBytes = await part.fold<Uint8List>(
-        Uint8List(0),
-        (prev, element) {
-          final newBytes = Uint8List(prev.length + element.length);
-          newBytes.setRange(0, prev.length, prev);
-          newBytes.setRange(prev.length, newBytes.length, element);
-          return newBytes;
-        },
+      final sanitizedFileName = fileName.replaceAll(
+        RegExp(r'[^a-zA-Z0-9\.\-_]'),
+        '_',
       );
+      final fileBytes = await part.fold<Uint8List>(Uint8List(0), (
+        prev,
+        element,
+      ) {
+        final newBytes = Uint8List(prev.length + element.length);
+        newBytes.setRange(0, prev.length, prev);
+        newBytes.setRange(prev.length, newBytes.length, element);
+        return newBytes;
+      });
 
       final file = File('${uploadDir.path}/$sanitizedFileName');
       await file.writeAsBytes(fileBytes);
 
-      savedFiles.add(DsUploadedFile(
-        fieldName: fieldName ?? '',
-        fileName: sanitizedFileName,
-        bytes: fileBytes,
-        contentType: part.headers['content-type'],
-      ));
+      savedFiles.add(
+        DsUploadedFile(
+          fieldName: fieldName ?? '',
+          fileName: sanitizedFileName,
+          bytes: fileBytes,
+          contentType: part.headers['content-type'],
+        ),
+      );
     }
 
-    return Response.ok(jsonEncode({
-      'message': 'Upload successful',
-      'files': savedFiles.map((f) => f.fileName).toList(),
-    }), headers: {'content-type': 'application/json'});
+    return Response.ok(
+      jsonEncode({
+        'message': 'Upload successful',
+        'files': savedFiles.map((f) => f.fileName).toList(),
+      }),
+      headers: {'content-type': 'application/json'},
+    );
   };
 }
 
@@ -172,31 +147,26 @@ Future<Map<String, dynamic>> _parseMultipart(
     final fileName = disposition.parameters['filename'];
     final partContentType = part.headers['content-type'];
 
-    final bytes = await part.fold<Uint8List>(
-      Uint8List(0),
-      (previous, element) {
-        final combined =
-            Uint8List(previous.length + element.length);
-        combined.setRange(0, previous.length, previous);
-        combined.setRange(previous.length, combined.length, element);
-        return combined;
-      },
-    );
+    final bytes = await part.fold<Uint8List>(Uint8List(0), (previous, element) {
+      final combined = Uint8List(previous.length + element.length);
+      combined.setRange(0, previous.length, previous);
+      combined.setRange(previous.length, combined.length, element);
+      return combined;
+    });
 
     if (fileName != null) {
-      files.add(DsUploadedFile(
-        fieldName: fieldName ?? '',
-        fileName: fileName,
-        contentType: partContentType,
-        bytes: bytes,
-      ));
+      files.add(
+        DsUploadedFile(
+          fieldName: fieldName ?? '',
+          fileName: fileName,
+          contentType: partContentType,
+          bytes: bytes,
+        ),
+      );
     } else if (fieldName != null) {
       fields[fieldName] = utf8.decode(bytes);
     }
   }
 
-  return {
-    'fields': fields,
-    'files': files,
-  };
+  return {'fields': fields, 'files': files};
 }

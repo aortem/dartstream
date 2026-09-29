@@ -6,6 +6,12 @@
 This page summarizes client-facing features, improvements, and fixes across DartStream releases.
 '''
 
+== v0.0.11
+
+Validate the framework on Dart 3.13.4. Body-parser middleware returns 400 for
+malformed request bodies and leaves application handler errors to application
+error middleware. The minimum supported SDK remains Dart 3.12.2.
+
 == v0.0.8
 
 === Overview

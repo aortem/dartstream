@@ -21,3 +21,9 @@ Add the package to your project:
 
 ```bash
 dart pub add ds_DartStream_standard_engine
+
+## Release dependencies
+
+Publish `ds_lifecycle_base` 0.0.2 before the engine packages. The engine 0.0.3
+release includes the lifecycle import required by standalone consumers.
+Validated with Dart 3.13.4; minimum Dart 3.12.2 is retained.

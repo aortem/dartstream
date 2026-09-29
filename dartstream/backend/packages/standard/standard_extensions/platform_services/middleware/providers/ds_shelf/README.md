@@ -138,3 +138,8 @@ All DartStream packages are licensed under BSD-3, except for the *services packa
 ## Enhance with DartStream
 
 We hope DartStream helps you to efficiently build and scale your server-side applications. Join our growing community and start contributing to the ecosystem today!
+
+## Dart 3.13.4 compatibility
+
+Body parsing maps malformed bodies to HTTP 400. Application handler exceptions
+propagate to the caller, including asynchronous exceptions.
