@@ -119,6 +119,7 @@ validate_commit_messages:
 validation_trigger_docs:
   stage: validation
   trigger:
+    strategy: depend
     include: tools/pipelines/firebase-hosting/child-ci-production-docs.yml
   rules:
     # Run only when docs changed
@@ -175,13 +176,49 @@ validation_trigger_docs:
 
 validate_dartstream_cli:
   stage: unit_testing
-  image: dart:3.12.2
+  image: dart:3.13.4
   script:
     - cd dartstream/backend
     - dart pub get
     - dart analyze
     - dart test test/dartstream_cli_test.dart test/cli_session_test.dart
-    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.10"
+    - dart test packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf/test
+    - dart test packages/standard/standard_engine/test
+    - |
+      for package in "." \
+        "packages/cli/ds_cli_util" \
+        "packages/standard/standard_engine" \
+        "packages/standard/standard_extensions/auth/base" \
+        "packages/standard/standard_extensions/auth/providers/auth0" \
+        "packages/standard/standard_extensions/auth/providers/cognito" \
+        "packages/standard/standard_extensions/auth/providers/entraid" \
+        "packages/standard/standard_extensions/auth/providers/fingerprint" \
+        "packages/standard/standard_extensions/auth/providers/magic" \
+        "packages/standard/standard_extensions/auth/providers/okta" \
+        "packages/standard/standard_extensions/auth/providers/stytch" \
+        "packages/standard/standard_extensions/auth/providers/transmit" \
+        "packages/standard/standard_extensions/persistence/database/base" \
+        "packages/standard/standard_extensions/persistence/database/providers/firebase" \
+        "packages/standard/standard_extensions/persistence/database/providers/mongo" \
+        "packages/standard/standard_extensions/persistence/database/providers/postgres" \
+        "packages/standard/standard_extensions/persistence/logging/base" \
+        "packages/standard/standard_extensions/persistence/logging/providers/otlp" \
+        "packages/standard/standard_extensions/persistence/logging/providers/sentry" \
+        "packages/standard/standard_extensions/persistence/storage/base" \
+        "packages/standard/standard_extensions/persistence/storage/providers/aws" \
+        "packages/standard/standard_extensions/persistence/storage/providers/gcp" \
+        "packages/standard/standard_extensions/platform_services/feature_flags/base" \
+        "packages/standard/standard_extensions/platform_services/feature_flags/providers/intellitoggle" \
+        "packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf" \
+        "packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/base" \
+        "packages/standard/standard_extensions/reactive_dataflow/data_streaming/message_brokers/providers/gcp_pubsub" \
+        "packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/base" \
+        "packages/standard/standard_extensions/reactive_dataflow/data_streaming/web_sockets/providers/socket_io" \
+        "packages/standard/standard_engine_extension" \
+        "packages/standard/standard_extensions/reactive_dataflow/lifecycle/base"; do
+        dart pub --directory="$package" publish --dry-run || exit 1
+      done
+    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.11"
   rules:
     - changes:
         - dartstream/backend/**/*
@@ -247,7 +284,8 @@ validate_dartstream_cli:
 gitlab_github_release:
   stage: release
   trigger:
+    strategy: depend
     include: tools/pipelines/cloudbuild-hosting/child-ci-release.yml
   rules:
-    - if: '$CI_COMMIT_BRANCH == "development"'
-      when: always
+    - if: '$CI_COMMIT_BRANCH == "main"'
+      when: on_success
