@@ -96,7 +96,7 @@ void main() {
       final runner = createDartStreamCommandRunner(workingDirectory: temp);
       for (final args in [
         ['setup', '--saas'],
-        ['generate', '--type', 'model'],
+        ['generate', '--type', 'api'],
       ]) {
         await expectLater(
           runner.run(args),

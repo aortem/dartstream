@@ -37,6 +37,22 @@ is not recognized after activation.
 
 ## What Is Included
 
+## Local model generation
+
+The source CLI supports the documented local identity model:
+
+```bash
+dartstream generate --type model --name User
+```
+
+This creates `lib/src/models/user.dart` with id, name, createdAt and optional
+updatedAt, JSON conversion, copyWith and equality by id. PascalCase and
+snake_case names are supported. Existing files and linked output paths are
+refused; `--output` may select a directory inside the project. This generates
+local Dart code and does not create a database, API or cloud resource.
+The hosted 0.0.11 package does not yet include this source feature. API,
+provider, extension and CRUD scaffold generation remain coming soon.
+
 ## Local validation CI setup
 
 In the source CLI, `dartstream setup` creates `.gitlab-ci.yml` when
