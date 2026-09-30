@@ -37,6 +37,22 @@ is not recognized after activation.
 
 ## What Is Included
 
+## Local validation CI setup
+
+In the source CLI, `dartstream setup` creates `.gitlab-ci.yml` when
+`dartstream.yaml` selects `cicd.provider: gitlab`. First add the `test` package
+and at least one `test/*_test.dart` test to your project. The generated pipeline
+uses a pinned Dart SDK image and runs dependency resolution, analysis and tests.
+Existing CI files, configuration and package manifests are preserved. Review
+the file through your normal repository process before pushing it.
+
+`cicd.provider: none` creates no file. Other providers and middleware, SaaS and
+advanced tool setup remain coming soon. This command creates no cloud resources
+and configures no deployment. These source changes require a future package
+release before they are available through hosted activation.
+
+## Framework packages
+
 | Category | Packages |
 | --- | --- |
 | Core tooling and CLI | `ds_cli`, `ds_cli_util` |
