@@ -181,7 +181,7 @@ validate_dartstream_cli:
     - cd dartstream/backend
     - dart pub get
     - dart analyze
-    - dart test test/dartstream_cli_test.dart test/cli_session_test.dart
+    - dart test test/dartstream_cli_test.dart test/cli_session_test.dart test/discover_extensions_test.dart test/generate_openapi_client_test.dart
     - dart test packages/standard/standard_extensions/platform_services/middleware/providers/ds_shelf/test
     - dart test packages/standard/standard_engine/test
     - |
