@@ -513,7 +513,7 @@ class DSDiscoveryCommand extends Command<void> {
         abbr: 'p',
         help: 'Project directory (defaults to the current directory).',
       )
-      ..addFlag('register', abbr: 'r', defaultsTo: true)
+      ..addFlag('register', abbr: 'r', defaultsTo: false)
       ..addFlag('validate', abbr: 'v', defaultsTo: true);
   }
 

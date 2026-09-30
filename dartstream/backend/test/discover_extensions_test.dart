@@ -39,7 +39,7 @@ void main() {
       ).writeAsStringSync('name: not_an_extension');
       await createDartStreamCommandRunner(
         workingDirectory: project,
-      ).run(['discover']);
+      ).run(['discover', '--register']);
       final entries =
           jsonDecode(registry.readAsStringSync())['extensions'] as List;
       expect(entries, hasLength(1));
@@ -158,8 +158,23 @@ void main() {
         throwsA(isA<UsageException>()),
       );
       expect(registry.existsSync(), false);
-      await runner.run(['discover', '--project', project.path]);
+      await runner.run(['discover', '--project', project.path, '--register']);
       expect(registry.existsSync(), true);
     },
   );
+  test('default discovery does not create or change customer state', () async {
+    manifest('auth', 'CustomerAuth');
+    final runner = createDartStreamCommandRunner(workingDirectory: project);
+    await runner.run(['discover']);
+    expect(registry.parent.existsSync(), false);
+    state({
+      'custom': 'keep',
+      'extensions': [
+        {'name': 'CustomerAuth', 'enabled': false},
+      ],
+    });
+    final before = registry.readAsBytesSync();
+    await runner.run(['discover']);
+    expect(registry.readAsBytesSync(), before);
+  });
 }
