@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'cli_session.dart';
 import 'configure_file.dart';
+import 'setup_ci.dart';
 import 'generate_openapi_client.dart';
 import 'discover_extensions.dart';
 
@@ -32,7 +33,7 @@ CommandRunner<void> createDartStreamCommandRunner({
     )
     ..addCommand(DSInitCommand(workingDirectory: cwd))
     ..addCommand(DSConfigureCommand(workingDirectory: cwd))
-    ..addCommand(DSComingSoonCommand(DSSetupCommand(workingDirectory: cwd)))
+    ..addCommand(DSSetupCommand(workingDirectory: cwd))
     ..addCommand(DSGenerateCommand(workingDirectory: cwd))
     ..addCommand(DSValidateCommand(workingDirectory: cwd, session: auth))
     ..addCommand(DSExtensionsCommand(workingDirectory: cwd))
@@ -297,24 +298,27 @@ class DSSetupCommand extends Command<void> {
   final name = 'setup';
 
   @override
-  final description = 'Set up middleware, CI/CD, and additional tools.';
+  final description =
+      'Create local GitLab validation CI; middleware/tools coming soon.';
 
   @override
   Future<void> run() async {
-    final features =
-        argResults?['features'] as List<String>? ?? const <String>[];
-    final setupFile = File(
-      _join(workingDirectory.path, '.dartstream', 'setup.json'),
-    );
-    await setupFile.parent.create(recursive: true);
-    await setupFile.writeAsString(
-      const JsonEncoder.withIndent('  ').convert({
-        'name': _stringOption('name') ?? _basename(workingDirectory.path),
-        'saas': argResults?['saas'] as bool? ?? false,
-        'features': features,
-      }),
-    );
-    stdout.writeln('DartStream setup updated at ${setupFile.path}.');
+    if (_stringOption('name') != null ||
+        (argResults?['saas'] as bool? ?? false) ||
+        (argResults?['features'] as List<String>? ?? const <String>[])
+            .isNotEmpty) {
+      throw UsageException(
+        'Coming soon: middleware, SaaS and advanced tool setup; no files changed.',
+        usage,
+      );
+    }
+    try {
+      stdout.writeln(await setupValidationCi(workingDirectory));
+    } on FormatException catch (error) {
+      throw UsageException(error.message, usage);
+    } on FileSystemException catch (error) {
+      throw UsageException(error.message, usage);
+    }
   }
 }
 
