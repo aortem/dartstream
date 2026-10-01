@@ -89,6 +89,13 @@ release before they are available through hosted activation.
 
 ## Framework packages
 
+The source CLI's `dartstream extensions` lists enabled registry entries by default.
+Use `--inactive` to include disabled entries and `--level core|extended|third-party|all`
+to filter the scope. Text and `--json` output use the same filters. Historical
+`thirdParty` levels and legacy entries with no level belong to `third-party`.
+Listing never writes the registry or changes enable/disable choices. This source
+behavior is not yet part of the hosted 0.0.11 release.
+
 The source CLI's `dartstream discover` inspects local `packages/**/manifest.yaml`
 files without loading extension code or changing state. Use `--register` to
 merge validated metadata into the registry while preserving disabled entries
