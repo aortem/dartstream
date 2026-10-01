@@ -68,6 +68,121 @@ void main() {
   );
 
   test(
+    'enabled dependents block disabling without changing registry bytes',
+    () async {
+      for (final dependency in ['target', 'target >=1.0.0']) {
+        final original = jsonEncode({
+          'customer': {'policy': 'keep'},
+          'extensions': [
+            {
+              'name': 'target',
+              'enabled': true,
+              'custom': [1, 2],
+            },
+            {
+              'name': 'dependent',
+              'enabled': true,
+              'dependencies': [dependency],
+            },
+          ],
+        });
+        registry.writeAsStringSync(original);
+        final result = await run(['disable-extension', 'target']);
+        expect(result.exitCode, isNot(0), reason: result.stdout.toString());
+        expect(result.stderr, contains('dependent'));
+        expect(result.stderr, contains('--force'));
+        expect(registry.readAsStringSync(), original);
+        expect(registry.parent.listSync().length, 1);
+      }
+    },
+  );
+
+  test(
+    'explicit force disables only the target and preserves dependents',
+    () async {
+      final original = <String, dynamic>{
+        'customer': {'policy': 'keep'},
+        'extensions': [
+          {
+            'name': 'target',
+            'enabled': true,
+            'custom': [1, 2],
+          },
+          {
+            'name': 'dependent',
+            'enabled': true,
+            'dependencies': ['target >=1.0.0'],
+          },
+        ],
+      };
+      registry.writeAsStringSync(jsonEncode(original));
+      final result = await run(['disable-extension', '--force', 'target']);
+      expect(result.exitCode, 0, reason: result.stderr.toString());
+      original['extensions']![0]['enabled'] = false;
+      expect(jsonDecode(registry.readAsStringSync()), original);
+    },
+  );
+
+  test(
+    'disabled dependents and similarly named dependencies do not block',
+    () async {
+      registry.writeAsStringSync(
+        jsonEncode({
+          'extensions': [
+            {'name': 'target', 'enabled': true},
+            {
+              'name': 'disabled',
+              'enabled': false,
+              'dependencies': ['target'],
+            },
+            {
+              'name': 'other',
+              'enabled': true,
+              'dependencies': ['target_extra >=1.0.0'],
+            },
+          ],
+        }),
+      );
+      final result = await run(['disable-extension', 'target']);
+      expect(result.exitCode, 0, reason: result.stderr.toString());
+      final entries = jsonDecode(registry.readAsStringSync())['extensions'];
+      expect(entries[0]['enabled'], false);
+      expect(entries[1]['enabled'], false);
+      expect(entries[2]['enabled'], true);
+    },
+  );
+
+  test('already disabled dependency remains a byte-identical no-op', () async {
+    const original =
+        '{ "extensions": [{"name":"target","enabled":false},'
+        '{"name":"dependent","enabled":true,"dependencies":["target"]}] }\n';
+    registry.writeAsStringSync(original);
+    expect((await run(['disable-extension', 'target'])).exitCode, 0);
+    expect(registry.readAsStringSync(), original);
+  });
+
+  test('force does not bypass malformed dependency metadata', () async {
+    for (final dependencies in [
+      null,
+      'target',
+      [7],
+      [''],
+      [' >=1.0.0'],
+    ]) {
+      final original = jsonEncode({
+        'extensions': [
+          {'name': 'target', 'enabled': true},
+          {'name': 'dependent', 'enabled': true, 'dependencies': dependencies},
+        ],
+      });
+      registry.writeAsStringSync(original);
+      final result = await run(['disable-extension', '--force', 'target']);
+      expect(result.exitCode, isNot(0), reason: '$dependencies was accepted');
+      expect(registry.readAsStringSync(), original);
+    }
+  });
+
+  test(
     'invalid existing registries are rejected without dropping entries',
     () async {
       for (final original in [

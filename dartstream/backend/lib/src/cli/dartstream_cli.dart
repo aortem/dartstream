@@ -689,7 +689,12 @@ class DSDisableExtensionCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    await _setExtensionEnabled(workingDirectory, argResults?.rest, false);
+    await _setExtensionEnabled(
+      workingDirectory,
+      argResults?.rest,
+      false,
+      force: argResults?['force'] == true,
+    );
   }
 }
 
@@ -820,8 +825,9 @@ String _snakeCase(String input) {
 Future<void> _setExtensionEnabled(
   Directory workingDirectory,
   List<String>? args,
-  bool enabled,
-) async {
+  bool enabled, {
+  bool force = false,
+}) async {
   if (args == null || args.isEmpty) {
     throw UsageException(
       'Missing extension name.',
@@ -841,6 +847,18 @@ Future<void> _setExtensionEnabled(
     final extensions = (registry.state['extensions'] as List<dynamic>)
         .cast<Map<String, dynamic>>();
     final existing = extensions.where((extension) => extension['name'] == name);
+    if (!enabled &&
+        !force &&
+        existing.isNotEmpty &&
+        existing.first['enabled'] == true) {
+      final dependents = registry.enabledDependents(name);
+      if (dependents.isNotEmpty) {
+        throw FormatException(
+          'Enabled extensions depend on $name: ${dependents.join(', ')}. '
+          'Disable them first or explicitly use --force; no state changed.',
+        );
+      }
+    }
     if (existing.isEmpty) {
       extensions.add({'name': name, 'enabled': enabled});
     } else {
