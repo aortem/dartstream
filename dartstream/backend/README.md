@@ -138,7 +138,11 @@ single YAML value. This correction requires a future reviewed package release;
 hosted 0.0.11 remains unchanged.
 
 In the source CLI, `dartstream setup` creates `.gitlab-ci.yml` when
-`dartstream.yaml` selects `cicd.provider: gitlab`. First add the `test` package
+`dartstream.yaml` selects `cicd.provider: gitlab`. With `cicd.provider: github`,
+it creates `.github/workflows/dartstream-validation.yml` instead, using the same
+immutable SDK image, SHA-pinned checkout, read-only repository permissions and
+no persisted checkout credentials. Existing workflows and linked paths are
+preserved or refused. First add the `test` package
 and at least one `test/*_test.dart` test to your project. The generated pipeline
 uses a pinned Dart SDK image and runs dependency resolution, analysis and tests.
 Existing CI files, configuration and package manifests are preserved. Review

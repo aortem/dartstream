@@ -1,6 +1,9 @@
 import 'dart:io';
 
+import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
+
+import 'generated_file.dart';
 
 /// Creates local validation CI only. Existing customer files are retained.
 Future<String> setupValidationCi(Directory project) async {
@@ -20,9 +23,10 @@ Future<String> setupValidationCi(Directory project) async {
     throw const FormatException('Configure cicd.provider before setup.');
   }
   if (ci['provider'] == 'none') return 'No CI requested (cicd.provider: none).';
-  if (ci['provider'] != 'gitlab') {
+  final github = ci['provider'] == 'github';
+  if (ci['provider'] != 'gitlab' && !github) {
     throw const FormatException(
-      'Local CI setup currently supports gitlab or none; other providers are coming soon.',
+      'Local CI setup supports gitlab, github or none; custom providers are coming soon.',
     );
   }
   final manifest = File('${project.path}/pubspec.yaml');
@@ -32,14 +36,37 @@ Future<String> setupValidationCi(Directory project) async {
       'pubspec.yaml must be a regular file; no files changed.',
     );
   }
-  final target = File('${project.path}/.gitlab-ci.yml');
+  final root = await project.resolveSymbolicLinks();
+  if (github) {
+    for (final relative in ['.github', '.github/workflows']) {
+      final directory = Directory('$root/$relative');
+      final type = await FileSystemEntity.type(
+        directory.path,
+        followLinks: false,
+      );
+      if (type != FileSystemEntityType.notFound &&
+          (type != FileSystemEntityType.directory ||
+              !p.equals(
+                await directory.resolveSymbolicLinks(),
+                directory.absolute.path,
+              ))) {
+        throw const FormatException(
+          'GitHub workflow parents must be ordinary directories; no files changed.',
+        );
+      }
+    }
+  }
+  final targetName = github
+      ? '.github/workflows/dartstream-validation.yml'
+      : '.gitlab-ci.yml';
+  final target = File('$root/$targetName');
   final type = await FileSystemEntity.type(target.path, followLinks: false);
   if (type == FileSystemEntityType.file) {
-    return 'Existing .gitlab-ci.yml retained; add validation to it manually.';
+    return 'Existing $targetName retained; add validation to it manually.';
   }
   if (type != FileSystemEntityType.notFound) {
-    throw const FormatException(
-      '.gitlab-ci.yml must not be a link or directory; no files changed.',
+    throw FormatException(
+      '$targetName must not be a link or directory; no files changed.',
     );
   }
   final specification = loadYaml(await manifest.readAsString());
@@ -64,6 +91,15 @@ Future<String> setupValidationCi(Directory project) async {
   }
   // Keep the official SDK immutable, matching the reviewed CI base. This file
   // starts no deployment or cloud provisioning and contains no credentials.
+  if (github) {
+    await writeGeneratedFile(
+      project: project,
+      output: '.github/workflows',
+      fileName: 'dartstream-validation.yml',
+      content: githubValidationCi,
+    );
+    return 'Created $targetName for dependency resolution, analysis and tests. No deployment configured.';
+  }
   final temporary = await project.createTemp('.dartstream-setup-');
   try {
     final candidate = File('${temporary.path}/ci.yml');
@@ -94,4 +130,28 @@ dartstream:validate:
     - dart pub get
     - dart analyze --fatal-infos
     - dart test
+''';
+
+const githubValidationCi =
+    '''# DartStream local validation. Review before enabling in your repository.
+name: DartStream validation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    container:
+      image: dart@sha256:33faf91bc941466a767ce845b4bbb5d578ecd180abe5ee243e9c8c039109d215
+    defaults:
+      run:
+        shell: sh
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: dart pub get
+      - run: dart analyze --fatal-infos
+      - run: dart test
 ''';
