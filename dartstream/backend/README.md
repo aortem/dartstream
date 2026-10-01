@@ -116,6 +116,13 @@ the same validation: malformed registries, duplicate names and linked registry
 paths are refused, and concurrent edits are preserved. These corrections also
 require a future reviewed package release.
 
+Disabling an enabled extension is refused when other enabled entries declare
+it as a dependency. Exact names and name-plus-version-constraint declarations
+are recognized. Disable the dependents first, or explicitly pass `--force` to
+disable only the target while leaving dependent entries unchanged. Invalid
+dependency metadata is refused even with `--force`; no registry bytes change
+on a refused command. This source safeguard is not in hosted 0.0.11 yet.
+
 The source CLI's `dartstream discover` inspects local `packages/**/manifest.yaml`
 files without loading extension code or changing state. Use `--register` to
 merge validated metadata into the registry while preserving disabled entries

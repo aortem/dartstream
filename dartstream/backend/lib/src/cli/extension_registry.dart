@@ -25,9 +25,16 @@ class ExtensionRegistry {
           entry['name'] is! String ||
           (entry['name'] as String).isEmpty ||
           !names.add(entry['name'] as String) ||
-          (entry.containsKey('enabled') && entry['enabled'] is! bool)) {
+          (entry.containsKey('enabled') && entry['enabled'] is! bool) ||
+          (entry.containsKey('dependencies') &&
+              (entry['dependencies'] is! List ||
+                  (entry['dependencies'] as List).any(
+                    (dependency) =>
+                        dependency is! String ||
+                        _dependencyName(dependency) == null,
+                  )))) {
         throw const FormatException(
-          'Registry entries must have unique names and boolean enabled states.',
+          'Registry entries must have unique names, boolean enabled states and valid dependency lists.',
         );
       }
     }
@@ -40,6 +47,27 @@ class ExtensionRegistry {
   late final String? original;
   late final String originalState;
   late final Map<String, dynamic> state;
+
+  /// Dependency versions remain manifest metadata; match the exact name only.
+  List<String> enabledDependents(String name) {
+    final dependents =
+        (state['extensions'] as List)
+            .cast<Map<String, dynamic>>()
+            .where((entry) => entry['name'] != name && entry['enabled'] == true)
+            .where(
+              (entry) => (entry['dependencies'] as List? ?? const []).any(
+                (dependency) => _dependencyName(dependency as String) == name,
+              ),
+            )
+            .map((entry) => entry['name'] as String)
+            .toList()
+          ..sort();
+    return dependents;
+  }
+
+  static String? _dependencyName(String dependency) => RegExp(
+    r'^([A-Za-z][A-Za-z0-9_.-]*)(?:\s+\S.*)?$',
+  ).firstMatch(dependency.trim())?.group(1);
 
   void _verifyPath() {
     final directoryType = FileSystemEntity.typeSync(
