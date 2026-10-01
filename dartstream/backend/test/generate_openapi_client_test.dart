@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:args/command_runner.dart';
 import 'package:ds_dartstream/src/cli/dartstream_cli.dart';
 import 'package:ds_dartstream/src/cli/generate_openapi_client.dart';
 import 'package:test/test.dart';
@@ -25,6 +26,91 @@ void main() {
       );
   });
   tearDown(() => temp.deleteSync(recursive: true));
+
+  for (final name in ['demo_', 'demo__client']) {
+    test(
+      'empty client name words in $name are rejected without output',
+      () async {
+        await expectLater(
+          generateOpenApiClient(
+            specification: spec,
+            output: Directory('${temp.path}/output'),
+            name: name,
+          ),
+          throwsFormatException,
+        );
+        expect(Directory('${temp.path}/output').existsSync(), isFalse);
+      },
+    );
+  }
+
+  test('CLI reports invalid client names without a crash or output', () async {
+    await expectLater(
+      createDartStreamCommandRunner(workingDirectory: temp).run([
+        'generate',
+        '--type',
+        'client',
+        '--name',
+        'demo_',
+        '--spec',
+        spec.path,
+      ]),
+      throwsA(isA<UsageException>()),
+    );
+    expect(Directory('${temp.path}/generated_clients').existsSync(), isFalse);
+  });
+
+  test('multiword client names generate matching Dart identifiers', () async {
+    final dir = await generateOpenApiClient(
+      specification: spec,
+      output: Directory('${temp.path}/output'),
+      name: 'demo_api_2',
+    );
+    expect(dir.path, endsWith('ds_demo_api_2_client'));
+    expect(
+      File('${dir.path}/lib/ds_demo_api_2_client.dart').readAsStringSync(),
+      contains('class DSDemoApi2Client'),
+    );
+  });
+
+  for (final nested in [false, true]) {
+    test(
+      'linked output ${nested ? 'ancestor' : 'directory'} is preserved',
+      () async {
+        final outside = Directory.systemTemp.createTempSync(
+          'ds-client-outside-',
+        );
+        final link = Link('${temp.path}/redirect');
+        if (Platform.isWindows) {
+          final result = Process.runSync('powershell.exe', [
+            '-NoProfile',
+            '-Command',
+            "New-Item -ItemType Junction -Path '${link.path.replaceAll("'", "''")}' -Target '${outside.path.replaceAll("'", "''")}' -ErrorAction Stop | Out-Null",
+          ]);
+          expect(result.exitCode, 0, reason: '${result.stderr}');
+        } else {
+          link.createSync(outside.path);
+        }
+        final sentinel = File('${outside.path}/customer.txt')
+          ..writeAsStringSync('preserved');
+        try {
+          await expectLater(
+            generateOpenApiClient(
+              specification: spec,
+              output: Directory('${link.path}${nested ? '/new_output' : ''}'),
+              name: 'demo',
+            ),
+            throwsA(isA<FileSystemException>()),
+          );
+          expect(sentinel.readAsStringSync(), 'preserved');
+          expect(outside.listSync().length, 1);
+        } finally {
+          link.deleteSync();
+          outside.deleteSync(recursive: true);
+        }
+      },
+    );
+  }
 
   test(
     'CLI generates real HTTP calls and preserves existing package',

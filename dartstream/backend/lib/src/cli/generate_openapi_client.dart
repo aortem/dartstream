@@ -10,8 +10,10 @@ Future<Directory> generateOpenApiClient({
   required Directory output,
   required String name,
 }) async {
-  if (!RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name)) {
-    throw const FormatException('Client name must be a lowercase Dart name.');
+  if (!RegExp(r'^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$').hasMatch(name)) {
+    throw const FormatException(
+      'Client name must use lowercase words or digits separated by single underscores.',
+    );
   }
   final data = jsonDecode(await specification.readAsString());
   if (data is! Map<String, dynamic> ||
