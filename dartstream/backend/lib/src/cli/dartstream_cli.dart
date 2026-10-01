@@ -4,6 +4,7 @@ import 'cli_session.dart';
 import 'configure_file.dart';
 import 'setup_ci.dart';
 import 'generate_openapi_client.dart';
+import 'generate_model.dart';
 import 'discover_extensions.dart';
 
 import 'dart:io';
@@ -350,7 +351,7 @@ class DSGenerateCommand extends Command<void> {
 
   @override
   final description =
-      'Generate an HTTP client from OpenAPI 3 JSON; other types coming soon.';
+      'Generate a local model or OpenAPI HTTP client; other types coming soon.';
 
   @override
   Future<void> run() async {
@@ -360,9 +361,32 @@ class DSGenerateCommand extends Command<void> {
       throw UsageException('Missing --type.', usage);
     }
 
+    if (type == 'model') {
+      final modelName = _stringOption('name');
+      if (modelName == null || modelName.isEmpty) {
+        throw UsageException('Missing --name for model generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateModel(
+          project: workingDirectory,
+          name: modelName,
+          output: _stringOption('output') ?? 'lib/src/models',
+        );
+        stdout.writeln('Generated local model at ${generated.path}.');
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
+    }
+
     if (type != 'client') {
       throw UsageException(
-        'Coming soon - only --type client is currently supported.',
+        'Coming soon - only --type model and client are currently supported.',
         usage,
       );
     }
