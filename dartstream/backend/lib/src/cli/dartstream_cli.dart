@@ -317,7 +317,7 @@ class DSSetupCommand extends Command<void> {
 
   @override
   final description =
-      'Create local CI or Shelf middleware; SaaS/tools coming soon.';
+      'Create local GitLab/GitHub CI or Shelf middleware; SaaS/tools coming soon.';
 
   @override
   Future<void> run() async {
