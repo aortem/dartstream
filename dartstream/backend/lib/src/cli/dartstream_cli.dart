@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'cli_session.dart';
 import 'configure_file.dart';
 import 'setup_ci.dart';
+import 'setup_middleware.dart';
 import 'generate_openapi_client.dart';
 import 'generate_model.dart';
 import 'generate_api.dart';
@@ -289,6 +290,12 @@ class DSConfigureCommand extends Command<void> {
 class DSSetupCommand extends Command<void> {
   DSSetupCommand({required this.workingDirectory}) {
     argParser
+      ..addFlag(
+        'middleware',
+        negatable: false,
+        help:
+            'Create a local adapter for application-selected Shelf middleware.',
+      )
       ..addOption('name', abbr: 'n', help: 'Project name.')
       ..addMultiOption(
         'features',
@@ -310,7 +317,7 @@ class DSSetupCommand extends Command<void> {
 
   @override
   final description =
-      'Create local GitLab validation CI; middleware/tools coming soon.';
+      'Create local CI or Shelf middleware; SaaS/tools coming soon.';
 
   @override
   Future<void> run() async {
@@ -319,11 +326,19 @@ class DSSetupCommand extends Command<void> {
         (argResults?['features'] as List<String>? ?? const <String>[])
             .isNotEmpty) {
       throw UsageException(
-        'Coming soon: middleware, SaaS and advanced tool setup; no files changed.',
+        'Coming soon: SaaS and advanced feature/tool setup; no files changed.',
         usage,
       );
     }
     try {
+      if (argResults?['middleware'] == true) {
+        final generated = await setupMiddleware(workingDirectory);
+        stdout.writeln(
+          'Created local Shelf middleware adapter at ${generated.path}. '
+          'Supply application-owned middleware and routes; CI and configuration unchanged.',
+        );
+        return;
+      }
       stdout.writeln(await setupValidationCi(workingDirectory));
     } on FormatException catch (error) {
       throw UsageException(error.message, usage);
@@ -838,7 +853,7 @@ const _publicCommands = [
   _PublicCommand('configure', 'Configure cloud, auth, database, and CI/CD.'),
   _PublicCommand(
     'setup',
-    'Create local GitLab validation CI; middleware/tools coming soon.',
+    'Create local CI or Shelf middleware; SaaS/tools coming soon.',
   ),
   _PublicCommand(
     'generate',
