@@ -8,6 +8,7 @@ import 'generate_model.dart';
 import 'generate_api.dart';
 import 'discover_extensions.dart';
 import 'extension_registry.dart';
+import 'init_files.dart';
 
 import 'dart:io';
 
@@ -127,8 +128,10 @@ class DSInitCommand extends Command<void> {
     final projectName = _projectName(target);
     final force = argResults?['force'] as bool? ?? false;
 
-    await target.create(recursive: true);
-    await _writeIfMissing(File(_join(target.path, 'pubspec.yaml')), '''
+    final packageName = _pubPackageName(projectName);
+    final files = <String, String>{
+      'pubspec.yaml':
+          '''
 name: ${_pubPackageName(projectName)}
 description: A DartStream application.
 version: 0.0.1
@@ -138,22 +141,18 @@ environment:
 
 dependencies:
   ds_dartstream: ^0.0.8
-''', force: force);
-    await Directory(_join(target.path, 'lib')).create(recursive: true);
-    await _writeIfMissing(File(_join(target.path, 'lib', 'main.dart')), '''
+''',
+      'lib/main.dart': '''
 void main() {
   print('DartStream project ready.');
 }
-''', force: force);
-    final packageName = _pubPackageName(projectName);
-    await _writeIfMissing(
-      File(_join(target.path, 'bin', '$packageName.dart')),
-      "import 'package:$packageName/main.dart' as application;\n\n"
-      'void main() => application.main();\n',
-      force: force,
-    );
-    await _writeIfMissing(File(_join(target.path, 'dartstream.yaml')), '''
-name: $projectName
+''',
+      'bin/$packageName.dart':
+          "import 'package:$packageName/main.dart' as application;\n\n"
+          'void main() => application.main();\n',
+      'dartstream.yaml':
+          '''
+name: ${jsonEncode(projectName)}
 type: ${argResults?['type']}
 version_channel: ${argResults?['version']}
 cloud:
@@ -166,7 +165,13 @@ cicd:
   provider: gitlab
 features: []
 extensions: []
-''', force: force);
+''',
+    };
+    try {
+      writeInitFiles(target, files, force: force);
+    } on FileSystemException catch (error) {
+      throw UsageException(error.message, usage);
+    }
 
     stdout.writeln(
       'DartStream project $projectName initialized with '
@@ -767,16 +772,6 @@ extension _OptionAccess on Command<void> {
     if (value == null || value.trim().isEmpty) return null;
     return value.trim();
   }
-}
-
-Future<void> _writeIfMissing(
-  File file,
-  String content, {
-  required bool force,
-}) async {
-  if (file.existsSync() && !force) return;
-  await file.parent.create(recursive: true);
-  await file.writeAsString(content);
 }
 
 String _resolvePath(Directory base, String path) {
