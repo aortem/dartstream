@@ -523,7 +523,12 @@ class DSExtensionsCommand extends Command<void> {
         defaultsTo: 'all',
         help: 'Filter by extension level.',
       )
-      ..addFlag('inactive', abbr: 'i', negatable: false)
+      ..addFlag(
+        'inactive',
+        abbr: 'i',
+        negatable: false,
+        help: 'Include disabled extensions in the listing.',
+      )
       ..addFlag('json', abbr: 'j', negatable: false);
   }
 
@@ -538,17 +543,31 @@ class DSExtensionsCommand extends Command<void> {
   @override
   Future<void> run() async {
     final state = await _readExtensionState(workingDirectory);
+    final level = argResults?['level'] as String? ?? 'all';
+    final includeInactive = argResults?['inactive'] == true;
+    final extensions = (state['extensions'] as List<dynamic>)
+        .whereType<Map<String, dynamic>>()
+        .where((extension) {
+          final rawLevel = extension['level'] ?? 'third-party';
+          final extensionLevel = rawLevel == 'thirdParty'
+              ? 'third-party'
+              : rawLevel;
+          return (level == 'all' || extensionLevel == level) &&
+              (includeInactive || extension['enabled'] == true);
+        })
+        .toList();
     if (argResults?['json'] == true) {
-      stdout.writeln(const JsonEncoder.withIndent('  ').convert(state));
+      stdout.writeln(
+        const JsonEncoder.withIndent('  ').convert({'extensions': extensions}),
+      );
       return;
     }
     stdout.writeln('Registered Extensions:');
-    final extensions = state['extensions'] as List<dynamic>;
     if (extensions.isEmpty) {
-      stdout.writeln('No extensions discovered or registered.');
+      stdout.writeln('No registered extensions match the selected filters.');
       return;
     }
-    for (final extension in extensions.cast<Map<String, dynamic>>()) {
+    for (final extension in extensions) {
       stdout.writeln(
         '- ${extension['name']} (${extension['enabled'] == true ? 'enabled' : 'disabled'})',
       );
