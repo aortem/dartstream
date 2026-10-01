@@ -7,6 +7,7 @@ import 'generate_openapi_client.dart';
 import 'generate_model.dart';
 import 'generate_api.dart';
 import 'discover_extensions.dart';
+import 'extension_registry.dart';
 
 import 'dart:io';
 
@@ -542,7 +543,14 @@ class DSExtensionsCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    final state = await _readExtensionState(workingDirectory);
+    final Map<String, dynamic> state;
+    try {
+      state = ExtensionRegistry(workingDirectory).state;
+    } on FormatException catch (error) {
+      throw UsageException(error.message, usage);
+    } on FileSystemException catch (error) {
+      throw UsageException(error.message, usage);
+    }
     final level = argResults?['level'] as String? ?? 'all';
     final includeInactive = argResults?['inactive'] == true;
     final extensions = (state['extensions'] as List<dynamic>)
@@ -814,32 +822,6 @@ String _snakeCase(String input) {
       .toLowerCase();
 }
 
-Future<Map<String, dynamic>> _readExtensionState(
-  Directory workingDirectory,
-) async {
-  final file = File(
-    _join(workingDirectory.path, '.dartstream', 'extensions.json'),
-  );
-  if (!file.existsSync()) return {'extensions': <Map<String, dynamic>>[]};
-  final data = jsonDecode(await file.readAsString());
-  if (data is Map<String, dynamic>) {
-    final extensions = data['extensions'];
-    if (extensions is List) return {'extensions': extensions};
-  }
-  return {'extensions': <Map<String, dynamic>>[]};
-}
-
-Future<void> _writeExtensionState(
-  Directory workingDirectory,
-  Map<String, dynamic> state,
-) async {
-  final file = File(
-    _join(workingDirectory.path, '.dartstream', 'extensions.json'),
-  );
-  await file.parent.create(recursive: true);
-  await file.writeAsString(const JsonEncoder.withIndent('  ').convert(state));
-}
-
 Future<void> _setExtensionEnabled(
   Directory workingDirectory,
   List<String>? args,
@@ -852,17 +834,34 @@ Future<void> _setExtensionEnabled(
     );
   }
 
-  final state = await _readExtensionState(workingDirectory);
-  final extensions = (state['extensions'] as List<dynamic>)
-      .whereType<Map<String, dynamic>>()
-      .toList();
   final name = args.first;
-  final existing = extensions.where((extension) => extension['name'] == name);
-  if (existing.isEmpty) {
-    extensions.add({'name': name, 'enabled': enabled});
-  } else {
-    existing.first['enabled'] = enabled;
+  if (args.length != 1 || name.trim().isEmpty) {
+    throw UsageException(
+      'Supply one nonempty extension name.',
+      'dartstream enable-extension <name>',
+    );
   }
-  await _writeExtensionState(workingDirectory, {'extensions': extensions});
+  try {
+    final registry = ExtensionRegistry(workingDirectory);
+    final extensions = (registry.state['extensions'] as List<dynamic>)
+        .cast<Map<String, dynamic>>();
+    final existing = extensions.where((extension) => extension['name'] == name);
+    if (existing.isEmpty) {
+      extensions.add({'name': name, 'enabled': enabled});
+    } else {
+      existing.first['enabled'] = enabled;
+    }
+    registry.save();
+  } on FormatException catch (error) {
+    throw UsageException(
+      error.message,
+      'dartstream ${enabled ? 'enable-extension' : 'disable-extension'} <name>',
+    );
+  } on FileSystemException catch (error) {
+    throw UsageException(
+      error.message,
+      'dartstream ${enabled ? 'enable-extension' : 'disable-extension'} <name>',
+    );
+  }
   stdout.writeln('${enabled ? 'Enabled' : 'Disabled'} extension $name.');
 }
