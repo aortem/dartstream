@@ -75,6 +75,12 @@ feature needs a future normal reviewed package release.
 
 ## Local validation CI setup
 
+OpenAPI client names use lowercase letters and digits with single underscores
+between nonempty words (for example, `demo_api_2`). Trailing or repeated
+underscores are rejected with a usage error before any output is created.
+This source correction requires a reviewed package release; hosted 0.0.11 is
+unchanged.
+
 The source CLI's `init` checks every starter file and parent directory before
 writing. Links, Windows junctions and conflicting directories are refused,
 including with `--force`. Existing regular starter files are preserved unless
