@@ -177,4 +177,92 @@ void main() {
     await runner.run(['discover']);
     expect(registry.readAsBytesSync(), before);
   });
+
+  test('maintained thirdParty manifests normalize without loading code', () {
+    final f = manifest('flags', 'ds_intellitoggle_provider');
+    f.writeAsStringSync(
+      'name: ds_intellitoggle_provider\n'
+      'version: "0.0.1-pre+1"\n'
+      'entry_point: lib/main.dart\n'
+      'level: thirdParty\n'
+      'dependencies: ["FeatureFlags >=0.0.1"]\n',
+    );
+    final found = discoverExtensions(project, register: true);
+    expect(found.single['level'], 'third-party');
+    expect(found.single['dependencies'], ['FeatureFlags >=0.0.1']);
+    expect(
+      jsonDecode(registry.readAsStringSync())['extensions'][0]['level'],
+      'third-party',
+    );
+    expect(f.readAsStringSync(), contains('level: thirdParty'));
+  });
+
+  test('unknown manifest levels fail without changing registry', () {
+    final f = manifest('one', 'One');
+    f.writeAsStringSync(f.readAsStringSync().replaceFirst('core', 'unknown'));
+    state({'custom': 'keep', 'extensions': []});
+    final before = registry.readAsBytesSync();
+    expect(
+      () => discoverExtensions(project, register: true),
+      throwsFormatException,
+    );
+    expect(registry.readAsBytesSync(), before);
+  });
+
+  test('linked package and registry directories preserve external files', () {
+    final outside = Directory.systemTemp.createTempSync('ds_discover_outside_');
+    addTearDown(() => outside.deleteSync(recursive: true));
+    final sentinel = File('${outside.path}/extensions.json')
+      ..writeAsStringSync('{"customer":"keep"}');
+    void link(String path, String target) {
+      if (Platform.isWindows) {
+        final result = Process.runSync('cmd', [
+          '/c',
+          'mklink',
+          '/J',
+          path.replaceAll('/', '\\'),
+          target.replaceAll('/', '\\'),
+        ]);
+        expect(result.exitCode, 0, reason: '${result.stderr}');
+      } else {
+        Link(path).createSync(target);
+      }
+    }
+
+    void unlink(String path) {
+      if (Platform.isWindows) {
+        // Removing an empty junction itself never traverses its target.
+        final result = Process.runSync('cmd', [
+          '/c',
+          'rmdir',
+          path.replaceAll('/', '\\'),
+        ]);
+        expect(result.exitCode, 0, reason: '${result.stderr}');
+      } else {
+        Link(path).deleteSync();
+      }
+    }
+
+    final packages = '${project.path}/packages';
+    link(packages, outside.path);
+    try {
+      expect(
+        () => discoverExtensions(project, register: false),
+        throwsFormatException,
+      );
+    } finally {
+      unlink(packages);
+    }
+    manifest('one', 'One');
+    link('${project.path}/.dartstream', outside.path);
+    try {
+      expect(
+        () => discoverExtensions(project, register: true),
+        throwsFormatException,
+      );
+      expect(sentinel.readAsStringSync(), '{"customer":"keep"}');
+    } finally {
+      unlink('${project.path}/.dartstream');
+    }
+  });
 }
