@@ -8,6 +8,7 @@ import 'generate_model.dart';
 import 'generate_api.dart';
 import 'generate_provider.dart';
 import 'generate_extension.dart';
+import 'generate_scaffold.dart';
 import 'discover_extensions.dart';
 import 'extension_registry.dart';
 import 'init_files.dart';
@@ -360,7 +361,7 @@ class DSGenerateCommand extends Command<void> {
 
   @override
   final description =
-      'Generate local models, API routes, providers, extensions or OpenAPI clients; scaffold coming soon.';
+      'Generate local models, API routes, providers, extensions, CRUD scaffolds or OpenAPI clients.';
 
   @override
   Future<void> run() async {
@@ -368,6 +369,31 @@ class DSGenerateCommand extends Command<void> {
     final name = _stringOption('name') ?? 'sample';
     if (type == null || type.isEmpty) {
       throw UsageException('Missing --type.', usage);
+    }
+
+    if (type == 'scaffold') {
+      final scaffoldName = _stringOption('name');
+      if (scaffoldName == null || scaffoldName.isEmpty) {
+        throw UsageException('Missing --name for scaffold generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateScaffold(
+          project: workingDirectory,
+          name: scaffoldName,
+          output: _stringOption('output') ?? 'packages',
+        );
+        stdout.writeln(
+          'Generated local CRUD routing package at ${generated.path}.',
+        );
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
     }
 
     if (type == 'extension') {
@@ -467,10 +493,7 @@ class DSGenerateCommand extends Command<void> {
     }
 
     if (type != 'client') {
-      throw UsageException(
-        'Coming soon - --type scaffold is not yet supported. Use model, api, provider, extension or client.',
-        usage,
-      );
+      throw UsageException('Unsupported generation type.', usage);
     }
     final spec = _stringOption('spec');
     if (spec == null) {
@@ -819,7 +842,7 @@ const _publicCommands = [
   ),
   _PublicCommand(
     'generate',
-    'Generate local models, API routes, providers, extensions or OpenAPI clients; scaffold coming soon.',
+    'Generate local models, API routes, providers, extensions, CRUD scaffolds or OpenAPI clients.',
   ),
   _PublicCommand('validate', 'Validate project configuration.'),
   _PublicCommand('extensions', 'List registered extensions.'),

@@ -9,13 +9,16 @@ Future<File> generateModel({
   String output = 'lib/src/models',
 }) async {
   final identifier = generatedName(name);
-  final className = identifier.className;
   return writeGeneratedFile(
     project: project,
     output: output,
     fileName: '${identifier.fileName}.dart',
-    content:
-        '''
+    content: modelSource(identifier.className),
+  );
+}
+
+String modelSource(String className) =>
+    '''
 /// Local identity model. Equality follows the documented id contract.
 class $className {
   const $className({
@@ -68,6 +71,4 @@ class $className {
   @override
   String toString() => '$className(id: \$id, name: \$name)';
 }
-''',
-  );
-}
+''';
