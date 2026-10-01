@@ -75,6 +75,13 @@ feature needs a future normal reviewed package release.
 
 ## Local validation CI setup
 
+The source CLI's `init` checks every starter file and parent directory before
+writing. Links, Windows junctions and conflicting directories are refused,
+including with `--force`. Existing regular starter files are preserved unless
+`--force` explicitly requests replacement. Project display names remain a
+single YAML value. This correction requires a future reviewed package release;
+hosted 0.0.11 remains unchanged.
+
 In the source CLI, `dartstream setup` creates `.gitlab-ci.yml` when
 `dartstream.yaml` selects `cicd.provider: gitlab`. First add the `test` package
 and at least one `test/*_test.dart` test to your project. The generated pipeline
