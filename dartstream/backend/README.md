@@ -51,7 +51,7 @@ snake_case names are supported. Existing files and linked output paths are
 refused; `--output` may select a directory inside the project. This generates
 local Dart code and does not create a database, API or cloud resource.
 The hosted 0.0.11 package does not yet include this source feature. Extension
-and CRUD scaffold generation remain coming soon.
+and CRUD scaffold generation are described below for the source CLI.
 
 ## Local provider adapter generation
 
@@ -89,7 +89,7 @@ PascalCase/snake_case names and a relative in-project `--output` are supported;
 existing files and linked paths are refused. Hosted 0.0.11 is unchanged; this
 feature needs a future normal reviewed package release.
 
-## Local validation CI setup
+## Local extension generation
 
 The source CLI's `generate --type extension --name Payment` creates a complete
 local package in `packages/ds_payment_extension`, including a discoverable
@@ -102,8 +102,27 @@ private (`publish_to: none`) and generation does not register or execute it.
 states and customer metadata. Register runtime enhancements explicitly in the
 application after authorization. `--output` selects a relative in-project parent
 directory (use a directory under `packages` for discovery). Existing package
-directories and linked output paths are refused. Scaffold generation remains
-coming soon; hosted 0.0.11 needs a future reviewed release to include this work.
+directories and linked output paths are refused. Hosted 0.0.11 needs a future
+reviewed release to include this work.
+
+## Local CRUD scaffold generation
+
+```bash
+dartstream generate --type scaffold --name Product
+```
+
+The source CLI creates a private package at `packages/ds_product_scaffold` with
+the same identity model and five-handler Shelf routing adapter as the model/API
+generators. Run `dart pub get` in the package and add it as an explicit path
+dependency to the application. Import its library and supply every list,
+create, get, update and delete handler. Mount it behind application auth;
+handlers implement actual validation, persistence and responses. Generation
+does not register routes, configure storage, start a server or deploy resources.
+Existing package directories and linked paths are refused; `--output` selects
+an in-project parent directory. Customer manifests remain unchanged. Hosted
+0.0.11 is unchanged; a future reviewed package release is required.
+
+## Local validation CI setup
 
 OpenAPI client names use lowercase letters and digits with single underscores
 between nonempty words (for example, `demo_api_2`). Trailing or repeated

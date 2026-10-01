@@ -28,8 +28,12 @@ Future<File> generateApi({
     project: project,
     output: output,
     fileName: '${identifier.fileName}_api.dart',
-    content:
-        '''
+    content: apiSource(className),
+  );
+}
+
+String apiSource(String className) =>
+    '''
 import 'dart:async';
 
 import 'package:shelf/shelf.dart';
@@ -70,6 +74,4 @@ class $className {
 
   Handler get handler => router.call;
 }
-''',
-  );
-}
+''';
