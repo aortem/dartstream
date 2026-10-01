@@ -7,6 +7,7 @@ import 'generate_openapi_client.dart';
 import 'generate_model.dart';
 import 'generate_api.dart';
 import 'generate_provider.dart';
+import 'generate_extension.dart';
 import 'discover_extensions.dart';
 import 'extension_registry.dart';
 import 'init_files.dart';
@@ -359,7 +360,7 @@ class DSGenerateCommand extends Command<void> {
 
   @override
   final description =
-      'Generate local models, API routes, providers or OpenAPI clients; other types coming soon.';
+      'Generate local models, API routes, providers, extensions or OpenAPI clients; scaffold coming soon.';
 
   @override
   Future<void> run() async {
@@ -367,6 +368,31 @@ class DSGenerateCommand extends Command<void> {
     final name = _stringOption('name') ?? 'sample';
     if (type == null || type.isEmpty) {
       throw UsageException('Missing --type.', usage);
+    }
+
+    if (type == 'extension') {
+      final extensionName = _stringOption('name');
+      if (extensionName == null || extensionName.isEmpty) {
+        throw UsageException('Missing --name for extension generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateExtension(
+          project: workingDirectory,
+          name: extensionName,
+          output: _stringOption('output') ?? 'packages',
+        );
+        stdout.writeln(
+          'Generated local extension package at ${generated.path}.',
+        );
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
     }
 
     if (type == 'provider') {
@@ -442,7 +468,7 @@ class DSGenerateCommand extends Command<void> {
 
     if (type != 'client') {
       throw UsageException(
-        'Coming soon - only --type model, api and client are currently supported.',
+        'Coming soon - --type scaffold is not yet supported. Use model, api, provider, extension or client.',
         usage,
       );
     }
@@ -793,7 +819,7 @@ const _publicCommands = [
   ),
   _PublicCommand(
     'generate',
-    'Generate local models, API routes, providers or OpenAPI clients; other types coming soon.',
+    'Generate local models, API routes, providers, extensions or OpenAPI clients; scaffold coming soon.',
   ),
   _PublicCommand('validate', 'Validate project configuration.'),
   _PublicCommand('extensions', 'List registered extensions.'),

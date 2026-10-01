@@ -91,6 +91,20 @@ feature needs a future normal reviewed package release.
 
 ## Local validation CI setup
 
+The source CLI's `generate --type extension --name Payment` creates a complete
+local package in `packages/ds_payment_extension`, including a discoverable
+manifest and an implementation of the maintained `LifecycleHook` contract.
+Provide the required synchronous lifecycle callbacks and an execution callback;
+execution awaits the application's work and propagates its failures. Resolve
+the package dependencies with `dart pub get` in its directory. The package is
+private (`publish_to: none`) and generation does not register or execute it.
+`discover` lists its metadata; `discover --register` preserves existing disabled
+states and customer metadata. Register runtime enhancements explicitly in the
+application after authorization. `--output` selects a relative in-project parent
+directory (use a directory under `packages` for discovery). Existing package
+directories and linked output paths are refused. Scaffold generation remains
+coming soon; hosted 0.0.11 needs a future reviewed release to include this work.
+
 OpenAPI client names use lowercase letters and digits with single underscores
 between nonempty words (for example, `demo_api_2`). Trailing or repeated
 underscores are rejected with a usage error before any output is created.
