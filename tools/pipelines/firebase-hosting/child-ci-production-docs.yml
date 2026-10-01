@@ -2,6 +2,7 @@ stages:
   - validate
   - preview
   - deploy
+  - cleanup
 
 # Debug Stage
 debug_merge_request:
@@ -87,7 +88,19 @@ validate_commit_messages:
   rules:
     - when: always
 
+validate_docs_preview_cleanup:
+  image: google/cloud-sdk:alpine
+  stage: validate
+  script:
+    - python3 tools/scripts/firebase/test_stop_docs_preview.py -v
+  rules:
+    - when: always
+
 firebase:preview_docs:
+  resource_group: docs/$CI_COMMIT_REF_SLUG
+  environment:
+    name: docs/$CI_COMMIT_REF_NAME
+    on_stop: firebase:stop_preview_docs
   image: google/cloud-sdk:alpine
   stage: preview
   before_script:
@@ -118,3 +131,31 @@ firebase:deploy_docs:
     # Condition 1: Branch is not main, qa, or development
     - if: '$CI_COMMIT_BRANCH == "main"'
       when: always
+# Cleanup is optional until explicitly started after dependency verification.
+firebase:stop_preview_docs:
+  image: google/cloud-sdk:alpine
+  stage: cleanup
+  needs: []
+  variables:
+    GIT_STRATEGY: empty
+  resource_group: docs/$CI_COMMIT_REF_SLUG
+  before_script:
+    - apk add --no-cache nodejs npm curl
+    - npm install -g firebase-tools
+    - gcloud auth activate-service-account --key-file="$GOOGLE_CLOUD_CREDENTIALS_PROD"
+    - export GOOGLE_APPLICATION_CREDENTIALS="$GOOGLE_CLOUD_CREDENTIALS_PROD"
+    - |
+      curl --fail --silent --show-error \
+        --header "JOB-TOKEN: $CI_JOB_TOKEN" \
+        "$CI_API_V4_URL/projects/$CI_PROJECT_ID/repository/files/tools%2Fscripts%2Ffirebase%2Fstop_docs_preview.sh/raw?ref=$CI_COMMIT_SHA" \
+        -o /tmp/stop_docs_preview.sh
+  script:
+    - sh /tmp/stop_docs_preview.sh
+  environment:
+    name: docs/$CI_COMMIT_REF_NAME
+    action: stop
+  allow_failure: true
+  rules:
+    - if: '$CI_COMMIT_BRANCH != "main"'
+      when: manual
+    - when: never
