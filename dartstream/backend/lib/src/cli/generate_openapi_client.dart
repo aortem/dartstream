@@ -74,6 +74,7 @@ Future<Directory> generateOpenApiClient({
     if (!entry.key.startsWith('/') || entry.value is! Map<String, dynamic>) {
       throw const FormatException('Each path must start with / and be a map.');
     }
+    _validatePathTemplate(entry.key);
     final pathItem = entry.value as Map<String, dynamic>;
     if (pathItem.containsKey(r'$ref')) {
       throw const FormatException('Referenced path items are unsupported.');
@@ -187,6 +188,9 @@ This limited generator handles OpenAPI 3 JSON operations with unique Dart
 operationId names. It does not resolve references, create typed schema models,
 apply defaults, or validate required query/body values. Keep the source spec and
 validate the generated package with dart pub get and dart analyze before use.
+Paths cannot contain query/fragment delimiters, dot segments or malformed
+placeholders. Encode literal punctuation in the spec path and pass query values
+through the generated operation's query argument.
 Output is never overwritten; use a new directory when regenerating.
 ''');
     // Recheck destination/parents before publishing the complete package.
@@ -204,6 +208,31 @@ Output is never overwritten; use a new directory when regenerating.
 }
 
 String _literal(String value) => jsonEncode(value).replaceAll(r'$', r'\$');
+
+/// Validate before writing: URI normalization must not change the spec route.
+void _validatePathTemplate(String path) {
+  final staticPath = path.replaceAll(RegExp(r'[{][^{}]+[}]'), 'parameter');
+  if (path.contains(r'\') ||
+      path.contains('?') ||
+      path.contains('#') ||
+      staticPath.contains('{') ||
+      staticPath.contains('}')) {
+    throw const FormatException(
+      'Paths must not contain query/fragment delimiters or malformed placeholders.',
+    );
+  }
+  for (final segment in staticPath.split('/')) {
+    final String decoded;
+    try {
+      decoded = Uri.decodeComponent(segment);
+    } on ArgumentError {
+      throw const FormatException('Paths must use valid URI percent encoding.');
+    }
+    if (decoded == '.' || decoded == '..') {
+      throw const FormatException('Paths must not contain URI dot segments.');
+    }
+  }
+}
 
 Future<void> _rejectLinks(String path) async {
   var current = p.absolute(path);
