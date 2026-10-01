@@ -50,8 +50,24 @@ updatedAt, JSON conversion, copyWith and equality by id. PascalCase and
 snake_case names are supported. Existing files and linked output paths are
 refused; `--output` may select a directory inside the project. This generates
 local Dart code and does not create a database, API or cloud resource.
-The hosted 0.0.11 package does not yet include this source feature. Provider,
-extension and CRUD scaffold generation remain coming soon.
+The hosted 0.0.11 package does not yet include this source feature. Extension
+and CRUD scaffold generation remain coming soon.
+
+## Local provider adapter generation
+
+```bash
+dartstream generate --type provider --name Payment
+```
+
+This source command creates `lib/src/providers/ds_payment_provider.dart` with a
+`DSPaymentProvider` callback adapter. Supply `onInitialize`, `onDispose` and
+`onAction`; calls await those handlers and propagate their actual failures.
+The application owns lifecycle ordering, authentication, authorization and
+vendor behavior. The adapter embeds no credentials, registers no engine service
+and creates no cloud resources. It does not claim a configured payment service.
+PascalCase/snake_case names and a relative in-project `--output` are supported;
+existing files and linked paths are refused. Hosted 0.0.11 is unchanged; this
+feature requires a future normal reviewed package release.
 
 ## Local API routing generation
 
