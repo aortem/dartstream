@@ -12,7 +12,9 @@ List<Map<String, dynamic>> discoverExtensions(
   final root = project.resolveSymbolicLinksSync();
   final packages = Directory(p.join(root, 'packages'));
   final found = <String, Map<String, dynamic>>{};
-  if (FileSystemEntity.isLinkSync(packages.path)) {
+  if (FileSystemEntity.isLinkSync(packages.path) ||
+      (packages.existsSync() &&
+          !p.equals(packages.resolveSymbolicLinksSync(), packages.path))) {
     throw const FormatException(
       'The packages directory must not be a symbolic link.',
     );
@@ -26,6 +28,12 @@ List<Map<String, dynamic>> discoverExtensions(
             .toList()
           ..sort((a, b) => a.path.compareTo(b.path));
     for (final file in files) {
+      if (!p.isWithin(root, file.resolveSymbolicLinksSync()) ||
+          !p.equals(file.parent.resolveSymbolicLinksSync(), file.parent.path)) {
+        throw const FormatException(
+          'Extension manifests must stay in unlinked project directories.',
+        );
+      }
       final data = loadYaml(file.readAsStringSync());
       if (data is! Map)
         throw FormatException('Expected a manifest mapping: ${file.path}');
@@ -33,7 +41,9 @@ List<Map<String, dynamic>> discoverExtensions(
       final version = data['version'];
       final entry = data['entry_point'];
       final dependencies = data['dependencies'] ?? <String>[];
-      final level = data['level'] ?? 'third-party';
+      // Maintained engine manifests use the historical thirdParty spelling.
+      final rawLevel = data['level'] ?? 'third-party';
+      final level = rawLevel == 'thirdParty' ? 'third-party' : rawLevel;
       if (name is! String ||
           !RegExp(r'^[A-Za-z][A-Za-z0-9_.-]*$').hasMatch(name) ||
           version is! String ||
@@ -79,7 +89,9 @@ List<Map<String, dynamic>> discoverExtensions(
   final directory = Directory(p.join(root, '.dartstream'));
   final file = File(p.join(directory.path, 'extensions.json'));
   if (FileSystemEntity.isLinkSync(directory.path) ||
-      FileSystemEntity.isLinkSync(file.path)) {
+      FileSystemEntity.isLinkSync(file.path) ||
+      (directory.existsSync() &&
+          !p.equals(directory.resolveSymbolicLinksSync(), directory.path))) {
     throw const FormatException(
       'Extension registry must not be a symbolic link.',
     );

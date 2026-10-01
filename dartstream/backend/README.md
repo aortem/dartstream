@@ -89,6 +89,14 @@ release before they are available through hosted activation.
 
 ## Framework packages
 
+The source CLI's `dartstream discover` inspects local `packages/**/manifest.yaml`
+files without loading extension code or changing state. Use `--register` to
+merge validated metadata into the registry while preserving disabled entries
+and customer metadata. Maintained `thirdParty` manifests are normalized to
+`third-party`. Linked package, manifest and registry directories are refused.
+These source corrections require a future reviewed package release; hosted
+0.0.11 remains unchanged.
+
 | Category | Packages |
 | --- | --- |
 | Core tooling and CLI | `ds_cli`, `ds_cli_util` |
