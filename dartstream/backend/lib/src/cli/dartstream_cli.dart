@@ -665,7 +665,14 @@ class DSEnableExtensionCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    await _setExtensionEnabled(workingDirectory, argResults?.rest, true);
+    await _setExtensionEnabled(
+      workingDirectory,
+      argResults?.rest,
+      true,
+      level: argResults?.wasParsed('level') == true
+          ? (argResults?['level'] as String?)
+          : null,
+    );
   }
 }
 
@@ -827,6 +834,7 @@ Future<void> _setExtensionEnabled(
   List<String>? args,
   bool enabled, {
   bool force = false,
+  String? level,
 }) async {
   if (args == null || args.isEmpty) {
     throw UsageException(
@@ -860,9 +868,14 @@ Future<void> _setExtensionEnabled(
       }
     }
     if (existing.isEmpty) {
-      extensions.add({'name': name, 'enabled': enabled});
+      extensions.add({
+        'name': name,
+        'enabled': enabled,
+        if (level != null) 'level': level,
+      });
     } else {
       existing.first['enabled'] = enabled;
+      if (level != null) existing.first['level'] = level;
     }
     registry.save();
   } on FormatException catch (error) {
