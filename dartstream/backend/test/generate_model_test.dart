@@ -193,7 +193,6 @@ void main() {
           '--spec',
           'ignored.json',
         ],
-        ['generate', '--type', 'provider', '--name', 'User'],
       ]) {
         await expectLater(runner.run(args), throwsA(isA<UsageException>()));
       }

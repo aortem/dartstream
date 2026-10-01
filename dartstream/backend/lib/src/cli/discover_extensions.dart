@@ -55,7 +55,9 @@ List<Map<String, dynamic>> discoverExtensions(
           entry.isEmpty ||
           p.isAbsolute(entry) ||
           dependencies is! List ||
-          dependencies.any((d) => d is! String || d.isEmpty) ||
+          dependencies.any(
+            (d) => d is! String || ExtensionRegistry.dependencyName(d) == null,
+          ) ||
           !['core', 'extended', 'third-party'].contains(level)) {
         throw FormatException('Invalid extension metadata: ${file.path}');
       }

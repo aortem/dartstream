@@ -3,11 +3,16 @@ import 'dart:convert';
 import 'cli_session.dart';
 import 'configure_file.dart';
 import 'setup_ci.dart';
+import 'setup_middleware.dart';
 import 'generate_openapi_client.dart';
 import 'generate_model.dart';
 import 'generate_api.dart';
+import 'generate_provider.dart';
+import 'generate_extension.dart';
+import 'generate_scaffold.dart';
 import 'discover_extensions.dart';
 import 'extension_registry.dart';
+import 'init_files.dart';
 
 import 'dart:io';
 
@@ -127,8 +132,10 @@ class DSInitCommand extends Command<void> {
     final projectName = _projectName(target);
     final force = argResults?['force'] as bool? ?? false;
 
-    await target.create(recursive: true);
-    await _writeIfMissing(File(_join(target.path, 'pubspec.yaml')), '''
+    final packageName = _pubPackageName(projectName);
+    final files = <String, String>{
+      'pubspec.yaml':
+          '''
 name: ${_pubPackageName(projectName)}
 description: A DartStream application.
 version: 0.0.1
@@ -138,22 +145,18 @@ environment:
 
 dependencies:
   ds_dartstream: ^0.0.8
-''', force: force);
-    await Directory(_join(target.path, 'lib')).create(recursive: true);
-    await _writeIfMissing(File(_join(target.path, 'lib', 'main.dart')), '''
+''',
+      'lib/main.dart': '''
 void main() {
   print('DartStream project ready.');
 }
-''', force: force);
-    final packageName = _pubPackageName(projectName);
-    await _writeIfMissing(
-      File(_join(target.path, 'bin', '$packageName.dart')),
-      "import 'package:$packageName/main.dart' as application;\n\n"
-      'void main() => application.main();\n',
-      force: force,
-    );
-    await _writeIfMissing(File(_join(target.path, 'dartstream.yaml')), '''
-name: $projectName
+''',
+      'bin/$packageName.dart':
+          "import 'package:$packageName/main.dart' as application;\n\n"
+          'void main() => application.main();\n',
+      'dartstream.yaml':
+          '''
+name: ${jsonEncode(projectName)}
 type: ${argResults?['type']}
 version_channel: ${argResults?['version']}
 cloud:
@@ -166,7 +169,13 @@ cicd:
   provider: gitlab
 features: []
 extensions: []
-''', force: force);
+''',
+    };
+    try {
+      writeInitFiles(target, files, force: force);
+    } on FileSystemException catch (error) {
+      throw UsageException(error.message, usage);
+    }
 
     stdout.writeln(
       'DartStream project $projectName initialized with '
@@ -281,6 +290,12 @@ class DSConfigureCommand extends Command<void> {
 class DSSetupCommand extends Command<void> {
   DSSetupCommand({required this.workingDirectory}) {
     argParser
+      ..addFlag(
+        'middleware',
+        negatable: false,
+        help:
+            'Create a local adapter for application-selected Shelf middleware.',
+      )
       ..addOption('name', abbr: 'n', help: 'Project name.')
       ..addMultiOption(
         'features',
@@ -302,7 +317,7 @@ class DSSetupCommand extends Command<void> {
 
   @override
   final description =
-      'Create local GitLab validation CI; middleware/tools coming soon.';
+      'Create local CI or Shelf middleware; SaaS/tools coming soon.';
 
   @override
   Future<void> run() async {
@@ -311,11 +326,19 @@ class DSSetupCommand extends Command<void> {
         (argResults?['features'] as List<String>? ?? const <String>[])
             .isNotEmpty) {
       throw UsageException(
-        'Coming soon: middleware, SaaS and advanced tool setup; no files changed.',
+        'Coming soon: SaaS and advanced feature/tool setup; no files changed.',
         usage,
       );
     }
     try {
+      if (argResults?['middleware'] == true) {
+        final generated = await setupMiddleware(workingDirectory);
+        stdout.writeln(
+          'Created local Shelf middleware adapter at ${generated.path}. '
+          'Supply application-owned middleware and routes; CI and configuration unchanged.',
+        );
+        return;
+      }
       stdout.writeln(await setupValidationCi(workingDirectory));
     } on FormatException catch (error) {
       throw UsageException(error.message, usage);
@@ -353,7 +376,7 @@ class DSGenerateCommand extends Command<void> {
 
   @override
   final description =
-      'Generate local models, API routes or OpenAPI clients; other types coming soon.';
+      'Generate local models, API routes, providers, extensions, CRUD scaffolds or OpenAPI clients.';
 
   @override
   Future<void> run() async {
@@ -361,6 +384,81 @@ class DSGenerateCommand extends Command<void> {
     final name = _stringOption('name') ?? 'sample';
     if (type == null || type.isEmpty) {
       throw UsageException('Missing --type.', usage);
+    }
+
+    if (type == 'scaffold') {
+      final scaffoldName = _stringOption('name');
+      if (scaffoldName == null || scaffoldName.isEmpty) {
+        throw UsageException('Missing --name for scaffold generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateScaffold(
+          project: workingDirectory,
+          name: scaffoldName,
+          output: _stringOption('output') ?? 'packages',
+        );
+        stdout.writeln(
+          'Generated local CRUD routing package at ${generated.path}.',
+        );
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
+    }
+
+    if (type == 'extension') {
+      final extensionName = _stringOption('name');
+      if (extensionName == null || extensionName.isEmpty) {
+        throw UsageException('Missing --name for extension generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateExtension(
+          project: workingDirectory,
+          name: extensionName,
+          output: _stringOption('output') ?? 'packages',
+        );
+        stdout.writeln(
+          'Generated local extension package at ${generated.path}.',
+        );
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
+    }
+
+    if (type == 'provider') {
+      final providerName = _stringOption('name');
+      if (providerName == null || providerName.isEmpty) {
+        throw UsageException('Missing --name for provider generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateProvider(
+          project: workingDirectory,
+          name: providerName,
+          output: _stringOption('output') ?? 'lib/src/providers',
+        );
+        stdout.writeln(
+          'Generated local provider adapter at ${generated.path}.',
+        );
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
     }
 
     if (type == 'model') {
@@ -410,10 +508,7 @@ class DSGenerateCommand extends Command<void> {
     }
 
     if (type != 'client') {
-      throw UsageException(
-        'Coming soon - only --type model, api and client are currently supported.',
-        usage,
-      );
+      throw UsageException('Unsupported generation type.', usage);
     }
     final spec = _stringOption('spec');
     if (spec == null) {
@@ -660,7 +755,14 @@ class DSEnableExtensionCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    await _setExtensionEnabled(workingDirectory, argResults?.rest, true);
+    await _setExtensionEnabled(
+      workingDirectory,
+      argResults?.rest,
+      true,
+      level: argResults?.wasParsed('level') == true
+          ? (argResults?['level'] as String?)
+          : null,
+    );
   }
 }
 
@@ -684,7 +786,12 @@ class DSDisableExtensionCommand extends Command<void> {
 
   @override
   Future<void> run() async {
-    await _setExtensionEnabled(workingDirectory, argResults?.rest, false);
+    await _setExtensionEnabled(
+      workingDirectory,
+      argResults?.rest,
+      false,
+      force: argResults?['force'] == true,
+    );
   }
 }
 
@@ -746,11 +853,11 @@ const _publicCommands = [
   _PublicCommand('configure', 'Configure cloud, auth, database, and CI/CD.'),
   _PublicCommand(
     'setup',
-    'Create local GitLab validation CI; middleware/tools coming soon.',
+    'Create local CI or Shelf middleware; SaaS/tools coming soon.',
   ),
   _PublicCommand(
     'generate',
-    'Generate local models, API routes or OpenAPI clients; other types coming soon.',
+    'Generate local models, API routes, providers, extensions, CRUD scaffolds or OpenAPI clients.',
   ),
   _PublicCommand('validate', 'Validate project configuration.'),
   _PublicCommand('extensions', 'List registered extensions.'),
@@ -767,16 +874,6 @@ extension _OptionAccess on Command<void> {
     if (value == null || value.trim().isEmpty) return null;
     return value.trim();
   }
-}
-
-Future<void> _writeIfMissing(
-  File file,
-  String content, {
-  required bool force,
-}) async {
-  if (file.existsSync() && !force) return;
-  await file.parent.create(recursive: true);
-  await file.writeAsString(content);
 }
 
 String _resolvePath(Directory base, String path) {
@@ -825,8 +922,10 @@ String _snakeCase(String input) {
 Future<void> _setExtensionEnabled(
   Directory workingDirectory,
   List<String>? args,
-  bool enabled,
-) async {
+  bool enabled, {
+  bool force = false,
+  String? level,
+}) async {
   if (args == null || args.isEmpty) {
     throw UsageException(
       'Missing extension name.',
@@ -846,10 +945,27 @@ Future<void> _setExtensionEnabled(
     final extensions = (registry.state['extensions'] as List<dynamic>)
         .cast<Map<String, dynamic>>();
     final existing = extensions.where((extension) => extension['name'] == name);
+    if (!enabled &&
+        !force &&
+        existing.isNotEmpty &&
+        existing.first['enabled'] == true) {
+      final dependents = registry.enabledDependents(name);
+      if (dependents.isNotEmpty) {
+        throw FormatException(
+          'Enabled extensions depend on $name: ${dependents.join(', ')}. '
+          'Disable them first or explicitly use --force; no state changed.',
+        );
+      }
+    }
     if (existing.isEmpty) {
-      extensions.add({'name': name, 'enabled': enabled});
+      extensions.add({
+        'name': name,
+        'enabled': enabled,
+        if (level != null) 'level': level,
+      });
     } else {
       existing.first['enabled'] = enabled;
+      if (level != null) existing.first['level'] = level;
     }
     registry.save();
   } on FormatException catch (error) {

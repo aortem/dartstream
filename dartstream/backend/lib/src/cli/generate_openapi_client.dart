@@ -10,8 +10,10 @@ Future<Directory> generateOpenApiClient({
   required Directory output,
   required String name,
 }) async {
-  if (!RegExp(r'^[a-z][a-z0-9_]*$').hasMatch(name)) {
-    throw const FormatException('Client name must be a lowercase Dart name.');
+  if (!RegExp(r'^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$').hasMatch(name)) {
+    throw const FormatException(
+      'Client name must use lowercase words or digits separated by single underscores.',
+    );
   }
   final data = jsonDecode(await specification.readAsString());
   if (data is! Map<String, dynamic> ||
@@ -72,6 +74,7 @@ Future<Directory> generateOpenApiClient({
     if (!entry.key.startsWith('/') || entry.value is! Map<String, dynamic>) {
       throw const FormatException('Each path must start with / and be a map.');
     }
+    _validatePathTemplate(entry.key);
     final pathItem = entry.value as Map<String, dynamic>;
     if (pathItem.containsKey(r'$ref')) {
       throw const FormatException('Referenced path items are unsupported.');
@@ -151,6 +154,9 @@ ${methods.join()}
       if (value == null || value.isEmpty) {
         throw ArgumentError('Missing required path parameter.');
       }
+      if (value == '.' || value == '..') {
+        throw ArgumentError('Path parameters cannot be dot segments.');
+      }
       return Uri.encodeComponent(value);
     });
     final prefix = baseUrl.toString().replaceFirst(RegExp(r'/\$'), '');
@@ -172,6 +178,7 @@ ${methods.join()}
 # $className
 
 Generated HTTP operations accept pathParameters, query, headers and a JSON body.
+Path parameters must be nonempty and cannot be . or .. URI dot segments.
 Pass an explicit baseUrl and a short-lived Authorization header when required.
 The generator does not embed credentials, execute the spec, provision services,
 or infer authentication. Responses retain their HTTP status and body, including
@@ -181,6 +188,9 @@ This limited generator handles OpenAPI 3 JSON operations with unique Dart
 operationId names. It does not resolve references, create typed schema models,
 apply defaults, or validate required query/body values. Keep the source spec and
 validate the generated package with dart pub get and dart analyze before use.
+Paths cannot contain query/fragment delimiters, dot segments or malformed
+placeholders. Encode literal punctuation in the spec path and pass query values
+through the generated operation's query argument.
 Output is never overwritten; use a new directory when regenerating.
 ''');
     // Recheck destination/parents before publishing the complete package.
@@ -198,6 +208,31 @@ Output is never overwritten; use a new directory when regenerating.
 }
 
 String _literal(String value) => jsonEncode(value).replaceAll(r'$', r'\$');
+
+/// Validate before writing: URI normalization must not change the spec route.
+void _validatePathTemplate(String path) {
+  final staticPath = path.replaceAll(RegExp(r'[{][^{}]+[}]'), 'parameter');
+  if (path.contains(r'\') ||
+      path.contains('?') ||
+      path.contains('#') ||
+      staticPath.contains('{') ||
+      staticPath.contains('}')) {
+    throw const FormatException(
+      'Paths must not contain query/fragment delimiters or malformed placeholders.',
+    );
+  }
+  for (final segment in staticPath.split('/')) {
+    final String decoded;
+    try {
+      decoded = Uri.decodeComponent(segment);
+    } on ArgumentError {
+      throw const FormatException('Paths must use valid URI percent encoding.');
+    }
+    if (decoded == '.' || decoded == '..') {
+      throw const FormatException('Paths must not contain URI dot segments.');
+    }
+  }
+}
 
 Future<void> _rejectLinks(String path) async {
   var current = p.absolute(path);

@@ -50,8 +50,24 @@ updatedAt, JSON conversion, copyWith and equality by id. PascalCase and
 snake_case names are supported. Existing files and linked output paths are
 refused; `--output` may select a directory inside the project. This generates
 local Dart code and does not create a database, API or cloud resource.
-The hosted 0.0.11 package does not yet include this source feature. Provider,
-extension and CRUD scaffold generation remain coming soon.
+The hosted 0.0.11 package does not yet include this source feature. Extension
+and CRUD scaffold generation are described below for the source CLI.
+
+## Local provider adapter generation
+
+```bash
+dartstream generate --type provider --name Payment
+```
+
+This source command creates `lib/src/providers/ds_payment_provider.dart` with a
+`DSPaymentProvider` callback adapter. Supply `onInitialize`, `onDispose` and
+`onAction`; calls await those handlers and propagate their actual failures.
+The application owns lifecycle ordering, authentication, authorization and
+vendor behavior. The adapter embeds no credentials, registers no engine service
+and creates no cloud resources. It does not claim a configured payment service.
+PascalCase/snake_case names and a relative in-project `--output` are supported;
+existing files and linked paths are refused. Hosted 0.0.11 is unchanged; this
+feature requires a future normal reviewed package release.
 
 ## Local API routing generation
 
@@ -73,7 +89,53 @@ PascalCase/snake_case names and a relative in-project `--output` are supported;
 existing files and linked paths are refused. Hosted 0.0.11 is unchanged; this
 feature needs a future normal reviewed package release.
 
+## Local extension generation
+
+The source CLI's `generate --type extension --name Payment` creates a complete
+local package in `packages/ds_payment_extension`, including a discoverable
+manifest and an implementation of the maintained `LifecycleHook` contract.
+Provide the required synchronous lifecycle callbacks and an execution callback;
+execution awaits the application's work and propagates its failures. Resolve
+the package dependencies with `dart pub get` in its directory. The package is
+private (`publish_to: none`) and generation does not register or execute it.
+`discover` lists its metadata; `discover --register` preserves existing disabled
+states and customer metadata. Register runtime enhancements explicitly in the
+application after authorization. `--output` selects a relative in-project parent
+directory (use a directory under `packages` for discovery). Existing package
+directories and linked output paths are refused. Hosted 0.0.11 needs a future
+reviewed release to include this work.
+
+## Local CRUD scaffold generation
+
+```bash
+dartstream generate --type scaffold --name Product
+```
+
+The source CLI creates a private package at `packages/ds_product_scaffold` with
+the same identity model and five-handler Shelf routing adapter as the model/API
+generators. Run `dart pub get` in the package and add it as an explicit path
+dependency to the application. Import its library and supply every list,
+create, get, update and delete handler. Mount it behind application auth;
+handlers implement actual validation, persistence and responses. Generation
+does not register routes, configure storage, start a server or deploy resources.
+Existing package directories and linked paths are refused; `--output` selects
+an in-project parent directory. Customer manifests remain unchanged. Hosted
+0.0.11 is unchanged; a future reviewed package release is required.
+
 ## Local validation CI setup
+
+OpenAPI client names use lowercase letters and digits with single underscores
+between nonempty words (for example, `demo_api_2`). Trailing or repeated
+underscores are rejected with a usage error before any output is created.
+This source correction requires a reviewed package release; hosted 0.0.11 is
+unchanged.
+
+The source CLI's `init` checks every starter file and parent directory before
+writing. Links, Windows junctions and conflicting directories are refused,
+including with `--force`. Existing regular starter files are preserved unless
+`--force` explicitly requests replacement. Project display names remain a
+single YAML value. This correction requires a future reviewed package release;
+hosted 0.0.11 remains unchanged.
 
 In the source CLI, `dartstream setup` creates `.gitlab-ci.yml` when
 `dartstream.yaml` selects `cicd.provider: gitlab`. First add the `test` package
@@ -82,8 +144,19 @@ uses a pinned Dart SDK image and runs dependency resolution, analysis and tests.
 Existing CI files, configuration and package manifests are preserved. Review
 the file through your normal repository process before pushing it.
 
-`cicd.provider: none` creates no file. Other providers and middleware, SaaS and
-advanced tool setup remain coming soon. This command creates no cloud resources
+`dartstream setup --middleware` separately creates
+`lib/src/middleware/dartstream_middleware.dart`. Add a direct `shelf` dependency
+first. Import the generated file and call
+`withDartStreamMiddleware(handler: routes, middleware: [authenticate, authorize])`
+with your application's actual handlers. The first layer is outermost: requests
+enter in list order and responses return in reverse order. The adapter preserves
+Shelf context, bodies, short-circuit responses and error propagation. Supply
+your own authentication, authorization and error handling; no policy is enabled
+by generation. Existing middleware files, CI, manifests and configuration are
+preserved. Use plain `setup` separately when validation CI is needed.
+
+`cicd.provider: none` creates no file. Other CI providers, SaaS and
+advanced feature/tool setup remain coming soon. This command creates no cloud resources
 and configures no deployment. These source changes require a future package
 release before they are available through hosted activation.
 
@@ -102,6 +175,13 @@ same state leaves the file bytes unchanged. Listing, toggling and discovery use
 the same validation: malformed registries, duplicate names and linked registry
 paths are refused, and concurrent edits are preserved. These corrections also
 require a future reviewed package release.
+
+Disabling an enabled extension is refused when other enabled entries declare
+it as a dependency. Exact names and name-plus-version-constraint declarations
+are recognized. Disable the dependents first, or explicitly pass `--force` to
+disable only the target while leaving dependent entries unchanged. Invalid
+dependency metadata is refused even with `--force`; no registry bytes change
+on a refused command. This source safeguard is not in hosted 0.0.11 yet.
 
 The source CLI's `dartstream discover` inspects local `packages/**/manifest.yaml`
 files without loading extension code or changing state. Use `--register` to
