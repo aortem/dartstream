@@ -153,6 +153,9 @@ ${methods.join()}
       if (value == null || value.isEmpty) {
         throw ArgumentError('Missing required path parameter.');
       }
+      if (value == '.' || value == '..') {
+        throw ArgumentError('Path parameters cannot be dot segments.');
+      }
       return Uri.encodeComponent(value);
     });
     final prefix = baseUrl.toString().replaceFirst(RegExp(r'/\$'), '');
@@ -174,6 +177,7 @@ ${methods.join()}
 # $className
 
 Generated HTTP operations accept pathParameters, query, headers and a JSON body.
+Path parameters must be nonempty and cannot be . or .. URI dot segments.
 Pass an explicit baseUrl and a short-lived Authorization header when required.
 The generator does not embed credentials, execute the spec, provision services,
 or infer authentication. Responses retain their HTTP status and body, including
