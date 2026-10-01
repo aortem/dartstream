@@ -5,6 +5,7 @@ import 'configure_file.dart';
 import 'setup_ci.dart';
 import 'generate_openapi_client.dart';
 import 'generate_model.dart';
+import 'generate_api.dart';
 import 'discover_extensions.dart';
 
 import 'dart:io';
@@ -351,7 +352,7 @@ class DSGenerateCommand extends Command<void> {
 
   @override
   final description =
-      'Generate a local model or OpenAPI HTTP client; other types coming soon.';
+      'Generate local models, API routes or OpenAPI clients; other types coming soon.';
 
   @override
   Future<void> run() async {
@@ -384,9 +385,32 @@ class DSGenerateCommand extends Command<void> {
       return;
     }
 
+    if (type == 'api') {
+      final apiName = _stringOption('name');
+      if (apiName == null || apiName.isEmpty) {
+        throw UsageException('Missing --name for API generation.', usage);
+      }
+      if (_stringOption('spec') != null) {
+        throw UsageException('--spec is supported for clients only.', usage);
+      }
+      try {
+        final generated = await generateApi(
+          project: workingDirectory,
+          name: apiName,
+          output: _stringOption('output') ?? 'lib/src/api',
+        );
+        stdout.writeln('Generated local API routes at ${generated.path}.');
+      } on FormatException catch (error) {
+        throw UsageException(error.message, usage);
+      } on FileSystemException catch (error) {
+        throw UsageException(error.message, usage);
+      }
+      return;
+    }
+
     if (type != 'client') {
       throw UsageException(
-        'Coming soon - only --type model and client are currently supported.',
+        'Coming soon - only --type model, api and client are currently supported.',
         usage,
       );
     }
@@ -693,10 +717,13 @@ class _PublicCommand {
 const _publicCommands = [
   _PublicCommand('init', 'Initialize a new DartStream project.'),
   _PublicCommand('configure', 'Configure cloud, auth, database, and CI/CD.'),
-  _PublicCommand('setup', 'Set up middleware, CI/CD, and additional tools.'),
+  _PublicCommand(
+    'setup',
+    'Create local GitLab validation CI; middleware/tools coming soon.',
+  ),
   _PublicCommand(
     'generate',
-    'Generate OpenAPI HTTP clients; other types coming soon.',
+    'Generate local models, API routes or OpenAPI clients; other types coming soon.',
   ),
   _PublicCommand('validate', 'Validate project configuration.'),
   _PublicCommand('extensions', 'List registered extensions.'),

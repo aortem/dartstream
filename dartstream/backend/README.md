@@ -50,8 +50,28 @@ updatedAt, JSON conversion, copyWith and equality by id. PascalCase and
 snake_case names are supported. Existing files and linked output paths are
 refused; `--output` may select a directory inside the project. This generates
 local Dart code and does not create a database, API or cloud resource.
-The hosted 0.0.11 package does not yet include this source feature. API,
-provider, extension and CRUD scaffold generation remain coming soon.
+The hosted 0.0.11 package does not yet include this source feature. Provider,
+extension and CRUD scaffold generation remain coming soon.
+
+## Local API routing generation
+
+Add direct `shelf` and `shelf_router` dependencies to the customer project, then:
+
+```bash
+dart pub add shelf shelf_router
+dartstream generate --type api --name Product
+```
+
+This source command creates `lib/src/api/product_api.dart` with a `ProductApi`
+routing adapter for GET/POST `/` and GET/PUT/DELETE `/<id>`. Its constructor
+requires all five application handlers; the generated code returns their actual
+responses and never fabricates a successful CRUD result. Mount it behind your
+application's authentication/authorization middleware. Handlers must implement
+validation, storage and business behavior. This command creates no database or
+cloud resources, installs no dependencies and preserves customer files.
+PascalCase/snake_case names and a relative in-project `--output` are supported;
+existing files and linked paths are refused. Hosted 0.0.11 is unchanged; this
+feature needs a future normal reviewed package release.
 
 ## Local validation CI setup
 
