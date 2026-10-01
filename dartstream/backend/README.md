@@ -144,8 +144,19 @@ uses a pinned Dart SDK image and runs dependency resolution, analysis and tests.
 Existing CI files, configuration and package manifests are preserved. Review
 the file through your normal repository process before pushing it.
 
-`cicd.provider: none` creates no file. Other providers and middleware, SaaS and
-advanced tool setup remain coming soon. This command creates no cloud resources
+`dartstream setup --middleware` separately creates
+`lib/src/middleware/dartstream_middleware.dart`. Add a direct `shelf` dependency
+first. Import the generated file and call
+`withDartStreamMiddleware(handler: routes, middleware: [authenticate, authorize])`
+with your application's actual handlers. The first layer is outermost: requests
+enter in list order and responses return in reverse order. The adapter preserves
+Shelf context, bodies, short-circuit responses and error propagation. Supply
+your own authentication, authorization and error handling; no policy is enabled
+by generation. Existing middleware files, CI, manifests and configuration are
+preserved. Use plain `setup` separately when validation CI is needed.
+
+`cicd.provider: none` creates no file. Other CI providers, SaaS and
+advanced feature/tool setup remain coming soon. This command creates no cloud resources
 and configures no deployment. These source changes require a future package
 release before they are available through hosted activation.
 
