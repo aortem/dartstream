@@ -84,7 +84,31 @@ Future<Directory> generateOpenApiClient({
       if (operation.value is! Map<String, dynamic>) {
         throw const FormatException('HTTP operations must be maps.');
       }
-      final id = (operation.value as Map<String, dynamic>)['operationId'];
+      final operationData = operation.value as Map<String, dynamic>;
+      final parameters = {
+        ..._parameters(pathItem['parameters']),
+        ..._parameters(operationData['parameters']),
+      };
+      final requiredQuery = parameters.values
+          .where(
+            (parameter) =>
+                parameter['in'] == 'query' && parameter['required'] == true,
+          )
+          .map((parameter) => _literal(parameter['name'] as String))
+          .join(', ');
+      final requestBody = operationData['requestBody'];
+      if (requestBody != null &&
+          (requestBody is! Map<String, dynamic> ||
+              requestBody.containsKey(r'$ref') ||
+              (requestBody.containsKey('required') &&
+                  requestBody['required'] is! bool))) {
+        throw const FormatException(
+          'Request bodies must be inline objects with a boolean required flag.',
+        );
+      }
+      final bodyRequired =
+          requestBody is Map && requestBody['required'] == true;
+      final id = operationData['operationId'];
       if (id is! String ||
           !RegExp(r'^[a-z][A-Za-z0-9]*$').hasMatch(id) ||
           reserved.contains(id) ||
@@ -98,7 +122,8 @@ Future<Directory> generateOpenApiClient({
     Map<String, String> headers = const {},
     Object? body,
   }) => _send(${_literal(operation.key.toUpperCase())}, ${_literal(entry.key)},
-      pathParameters: pathParameters, query: query, headers: headers, body: body);
+      pathParameters: pathParameters, query: query, headers: headers, body: body,
+      requiredQuery: const [$requiredQuery], bodyRequired: $bodyRequired);
 ''');
     }
   }
@@ -148,7 +173,15 @@ ${methods.join()}
     required Map<String, String> query,
     required Map<String, String> headers,
     Object? body,
+    required List<String> requiredQuery,
+    required bool bodyRequired,
   }) async {
+    if (requiredQuery.any((name) => !query.containsKey(name))) {
+      throw ArgumentError('Missing required query parameter.');
+    }
+    if (bodyRequired && body == null) {
+      throw ArgumentError('Missing required request body.');
+    }
     final path = template.replaceAllMapped(RegExp(r'[{]([^{}]+)[}]'), (match) {
       final value = pathParameters[match[1]];
       if (value == null || value.isEmpty) {
@@ -186,7 +219,10 @@ authorization errors. Call close() when finished.
 
 This limited generator handles OpenAPI 3 JSON operations with unique Dart
 operationId names. It does not resolve references, create typed schema models,
-apply defaults, or validate required query/body values. Keep the source spec and
+apply defaults, or validate schemas or header/cookie requirements. Required inline
+query parameters and request bodies are checked for presence before transport;
+operation parameters override matching path parameters by name and location.
+Parameter and request-body references must be inlined before generation. Keep the source spec and
 validate the generated package with dart pub get and dart analyze before use.
 Paths cannot contain query/fragment delimiters, dot segments or malformed
 placeholders. Encode literal punctuation in the spec path and pass query values
@@ -205,6 +241,33 @@ Output is never overwritten; use a new directory when regenerating.
   } finally {
     if (await staging.exists()) await staging.delete(recursive: true);
   }
+}
+
+/// OpenAPI parameter identity is (name, location); operations override paths.
+Map<(String, String), Map<String, dynamic>> _parameters(Object? value) {
+  if (value == null) return {};
+  if (value is! List) {
+    throw const FormatException('Parameters must be a list of inline objects.');
+  }
+  final result = <(String, String), Map<String, dynamic>>{};
+  for (final parameter in value) {
+    if (parameter is! Map<String, dynamic> ||
+        parameter.containsKey(r'$ref') ||
+        parameter['name'] is! String ||
+        (parameter['name'] as String).isEmpty ||
+        !['query', 'header', 'path', 'cookie'].contains(parameter['in']) ||
+        (parameter.containsKey('required') && parameter['required'] is! bool)) {
+      throw const FormatException(
+        'Parameters require an inline name/location and boolean required flag.',
+      );
+    }
+    final key = (parameter['name'] as String, parameter['in'] as String);
+    if (result.containsKey(key)) {
+      throw const FormatException('Duplicate parameter name and location.');
+    }
+    result[key] = parameter;
+  }
+  return result;
 }
 
 String _literal(String value) => jsonEncode(value).replaceAll(r'$', r'\$');
