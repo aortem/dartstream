@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:ds_dartstream/src/cli/dartstream_cli.dart';
 import 'package:ds_dartstream/src/cli/discover_extensions.dart';
+import 'package:ds_dartstream/src/cli/extension_registry.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -145,6 +146,49 @@ void main() {
       );
       expect(registry.readAsStringSync(), text);
     }
+  });
+  test(
+    'invalid manifest dependencies cannot create an unreadable registry',
+    () {
+      final f = manifest('one', 'One');
+      for (final dependency in [' ', '1invalid', '../outside', '@scope/name']) {
+        f.writeAsStringSync(
+          'name: One\nversion: 1.0.0\nentry_point: lib/main.dart\n'
+          'dependencies: ${jsonEncode([dependency])}\n',
+        );
+        expect(
+          () => discoverExtensions(project, register: true),
+          throwsFormatException,
+          reason: 'Invalid dependency accepted: $dependency',
+        );
+        expect(registry.parent.existsSync(), false);
+      }
+    },
+  );
+  test('invalid discovery preserves a usable existing registry', () async {
+    final f = manifest('one', 'One');
+    state({
+      'custom': 'keep',
+      'extensions': [
+        {'name': 'CustomerAuth', 'enabled': false},
+      ],
+    });
+    final before = registry.readAsBytesSync();
+    f.writeAsStringSync(
+      'name: One\nversion: 1.0.0\nentry_point: lib/main.dart\n'
+      'dependencies: [" "]\n',
+    );
+    await expectLater(
+      createDartStreamCommandRunner(
+        workingDirectory: project,
+      ).run(['discover', '--register']),
+      throwsA(isA<UsageException>()),
+    );
+    expect(registry.readAsBytesSync(), before);
+    await createDartStreamCommandRunner(
+      workingDirectory: project,
+    ).run(['extensions']);
+    expect(ExtensionRegistry(project).state['custom'], 'keep');
   });
   test(
     'project option selects the directory and no-validate cannot bypass checks',

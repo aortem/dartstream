@@ -31,7 +31,7 @@ class ExtensionRegistry {
                   (entry['dependencies'] as List).any(
                     (dependency) =>
                         dependency is! String ||
-                        _dependencyName(dependency) == null,
+                        dependencyName(dependency) == null,
                   )))) {
         throw const FormatException(
           'Registry entries must have unique names, boolean enabled states and valid dependency lists.',
@@ -56,7 +56,7 @@ class ExtensionRegistry {
             .where((entry) => entry['name'] != name && entry['enabled'] == true)
             .where(
               (entry) => (entry['dependencies'] as List? ?? const []).any(
-                (dependency) => _dependencyName(dependency as String) == name,
+                (dependency) => dependencyName(dependency as String) == name,
               ),
             )
             .map((entry) => entry['name'] as String)
@@ -65,7 +65,8 @@ class ExtensionRegistry {
     return dependents;
   }
 
-  static String? _dependencyName(String dependency) => RegExp(
+  /// Shared manifest/registry boundary; version constraints stay as metadata.
+  static String? dependencyName(String dependency) => RegExp(
     r'^([A-Za-z][A-Za-z0-9_.-]*)(?:\s+\S.*)?$',
   ).firstMatch(dependency.trim())?.group(1);
 
