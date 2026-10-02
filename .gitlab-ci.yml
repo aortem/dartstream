@@ -125,6 +125,8 @@ validation_trigger_docs:
     # Run only when docs changed
     - changes:
         - dartstream/docs/**/*
+        - tools/pipelines/firebase-hosting/child-ci-production-docs.yml
+        - tools/scripts/firebase/*docs*
       when: always
     - when: never
 
