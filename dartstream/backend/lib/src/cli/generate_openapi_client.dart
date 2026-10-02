@@ -96,6 +96,22 @@ Future<Directory> generateOpenApiClient({
           )
           .map((parameter) => _literal(parameter['name'] as String))
           .join(', ');
+      final requiredHeaders = parameters.values
+          .where(
+            (parameter) =>
+                parameter['in'] == 'header' &&
+                parameter['required'] == true &&
+                !{
+                  'accept',
+                  'content-type',
+                  'authorization',
+                }.contains((parameter['name'] as String).toLowerCase()),
+          )
+          .map(
+            (parameter) =>
+                _literal((parameter['name'] as String).toLowerCase()),
+          )
+          .join(', ');
       final requestBody = operationData['requestBody'];
       if (requestBody != null &&
           (requestBody is! Map<String, dynamic> ||
@@ -123,7 +139,8 @@ Future<Directory> generateOpenApiClient({
     Object? body,
   }) => _send(${_literal(operation.key.toUpperCase())}, ${_literal(entry.key)},
       pathParameters: pathParameters, query: query, headers: headers, body: body,
-      requiredQuery: const [$requiredQuery], bodyRequired: $bodyRequired);
+      requiredQuery: const [$requiredQuery], requiredHeaders: const [$requiredHeaders],
+      bodyRequired: $bodyRequired);
 ''');
     }
   }
@@ -174,10 +191,15 @@ ${methods.join()}
     required Map<String, String> headers,
     Object? body,
     required List<String> requiredQuery,
+    required List<String> requiredHeaders,
     required bool bodyRequired,
   }) async {
     if (requiredQuery.any((name) => !query.containsKey(name))) {
       throw ArgumentError('Missing required query parameter.');
+    }
+    final headerNames = headers.keys.map((name) => name.toLowerCase()).toSet();
+    if (requiredHeaders.any((name) => !headerNames.contains(name))) {
+      throw ArgumentError('Missing required header parameter.');
     }
     if (bodyRequired && body == null) {
       throw ArgumentError('Missing required request body.');
@@ -219,8 +241,10 @@ authorization errors. Call close() when finished.
 
 This limited generator handles OpenAPI 3 JSON operations with unique Dart
 operationId names. It does not resolve references, create typed schema models,
-apply defaults, or validate schemas or header/cookie requirements. Required inline
-query parameters and request bodies are checked for presence before transport;
+apply defaults, or validate schemas or cookie requirements. Required inline
+query/header parameters and request bodies are checked for presence before transport;
+header presence ignores case. Accept, Content-Type and Authorization parameter
+definitions are ignored as required by OpenAPI; authentication remains caller-owned.
 operation parameters override matching path parameters by name and location.
 Parameter and request-body references must be inlined before generation. Keep the source spec and
 validate the generated package with dart pub get and dart analyze before use.
