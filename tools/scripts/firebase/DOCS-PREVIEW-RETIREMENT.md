@@ -27,3 +27,9 @@ not authorize bulk cleanup or retroactively supply stop jobs to old pipelines.
 
 References: https://firebase.google.com/docs/hosting/manage-hosting-resources
 and https://docs.gitlab.com/ci/environments/.
+
+The preview deploy job deliberately has no `on_stop` link. GitLab otherwise
+automatically starts that job when an MR is merged or its branch is removed,
+without the required exact-channel dependency confirmation. Select the existing
+manual `firebase:stop_preview_docs` pipeline job only after the checks above;
+pass the full channel confirmation there. The deletion guard remains unchanged.

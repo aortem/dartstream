@@ -100,7 +100,6 @@ firebase:preview_docs:
   resource_group: docs/$CI_COMMIT_REF_SLUG
   environment:
     name: docs/$CI_COMMIT_REF_NAME
-    on_stop: firebase:stop_preview_docs
   image: google/cloud-sdk:alpine
   stage: preview
   before_script:
