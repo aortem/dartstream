@@ -250,12 +250,14 @@ https://aortem.io/support
 
 ## Required OpenAPI inputs
 
-Source-generated OpenAPI clients check inline required query parameters and
+Source-generated OpenAPI clients check inline required query/header parameters and
 required request bodies before sending a request. Supply query values through
 the operation's `query` map and JSON bodies through `body`; an empty query value
 counts as present. Operation-level parameters override matching path-level
 parameters by name and location. Inline parameter and request-body references
 before generating; malformed required flags and duplicate parameter identities
-are rejected before writing. Schema/type/default and header/cookie validation
+are rejected before writing. Header presence is case insensitive; OpenAPI's
+Accept, Content-Type and Authorization parameter definitions are ignored, so
+authentication remains caller-owned. Schema/type/default and cookie validation
 remain application-owned. Existing generated packages are preserved. Hosted
 0.0.11 is unchanged; this requires a future reviewed package release.
