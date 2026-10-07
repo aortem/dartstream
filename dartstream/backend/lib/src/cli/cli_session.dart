@@ -99,7 +99,7 @@ class CliSession {
     await exchange();
     final result=await _request(platformOverride ?? Uri.parse('https://${_environment == 'dev' ? 'dev-' : ''}apiplatform.dartstream.io/api/v1/platform/projects'),authenticated:true);
     final projects=result['projects'];
-    if (projects is! List || !projects.any((p) => p is Map && (p['name']==name || p['id']==name))) {
+    if (projects is! List || !projects.any((p) => p is Map && (p['name']==name || p['id']==name || p['slug']==name))) {
       throw StateError('Project was not found in this workspace.');
     }
   }

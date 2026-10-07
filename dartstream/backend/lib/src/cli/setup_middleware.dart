@@ -15,7 +15,7 @@ Future<File> setupMiddleware(Directory project) async {
   final dependencies = metadata is Map ? metadata['dependencies'] : null;
   if (dependencies is! Map || !dependencies.containsKey('shelf')) {
     throw const FormatException(
-      'Add a direct shelf dependency before middleware setup; no files changed.',
+      'Run `dart pub add shelf` before middleware setup; no files changed.',
     );
   }
   return writeGeneratedFile(

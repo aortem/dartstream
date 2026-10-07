@@ -24,7 +24,7 @@ void main() {
       } else {
         projects++; expect(request.headers.value('X-Tenant-ID'),'tenant-fixture');
         expect(request.headers.value('authorization'),startsWith('Bearer '));
-        request.response.write('{"projects":[{"name":"sample","id":"project-fixture"}]}');
+        request.response.write('{"projects":[{"name":"Sample Project","id":"project-fixture","slug":"sample-project"}]}');
       }
       await request.response.close();
     });
@@ -36,12 +36,15 @@ void main() {
     expect(auth.file.existsSync(),false);
     await runner.run(['login','--client-id','client-fixture','--token','secret-fixture','--env','dev']);
     final saved=auth.file.readAsStringSync();expect(saved,contains('client-fixture'));
-    await runner.run(['validate','--project','sample']);
-    await runner.run(['validate','--project','sample']);
-    expect(exchanges,2);expect(projects,2);
-    await session().validateProject('sample');
+    await runner.run(['validate','--project','Sample Project']);
+    await runner.run(['validate','--project','Sample Project']);
+    await runner.run(['validate','--project','sample-project']);
+    await runner.run(['validate','--project','project-fixture']);
+    await expectLater(runner.run(['validate','--project','foreign-project']), throwsStateError);
+    expect(exchanges,2);expect(projects,5);
+    await session().validateProject('Sample Project');
     for(final secretName in ['DARTSTREAM_CLIENT_SECRET','DARTSTREAM_TOKEN']) {
-      await session({'DARTSTREAM_CLIENT_ID':'client-fixture',secretName:'secret-fixture'}).validateProject('sample');
+      await session({'DARTSTREAM_CLIENT_ID':'client-fixture',secretName:'secret-fixture'}).validateProject('Sample Project');
     }
     revoked=true;
     await expectLater(session().login(clientId:'client-fixture',secret:'secret-fixture'),throwsStateError);
