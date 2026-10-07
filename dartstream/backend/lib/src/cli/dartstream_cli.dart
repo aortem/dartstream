@@ -19,7 +19,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:args/args.dart';
 
-const dartStreamCliVersion = '0.0.11';
+const dartStreamCliVersion = '0.0.12';
 
 String? dartStreamCliVersionOutput(List<String> args) {
   if (args.length == 1 && (args.first == '--version' || args.first == '-v')) {
@@ -144,7 +144,10 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
-  ds_dartstream: ^0.0.8
+  ds_dartstream: ^0.0.11
+
+dev_dependencies:
+  test: ^1.26.0
 ''',
       'lib/main.dart': '''
 void main() {
@@ -154,6 +157,10 @@ void main() {
       'bin/$packageName.dart':
           "import 'package:$packageName/main.dart' as application;\n\n"
           'void main() => application.main();\n',
+      'test/${packageName}_test.dart':
+          "import 'package:test/test.dart';\n\n"
+          "void main() {\n  test('starter smoke test', () {\n"
+          "    expect(2 + 2, 4);\n  });\n}\n",
       'dartstream.yaml':
           '''
 name: ${jsonEncode(projectName)}

@@ -1,3 +1,17 @@
+# Changelog
+
+## 0.0.12
+
+- Configure merges explicit vendor/CI choices while preserving customer YAML and comments.
+- Setup creates validation CI and Shelf middleware without replacing customer files.
+- Generate supports local model, API, provider, extension, scaffold and client output.
+- Discover validates manifests and preserves registry metadata and disabled states.
+- Init adds a smoke test and test dependency so validation setup works immediately.
+- Middleware setup explains the required `dart pub add shelf` command.
+- Validate accepts the exact project name, id or slug returned by the workspace API.
+- Give the malformed-registry CLI regression an explicit timeout on slower machines.
+- Source preparation only; pub.dev publication requires the separate release decision.
+
 ## 0.0.11
 
 - Validate the framework on Dart 3.13.4 and fix body-parser handler error propagation.
@@ -7,20 +21,6 @@
 - Validate CLI credentials through OAuth, support saved and CI project validation, and restrict credential files.
 - Guard unfinished configure/setup/generate/discover commands before any write.
 - Generate a runnable bin entrypoint and preserve existing files unless --force.
-
-# Changelog
-
-## Unreleased
-
-- Configure now merges explicit options into existing YAML while preserving
-  other settings and comments. Replacing the file requires `--force`.
-  Setup and generate remain guarded pending their Phase 2 work.
-- Discover now validates local manifests and entry points, preserves registry metadata
-  and disabled extensions, and supports read-only discovery. No extension code is executed.
-
-- Generate `bin/<package_name>.dart` so `dart run` starts the generated app.
-  Preserve an existing entrypoint unless `--force` is requested.
-
 
 ## 0.0.9
 
