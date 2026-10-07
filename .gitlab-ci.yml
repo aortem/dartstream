@@ -221,7 +221,10 @@ validate_dartstream_cli:
         "packages/standard/standard_extensions/reactive_dataflow/lifecycle/base"; do
         dart pub --directory="$package" publish --dry-run || exit 1
       done
-    - dart run bin/dartstream.dart --version | grep -F "ds_dartstream 0.0.11"
+    - |
+      expected_version="$(awk '/^version: / {print $2}' pubspec.yaml)"
+      test -n "$expected_version"
+      dart run bin/dartstream.dart --version | grep -Fx "ds_dartstream $expected_version"
   rules:
     - changes:
         - dartstream/backend/**/*
