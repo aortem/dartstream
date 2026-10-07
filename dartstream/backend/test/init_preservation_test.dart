@@ -14,6 +14,39 @@ void main() {
     workingDirectory: project,
   ).run(['init', '--name', 'sample_app', ...options]);
 
+  test('init supplies a runnable smoke test and setup preserves it', () async {
+    await init([]);
+    final manifest = File('${project.path}/pubspec.yaml');
+    final original = manifest.readAsStringSync();
+    expect(
+      (loadYaml(original) as YamlMap)['dev_dependencies']['test'],
+      '^1.26.0',
+    );
+    final smoke = File('${project.path}/test/sample_app_test.dart');
+    expect(smoke.readAsStringSync(), contains('starter smoke test'));
+    await createDartStreamCommandRunner(
+      workingDirectory: project,
+    ).run(['setup']);
+    expect(File('${project.path}/.gitlab-ci.yml').existsSync(), isTrue);
+    expect(manifest.readAsStringSync(), original);
+    await expectLater(
+      createDartStreamCommandRunner(
+        workingDirectory: project,
+      ).run(['setup', '--middleware']),
+      throwsA(
+        isA<UsageException>().having(
+          (e) => e.message,
+          'fix',
+          contains('dart pub add shelf'),
+        ),
+      ),
+    );
+    expect(manifest.readAsStringSync(), original);
+    smoke.writeAsStringSync('// customer test retained\n');
+    await init([]);
+    expect(smoke.readAsStringSync(), '// customer test retained\n');
+  });
+
   test('late output conflict preserves all existing starter files', () async {
     final config = File('${project.path}/pubspec.yaml')
       ..writeAsStringSync('customer: preserved\n');

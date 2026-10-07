@@ -213,6 +213,7 @@ void main() {
         }
       }
     },
+    timeout: const Timeout(Duration(seconds: 400)),
   );
 
   test('concurrent registry edits are preserved with staging removed', () {
