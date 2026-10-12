@@ -10,7 +10,6 @@
 - Middleware setup explains the required `dart pub add shelf` command.
 - Validate accepts the exact project name, id or slug returned by the workspace API.
 - Give the malformed-registry CLI regression an explicit timeout on slower machines.
-- Source preparation only; pub.dev publication requires the separate release decision.
 
 ## 0.0.11
 
