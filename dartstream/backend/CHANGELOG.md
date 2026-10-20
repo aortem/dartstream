@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Treat an empty CI client secret as unset for the existing token alias fallback,
+  and reject an empty selected secret before contacting the token endpoint.
+- Initialize new projects with the published ds_dartstream ^0.0.12 dependency.
+
 ## 0.0.12
 
 - Configure merges explicit vendor/CI choices while preserving customer YAML and comments.

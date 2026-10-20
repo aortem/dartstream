@@ -144,7 +144,7 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
-  ds_dartstream: ^0.0.11
+  ds_dartstream: ^0.0.12
 
 dev_dependencies:
   test: ^1.26.0
