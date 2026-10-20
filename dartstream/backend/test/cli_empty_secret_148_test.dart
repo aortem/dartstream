@@ -62,11 +62,11 @@ void main() {
     billingOverride: tokenUrl,
     platformOverride: projectsUrl,
   );
-  final emptySecret = throwsA(
-    isA<StateError>().having(
+  Matcher emptySecret(String source) => throwsA(
+    isA<ArgumentError>().having(
       (e) => e.message,
       'precise local error',
-      'DARTSTREAM_CLIENT_SECRET is empty',
+      '$source is empty.',
     ),
   );
 
@@ -103,7 +103,8 @@ void main() {
             'DARTSTREAM_CLIENT_ID': 'client-fixture',
             ...env,
           }).validateProject('project-fixture'),
-          emptySecret,
+          emptySecret(env.containsKey('DARTSTREAM_TOKEN')
+              ? 'DARTSTREAM_TOKEN' : 'DARTSTREAM_CLIENT_SECRET'),
         );
         expect(requests, 0);
         expect(dir.listSync(), isEmpty);
@@ -123,7 +124,7 @@ void main() {
     final before = file.readAsBytesSync();
     await expectLater(
       session({}).validateProject('project-fixture'),
-      emptySecret,
+      emptySecret('Saved CLI clientSecret'),
     );
     expect(requests, 0);
     expect(file.readAsBytesSync(), before);
@@ -136,7 +137,7 @@ void main() {
         session({
           'DARTSTREAM_TOKEN': 'valid-fixture',
         }).login(clientId: 'client-fixture', secret: ''),
-        emptySecret,
+        emptySecret('--token'),
       );
       expect(requests, 0);
       expect(dir.listSync(), isEmpty);
@@ -155,6 +156,47 @@ void main() {
       expect(File('${dir.path}/credentials.json').existsSync(), isTrue);
     },
   );
+
+  for (final command in ['login', 'validate']) {
+    for (final source in ['DARTSTREAM_CLIENT_SECRET', 'DARTSTREAM_TOKEN']) {
+      test('$command empty $source is a real CLI usage error', () async {
+        final result = await Process.run(Platform.resolvedExecutable, [
+          'bin/dartstream.dart', command,
+          if (command == 'validate') ...['--project', 'project-fixture'],
+        ], environment: {
+          for (final name in ['SystemRoot', 'TEMP', 'TMP'])
+            if (Platform.environment[name] != null)
+              name: Platform.environment[name]!,
+          'DARTSTREAM_CONFIG_DIR': dir.path,
+          'DARTSTREAM_CLIENT_ID': 'client-fixture',
+          source: '',
+        }, includeParentEnvironment: false);
+        expect(result.exitCode, 64);
+        expect(result.stderr, contains('$source is empty.'));
+        expect(result.stderr, isNot(contains('unexpected error')));
+        expect(dir.listSync(), isEmpty);
+        expect(requests, 0);
+      });
+    }
+  }
+
+  test('explicit empty --token names the flag and exits 64', () async {
+    final result = await Process.run(Platform.resolvedExecutable, [
+      'bin/dartstream.dart', 'login', '--client-id', 'client-fixture', '--token=',
+    ], environment: {
+      for (final name in ['SystemRoot', 'TEMP', 'TMP'])
+        if (Platform.environment[name] != null)
+          name: Platform.environment[name]!,
+      'DARTSTREAM_CONFIG_DIR': dir.path,
+      'DARTSTREAM_TOKEN': 'unused-fixture-secret',
+    }, includeParentEnvironment: false);
+    expect(result.exitCode, 64);
+    expect(result.stderr, contains('--token is empty.'));
+    expect(result.stderr, isNot(contains('unused-fixture-secret')));
+    expect(result.stderr, isNot(contains('DARTSTREAM_CLIENT_SECRET is empty')));
+    expect(dir.listSync(), isEmpty);
+    expect(requests, 0);
+  });
 
   test(
     'init emits the accepted published dependency and preserves customer edits',
