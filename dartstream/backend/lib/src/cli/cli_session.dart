@@ -43,6 +43,9 @@ class CliSession {
   }
 
   Future<void> exchange() async {
+    if (_secret?.isEmpty ?? false) {
+      throw StateError('DARTSTREAM_CLIENT_SECRET is empty');
+    }
     if (_token != null && DateTime.now().isBefore(_expires!)) return;
     _token = null;
     final result = await _request(billingOverride ?? Uri.parse('https://${_environment == 'dev' ? 'dev-' : ''}apibilling.dartstream.io/api/v1/oauth2/token'),
@@ -61,9 +64,9 @@ class CliSession {
 
   Future<void> login({String? clientId, String? secret, String env = 'prod'}) async {
     _client = clientId ?? environment['DARTSTREAM_CLIENT_ID'];
-    _secret = secret ?? environment['DARTSTREAM_CLIENT_SECRET'] ?? environment['DARTSTREAM_TOKEN'];
+    _secret = secret ?? _environmentSecret();
     _environment = env; _token = null;
-    if (_client == null || _client!.isEmpty || _secret == null || _secret!.isEmpty) {
+    if (_client == null || _client!.isEmpty || _secret == null) {
       throw ArgumentError('Pass --client-id and --token, or DARTSTREAM_CLIENT_ID and DARTSTREAM_CLIENT_SECRET (DARTSTREAM_TOKEN is an alias).');
     }
     await exchange(); // Never create/write credentials after a rejected exchange.
@@ -82,11 +85,21 @@ class CliSession {
     } finally { if (await temp.exists()) await temp.delete(); }
   }
 
+  String? _environmentSecret() {
+    final primary = environment['DARTSTREAM_CLIENT_SECRET'];
+    // CI systems commonly pass an unset secret as an empty value. Preserve
+    // the existing alias fallback, and retain an empty value if neither works
+    // so exchange rejects it locally before any token request or cache reuse.
+    return primary != null && primary.isNotEmpty
+        ? primary
+        : environment['DARTSTREAM_TOKEN'] ?? primary;
+  }
+
   Future<void> validateProject(String name, {String? env}) async {
     final previous = [_client, _secret, _environment];
     final hasEnv = environment.containsKey('DARTSTREAM_CLIENT_ID') || environment.containsKey('DARTSTREAM_CLIENT_SECRET') || environment.containsKey('DARTSTREAM_TOKEN');
     if (hasEnv) {
-      _client=environment['DARTSTREAM_CLIENT_ID']; _secret=environment['DARTSTREAM_CLIENT_SECRET'] ?? environment['DARTSTREAM_TOKEN'];
+      _client=environment['DARTSTREAM_CLIENT_ID']; _secret=_environmentSecret();
       _environment=env ?? environment['DARTSTREAM_ENV'] ?? 'prod';
     } else if (_client == null) {
       if (!await file.exists()) throw StateError('Log in first or set the CI credential variables.');
