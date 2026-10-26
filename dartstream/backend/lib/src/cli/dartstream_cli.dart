@@ -144,7 +144,7 @@ environment:
   sdk: ^3.12.2
 
 dependencies:
-  ds_dartstream: ^0.0.11
+  ds_dartstream: ^0.0.12
 
 dev_dependencies:
   test: ^1.26.0
@@ -585,10 +585,14 @@ class DSValidateCommand extends Command<void> {
   Future<void> run() async {
     final project = argResults?['project'] as String?;
     if (project != null) {
-      await session.validateProject(
-        project,
-        env: argResults?['env'] as String?,
-      );
+      try {
+        await session.validateProject(
+          project,
+          env: argResults?['env'] as String?,
+        );
+      } on ArgumentError catch (error) {
+        throw UsageException(error.message.toString(), usage);
+      }
       stdout.writeln('DartStream project validated.');
       return;
     }
@@ -838,9 +842,9 @@ class DSLoginCommand extends Command<void> {
         secret: argResults?['token'] as String?,
         env: argResults!['env'] as String,
       );
-    } on ArgumentError {
+    } on ArgumentError catch (error) {
       throw UsageException(
-        'Supply --client-id and --token, or the CLI credential environment variables.',
+        error.message.toString(),
         usage,
       );
     }
