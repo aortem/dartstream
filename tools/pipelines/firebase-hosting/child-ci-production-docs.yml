@@ -102,6 +102,8 @@ validate_commit_messages:
 validate_docs_preview_cleanup:
   image: google/cloud-sdk:alpine
   stage: validate
+  before_script:
+    - apk add --no-cache python3
   script:
     - python3 tools/scripts/firebase/test_stop_docs_preview.py -v
   rules:
